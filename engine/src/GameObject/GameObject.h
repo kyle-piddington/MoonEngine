@@ -3,7 +3,8 @@
 #include <typeinfo>
 #include <memory>
 #include <typeindex>
-#include "Component.h"
+#include <vector>
+#include "Component/Component.h"
 /*
 	Core GameObject component. Contains 
 	a list of pointers to components, a tag,
@@ -18,39 +19,33 @@ namespace MoonEngine
 		GameObject();
 
 		~GameObject();
+		
 		template <class T>
-
-		std::weak_ptr<T> getComponent()
+		T * getComponent()
 		{
-			if (componentMap.find(typeInfo(T)))
+			//Look through components and cast to type.
+			//(Could be slow, profile later)
+			T* comp;
+			for(Component * c : components)
 			{
-				return static_cast<T>(componentMap(typeInfo(T)).front());
+				if((comp = dynamic_cast<T>(c)))
+				{
+					return comp;
+				}
 			}
-			else
-			{
-				return nullptr;
-			}
-		}
-		template <class T>
-		std::vector<T> getComponent()
-		{
-			if (componentMap.find(typeInfo(T)))
-			{
-				return componentMap(typeInfo(T));
-			}
+			return nullptr;
 		}
 
 		void addComponent(Component * component)
 		{
-			componentMap[typeid(component)] = component;
+			components.push_back(component);
 		}
 	private:
 		/*
 			Map of avaliable components
 			If a component is de-allocated (Shouldn't happen often),
 		*/
-		std::unordered_map
-			< std::type_index, Component *> componentMap;
+		std::vector<Component *> components;
 
 	};
 

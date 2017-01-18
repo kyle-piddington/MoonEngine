@@ -9,8 +9,13 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "src/*.h")
 file(GLOB_RECURSE GLSL "resources/*.glsl")
 
-#expose headers in source to CMake
-include_directories("src")
+set (MoonEngine_INCLUDE_DIRS "")
+foreach (_headerFile ${HEADERS})
+    get_filename_component(_dir ${_headerFile} PATH)
+    list (APPEND MoonEngine_INCLUDE_DIRS ${_dir})
+endforeach()
+list(REMOVE_DUPLICATES MoonEngine_INCLUDE_DIRS)
+include_directories(${MoonEngine_INCLUDE_DIRS})
 
 # Set the executable.
 add_library(MoonEngine ${SOURCES} ${HEADERS} ${GLSL})
@@ -47,7 +52,6 @@ if (WIN32)
    target_link_libraries(MoonEngine ${OPENGL_gl_LIBRARY})
 else ()
     # Enable all pedantic warnings.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic")
     if (APPLE)
         # Add required frameworks for GLFW.
         target_link_libraries(MoonEngine "-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo")

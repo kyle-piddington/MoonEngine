@@ -1,6 +1,6 @@
 
 
-int main(char ** argV, int argC){
+int main(int argC, char ** argV){
 
 	return 0;
 }
