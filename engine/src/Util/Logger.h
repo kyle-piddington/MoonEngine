@@ -5,6 +5,7 @@ namespace MoonEngine
 {
 	enum LogLevel
 	{
+		NONE		= - 1,
 		FATAL_ERROR = 0,
 		ERROR       = 1,
 		WARN        = 2,

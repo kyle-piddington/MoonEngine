@@ -47,7 +47,7 @@ namespace MoonEngine
 	 * @param data   data
 	 * @param usage  Dynamic or static
 	 */
-		void setData(GLenum target, GLsizeiptr size, const void * data, GLenum usage) const;
+	void setData(GLenum target, GLsizeiptr size, const void * data, GLenum usage) const;
 
 	/**
 	 * Bind a vertex buffer to the GPU

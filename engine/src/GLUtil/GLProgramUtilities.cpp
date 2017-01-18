@@ -62,3 +62,16 @@ bool GLProgramUtilities::checkShaderStatus(const GLShader & shader)
 
 	return success;
 }
+
+bool GLProgramUtilities::checkProgramStatus(const GLProgram & program)
+{
+	GLint success;
+	GLchar infoLog[512];
+	glGetProgramiv(program.getObject(), GL_LINK_STATUS, &success);
+	if(!success)
+	{
+		  	glGetProgramInfoLog(program.getObject(), 512, NULL, infoLog);
+		    LOG(ERROR,"PROGRAM:[" + program.getName() + "]:LINK_FAILED\n" + std::string(infoLog));
+	}
+	return success;
+}

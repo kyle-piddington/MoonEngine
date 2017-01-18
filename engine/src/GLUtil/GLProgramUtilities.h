@@ -21,6 +21,14 @@ namespace MoonEngine
 		 * @return        true if shader is ok.
 		 */
 		bool checkShaderStatus(const GLShader & shader);
+
+		/**
+		 * Check the status of a program, and print
+		 * out an error if it's not compiled.
+		 * @param  shader The program to check
+		 * @return        true if shader is ok.
+		 */
+		bool checkProgramStatus(const GLProgram & program);
 	}
 	
 }

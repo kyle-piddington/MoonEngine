@@ -8,6 +8,7 @@
 #include "GL/GLShader.h"
 #include "GL/GLFramebuffer.h"
 #include "GL/GLBuffer.h"
+#include "GL/GLProgram.h"
 
 #include "GameObject/GameObject.h"
 #include "Component/Component.h"
