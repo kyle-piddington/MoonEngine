@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.7)
+project (ShatteredMoon)
+add_subdirectory(deps)
+add_subdirectory(engine)
+add_subdirectory(app)
