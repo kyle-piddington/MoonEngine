@@ -1,15 +1,18 @@
 #include "GLBuffer.h"
 using namespace MoonEngine;
 
-GLBuffer::GLBuffer()
+GLBuffer::GLBuffer(GLenum target):
+	_type(target)
 {
 	glGenBuffers(1,&_objectId);
 }
 
-GLBuffer::GLBuffer(GLenum target, GLsizeiptr size, const void * data, GLenum usage)
+GLBuffer::GLBuffer(GLenum target, GLsizeiptr size, const void * data, GLenum usage):
+	_type(target)
+
 {
-	GLBuffer();
-	setData(target,size,data,usage);
+	glGenBuffers(1,&_objectId);
+	setData(size,data,usage);
 }
 
 GLBuffer::~GLBuffer()
@@ -21,7 +24,9 @@ GLBuffer::~GLBuffer()
  * Move constructor
  */
 GLBuffer::GLBuffer(GLBuffer &&other):
+	_type(other._type),
 	_objectId(other.release())
+	
 {
 	
 }
@@ -32,24 +37,30 @@ GLBuffer::GLBuffer(GLBuffer &&other):
 GLBuffer & GLBuffer::operator=(GLBuffer &&other)
 {
 	reset(other.release());
+	_type = other._type;
 	return *this;
 }
 
-void GLBuffer::setData(GLenum target, GLsizeiptr size, const void * data, GLenum usage) const
+void GLBuffer::setData(GLsizeiptr size, const void * data, GLenum usage) const
 {
-	bind(target);
-	glBufferData(target, size, data, usage);
-	glBindBuffer(target, 0);
+	bind();
+	glBufferData(_type, size, data, usage);
+	glBindBuffer(_type, 0);
 }
 
-void GLBuffer::bind(GLenum target) const
+void GLBuffer::bind() const
 {
-	glBindBuffer(target,_objectId);
+	glBindBuffer(_type,_objectId);
 }
 
 GLuint GLBuffer::getObject() const
 {
 	return _objectId;
+}
+
+GLenum GLBuffer::getType() const
+{
+	return _type;
 }
 
 GLuint GLBuffer::release()

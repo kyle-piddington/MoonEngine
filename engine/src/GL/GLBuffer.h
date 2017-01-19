@@ -17,7 +17,7 @@ namespace MoonEngine
 	/**
 	 * Construct and allocate an empty vertex buffer.
 	 */
-		GLBuffer();
+		GLBuffer(GLenum target);
 	/**
 	 * Construct and add data to a vertex buffer.
 	 */
@@ -47,21 +47,24 @@ namespace MoonEngine
 	 * @param data   data
 	 * @param usage  Dynamic or static
 	 */
-	void setData(GLenum target, GLsizeiptr size, const void * data, GLenum usage) const;
+	void setData(GLsizeiptr size, const void * data, GLenum usage) const;
 
 	/**
 	 * Bind a vertex buffer to the GPU
 	 */
-		void bind(GLenum target) const;
+	void bind() const;
 
 	/**
 	 * Retrieve the objectId of the vertex buffer.
 	 * @return objectId
 	 */
-		GLuint getObject() const;
+	GLuint getObject() const;
+
+	GLenum getType() const;
 
 
 	private:
+		GLenum _type;
 		GLuint _objectId;
 		GLuint release();
 		GLuint reset(GLuint newObject = 0);

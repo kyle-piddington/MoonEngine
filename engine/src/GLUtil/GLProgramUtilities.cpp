@@ -5,7 +5,7 @@
 #include "Logger.h"
 using namespace MoonEngine;
 
-GLShader GLProgramUtilities::createShaderFromFile(GLenum shaderType, char * fileName)
+GLShader GLProgramUtilities::createShaderFromFile(GLenum shaderType, std::string fileName)
 {
 	std::ifstream shaderSource(fileName);
 	if(shaderSource.is_open())

@@ -10,6 +10,9 @@
 #include "GL/GLBuffer.h"
 #include "GL/GLProgram.h"
 
+#include "GLUtil/GLProgramUtilities.h"
+
+
 #include "GameObject/GameObject.h"
 #include "Component/Component.h"
 

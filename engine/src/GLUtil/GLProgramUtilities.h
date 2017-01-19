@@ -12,7 +12,7 @@ namespace MoonEngine
 		 * @param  fileName relative or absolute path to the file
 		 * @return          a shader object.
 		 */
-		GLShader createShaderFromFile(GLenum type, char * fileName);
+		GLShader createShaderFromFile(GLenum type, std::string fileName);
 
 		/**
 		 * Check the status of a shader, and pring
