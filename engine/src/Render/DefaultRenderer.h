@@ -1,5 +1,7 @@
 #pragma once
 #include "GL/GLProgram.h"
+#include "I_Renderer.h"
+#include "Component/Components.h"
 /**
  * The Default renderer performs a phong rendering
  * of the entire scene, using MaterialInstance.tint's 
@@ -7,14 +9,32 @@
  * does not switch programs, or perform
  * any binning.
  */
-class DefaultRenderer : public I_Renderer
+namespace MoonEngine
 {
-public:
-	virtual void setup(Scene * scene);
-	virtual void render(Scene * scene);
-	virtual void shutdown();
 
-private:
-	GLProgram basicPhongProgram;
-	Camera * mainCamera;
+	class DefaultRenderer : public I_Renderer
+	{
+	public:
+		DefaultRenderer();
+
+		virtual ~DefaultRenderer(){}
+		/**
+		 * Pre-setup for renderer. Gather variables
+		 * @param scene Scene to render.
+		 */
+		virtual void setup(Scene * scene);
+		/**
+		 * Render the current state of the scene
+		 * @param scene the scene to render.
+		 */
+		virtual void render(Scene * scene);
+		/**
+		 * Perform cleanup.
+		 */
+		virtual void shutdown();
+
+	private:
+		GLProgram basicPhongProgram;
+		Camera * mainCamera;
+	};
 }

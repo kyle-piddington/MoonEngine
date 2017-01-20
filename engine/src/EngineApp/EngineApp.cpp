@@ -1,13 +1,20 @@
 #include "EngineApp.h"
+#include "IO/GLFWHandler.h"
+#include "IO/Keyboard.h"
 using namespace MoonEngine;
 //Static library
 //(Refactor later)
 Library EngineApp::AssetLibrary;
+bool EngineApp::assetsLoaded = false;
 
 EngineApp::EngineApp(GLFWwindow * window, MoonEngineCfg config):
 window(window)
 {
 	AssetLibrary.Init(config.assetPath);
+	assetsLoaded = true;
+	glfwSetKeyCallback(window, GLFWHandler::key_callback);
+   	glfwSetCursorPosCallback(window, GLFWHandler::mousePositionCallback);
+   	glfwSetMouseButtonCallback(window, GLFWHandler::mouseButtonCallback);
 	//Other app setup code, install callbacks etc.
 	
 }
@@ -15,4 +22,34 @@ window(window)
 EngineApp::~EngineApp()
 {
 
+
 }
+
+Library EngineApp::GetAssetLibrary()
+{
+	assert(assetsLoaded);
+	return AssetLibrary;
+}
+
+void EngineApp::run(Scene * scene, I_Renderer * renderer)
+{
+	float newT, t = glfwGetTime();
+	float dt = 0;
+	renderer->setup(scene);
+	while(!glfwWindowShouldClose(window))
+	{
+		glfwPollEvents();
+        GLFWHandler::update();
+
+		scene->runCollisionUpdate();
+		scene->runUpdate(dt);
+		renderer->render(scene);
+		newT = glfwGetTime();
+		glfwSwapBuffers(window);
+		dt = t - newT;
+		t = newT;
+	}
+	renderer->shutdown();
+
+}
+

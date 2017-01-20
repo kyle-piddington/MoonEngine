@@ -11,6 +11,5 @@ TEST_CASE("tinyOBJLoadMesh","[ObjectLoading]")
 	REQUIRE(info.numTris > 0);
 	REQUIRE(info.indexDataOffset == nullptr);
 	REQUIRE(info.baseVertex == 0);
-	REQUIRE(info.vertexObjectPtr == &vao);
 
 }

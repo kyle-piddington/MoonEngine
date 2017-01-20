@@ -1,3 +1,4 @@
+#pragma once
 /**
  * MeshLibrary provides a mapping of 
  * mesh names to vertex array objects. 
@@ -13,12 +14,14 @@ namespace MoonEngine
 
 	class MeshLibrary
 	{
+		public:
 		MeshLibrary(std::string resourcePath);
 		~MeshLibrary();
-		public:
 			MeshInfo * getInfoForMeshNamed(std::string mesh);
 		private:
-			std::unordered_map<std::string, MeshInfo * > mapMeshToVAO;
-			std::vector<GLVertexArrayObject> meshVAOs;
+			std::string _recPath;
+			std::unordered_map<std::string, MeshInfo * > _mapMeshToInfo;
+			std::vector<GLVertexArrayObject> _meshVAOs;
+			std::vector<GLBuffer> _meshBuffers;
 	};
 }

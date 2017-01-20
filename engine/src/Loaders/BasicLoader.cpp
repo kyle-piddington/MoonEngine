@@ -18,6 +18,8 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
 	std::string err;
 	bool success = LoadObj(&attributes, &shapes, &materials, &err, fileName.c_str());
 	//@TODO: Load more than one mesh./
+	
+	std::vector<glm::vec3> vertPositions;
 	if(success)
 	{
 		bool hasNors =  attributes.normals.size() > 0;
@@ -27,6 +29,11 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
 		dataBuffer.reserve(attributes.vertices.size() + attributes.normals.size() + attributes.texcoords.size());
 		for(int i = 0; i < attributes.vertices.size()/3; i++)
 		{
+			vertPositions.push_back(glm::vec3(
+				attributes.vertices[i*3],
+				attributes.vertices[i*3 + 1],
+				attributes.vertices[i*3 + 2]));
+
 			dataBuffer.push_back(attributes.vertices[i*3]);
 			dataBuffer.push_back(attributes.vertices[i*3 + 1]);
 			dataBuffer.push_back(attributes.vertices[i*3 + 2]);
@@ -80,6 +87,7 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
 
 		if(hasNors)
 		{
+			LOG(INFO, "Loading mesh with normals");
 			texCoordsOffset += sizeof(float)*3;
 			vertexArrayObject->bindVertexBuffer(
 			GL_VERTEX_NORMAL_ATTRIBUTE, 
@@ -93,9 +101,9 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
 
 		if(hasTexCoords)
 		{
-			
+			LOG(INFO, "Loading mesh with textures");
 			vertexArrayObject->bindVertexBuffer(
-			GL_VERTEX_NORMAL_ATTRIBUTE, 
+			GL_VETREX_TEXTURE_ATTRIBUTE, 
 			*vertexBuffer, 
 			3,
 			GL_FLOAT,
@@ -108,7 +116,8 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
 		outInfo->numTris = indices.size();
 		outInfo->baseVertex = 0;
 		outInfo->indexDataOffset = nullptr;
-		outInfo->vertexObjectPtr = vertexArrayObject;
+		outInfo->boundingBox = BoundingBox::BoundPoints(vertPositions);
+		outInfo->setVertexArrayObject(vertexArrayObject);
 	}
 	else
 	{

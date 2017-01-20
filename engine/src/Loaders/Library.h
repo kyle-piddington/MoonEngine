@@ -6,7 +6,7 @@ namespace MoonEngine
 	{
 		static void Init(std::string resourcePath);
 		static void Destory();
-		static MeshLibrary MeshLibrary;
+		static std::shared_ptr<MeshLibrary> MeshLib;
 
 
 	};

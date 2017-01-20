@@ -42,10 +42,32 @@ namespace MoonEngine
 		}
 
 		void addComponent(Component * component);
-
-		const Transform & getTransform() const;
-
+		/**
+		 * Get the transform of this game object
+		 * @return a tranform object
+		 */
 		Transform & getTransform();
+		/**
+		 * Gather all components in the game object
+		 */
+		std::vector<Component *> getComponents();
+
+		/**
+		 * Run Update on all game objects
+		 * @param dt delta time
+		 */
+		void update(float dt);
+		/**
+		 * Fire OnCollisionEnter on all components
+		 * @param col the collision
+		 */
+		void onCollisionEnter(Collision col);
+		/**
+		 * Fire onCollisionExit on all components
+		 * @param col the collision
+		 */
+		void onCollisionExit(Collision col);
+
 	private:
 		/*
 			Map of avaliable components

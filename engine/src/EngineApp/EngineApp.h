@@ -14,10 +14,12 @@ namespace MoonEngine
 		~EngineApp();
 		Scene * CreateScene();
 		void run(Scene * scene, I_Renderer * renderer);
-
-		static Library AssetLibrary;
-
+		
+		
+		static Library GetAssetLibrary();
 	private:
+		static bool assetsLoaded;
+		static Library AssetLibrary;
 		GLFWwindow * window;
 	};
 }

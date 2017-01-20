@@ -30,13 +30,13 @@ namespace MoonEngine
 		void setFOV(float fov);
 
 		private:
-		float aspect;
-		float near;
-		float far;
-		float fov;
-		bool vNeedsUpdate;
-		glm::mat4 P;
-		glm::mat4 V;
+		float _aspect;
+		float _near;
+		float _far;
+		float _fov;
+		bool _vNeedsUpdate;
+		glm::mat4 _P;
+		glm::mat4 _V;
 
 	};
 }
