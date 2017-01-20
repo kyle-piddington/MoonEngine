@@ -1,5 +1,5 @@
 #include "GLShader.h"
-#include "GLProgramUtilities.h"
+#include "GLUtil/GLProgramUtilities.h"
 using namespace MoonEngine;
 
 

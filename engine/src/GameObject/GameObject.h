@@ -2,9 +2,10 @@
 #include <unordered_map>
 #include <typeinfo>
 #include <memory>
-#include <typeindex>
 #include <vector>
+#include "Tag.h"
 #include "Component/Component.h"
+#include "Geom/Transform.h"
 /*
 	Core GameObject component. Contains 
 	a list of pointers to components, a tag,
@@ -18,7 +19,11 @@ namespace MoonEngine
 	public:
 		GameObject();
 
+		GameObject(const Transform & t);
+
 		~GameObject();
+
+		void setParent(GameObject * otherObject);
 		
 		template <class T>
 		T * getComponent()
@@ -28,7 +33,7 @@ namespace MoonEngine
 			T* comp;
 			for(Component * c : components)
 			{
-				if((comp = dynamic_cast<T>(c)))
+				if((comp = dynamic_cast<T *>(c)))
 				{
 					return comp;
 				}
@@ -36,16 +41,20 @@ namespace MoonEngine
 			return nullptr;
 		}
 
-		void addComponent(Component * component)
-		{
-			components.push_back(component);
-		}
+		void addComponent(Component * component);
+
+		const Transform & getTransform() const;
+
+		Transform & getTransform();
 	private:
 		/*
 			Map of avaliable components
 			If a component is de-allocated (Shouldn't happen often),
 		*/
+		Transform transform;
 		std::vector<Component *> components;
+		std::vector<Tag> tags;
+		GameObject * parent;
 
 	};
 

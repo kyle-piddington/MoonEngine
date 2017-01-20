@@ -38,7 +38,7 @@ void GLVertexArrayObject::bindVertexBuffer(
 	buffer.bind();
 	glVertexAttribPointer(attribute, size, type, normalized, stride, offset);
 	glEnableVertexAttribArray(attribute);
-	unbind();
+	Unbind();
 }
 
 void GLVertexArrayObject::bindElementBuffer(const GLBuffer & buffer)
@@ -46,7 +46,7 @@ void GLVertexArrayObject::bindElementBuffer(const GLBuffer & buffer)
 	assert(buffer.getType() == GL_ELEMENT_ARRAY_BUFFER);
 	bind();
 	buffer.bind();
-	unbind();
+	Unbind();
 }
 
 
@@ -55,7 +55,7 @@ void GLVertexArrayObject::bind() const
 	glBindVertexArray(_vaoID);
 }
 
-void GLVertexArrayObject::unbind() const
+void GLVertexArrayObject::Unbind()
 {
 	glBindVertexArray(0);
 }

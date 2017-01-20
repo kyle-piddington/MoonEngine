@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "Logger.h"
+#include "Util/Logger.h"
 using namespace MoonEngine;
 
 GLShader GLProgramUtilities::createShaderFromFile(GLenum shaderType, std::string fileName)

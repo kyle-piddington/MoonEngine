@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
 	    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	    obj.bind();
 	    glDrawArrays(GL_TRIANGLES,0,3);
-	    obj.unbind();
+	    GLVertexArrayObject::Unbind();
 	    glfwSwapBuffers(window);
 	}
 

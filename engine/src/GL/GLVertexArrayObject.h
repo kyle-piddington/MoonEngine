@@ -60,7 +60,7 @@ namespace MoonEngine
 		/**
 		 * unbind all VAO's
 		 */
-		void unbind() const;
+		static void Unbind();
 
 		private:
 			GLuint _vaoID;

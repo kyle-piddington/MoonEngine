@@ -20,3 +20,8 @@
 #include "Geom/World.h" 
 
 #include "Util/Logger.h"
+
+#include "Loaders/BasicLoader.h"
+#include "Loaders/MeshLibrary.h"
+
+#include "Component/Components.h"
