@@ -41,7 +41,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 	{
 		glfwPollEvents();
         GLFWHandler::update();
-
+        
 		scene->runCollisionUpdate();
 		scene->runUpdate(dt);
 		renderer->render(scene);

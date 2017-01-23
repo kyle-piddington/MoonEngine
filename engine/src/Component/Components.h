@@ -2,4 +2,5 @@
 #include "Component.h"
 #include "GeometryComponents/StaticMesh.h"
 #include "CameraComponents/Camera.h"
+#include "CameraComponents/FirstPersonController.h"
 #include "MaterialComponents/Material.h"

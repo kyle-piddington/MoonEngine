@@ -20,6 +20,11 @@ void Camera::start()
 
 }
 
+void Camera::update(float dt)
+{
+	_vNeedsUpdate = true;
+}
+
 const glm::mat4  & Camera::getProjection()
 {
 	return _P;

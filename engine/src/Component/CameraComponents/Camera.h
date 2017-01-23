@@ -34,6 +34,7 @@ namespace MoonEngine
 		 */
 		void setFOV(float fov);
 
+		void update(float dt);
 		private:
 		float _aspect;
 		float _near;

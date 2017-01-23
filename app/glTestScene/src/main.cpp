@@ -53,6 +53,8 @@ int main(int argc, char **argv) {
 
 	//Components
 	Camera * cam = new Camera( M_PI/6, 800.0/600.0, 0.1, 50);
+	FirstPersonController * ctrl = new FirstPersonController();
+	cameraObj->addComponent(ctrl);
 	cameraObj->addComponent(cam);
 	StaticMesh * mesh = new StaticMesh( "bunny.obj");
 	Material * material = new Material( glm::vec3(0.6,0.5,0.5));
@@ -93,6 +95,7 @@ int main(int argc, char **argv) {
 	delete mesh;
 	delete material;
 	delete renderer;
+	delete ctrl;
 
 	
 	return 0;
