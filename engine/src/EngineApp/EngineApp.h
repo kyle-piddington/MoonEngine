@@ -18,6 +18,8 @@ namespace MoonEngine
 		
 		static Library GetAssetLibrary();
 	private:
+
+		void initializeComponents(Scene * scene);
 		static bool assetsLoaded;
 		static Library AssetLibrary;
 		GLFWwindow * window;

@@ -6,11 +6,16 @@ namespace MoonEngine
 	class Camera : public Component
 	{	
 	public:
-		Camera(std::shared_ptr<GameObject> object,
+		Camera(
 			 float fov, 
 			 float aspect, 
 			 float near,
 			 float far);
+
+		/**
+		 * Initialize the camera
+		 */
+		void start();
 		/**
 		 * Get the current projection matrix for this camera
 		 * @return the projection matrix

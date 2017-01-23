@@ -9,7 +9,7 @@ namespace MoonEngine
 	class StaticMesh : public Mesh
 	{
 	public:
-		StaticMesh(std::shared_ptr<GameObject> object, std::string mesh);
+		StaticMesh(std::string mesh);
 		
 		/**
 		 * Bind mesh to the graphics engine.

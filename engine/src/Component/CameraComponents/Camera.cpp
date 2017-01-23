@@ -2,17 +2,24 @@
 #include "GameObject/GameObject.h"
 #include <glm/gtc/matrix_transform.hpp>
 using namespace MoonEngine;
-Camera::Camera(std::shared_ptr<GameObject> obj, float fov, float aspect, float near, float far):
-	Component(obj),
+Camera::Camera(float fov, float aspect, float near, float far):
 	_aspect(aspect),
 	_near(near),
 	_far(far),
-	_fov(fov)
+	_fov(fov),
+	_vNeedsUpdate(true)
 	{
-		_P = glm::perspective(fov, aspect,  near,  far);
-		_V = glm::inverse(gameObject->getTransform().getMatrix());
-		_vNeedsUpdate = false;
 	}
+
+
+void Camera::start()
+{
+	_P = glm::perspective(_fov, _aspect,  _near,  _far);
+	_V = glm::inverse(gameObject->getTransform().getMatrix());
+	_vNeedsUpdate = false;
+
+}
+
 const glm::mat4  & Camera::getProjection()
 {
 	return _P;

@@ -39,6 +39,7 @@ int main(int argc, char **argv) {
 
 	MoonEngineCfg cfg;
 	cfg.assetPath = "resources";
+	
 	std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window, cfg);
 	Scene * scene = new Scene();
 
@@ -51,10 +52,13 @@ int main(int argc, char **argv) {
 	std::shared_ptr<GameObject> bunnyObj = std::make_shared<GameObject>(bunnyTranform);
 
 	//Components
-	Camera * cam = new Camera(cameraObj, M_PI/6, 800.0/600.0, 0.1, 50);
-	StaticMesh * mesh = new StaticMesh(bunnyObj, "bunny.obj");
-	Material * material = new Material(bunnyObj, glm::vec3(0.6,0.5,0.5));
-
+	Camera * cam = new Camera( M_PI/6, 800.0/600.0, 0.1, 50);
+	cameraObj->addComponent(cam);
+	StaticMesh * mesh = new StaticMesh( "bunny.obj");
+	Material * material = new Material( glm::vec3(0.6,0.5,0.5));
+	bunnyObj->addComponent(mesh);
+	bunnyObj->addComponent(material);
+	
 	scene->addGameObject(cameraObj);
 	scene->addGameObject(bunnyObj);
 	DefaultRenderer * renderer = new DefaultRenderer();

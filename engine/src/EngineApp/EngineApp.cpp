@@ -33,6 +33,7 @@ Library EngineApp::GetAssetLibrary()
 
 void EngineApp::run(Scene * scene, I_Renderer * renderer)
 {
+	initializeComponents(scene);
 	float newT, t = glfwGetTime();
 	float dt = 0;
 	renderer->setup(scene);
@@ -51,5 +52,13 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 	}
 	renderer->shutdown();
 
+}
+
+void EngineApp::initializeComponents(Scene * scene)
+{
+	for(std::shared_ptr<GameObject>  obj : scene->getGameObjects())
+	{
+		obj->start();
+	}
 }
 

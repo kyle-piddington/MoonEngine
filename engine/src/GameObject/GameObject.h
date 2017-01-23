@@ -23,6 +23,11 @@ namespace MoonEngine
 
 		~GameObject();
 
+		/**
+		 * Initialize all components
+		 */
+		void start();
+
 		void setParent(GameObject * otherObject);
 		
 		template <class T>

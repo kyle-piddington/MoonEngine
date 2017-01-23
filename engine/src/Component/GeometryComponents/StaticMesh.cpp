@@ -2,8 +2,8 @@
 #include "EngineApp/EngineApp.h"
 using namespace MoonEngine;
 
-StaticMesh::StaticMesh(std::shared_ptr<GameObject> object, std::string mesh):
-	Mesh(object)
+StaticMesh::StaticMesh(std::string mesh):
+	Mesh()
 {
 	_meshInfo = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed(mesh);
 }

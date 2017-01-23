@@ -14,15 +14,15 @@ namespace MoonEngine
 	public:
 		
 		/*Create a new component, and bind it to a gameObject*/
-		Component(std::shared_ptr<GameObject> object);
+		Component();
 		virtual ~Component();
 		/*
 			Take a reference to this gameobject, and pass
 			a reference to this component to the GameObject.
 		*/
-		void provideGameObject(std::shared_ptr<GameObject> object);
+		void provideGameObject(GameObject * object);
 	
-
+		virtual void start();
 		//Base component functions
 		virtual void update(float dt);
 
@@ -31,7 +31,7 @@ namespace MoonEngine
 		virtual void onCollisionExit(Collision col);
 
 	protected:
-		std::shared_ptr<GameObject> gameObject;
+		GameObject * gameObject;
 
 	};
 };

@@ -17,8 +17,17 @@ GameObject::~GameObject()
 
 }
 
+void GameObject::start(){
+
+	for(Component * c : components)
+	{
+		c->start();
+	}
+}
+
 void GameObject::addComponent(Component * component)
 {
+	component->provideGameObject(this);
 	components.push_back(component);
 }
 

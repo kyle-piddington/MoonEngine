@@ -47,7 +47,7 @@ GLProgram createBasicPhongProgram()
 	   float spec = pow(max(dot(reflectDir,viewDir),0.0),32);\n\
 	   vec3 specular = spec * vec3(1,1,1);\n\
 	   vec3 result = (diffuse + ambient + specular);\n\
-	   color = vec4(nor * 0.5 + 0.5,1.0);\n}";
+	   color = vec4(result,1.0);\n}";
 	GLShader vShader = GLShader(GL_VERTEX_SHADER,vShaderText.c_str());
 	GLShader fShader = GLShader(GL_FRAGMENT_SHADER,fShaderText.c_str());
 	GLProgram phongProg("Default_Phong");

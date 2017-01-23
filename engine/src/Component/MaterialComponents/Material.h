@@ -18,7 +18,7 @@ namespace MoonEngine
 	class Material : public Component
 	{
 	public:
-		Material(std::shared_ptr<GameObject> object, glm::vec3 tint = glm::vec3(0,0,0));
+		Material(glm::vec3 tint = glm::vec3(0,0,0));
 		const glm::vec3 & getTint() const;
 		void  setTint(glm::vec3 newTint);
 	private:

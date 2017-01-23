@@ -1,8 +1,8 @@
 #include "Material.h"
 using namespace MoonEngine;
 
-Material::Material(std::shared_ptr<GameObject> obj, glm::vec3 tint):
-	Component(obj),
+Material::Material(glm::vec3 tint):
+	Component(),
 	_tint(tint)
 {
 	

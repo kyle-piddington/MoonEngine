@@ -9,8 +9,7 @@ namespace MoonEngine
 	class Mesh : public Component
 	{
 	public:
-		Mesh(std::shared_ptr<GameObject> obj):
-			Component(obj)
+		Mesh()
 		{
 
 		}
