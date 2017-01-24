@@ -1,5 +1,12 @@
 #pragma once
-class Collision
+#include <glm/glm.hpp>
+
+namespace MoonEngine
 {
-	//@Todo, implement collision info
-};
+	class Collision
+	{
+		//GameObject * other;
+		glm::vec3 position;
+		glm::vec3 normal;
+	};	
+}

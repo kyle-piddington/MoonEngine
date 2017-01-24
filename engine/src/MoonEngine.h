@@ -29,3 +29,7 @@
 #include "GameObject/GameObject.h"
 
 #include "Render/DefaultRenderer.h"
+
+// Collision
+#include "Collision/BoundingBox.h"
+#include "Collision/Collision.h"
