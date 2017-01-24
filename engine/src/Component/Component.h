@@ -30,6 +30,9 @@ namespace MoonEngine
 
 		virtual void onCollisionExit(Collision col);
 
+		GameObject * getGameObject(){
+			return gameObject;
+		}
 	protected:
 		GameObject * gameObject;
 

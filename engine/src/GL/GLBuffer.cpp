@@ -1,4 +1,5 @@
 #include "GLBuffer.h"
+#include "Util/Logger.h"
 using namespace MoonEngine;
 
 GLBuffer::GLBuffer(GLenum target):
@@ -17,7 +18,8 @@ GLBuffer::GLBuffer(GLenum target, GLsizeiptr size, const void * data, GLenum usa
 
 GLBuffer::~GLBuffer()
 {
-	glDeleteBuffers(1,&_objectId);
+	LOG(INFO, "Deleting Buffer " + std::to_string(_objectId));
+	reset();
 }
 
 /**

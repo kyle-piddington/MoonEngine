@@ -4,6 +4,7 @@
  * renderable meshes
  */
 #include "Component/Component.h"
+#include "Loaders/MeshInfo.h"
 namespace MoonEngine
 {
 	class Mesh : public Component

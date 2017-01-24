@@ -1,18 +1,20 @@
 #include "catch.hpp"
 #include "MoonEngine.h"
+#include <iostream>
 using namespace MoonEngine;
 TEST_CASE("Test BBox Transformation", "[Bounding Box]")
 {
 	Transform t;
 	BoundingBox box(-1,1,-1,1,-1,1);
+	REQUIRE(glm::length(box.centerPoint - glm::vec3(0,0,0)) < 1e-3);
+	REQUIRE(box.xHalfWidth == 1.0f);
+	REQUIRE(box.yHalfWidth == 1.0f);
+	REQUIRE(box.zHalfWidth == 1.0f);
+	
 	t.translate(glm::vec3(1,1,1));
 	BoundingBox newBox = box.transform(t.getMatrix());
-	REQUIRE(newBox.minX == 0);
-	REQUIRE(newBox.maxX == 2);
-	REQUIRE(newBox.minY == 0);
-	REQUIRE(newBox.maxY == 2);
-	REQUIRE(newBox.minZ == 0);
-	REQUIRE(newBox.maxZ == 2);
+	
+	REQUIRE(glm::length(newBox.centerPoint - glm::vec3(1,1,1)) < 1e-3);
 
 
 }

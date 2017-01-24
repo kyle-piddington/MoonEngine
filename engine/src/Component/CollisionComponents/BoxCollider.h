@@ -9,6 +9,7 @@ namespace MoonEngine
 {
 	class BoxCollider : public Component
 	{
+	public:
 		/**
 		 * Create a boxCollider. The component will
 		 * check the gameObject to determine if it can read 
@@ -42,6 +43,8 @@ namespace MoonEngine
 		 * @return [description]
 		 */
 		const BoundingBox & getBoundingBox();
+
+		glm::vec3 getCenter();
 
 	private:
 

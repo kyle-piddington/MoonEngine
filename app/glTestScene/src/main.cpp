@@ -46,23 +46,41 @@ int main(int argc, char **argv) {
 	//Game Objects
 	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>();
 
-	Transform bunnyTranform;
-
-	bunnyTranform.setPosition(glm::vec3(0,0,-10));
-	std::shared_ptr<GameObject> bunnyObj = std::make_shared<GameObject>(bunnyTranform);
+	Transform monkeyTransform;
 
 	//Components
-	Camera * cam = new Camera( M_PI/6, 800.0/600.0, 0.1, 50);
-	FirstPersonController * ctrl = new FirstPersonController();
+	Camera * cam = scene->createComponent<Camera>( M_PI/3, 800.0/600.0, 0.1, 50);
+	FirstPersonController * ctrl = scene->createComponent<FirstPersonController>();
 	cameraObj->addComponent(ctrl);
 	cameraObj->addComponent(cam);
-	StaticMesh * mesh = new StaticMesh( "bunny.obj");
-	Material * material = new Material( glm::vec3(0.6,0.5,0.5));
-	bunnyObj->addComponent(mesh);
-	bunnyObj->addComponent(material);
 	
+	for(int i = 0; i < 3; i++)
+	{
+		monkeyTransform.setPosition(glm::vec3(i*2,0,-2));
+		std::shared_ptr<GameObject> monkeyObj = std::make_shared<GameObject>(monkeyTransform);
+		StaticMesh * mesh = scene->createComponent<StaticMesh>("cube.obj", false);
+		Material * material = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
+		monkeyObj->addComponent(mesh);
+		monkeyObj->addComponent(material);
+		scene->addGameObject(monkeyObj);
+
+	}
+	for(int i = 0; i < 3; i++)
+	{
+		monkeyTransform.setPosition(glm::vec3(i*2,2,-2));
+		std::shared_ptr<GameObject> monkeyObj = std::make_shared<GameObject>(monkeyTransform);
+		StaticMesh * mesh = scene->createComponent<StaticMesh>("cube.obj", true);
+		Material * material = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
+		monkeyObj->addComponent(mesh);
+		monkeyObj->addComponent(material);
+		scene->addGameObject(monkeyObj);
+
+	}
+
+
 	scene->addGameObject(cameraObj);
-	scene->addGameObject(bunnyObj);
+
+
 	DefaultRenderer * renderer = new DefaultRenderer();
 	app->run(scene, renderer);
 
@@ -91,12 +109,8 @@ int main(int argc, char **argv) {
 	//     glfwSwapBuffers(window);
 	// }
 	delete scene;
-	delete cam;
-	delete mesh;
-	delete material;
 	delete renderer;
-	delete ctrl;
-
+	
 	
 	return 0;
 

@@ -8,7 +8,7 @@
 #include <vector>
 #include "GL/GLVertexArrayObject.h"
 #include "MeshInfo.h"
-
+#include <memory>
 namespace MoonEngine
 {
 
@@ -17,11 +17,11 @@ namespace MoonEngine
 		public:
 		MeshLibrary(std::string resourcePath);
 		~MeshLibrary();
-			MeshInfo * getInfoForMeshNamed(std::string mesh);
+			MeshInfo * getInfoForMeshNamed(std::string mesh, bool smooth = false);
 		private:
 			std::string _recPath;
 			std::unordered_map<std::string, MeshInfo * > _mapMeshToInfo;
-			std::vector<GLVertexArrayObject> _meshVAOs;
-			std::vector<GLBuffer> _meshBuffers;
+			std::vector<std::shared_ptr<GLVertexArrayObject>> _meshVAOs;
+			std::vector<std::shared_ptr<GLBuffer>> _meshBuffers;
 	};
 }

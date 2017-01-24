@@ -7,6 +7,7 @@
 #include "GL/GLConstants.h"
 #include "MeshInfo.h"
 #include <string>
+#include "thirdparty/tiny_obj_loader.h"
 namespace MoonEngine
 {
 	class BasicLoader
@@ -16,6 +17,15 @@ namespace MoonEngine
 			 GLBuffer * vertexBuffer,
 			 GLBuffer * indexBuffer,
 			 GLVertexArrayObject * vao,
-			 MeshInfo * outInfo);
+			 MeshInfo * outInfo,
+			 bool smooth = false);
+	private:
+		static unsigned loadFlatShade(std::vector<float> * vertexData, std::vector<unsigned short> * indexData,
+			const  tinyobj::attrib_t & attributes, 
+			const std::vector<tinyobj::shape_t> & shapes);
+		static unsigned loadSmoothShade(std::vector<float> * vertexData, std::vector<unsigned short> * indexData,
+			const  tinyobj::attrib_t & attributes, 
+			const std::vector<tinyobj::shape_t> & shapes);
+
 	};
 };

@@ -3,9 +3,14 @@
 
 namespace MoonEngine
 {
+	//Forward declaration because this
+	//dependency is awful.
+	class GameObject;
+
 	class Collision
 	{
-		//GameObject * other;
+	public:
+		GameObject * other;
 		glm::vec3 position;
 		glm::vec3 normal;
 	};	

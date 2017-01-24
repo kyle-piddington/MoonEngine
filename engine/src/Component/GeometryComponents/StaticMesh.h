@@ -9,7 +9,7 @@ namespace MoonEngine
 	class StaticMesh : public Mesh
 	{
 	public:
-		StaticMesh(std::string mesh);
+		StaticMesh(std::string mesh, bool smooth = false);
 		
 		/**
 		 * Bind mesh to the graphics engine.

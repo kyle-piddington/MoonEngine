@@ -1,4 +1,5 @@
 #include "GLVertexArrayObject.h"
+#include "Util/Logger.h"
 #include <cassert>
 using namespace MoonEngine;
 
@@ -9,6 +10,7 @@ GLVertexArrayObject::GLVertexArrayObject()
 
 GLVertexArrayObject::~GLVertexArrayObject()
 {
+	LOG(INFO, "Deleting VAO" + std::to_string(_vaoID));
 	reset();
 }
 
