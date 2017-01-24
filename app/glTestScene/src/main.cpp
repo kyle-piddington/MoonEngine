@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "MoonEngine.h"
+#include "CustomComponents/CharacterMoveComponent.h"
+#include "CustomComponents/ObjectSpawner.h"
 
 
 using namespace MoonEngine;
@@ -46,40 +48,52 @@ int main(int argc, char **argv) {
 	//Game Objects
 	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>();
 
-	Transform monkeyTransform;
-
-	//Components
+	
+	//Camera setup
 	Camera * cam = scene->createComponent<Camera>( M_PI/3, 800.0/600.0, 0.1, 50);
 	FirstPersonController * ctrl = scene->createComponent<FirstPersonController>();
 	cameraObj->addComponent(ctrl);
 	cameraObj->addComponent(cam);
-	
-	for(int i = 0; i < 3; i++)
-	{
-		monkeyTransform.setPosition(glm::vec3(i*2,0,-2));
-		std::shared_ptr<GameObject> monkeyObj = std::make_shared<GameObject>(monkeyTransform);
-		StaticMesh * mesh = scene->createComponent<StaticMesh>("cube.obj", false);
-		Material * material = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
-		monkeyObj->addComponent(mesh);
-		monkeyObj->addComponent(material);
-		scene->addGameObject(monkeyObj);
-
-	}
-	for(int i = 0; i < 3; i++)
-	{
-		monkeyTransform.setPosition(glm::vec3(i*2,2,-2));
-		std::shared_ptr<GameObject> monkeyObj = std::make_shared<GameObject>(monkeyTransform);
-		StaticMesh * mesh = scene->createComponent<StaticMesh>("cube.obj", true);
-		Material * material = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
-		monkeyObj->addComponent(mesh);
-		monkeyObj->addComponent(material);
-		scene->addGameObject(monkeyObj);
-
-	}
-
-
 	scene->addGameObject(cameraObj);
 
+	
+	//Monkey prefab setup
+	Transform monkeyTransform;
+	monkeyTransform.setScale(glm::vec3(0.5,0.5,0.5));
+	std::shared_ptr<GameObject> monkeyObj = std::make_shared<GameObject>(monkeyTransform);
+	StaticMesh * monkeyMesh = scene->createComponent<StaticMesh>("suzanne.obj", true);
+	Material * monkeyMat = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
+	CharacterMoveComponent * monkeyMove = scene->createComponent<CharacterMoveComponent>(rand()%30 / 10.f);
+	BoxCollider * monkeyCollider = scene->createComponent<BoxCollider>();
+	monkeyObj->addComponent(monkeyCollider);
+	monkeyObj->addComponent(monkeyMesh);
+	monkeyObj->addComponent(monkeyMat);
+	monkeyObj->addComponent(monkeyMove);
+		
+
+	Transform dogTransform;
+	dogTransform.setScale(glm::vec3(0.2,0.2,0.2));
+	std::shared_ptr<GameObject> dogObj = std::make_shared<GameObject>(dogTransform);
+	StaticMesh * dogMesh = scene->createComponent<StaticMesh>("dog.obj", true);
+	Material * dogMaterial = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
+	CharacterMoveComponent * dogMove = scene->createComponent<CharacterMoveComponent>(rand()%30 / 10.f);
+	BoxCollider * dogCollider = scene->createComponent<BoxCollider>();
+	dogObj->addComponent(dogCollider);
+	dogObj->addComponent(dogMesh);
+	dogObj->addComponent(dogMaterial);
+	dogObj->addComponent(dogMove);
+	
+	std::vector<GameObject *> prefabPtrs;
+	prefabPtrs.push_back(dogObj.get());
+	prefabPtrs.push_back(monkeyObj.get());
+
+	std::shared_ptr<GameObject> spawnerObj = std::make_shared<GameObject>(Transform());
+	spawnerObj->addComponent(scene->createComponent<ObjectSpawner>(1.0f,prefabPtrs));
+	scene->addGameObject(spawnerObj);
+
+
+
+	
 
 	DefaultRenderer * renderer = new DefaultRenderer();
 	app->run(scene, renderer);

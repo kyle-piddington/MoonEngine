@@ -1,6 +1,7 @@
 #include "EngineApp.h"
 #include "IO/GLFWHandler.h"
 #include "IO/Keyboard.h"
+#include "GlobalFunctions/Instantiate.h"
 using namespace MoonEngine;
 //Static library
 //(Refactor later)
@@ -33,6 +34,8 @@ Library EngineApp::GetAssetLibrary()
 
 void EngineApp::run(Scene * scene, I_Renderer * renderer)
 {
+	//Set the global active scene to this one.
+	SetActiveScene(scene);
 	initializeComponents(scene);
 	float newT, t = glfwGetTime();
 	float dt = 0;
@@ -47,7 +50,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 		renderer->render(scene);
 		newT = glfwGetTime();
 		glfwSwapBuffers(window);
-		dt = t - newT;
+		dt =  newT - t;
 		t = newT;
 	}
 	renderer->shutdown();

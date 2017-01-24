@@ -15,6 +15,7 @@ namespace MoonEngine
 		 * Bind mesh to the graphics engine.
 		 */
 		const MeshInfo * getMesh();
+		virtual std::shared_ptr<Component> clone() const;
 
 	private:
 		MeshInfo * _meshInfo;

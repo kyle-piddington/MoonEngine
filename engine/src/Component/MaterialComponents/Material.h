@@ -21,6 +21,9 @@ namespace MoonEngine
 		Material(glm::vec3 tint = glm::vec3(0,0,0));
 		const glm::vec3 & getTint() const;
 		void  setTint(glm::vec3 newTint);
+
+		virtual std::shared_ptr<Component> clone() const;
+
 	private:
 		
 		glm::vec3 _tint;

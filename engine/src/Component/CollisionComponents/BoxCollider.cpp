@@ -28,6 +28,7 @@ void BoxCollider::start()
 		{
 			_originalBox = mesh->getMesh()->boundingBox;
 		}
+		_givenBox = true;
 	}
 }
 
@@ -36,7 +37,7 @@ void BoxCollider::update(float dt)
 	_transformedBox = _originalBox.transform(gameObject->getTransform().getMatrix());
 }
 
-bool BoxCollider::intersects(const BoxCollider * other)
+bool BoxCollider::intersects(const BoxCollider * other) 
 {
 	return _transformedBox.intersects(other->_transformedBox);
 }
@@ -44,6 +45,11 @@ bool BoxCollider::intersects(const BoxCollider * other)
 glm::vec3 BoxCollider::getCenter()
 {
 	return _transformedBox.centerPoint;
+}
+
+std::shared_ptr<Component> BoxCollider::clone() const
+{
+	return std::make_shared<BoxCollider>(*this);
 }
 
 

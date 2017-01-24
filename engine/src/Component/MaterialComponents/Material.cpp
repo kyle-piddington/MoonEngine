@@ -18,3 +18,9 @@ void Material::setTint(glm::vec3 newTint)
 	_tint = newTint;
 }
 
+std::shared_ptr<Component> Material::clone() const
+{
+	return std::make_shared<Material>(*this);
+}
+
+

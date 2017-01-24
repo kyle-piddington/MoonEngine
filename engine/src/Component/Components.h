@@ -4,3 +4,4 @@
 #include "CameraComponents/Camera.h"
 #include "CameraComponents/FirstPersonController.h"
 #include "MaterialComponents/Material.h"
+#include "CollisionComponents/BoxCollider.h"

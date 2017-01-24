@@ -13,6 +13,7 @@ namespace MoonEngine
 	public:
 		FirstPersonController(float Cam_Move_Speed = 1, float CamSensitivity = 0.002);
 		void update(float dt);
+		std::shared_ptr<Component> clone() const;
 
 	private:
 		float _CamMoveSpeed;

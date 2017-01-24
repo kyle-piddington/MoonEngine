@@ -12,3 +12,8 @@ const MeshInfo * StaticMesh::getMesh()
 {
 	return _meshInfo;
 }
+
+std::shared_ptr<Component> StaticMesh::clone() const
+{
+	return std::make_shared<StaticMesh>(*this);
+}

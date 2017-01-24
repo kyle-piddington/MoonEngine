@@ -21,7 +21,13 @@ namespace MoonEngine
 			a reference to this component to the GameObject.
 		*/
 		void provideGameObject(GameObject * object);
-	
+		
+		/**
+		 * Copy a component
+		 * @return a shared pointer to a new component
+		 */
+		virtual std::shared_ptr<Component> clone() const = 0;
+
 		virtual void start();
 		//Base component functions
 		virtual void update(float dt);

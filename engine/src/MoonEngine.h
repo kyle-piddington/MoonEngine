@@ -20,6 +20,7 @@
 #include "Geom/World.h" 
 
 #include "Util/Logger.h"
+#include "Util/GLMUtil.h"
 
 #include "Loaders/BasicLoader.h"
 #include "Loaders/MeshLibrary.h"
@@ -33,3 +34,6 @@
 // Collision
 #include "Collision/BoundingBox.h"
 #include "Collision/Collision.h"
+
+//Globals
+#include "GlobalFunctions/Instantiate.h"

@@ -36,11 +36,11 @@ namespace MoonEngine
 		const std::vector<std::shared_ptr<GameObject>> getGameObjects() const;
 		const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjects() const;
 		
-		GameObject * createGameObject()
+		std::shared_ptr<GameObject>  createGameObject()
 		{
 			std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
 			_allGameObjects.push_back(object);
-			return object.get();
+			return object;
 		}
 
 		
@@ -52,6 +52,8 @@ namespace MoonEngine
 			return ptr.get();
 		}
 
+		std::shared_ptr<GameObject> instantiate(GameObject * object, const Transform & newTransform);
+		
 		/**
 		 * Call the update() method of every game object
 		 */
@@ -66,6 +68,8 @@ namespace MoonEngine
 		void start();
 
 	private:
+
+		void instantiateNewObjects();
 		//Poorly organized list for prototyping purposes.
 		//Also contains 'prototype' game objects that won't be rendered.
 		std::vector<std::shared_ptr<GameObject>> _allGameObjects;
@@ -76,10 +80,14 @@ namespace MoonEngine
 
 		//List of collision components
 		////For performing box-box collisions
-		std::vector<std::shared_ptr<BoxCollider>> _boxCollisionComponents;
+		///warning - exceedingly terrible design.
+		std::vector<BoxCollider *> _boxCollisionComponents;
 
 		std::vector<std::shared_ptr<Component>> _components;
 
-
+		//Insert queue
+		std::vector<std::shared_ptr<GameObject>> _instantiateQueue;
+		std::vector<std::shared_ptr<Component>> _instantiateComponents;
+		
 	};	
 }

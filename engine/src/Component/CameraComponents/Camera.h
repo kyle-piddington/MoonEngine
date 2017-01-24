@@ -35,6 +35,8 @@ namespace MoonEngine
 		void setFOV(float fov);
 
 		void update(float dt);
+		std::shared_ptr<Component> clone() const;
+
 		private:
 		float _aspect;
 		float _near;

@@ -44,3 +44,7 @@ void Camera::setFOV(float fov)
 	this->_fov= fov;
 	_P = glm::perspective(fov, _aspect,_near, _far);
 }
+std::shared_ptr<Component> Camera::clone() const
+{
+	return std::make_shared<Camera>(*this);
+}

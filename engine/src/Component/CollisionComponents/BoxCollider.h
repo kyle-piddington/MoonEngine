@@ -46,6 +46,9 @@ namespace MoonEngine
 
 		glm::vec3 getCenter();
 
+		virtual std::shared_ptr<Component> clone() const;
+
+
 	private:
 
 		void createTransformedBox();

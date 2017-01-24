@@ -15,5 +15,7 @@ namespace MoonEngine
 
 		}
 		virtual const MeshInfo * getMesh() = 0;
+		virtual std::shared_ptr<Component> clone() const = 0;
+
 	};
 }

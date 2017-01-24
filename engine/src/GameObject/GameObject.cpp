@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Util/Logger.h"
 using namespace MoonEngine;
 
 GameObject::GameObject()
@@ -14,7 +15,7 @@ transform(t)
 
 GameObject::~GameObject()
 {
-
+	LOG(INFO,"Deallocating game object...");
 }
 
 void GameObject::start(){
