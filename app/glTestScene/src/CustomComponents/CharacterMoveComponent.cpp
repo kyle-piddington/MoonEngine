@@ -13,25 +13,31 @@ void CharacterMoveComponent::start()
 	_material = gameObject->getComponent<Material>();
 	assert(_material != nullptr);
 	_material->setTint(palette[rand()%5]);
-	direction = glm::normalize(glm::vec3(rand(),0,rand()));
+	_direction = glm::normalize(glm::vec3(rand(),0,rand()));
+	_originalScale = gameObject->getTransform().getScale();
 
 }
 
 void CharacterMoveComponent::update(float dt)
 {
+	if(_characterCollideTime > 0)
+	{
+		doCharacterCollidedAnimation();
+		_characterCollideTime -= dt;
+	}
 	Transform & t = gameObject->getTransform();
 	//Keep in box
-	if((t.getPosition().x > 5 && direction.x > 0) || (t.getPosition().x < -5 && direction.x < 0))
+	if((t.getPosition().x > 5 && _direction.x > 0) || (t.getPosition().x < -5 && _direction.x < 0))
 	{
-		direction.x = -direction.x;
+		_direction.x = -_direction.x;
 	}
-	if((t.getPosition().z > 5 && direction.z > 0) || (t.getPosition().z < -5 && direction.z < 0))
+	if((t.getPosition().z > 5 && _direction.z > 0) || (t.getPosition().z < -5 && _direction.z < 0))
 	{
-		direction.z = -direction.z;
+		_direction.z = -_direction.z;
 	}
-	gameObject->getTransform().translate(direction * speed * dt, Space::WORLD);
+	gameObject->getTransform().translate(_direction * _speed * dt, Space::WORLD);
 	//Models were oriented incorrectly in blender / export.
-	t.lookAt(t.getPosition() - direction);
+	t.lookAt(t.getPosition() - _direction);
 	
 
 }
@@ -46,19 +52,23 @@ void CharacterMoveComponent::onCollisionEnter(Collision collision)
 							   + gameObject->getTransform().getPosition());
 		centerPos*=0.5f;
 		glm::vec3 normal =  glm::normalize(centerPos - gameObject->getTransform().getPosition());
-		if(glm::dot(centerPos - gameObject->getTransform().getPosition(), direction) > 0)
+		if(glm::dot(centerPos - gameObject->getTransform().getPosition(), _direction) > 0)
 		{
 			if(glm::length(normal) > 0)
 			{
-				direction = glm::reflect(direction, normal);
+				_direction = glm::reflect(_direction, normal);
 
 			}
 			else
 			{
-				direction = -direction;
+				_direction = -_direction;
 			}
-			speed = rand() % 3 + 1.0;
-			_material->setTint(palette[rand()%5]);		
+			_direction.y = 0;
+			_speed = rand() % 3 + 1.0;
+			if(!collidingWithPlayer())
+			{
+				_material->setTint(palette[rand()%5]);						
+			}
 
 		}
 	}
@@ -67,4 +77,17 @@ void CharacterMoveComponent::onCollisionEnter(Collision collision)
 std::shared_ptr<Component> CharacterMoveComponent::clone() const
 {
 	return std::make_shared<CharacterMoveComponent>(*this);
+}
+
+void CharacterMoveComponent::playerCollided()
+{
+	_characterCollideTime = 1.5;
+	_direction = -_direction;
+	_material->setTint(glm::vec3(1,1,1));
+}
+
+void CharacterMoveComponent::doCharacterCollidedAnimation()
+{
+	Transform & t = gameObject->getTransform();
+	t.setScale(glm::vec3(_originalScale.x, _originalScale.y + (float)0.15*(std::abs(sin(_characterCollideTime * 5) * _characterCollideTime)), _originalScale.z));
 }

@@ -5,6 +5,7 @@
 #include "MoonEngine.h"
 #include "CustomComponents/CharacterMoveComponent.h"
 #include "CustomComponents/ObjectSpawner.h"
+#include "CustomComponents/PlayerInteractionComponent.h"
 
 
 using namespace MoonEngine;
@@ -18,6 +19,7 @@ int main(int argc, char **argv) {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
 	GLFWwindow * window = glfwCreateWindow(800,600, "LearnOpenGL", nullptr, nullptr);
 	if (window == nullptr)
 	{
@@ -26,6 +28,8 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
@@ -51,15 +55,19 @@ int main(int argc, char **argv) {
 	
 	//Camera setup
 	Camera * cam = scene->createComponent<Camera>( M_PI/3, 800.0/600.0, 0.1, 50);
-	FirstPersonController * ctrl = scene->createComponent<FirstPersonController>();
+	FirstPersonController * ctrl = scene->createComponent<FirstPersonController>(5);
 	cameraObj->addComponent(ctrl);
 	cameraObj->addComponent(cam);
+	cameraObj->addComponent(scene->createComponent<PlayerInteractionComponent>());
+	cameraObj->addComponent(scene->createComponent<BoxCollider>(glm::vec3(-0.25), glm::vec3(0.25)));
+	cameraObj->getTransform().translate(glm::vec3(0,1,-5));
 	scene->addGameObject(cameraObj);
 
 	
 	//Monkey prefab setup
 	Transform monkeyTransform;
 	monkeyTransform.setScale(glm::vec3(0.5,0.5,0.5));
+	monkeyTransform.setPosition(glm::vec3(0,0.5,0));
 	std::shared_ptr<GameObject> monkeyObj = std::make_shared<GameObject>(monkeyTransform);
 	StaticMesh * monkeyMesh = scene->createComponent<StaticMesh>("suzanne.obj", true);
 	Material * monkeyMat = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
@@ -73,6 +81,7 @@ int main(int argc, char **argv) {
 
 	Transform dogTransform;
 	dogTransform.setScale(glm::vec3(0.2,0.2,0.2));
+	dogTransform.setPosition(glm::vec3(0,0.5,0));
 	std::shared_ptr<GameObject> dogObj = std::make_shared<GameObject>(dogTransform);
 	StaticMesh * dogMesh = scene->createComponent<StaticMesh>("dog.obj", true);
 	Material * dogMaterial = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
@@ -88,9 +97,17 @@ int main(int argc, char **argv) {
 	prefabPtrs.push_back(monkeyObj.get());
 
 	std::shared_ptr<GameObject> spawnerObj = std::make_shared<GameObject>(Transform());
-	spawnerObj->addComponent(scene->createComponent<ObjectSpawner>(1.0f,prefabPtrs));
+	spawnerObj->addComponent(scene->createComponent<ObjectSpawner>(3.0f,prefabPtrs));
 	scene->addGameObject(spawnerObj);
 
+	//Ground
+	Transform groundTransform;
+	groundTransform.setScale(glm::vec3(5,1,5));
+	std::shared_ptr<GameObject> groundObject = std::make_shared<GameObject>(groundTransform);
+	groundObject->addComponent(scene->createComponent<StaticMesh>("quad.obj",true));
+	groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.8,0.2)));
+	
+	scene->addGameObject(groundObject);
 
 
 	
