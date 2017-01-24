@@ -20,6 +20,9 @@ void FirstPersonController::update(float dt)
    rotate.x = (Mouse::getLastX() - Mouse::getX())* _CamSensitivity;
    _phi += rotate.y;
    _theta += rotate.x;
+   _phi = std::min(_phi,(float) M_PI/2.0f - 0.1f);
+   _phi = std::max(_phi, -(float)M_PI/2.0f + 0.1f);
+   
    rotate.z = 0;
    
    glm::vec2 translateVec;
@@ -41,7 +44,6 @@ void FirstPersonController::update(float dt)
    }
 
    Transform & transform = gameObject->getTransform();
-
    transform.setRotation(glm::vec3(_phi,_theta,0.0));
    transform.translate(transform.forward() * translateVec.y + transform.right() * translateVec.x);
    //Terrible hardcoding for Lab1 (I'm sorry =( )
