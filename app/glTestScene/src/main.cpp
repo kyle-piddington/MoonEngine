@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	Logger::SetLogLevel(VERBOSE);
+	Logger::SetLogLevel(GAME);
 
 
 	MoonEngineCfg cfg;
@@ -58,7 +58,9 @@ int main(int argc, char **argv) {
 	FirstPersonController * ctrl = scene->createComponent<FirstPersonController>(5);
 	cameraObj->addComponent(ctrl);
 	cameraObj->addComponent(cam);
-	cameraObj->addComponent(scene->createComponent<PlayerInteractionComponent>());
+	PlayerInteractionComponent * playerInteractionComp = scene->createComponent<PlayerInteractionComponent>();
+	cameraObj->addComponent(playerInteractionComp);
+	
 	cameraObj->addComponent(scene->createComponent<BoxCollider>(glm::vec3(-0.25), glm::vec3(0.25)));
 	cameraObj->getTransform().translate(glm::vec3(0,1,-5));
 	scene->addGameObject(cameraObj);
@@ -109,36 +111,26 @@ int main(int argc, char **argv) {
 	
 	scene->addGameObject(groundObject);
 
+	//Add FPS, Game Object, and winning count
+	float accumTime = 0;
+	int lastUpdateTime = 0;
+	scene->addCustomUpdate([&](float dt){
+		accumTime += dt;
+		if((int)accumTime > lastUpdateTime)
+		{
+			LOG(GAME, "FPS: " + std::to_string(1.0/dt));
+			LOG(GAME, "Active Objects: " + std::to_string(scene->getGameObjects().size()));
+			LOG(GAME, "Touched Objects: " + std::to_string(playerInteractionComp->getNumCollisions()));
+			lastUpdateTime = (int)accumTime;
+		}
+				
+	});
 
 	
 
 	DefaultRenderer * renderer = new DefaultRenderer();
 	app->run(scene, renderer);
 
-	// global setup...
-	// GLProgram program = createProgram();
-	// float data[] = 
-	// {
-	// 	-0.5,-0.5,0,
-	// 	0.5,-0.5,0,
-	// 	0,0.5,0
-	// };
-
-	// GLBuffer buffer(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
-	// GLVertexArrayObject obj;
-	// obj.bindVertexBuffer(0,buffer);
-	// glClearColor(0.2,0.2,0.6,1.0);
-	// program.enable();
-	// while(!glfwWindowShouldClose(window))
-	// {
-	//     glfwPollEvents();
-	    
-	//     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	//     obj.bind();
-	//     glDrawArrays(GL_TRIANGLES,0,3);
-	//     GLVertexArrayObject::Unbind();
-	//     glfwSwapBuffers(window);
-	// }
 	delete scene;
 	delete renderer;
 	

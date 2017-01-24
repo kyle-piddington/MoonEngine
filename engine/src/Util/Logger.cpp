@@ -34,6 +34,9 @@ void Logger::Log(LogLevel lv, std::string log)
 			case WARN:
 				(*stream) << "[WARN]: ";
 				break;
+			case GAME:
+				(*stream) << "[GAME]: ";
+				break;
 			case INFO:
 				(*stream) << "[INFO]: ";
 				break;

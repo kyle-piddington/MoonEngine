@@ -9,7 +9,8 @@ namespace MoonEngine
 		FATAL_ERROR = 0,
 		ERROR       = 1,
 		WARN        = 2,
-		INFO		= 3,
+		GAME        = 3,
+		INFO		= 4,
 
 		VERBOSE     = 99
 	};

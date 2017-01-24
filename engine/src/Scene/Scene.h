@@ -2,6 +2,7 @@
 #include "GameObject/GameObject.h"
 #include "Util/Logger.h"
 #include "Component/CollisionComponents/BoxCollider.h"
+
 namespace MoonEngine
 {
 	class Scene
@@ -64,6 +65,7 @@ namespace MoonEngine
 		 */
 		void runCollisionUpdate();
 
+		void addCustomUpdate(std::function<void(float)> fn);
 
 		void start();
 
@@ -89,5 +91,9 @@ namespace MoonEngine
 		std::vector<std::shared_ptr<GameObject>> _instantiateQueue;
 		std::vector<std::shared_ptr<Component>> _instantiateComponents;
 		
+
+		//Custom update
+		std::vector<std::function<void(float)>> updateFunctors;
+
 	};	
 }

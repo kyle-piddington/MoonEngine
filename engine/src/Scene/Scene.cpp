@@ -37,9 +37,17 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 void Scene::runUpdate(float dt)
 {
 	instantiateNewObjects();
+
 	for(std::shared_ptr<GameObject> go :  _gameObjects)
 	{
 		go->update(dt);
+	}
+	if(updateFunctors.size() > 0)
+	{
+		for(auto & fun : updateFunctors)
+		{
+			fun(dt);
+		}
 	}
 }
 
@@ -115,3 +123,7 @@ void Scene::instantiateNewObjects()
 
 }
 
+void Scene::addCustomUpdate(std::function<void(float)> fn)
+{
+	updateFunctors.push_back(fn);
+}
