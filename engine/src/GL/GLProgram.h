@@ -67,6 +67,8 @@ namespace MoonEngine
 		 */
 		GLint getUniformLocation(std::string uniformName);
 		
+		bool hasUniform(std::string uniformName);
+		
 		/**
 		 * Query the program for an attribute name
 		 * @param  attributeName the name of the attribute

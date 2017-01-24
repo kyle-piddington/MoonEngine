@@ -13,6 +13,7 @@ GLShader GLProgramUtilities::createShaderFromFile(GLenum shaderType, std::string
 		std::stringstream buffer;
 		buffer << shaderSource.rdbuf();
 		std::string shaderStr = buffer.str();
+		//@TODO(Wishlist): Expand #include in source
 		return GLShader(shaderType, shaderStr.c_str());
 	}
 	else

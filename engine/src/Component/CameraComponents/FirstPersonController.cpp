@@ -44,6 +44,11 @@ void FirstPersonController::update(float dt)
 
    transform.setRotation(glm::vec3(_phi,_theta,0.0));
    transform.translate(transform.forward() * translateVec.y + transform.right() * translateVec.x);
+   //Terrible hardcoding for Lab1 (I'm sorry =( )
+   if(transform.getPosition().y < 0.2)
+   {
+      transform.translate(glm::vec3(0,0.2 - transform.getPosition().y ,0));
+   }
 }
 
 std::shared_ptr<Component> FirstPersonController::clone() const

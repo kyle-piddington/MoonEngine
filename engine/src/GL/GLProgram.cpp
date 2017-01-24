@@ -92,6 +92,16 @@ GLint GLProgram::getUniformLocation(std::string uniformName)
 	return _uniformMap[uniformName];
 }
 
+bool GLProgram::hasUniform(std::string uniformName)
+{
+	if(_uniformMap.find(uniformName) == _uniformMap.end())
+	{
+		GLint unifID = glGetUniformLocation(_progId, uniformName.c_str());
+		_uniformMap[uniformName] = unifID;
+	}
+	return _uniformMap[uniformName] != -1;
+}
+
 GLint GLProgram::getAttributeLocation(std::string attributeName)
 {
 	if(_attribMap.find(attributeName) == _attribMap.end())

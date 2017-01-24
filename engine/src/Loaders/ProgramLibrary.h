@@ -17,11 +17,12 @@ namespace MoonEngine
 		public:
 		ProgramLibrary(std::string resourcePath);
 		~ProgramLibrary();
-			GLProgram * getProgramForName(std::string progName, bool smooth = false);
+			GLProgram * getProgramForName(std::string progName);
 
 		private:
+			void loadDefaultProgram();
 			std::string _recPath;
-			std::unordered_map<std::string, GLProgram * > _mapMeshToInfo;
+			std::unordered_map<std::string, GLProgram * > _mapProgToInfo;
 			std::vector<std::shared_ptr<GLProgram>> _programs;
 			
 	};

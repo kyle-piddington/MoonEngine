@@ -31,6 +31,7 @@
 #include "GameObject/GameObject.h"
 
 #include "Render/DefaultRenderer.h"
+#include "Render/ProgramRenderer.h"
 
 // Collision
 #include "Collision/BoundingBox.h"

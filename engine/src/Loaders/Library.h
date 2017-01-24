@@ -1,5 +1,6 @@
 #pragma once
 #include "MeshLibrary.h"
+#include "ProgramLibrary.h"
 namespace MoonEngine
 {
 	struct Library
@@ -7,6 +8,8 @@ namespace MoonEngine
 		static void Init(std::string resourcePath);
 		static void Destory();
 		static std::shared_ptr<MeshLibrary> MeshLib;
+		static std::shared_ptr<ProgramLibrary> ProgramLib;
+
 
 
 	};

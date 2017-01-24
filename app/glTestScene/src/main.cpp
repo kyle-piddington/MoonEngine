@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
 	monkeyTransform.setPosition(glm::vec3(0,0.5,0));
 	std::shared_ptr<GameObject> monkeyObj = std::make_shared<GameObject>(monkeyTransform);
 	StaticMesh * monkeyMesh = scene->createComponent<StaticMesh>("suzanne.obj", true);
-	Material * monkeyMat = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
+	Material * monkeyMat = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5),"phong.program");
 	CharacterMoveComponent * monkeyMove = scene->createComponent<CharacterMoveComponent>(rand()%30 / 10.f);
 	BoxCollider * monkeyCollider = scene->createComponent<BoxCollider>();
 	monkeyObj->addComponent(monkeyCollider);
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
 	dogTransform.setPosition(glm::vec3(0,0.5,0));
 	std::shared_ptr<GameObject> dogObj = std::make_shared<GameObject>(dogTransform);
 	StaticMesh * dogMesh = scene->createComponent<StaticMesh>("dog.obj", true);
-	Material * dogMaterial = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5));
+	Material * dogMaterial = scene->createComponent<Material>(glm::vec3(0.6,0.5,0.5),"phong.program");
 	CharacterMoveComponent * dogMove = scene->createComponent<CharacterMoveComponent>(rand()%30 / 10.f);
 	BoxCollider * dogCollider = scene->createComponent<BoxCollider>();
 	dogObj->addComponent(dogCollider);
@@ -108,7 +108,7 @@ int main(int argc, char **argv) {
 	groundTransform.setScale(glm::vec3(5,1,5));
 	std::shared_ptr<GameObject> groundObject = std::make_shared<GameObject>(groundTransform);
 	groundObject->addComponent(scene->createComponent<StaticMesh>("quad.obj",true));
-	groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.8,0.2)));
+	groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.8,0.2), "default.program"));
 	
 	scene->addGameObject(groundObject);
 
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
 
 	
 
-	DefaultRenderer * renderer = new DefaultRenderer();
+	ProgramRenderer * renderer = new ProgramRenderer();
 	app->run(scene, renderer);
 
 	delete scene;
