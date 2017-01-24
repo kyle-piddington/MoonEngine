@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
 	monkeyObj->addComponent(monkeyMat);
 	monkeyObj->addComponent(monkeyMove);
 		
-
+	//Dog prefab setup
 	Transform dogTransform;
 	dogTransform.setScale(glm::vec3(0.2,0.2,0.2));
 	dogTransform.setPosition(glm::vec3(0,0.5,0));
@@ -94,6 +94,7 @@ int main(int argc, char **argv) {
 	dogObj->addComponent(dogMaterial);
 	dogObj->addComponent(dogMove);
 	
+	//Spawner prefab setup
 	std::vector<GameObject *> prefabPtrs;
 	prefabPtrs.push_back(dogObj.get());
 	prefabPtrs.push_back(monkeyObj.get());

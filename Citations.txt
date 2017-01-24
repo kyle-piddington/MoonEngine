@@ -1,3 +1,6 @@
 Fast AABB
 https://studiofreya.com/3d-math-and-physics/simple-aabb-vs-aabb-collision-detection/
 
+JSON parsing:
+https://github.com/miloyip/rapidjson
+

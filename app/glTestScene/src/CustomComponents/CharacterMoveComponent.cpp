@@ -15,6 +15,7 @@ void CharacterMoveComponent::start()
 	_material->setTint(palette[rand()%5]);
 	_direction = glm::normalize(glm::vec3(rand(),0,rand()));
 	_originalScale = gameObject->getTransform().getScale();
+	_originalY = gameObject->getTransform().getPosition().y;
 
 }
 
@@ -90,4 +91,9 @@ void CharacterMoveComponent::doCharacterCollidedAnimation()
 {
 	Transform & t = gameObject->getTransform();
 	t.setScale(glm::vec3(_originalScale.x, _originalScale.y + (float)0.15*(std::abs(sin(_characterCollideTime * 5) * _characterCollideTime)), _originalScale.z));
+	t.setPosition(
+		glm::vec3(
+			t.getPosition().x, _originalY + 
+			(float)0.5*(std::abs(sin(_characterCollideTime * 5) * _characterCollideTime)),
+			t.getPosition().z));
 }

@@ -1,0 +1,5 @@
+{
+	"name" : "flat",
+	"vertex" : "resources/flot.vs",
+	"fragment" : "resources/flat.fs"
+}

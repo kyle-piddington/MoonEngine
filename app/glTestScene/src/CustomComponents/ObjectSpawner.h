@@ -5,10 +5,12 @@ class ObjectSpawner : public MoonEngine::Component
 {
 
 public:
-	ObjectSpawner(float spawnTime, std::vector<MoonEngine::GameObject *> prefabs):
+	ObjectSpawner(float spawnTime, std::vector<MoonEngine::GameObject *> prefabs, int maxSpawn = 100):
 	_spawnTime(spawnTime),
 	_accumTime(0),
-	_prefabList(prefabs)
+	_prefabList(prefabs),
+	_numSpawned(0),
+	_maxSpawned(maxSpawn)
 	{
 	}
 	void update(float dt);
@@ -18,6 +20,8 @@ public:
 private:
 	float _spawnTime;
 	float _accumTime;
+	int _numSpawned;
+	int _maxSpawned;
 	std::vector<MoonEngine::GameObject *> _prefabList;
 
 

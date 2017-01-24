@@ -1,0 +1,28 @@
+#pragma once
+/**
+ * ProgramLibrary provides a mapping of 
+ * mesh names to GLSL programs
+ */
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include "GL/GLProgram.h"
+#include "ProgramInfo.h"
+#include <memory>
+namespace MoonEngine
+{
+
+	class ProgramLibrary
+	{
+		public:
+		ProgramLibrary(std::string resourcePath);
+		~ProgramLibrary();
+			GLProgram * getProgramForName(std::string progName, bool smooth = false);
+
+		private:
+			std::string _recPath;
+			std::unordered_map<std::string, GLProgram * > _mapMeshToInfo;
+			std::vector<std::shared_ptr<GLProgram>> _programs;
+			
+	};
+}

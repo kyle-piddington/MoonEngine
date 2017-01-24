@@ -6,7 +6,7 @@ using namespace MoonEngine;
 void ObjectSpawner::update(float dt)
 {
 	_accumTime += dt;
-	if(_accumTime > _spawnTime)
+	if(_accumTime > _spawnTime && _numSpawned < _maxSpawned)
 	{
 		Instantiate(_prefabList[rand()%_prefabList.size()]);
 		_accumTime = 0;

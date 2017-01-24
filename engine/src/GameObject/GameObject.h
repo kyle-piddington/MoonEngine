@@ -73,6 +73,8 @@ namespace MoonEngine
 		 */
 		void onCollisionExit(Collision col);
 
+
+	
 	private:
 		/*
 			Map of avaliable components

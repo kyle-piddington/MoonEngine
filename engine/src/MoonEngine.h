@@ -24,6 +24,7 @@
 
 #include "Loaders/BasicLoader.h"
 #include "Loaders/MeshLibrary.h"
+#include "Loaders/ProgramLoader.h"
 #include "Component/Components.h"
 
 #include "EngineApp/EngineApp.h"

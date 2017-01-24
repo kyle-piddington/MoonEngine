@@ -41,6 +41,7 @@ private:
 	float _speed;
 	glm::vec3 _direction;
 	glm::vec3 _originalScale;
+	float _originalY;
 	float _characterCollideTime;
 
 
