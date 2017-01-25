@@ -37,7 +37,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 	//Set the global active scene to this one.
 	SetActiveScene(scene);
 	initializeComponents(scene);
-	float newT, t = glfwGetTime();
+	float newT, t = (float) glfwGetTime();
 	float dt = 0;
 	renderer->setup(scene);
 	while(!glfwWindowShouldClose(window))
@@ -48,7 +48,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 		scene->runCollisionUpdate();
 		scene->runUpdate(dt);
 		renderer->render(scene);
-		newT = glfwGetTime();
+		newT = (float) glfwGetTime();
 		glfwSwapBuffers(window);
 		dt =  newT - t;
 		t = newT;

@@ -23,7 +23,7 @@ void ProgramRenderer::setup(Scene * scene)
 	}
 	//Swing through all rendering components and load their programs.
 
-	glClearColor(0.2,0.2,0.6,1.0);
+	glClearColor(0.2f,0.2f,0.6f,1.0f);
 	glEnable(GL_DEPTH_TEST);
 }
 

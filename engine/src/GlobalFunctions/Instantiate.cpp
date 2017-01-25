@@ -17,7 +17,7 @@ std::shared_ptr<GameObject> MoonEngine::Instantiate(GameObject * objToCopy)
 		assert(objToCopy != nullptr);
 		return __gActiveScene->instantiate(objToCopy, objToCopy->getTransform());
 	}
-
+	return nullptr;
 }
 /**
  * Create a copy of this game object at a new position and rotation
@@ -36,6 +36,7 @@ std::shared_ptr<GameObject> MoonEngine::Instantiate(GameObject * object, glm::ve
 		newTransform.setRotation(rotation);
 		return __gActiveScene->instantiate(object, Transform());
 	}
+	return nullptr;
 }
 
 	/**

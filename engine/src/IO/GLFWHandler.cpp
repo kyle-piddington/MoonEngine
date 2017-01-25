@@ -14,7 +14,7 @@ void  GLFWHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
 
 void GLFWHandler::mousePositionCallback(GLFWwindow * window, double x, double y)
 {
-   Mouse::updateMousePos(x,y);
+	Mouse::updateMousePos((int)x, (int)y);
 }
 
 void GLFWHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)

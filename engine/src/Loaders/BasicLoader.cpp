@@ -42,7 +42,7 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
 			numVerts = loadSmoothShade(&dataBuffer, &indices, attributes, shapes);
 		}
 		//Create BBox
-		for(int i = 0; i < attributes.vertices.size()/3; i++)
+		for(size_t i = 0; i < attributes.vertices.size()/3; i++)
 		{
 		   	vertPositions.push_back(glm::vec3(
 		 		attributes.vertices[i*3],
@@ -139,7 +139,7 @@ unsigned BasicLoader::loadFlatShade(std::vector<float> * dataBuffer, std::vector
 			int fv = shape.mesh.num_face_vertices[f];
 			
 			// Loop over vertices in the face.
-			for (size_t v = 0; v < fv; v++) {
+			for (auto v = 0; v < fv; v++) {
 		      // access to vertex
 				tinyobj::index_t idx = shape.mesh.indices[index_offset + v];
 				float vx = attrib.vertices[3*idx.vertex_index+0];
@@ -199,7 +199,7 @@ unsigned BasicLoader::loadSmoothShade(std::vector<float> * dataBuffer, std::vect
 			int fv = shape.mesh.num_face_vertices[f];
 			
 			// Loop over vertices in the face.
-			for (size_t v = 0; v < fv; v++) {
+			for (auto v = 0; v < fv; v++) {
 		      // access to vertex
 				tinyobj::index_t idx = shape.mesh.indices[index_offset + v];
 				vertexPositions[3*idx.vertex_index + 0] = attrib.vertices[3*idx.vertex_index+0];
@@ -215,7 +215,7 @@ unsigned BasicLoader::loadSmoothShade(std::vector<float> * dataBuffer, std::vect
 			index_offset += fv;
 		}
 	}
-	for(int i = 0; i < vertexPositions.size()/3; i++)
+	for(size_t i = 0; i < vertexPositions.size()/3; i++)
 	{
 		dataBuffer->push_back(vertexPositions[i*3 + 0]);
 		dataBuffer->push_back(vertexPositions[i*3 + 1]);

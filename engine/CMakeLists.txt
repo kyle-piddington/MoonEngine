@@ -42,14 +42,14 @@ endif ()
 
 # OS specific options and libraries
 if (WIN32)
-    # c++0x is enabled by default.
     # -Wall produces way too many warnings.
     # -pedantic is not supported.
+   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
    find_package(OpenGL REQUIRED)
    target_link_libraries(MoonEngine ${OPENGL_gl_LIBRARY})
 else ()
-    # Enable all pedantic warnings.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic")
+    # Enable all pedantic warnings if not on WIN32.
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic")
     if (APPLE)
         # Add required frameworks for GLFW.
         target_link_libraries(MoonEngine "-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo")

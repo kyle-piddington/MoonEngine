@@ -73,7 +73,7 @@ void DefaultRenderer::setup(Scene * scene)
 		LOG(ERROR , "No Camera in scene!");
 	}
 	basicPhongProgram = createBasicPhongProgram();
-	glClearColor(0.2,0.2,0.6,1.0);
+	glClearColor(0.2f,0.2f,0.6f,1.0f);
 	glEnable(GL_DEPTH_TEST);
 }
 

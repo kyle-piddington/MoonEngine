@@ -65,7 +65,7 @@ void CharacterMoveComponent::onCollisionEnter(Collision collision)
 				_direction = -_direction;
 			}
 			_direction.y = 0;
-			_speed = rand() % 3 + 1.0;
+			_speed = rand() % 3 + 1.0f;
 			if(!collidingWithPlayer())
 			{
 				_material->setTint(palette[rand()%5]);						
