@@ -32,6 +32,7 @@ if (NOT GLEW_DIR)
     message(FATAL_ERROR "Please point the environment variable GLEW_DIR to the root directory of your GLEW installation.")
 endif ()
 include_directories(${GLEW_DIR}/include)
+
 if (WIN32)
     # With prebuilt binaries
     target_link_libraries(MoonEngine ${GLEW_DIR}/lib/Release/Win32/glew32s.lib)

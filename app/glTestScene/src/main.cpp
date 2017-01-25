@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 
 	
 	//Camera setup
-	Camera * cam = scene->createComponent<Camera>( M_PI/3, 800.0/600.0, 0.1, 50);
+	Camera * cam = scene->createComponent<Camera>( 3.1415/3, 800.0/600.0, 0.1, 50);
 	FirstPersonController * ctrl = scene->createComponent<FirstPersonController>(5);
 	cameraObj->addComponent(ctrl);
 	cameraObj->addComponent(cam);

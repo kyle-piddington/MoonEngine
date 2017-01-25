@@ -1,6 +1,9 @@
 #include "MoonEngine.h"
 #include "catch.hpp"
 using namespace MoonEngine;
+#ifndef M_PI
+#define M_PI 3.141592653589793
+#endif
 TEST_CASE("Basic getComponent test", "[Camera component]")
 {
 	std::shared_ptr<GameObject> obj = std::make_shared<GameObject>();

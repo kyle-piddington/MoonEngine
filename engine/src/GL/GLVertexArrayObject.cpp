@@ -1,6 +1,7 @@
 #include "GLVertexArrayObject.h"
 #include "Util/Logger.h"
 #include <cassert>
+#include <string>
 using namespace MoonEngine;
 
 GLVertexArrayObject::GLVertexArrayObject()

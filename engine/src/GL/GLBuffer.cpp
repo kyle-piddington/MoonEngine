@@ -1,5 +1,6 @@
 #include "GLBuffer.h"
 #include "Util/Logger.h"
+#include <string>
 using namespace MoonEngine;
 
 GLBuffer::GLBuffer(GLenum target):

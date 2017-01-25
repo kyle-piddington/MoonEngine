@@ -2,6 +2,13 @@
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
 #include "GameObject/GameObject.h"
+//Windows C++
+#ifndef M_PI
+#define M_PI 3.141592653589793
+#endif
+#include <cmath>
+#include <algorithm>
+
 using namespace MoonEngine;
 FirstPersonController::FirstPersonController(float Cam_Move_Speed, float CamSensitivity):
 _CamMoveSpeed(Cam_Move_Speed),
@@ -20,7 +27,7 @@ void FirstPersonController::update(float dt)
    rotate.x = (Mouse::getLastX() - Mouse::getX())* _CamSensitivity;
    _phi += rotate.y;
    _theta += rotate.x;
-   _phi = std::min(_phi,(float) M_PI/2.0f - 0.1f);
+   _phi = std::min(_phi, (float)M_PI/2.0f - 0.1f);
    _phi = std::max(_phi, -(float)M_PI/2.0f + 0.1f);
    
    rotate.z = 0;

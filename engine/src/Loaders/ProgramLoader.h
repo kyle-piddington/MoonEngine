@@ -4,6 +4,7 @@
 
 #include "GL/GLProgram.h"
 #include <string>
+#include <memory>
 namespace MoonEngine
 {
 	class ProgramLoader

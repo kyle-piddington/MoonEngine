@@ -2,7 +2,7 @@
 #include "GameObject/GameObject.h"
 #include "Util/Logger.h"
 #include "Component/CollisionComponents/BoxCollider.h"
-
+#include <functional>
 namespace MoonEngine
 {
 	class Scene

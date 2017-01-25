@@ -2,8 +2,21 @@ cmake_minimum_required(VERSION 2.7)
 project (ShatteredMoon)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -Wall -pedantic")
-   
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 ")
+
+# Get the GLEW environment variable.
+set(GLEW_DIR "$ENV{GLEW_DIR}")
+if (NOT GLEW_DIR)
+    message(FATAL_ERROR "Please point the environment variable GLEW_DIR to the root directory of your GLEW installation.")
+endif ()
+include_directories(${GLEW_DIR}/include)
+
+set(GLM_DIR "$ENV{GLM_INCLUDE_DIR}")
+if(NOT GLM_DIR)
+	message(FATAL_ERROR "Please point the environment variable GLM_INCLUDE_DIR to the root of your GLM installation")
+endif()
+include_directories(${GLM_DIR})
+
 
 include_directories(engine/src)
 

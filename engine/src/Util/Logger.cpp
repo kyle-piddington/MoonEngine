@@ -1,5 +1,6 @@
 #include "Logger.h"
 #include <iostream>
+#include <string>
 using namespace MoonEngine;
 
 std::ostream  * Logger::_logStream;
