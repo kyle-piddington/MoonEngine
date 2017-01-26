@@ -1,5 +1,5 @@
 #include "BoxCollider.h"
-#include "Component/GeometryComponents/Mesh.h"
+#include "Component/MeshComponents/Mesh.h"
 #include "GameObject/GameObject.h"
 using namespace MoonEngine;
 BoxCollider::BoxCollider():
