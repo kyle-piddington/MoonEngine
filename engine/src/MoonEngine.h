@@ -16,8 +16,8 @@
 #include "GameObject/GameObject.h"
 #include "Component/Component.h"
 
-#include "Geom/Transform.h"
-#include "Geom/World.h" 
+#include "Geometry/Transform.h"
+#include "Geometry/World.h" 
 
 #include "Util/Logger.h"
 #include "Util/GLMUtil.h"
@@ -38,4 +38,4 @@
 #include "Collision/Collision.h"
 
 //Globals
-#include "GlobalFunctions/Instantiate.h"
+#include "GlobalFuncs/Instantiate.h"

@@ -5,7 +5,7 @@
 #include <vector>
 #include "Tag.h"
 #include "Component/Component.h"
-#include "Geom/Transform.h"
+#include "Geometry/Transform.h"
 /*
 	Core GameObject component. Contains 
 	a list of pointers to components, a tag,

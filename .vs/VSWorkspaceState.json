@@ -4,8 +4,12 @@
     "\\app",
     "\\app\\glTestScene",
     "\\app\\glTestScene\\resources",
-    "\\app\\glTestScene\\src"
+    "\\app\\glTestScene\\src",
+    "\\engine",
+    "\\engine\\src\\Component",
+    "\\engine\\src\\Component\\GeometryComponents",
+    "\\engine\\src\\EngineApp"
   ],
-  "SelectedNode": "\\app\\glTestScene\\src\\main.cpp",
+  "SelectedNode": "\\engine\\src",
   "PreviewInSolutionExplorer": false
 }

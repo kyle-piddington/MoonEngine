@@ -1,7 +1,7 @@
 #include "EngineApp.h"
 #include "IO/GLFWHandler.h"
 #include "IO/Keyboard.h"
-#include "GlobalFunctions/Instantiate.h"
+#include "GlobalFuncs/Instantiate.h"
 using namespace MoonEngine;
 //Static library
 //(Refactor later)
