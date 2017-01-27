@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Component\Component.h"
+#include "Component/Component.h"
 
 /**
 * Creates a third person orbital camera that follows the player.

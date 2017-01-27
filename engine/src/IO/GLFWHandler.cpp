@@ -27,3 +27,15 @@ void GLFWHandler::update()
    Keyboard::update();
    Mouse::update();
 }
+
+void GLFWHandler::joystick_callback(int joy, int event)
+{
+    if (event == GLFW_CONNECTED)
+    {
+        // The joystick was connected
+    }
+    else if (event == GLFW_DISCONNECTED)
+    {
+        // The joystick was disconnected
+    }
+}

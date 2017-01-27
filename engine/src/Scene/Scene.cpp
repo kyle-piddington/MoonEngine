@@ -98,11 +98,6 @@ std::shared_ptr<GameObject> Scene::instantiate(GameObject * object, const Transf
 	}
 	newObject->getTransform() = newPosition;
 	_instantiateQueue.push_back(newObject);
-	//Once the object is constructed, call 'start' on the new gameOjbect
-	for(Component * c : newObject->getComponents())
-	{
-		c->start();
-	}
 	return newObject;
 
 }
@@ -116,6 +111,7 @@ void Scene::instantiateNewObjects()
 		for(std::shared_ptr<GameObject> obj : _instantiateQueue)
 		{
 			addGameObject(obj);
+			obj->start();
 		}
 		_instantiateComponents.clear();
 		_instantiateQueue.clear();	
@@ -126,4 +122,12 @@ void Scene::instantiateNewObjects()
 void Scene::addCustomUpdate(std::function<void(float)> fn)
 {
 	updateFunctors.push_back(fn);
+}
+
+void Scene::start()
+{
+	for(auto & g : _gameObjects)
+	{
+		g->start();
+	}
 }

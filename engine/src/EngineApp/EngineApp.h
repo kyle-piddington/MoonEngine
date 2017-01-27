@@ -17,11 +17,13 @@ namespace MoonEngine
 		
 		
 		static Library GetAssetLibrary();
+		static Scene * GetScene();
 	private:
 
 		void initializeComponents(Scene * scene);
 		static bool assetsLoaded;
 		static Library AssetLibrary;
+		static Scene * activeScene;
 		GLFWwindow * window;
 	};
 }

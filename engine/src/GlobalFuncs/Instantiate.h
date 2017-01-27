@@ -16,6 +16,11 @@ namespace MoonEngine
 	std::shared_ptr<GameObject>  Instantiate(GameObject * object, glm::vec3 position, glm::vec3 rotation);
 
 	/**
+	 * Get the active Scene
+	 * @return [description]
+	 */
+	Scene * World();
+	/**
 	 * Set the active scene that holds game objects to a scene
 	 * @param scene the scene to add game objects to.
 	 */

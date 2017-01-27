@@ -28,6 +28,12 @@ namespace MoonEngine
    static void mousePositionCallback(GLFWwindow * window, double x, double y);
 
    /**
+    * Forward joystic connection events
+    * @param joy   the joystick
+    * @param event a connection state
+    */
+   void joystick_callback(int joy, int event);
+   /**
     * Forward any mouse input events to the rest of the app
     * @param  window  the sending window of this event
     * @param  button  the mouse button pressed.
@@ -39,6 +45,8 @@ namespace MoonEngine
     * Update any input handlers. (Mouse/Keyboard)
     */
    static void update();
+
+
  };
 
 

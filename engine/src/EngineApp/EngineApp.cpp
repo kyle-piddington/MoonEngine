@@ -8,6 +8,7 @@ using namespace MoonEngine;
 //Static library
 //(Refactor later)
 Library EngineApp::AssetLibrary;
+Scene * EngineApp::activeScene = nullptr;
 bool EngineApp::assetsLoaded = false;
 
 EngineApp::EngineApp(GLFWwindow * window, MoonEngineCfg config):
@@ -42,6 +43,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 	float newT, t = (float) glfwGetTime();
 	float dt = 0;
 	renderer->setup(scene);
+	scene->start();
 	while(!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -66,4 +68,6 @@ void EngineApp::initializeComponents(Scene * scene)
 		obj->start();
 	}
 }
+
+
 
