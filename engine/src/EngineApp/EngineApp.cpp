@@ -1,7 +1,9 @@
 #include "EngineApp.h"
 #include "IO/GLFWHandler.h"
 #include "IO/Keyboard.h"
+#include "IO/Input.h"
 #include "GlobalFuncs/Instantiate.h"
+
 using namespace MoonEngine;
 //Static library
 //(Refactor later)
@@ -44,7 +46,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 	{
 		glfwPollEvents();
         GLFWHandler::update();
-        
+        Input::Update(dt);
 		scene->runCollisionUpdate();
 		scene->runUpdate(dt);
 		renderer->render(scene);

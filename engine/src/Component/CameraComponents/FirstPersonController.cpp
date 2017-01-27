@@ -1,6 +1,7 @@
 #include "FirstPersonController.h"
 #include "IO/Keyboard.h"
 #include "IO/Mouse.h"
+#include "IO/Input.h"
 #include "GameObject/GameObject.h"
 //Windows C++
 #ifndef M_PI
@@ -25,6 +26,9 @@ void FirstPersonController::update(float dt)
 
    rotate.y = (Mouse::getLastY() - Mouse::getY())* _CamSensitivity;
    rotate.x = (Mouse::getLastX() - Mouse::getX())* _CamSensitivity;
+   rotate.y += Input::GetAxis(AXIS_VERTICAL_1)*_CamMoveSpeed*dt;
+   rotate.x += Input::GetAxis(AXIS_HORIZONTAL_1)*_CamMoveSpeed*dt;
+   
    _phi += rotate.y;
    _theta += rotate.x;
    _phi = std::min(_phi, (float)M_PI/2.0f - 0.1f);
@@ -33,22 +37,25 @@ void FirstPersonController::update(float dt)
    rotate.z = 0;
    
    glm::vec2 translateVec;
-   if(Keyboard::isKeyDown(GLFW_KEY_W))
-   {
-      translateVec.y -= _CamMoveSpeed * dt;
-   }
-   if(Keyboard::isKeyDown(GLFW_KEY_S))
-   {
-      translateVec.y += _CamMoveSpeed * dt;
-   }
-   if(Keyboard::isKeyDown(GLFW_KEY_A))
-   {
-      translateVec.x -= _CamMoveSpeed * dt;
-   }
-   if(Keyboard::isKeyDown(GLFW_KEY_D))
-   {
-      translateVec.x += _CamMoveSpeed * dt;
-   }
+   translateVec.x = -Input::GetAxis(AXIS_HORIZONTAL_0);
+   translateVec.y = Input::GetAxis(AXIS_VERTICAL_0);
+   translateVec *= _CamMoveSpeed*dt;
+   // if(Keyboard::isKeyDown(GLFW_KEY_W))
+   // {
+   //    translateVec.y -= _CamMoveSpeed * dt;
+   // }
+   // if(Keyboard::isKeyDown(GLFW_KEY_S))
+   // {
+   //    translateVec.y += _CamMoveSpeed * dt;
+   // }
+   // if(Keyboard::isKeyDown(GLFW_KEY_A))
+   // {
+   //    translateVec.x -= _CamMoveSpeed * dt;
+   // }
+   // if(Keyboard::isKeyDown(GLFW_KEY_D))
+   // {
+   //    translateVec.x += _CamMoveSpeed * dt;
+   // }
 
    Transform & transform = gameObject->getTransform();
    transform.setRotation(glm::vec3(_phi,_theta,0.0));
