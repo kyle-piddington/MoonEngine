@@ -37,9 +37,9 @@ void BoxCollider::update(float dt)
 	_transformedBox = _originalBox.transform(gameObject->getTransform().getMatrix());
 }
 
-bool BoxCollider::intersects(const BoxCollider * other) 
+bool BoxCollider::intersects(const BoxCollider * other, glm::vec3* colnormal) 
 {
-	return _transformedBox.intersects(other->_transformedBox);
+	return _transformedBox.intersects(other->_transformedBox, colnormal);
 }
 
 glm::vec3 BoxCollider::getCenter()

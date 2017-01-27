@@ -11,7 +11,6 @@ namespace MoonEngine
 	{
 	public:
 		GameObject * other;
-		glm::vec3 position;
 		glm::vec3 normal;
 	};	
 }

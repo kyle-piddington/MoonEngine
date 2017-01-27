@@ -94,11 +94,26 @@ std::vector<glm::vec3> BoundingBox::cornerPoints()
 }
 
 //https://studiofreya.com/3d-math-and-physics/simple-aabb-vs-aabb-collision-detection/
-bool BoundingBox::intersects(const BoundingBox & other)
+bool BoundingBox::intersects(const BoundingBox & other, glm::vec3* colnormal)
 {
-	
+	colnormal = nullptr;
 	bool x = std::abs(centerPoint.x - other.centerPoint.x) <= (xHalfWidth + other.xHalfWidth);
+	if (x && centerPoint.x < other.centerPoint.x)
+		*colnormal = glm::vec3(-1.0f, 0.0f, 0.0f);
+	else if (x) 
+		*colnormal = glm::vec3(1.0f, 0.0f, 0.0f);
+
     bool y = std::abs(centerPoint.y - other.centerPoint.y) <= (yHalfWidth + other.yHalfWidth);
+	if (y && centerPoint.y < other.centerPoint.y)
+		*colnormal = glm::vec3(0.0f, -1.0f, 0.0f);
+	else if(y)
+		*colnormal = glm::vec3(0.0f, 1.0f, 0.0f);
+
     bool z = std::abs(centerPoint.z - other.centerPoint.z) <= (zHalfWidth + other.zHalfWidth);
+	if (z && centerPoint.z < other.centerPoint.z)
+		*colnormal = glm::vec3(0.0f, 0.0f, -1.0f);
+	else if (z)
+		*colnormal = glm::vec3(0.0f, 0.0f, 1.0f);
+
     return x && y && z;
 }

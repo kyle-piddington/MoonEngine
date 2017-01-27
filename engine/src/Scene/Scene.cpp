@@ -62,6 +62,7 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjects()
 
 void Scene::runCollisionUpdate()
 {
+	glm::vec3 colnormal;
 	if(_boxCollisionComponents.size() > 0)
 	{
 		for(size_t i = 0; i < _boxCollisionComponents.size() - 1; i++)
@@ -70,10 +71,11 @@ void Scene::runCollisionUpdate()
 			{
 				//Try collision between i and j
 				if(_boxCollisionComponents[i]->intersects(
-					_boxCollisionComponents[j]))
+					_boxCollisionComponents[j], &colnormal))
 				{
 					//Create a new collision
 					Collision c;
+					c.normal = colnormal;
 					//Forward to both game objects
 					c.other = _boxCollisionComponents[i]->getGameObject();
 					_boxCollisionComponents[j]->getGameObject()->onCollisionEnter(c);

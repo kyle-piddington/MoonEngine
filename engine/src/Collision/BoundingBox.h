@@ -13,7 +13,7 @@ namespace MoonEngine
 		BoundingBox();
 		static BoundingBox BoundPoints(const std::vector<glm::vec3> & points);
 		BoundingBox transform(const glm::mat4 & transformation);
-		bool intersects(const BoundingBox & other);
+		bool intersects(const BoundingBox & other, glm::vec3* colnormal);
 		
 		glm::vec3 centerPoint;
 		float xHalfWidth;

@@ -33,10 +33,11 @@ namespace MoonEngine
 		void update(float dt);
 		/**
 		 * Determine if one boxCollider intersects another
-		 * @param  other another box collider
+		 * @param1  other another box collider
+		 * @param2  pointer to vec3 that will contain the collision normal
 		 * @return       true if collides
 		 */
-		bool intersects(const BoxCollider * other);
+		bool intersects(const BoxCollider * other, glm::vec3* colnormal);
 
 		/**
 		 * Return the current AABB
