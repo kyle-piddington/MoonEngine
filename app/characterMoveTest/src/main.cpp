@@ -53,10 +53,10 @@ int main(int argc, char **argv) {
 	playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(1));
 
 	
-	playerObj->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
+	playerObj->addComponent(scene->createComponent<StaticMesh>("suzanne.obj",false));
 	playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "phong.program"));
 	playerObj->getTransform().setPosition(glm::vec3(0,0.5,0));
-	
+	playerObj->getTransform().setScale(glm::vec3(0.2,0.2,-0.2));
 	playerObj->addTag(T_Player);
 	//playerObj->addComponent(scene->createComponent<BoxCollider>());
 	

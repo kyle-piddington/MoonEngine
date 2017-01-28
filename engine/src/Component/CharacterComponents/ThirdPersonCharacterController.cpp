@@ -1,6 +1,7 @@
 #include "ThirdPersonCharacterController.h"
 #include "Component/CameraComponents/Camera.h"
-
+#include "IO/Keyboard.h"
+#include <glfw/glfw3.h>
 #include "IO/Input.h"
 #include "GlobalFuncs/Instantiate.h"
 using namespace MoonEngine;
@@ -31,6 +32,14 @@ void ThirdPersonCharacterController::update(float dt)
 		transform->lookAt(transform->getPosition() + playerDirection);
 	}
 	transform->translate(playerSpeed * dt * playerDirection );
+	if(Keyboard::isKeyDown(GLFW_KEY_SPACE))
+	{
+		transform->translate(glm::vec3(0,playerSpeed*dt,0));
+	}
+	else if(transform->getPosition().y > 0.5)
+	{
+		transform->translate(glm::vec3(0,-playerSpeed*dt,0));	
+	}
 }
 
 std::shared_ptr<Component> ThirdPersonCharacterController::clone() const

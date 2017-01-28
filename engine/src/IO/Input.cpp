@@ -47,6 +47,10 @@ float Input::GetAxis(Axis axis)
 	}
 }
 
+bool Input::GetButtonDown(Button b)
+{
+	return _service->getButtonDown(b);
+}
 void Input::Update(float dt)
 {
 	//Fast switching between left and right.
