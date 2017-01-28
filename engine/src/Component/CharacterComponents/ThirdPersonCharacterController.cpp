@@ -12,7 +12,7 @@ ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed
 
 void ThirdPersonCharacterController::start()
 {
-	mainCamera = World()->findGameObjectWithComponent<Camera>();
+	mainCamera = GetWorld()->findGameObjectWithComponent<Camera>();
 	transform = &gameObject->getTransform();
 }
 

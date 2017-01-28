@@ -48,7 +48,7 @@ void MoonEngine::SetActiveScene(Scene * scene)
 	__gActiveScene = scene;
 }
 
-Scene * MoonEngine::World()
+Scene * MoonEngine::GetWorld()
 {
 	return __gActiveScene;
 }

@@ -55,8 +55,9 @@ int main(int argc, char **argv) {
 	
 	playerObj->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
 	playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "phong.program"));
-	playerObj->getTransform().setPosition(glm::vec3(0,1,0));
-	playerObj->getTransform().setScale(glm::vec3(0.2));
+	playerObj->getTransform().setPosition(glm::vec3(0,0.5,0));
+	
+	playerObj->addTag(T_Player);
 	//playerObj->addComponent(scene->createComponent<BoxCollider>());
 	
 	scene->addGameObject(playerObj);
@@ -64,8 +65,9 @@ int main(int argc, char **argv) {
 	//Camera setup
 	Camera * cam = scene->createComponent<Camera>( 3.1415/3, 800.0/600.0, 0.1, 50);
 	cameraObj->addComponent(cam);
-	cameraObj->getTransform().translate(glm::vec3(0,2,5));
-	cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
+	cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
+	//cameraObj->getTransform().translate(glm::vec3(0,2,5));
+	//cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
 	scene->addGameObject(cameraObj);
 
 	

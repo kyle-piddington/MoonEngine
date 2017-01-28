@@ -57,6 +57,9 @@ namespace MoonEngine
 		 */
 		std::vector<Component *> getComponents();
 
+		void addTag(Tag t);
+
+		Tag getTag();
 		/**
 		 * Run Update on all game objects
 		 * @param dt delta time
@@ -82,7 +85,7 @@ namespace MoonEngine
 		*/
 		Transform transform;
 		std::vector<Component *> components;
-		std::vector<Tag> tags;
+		Tag tag;
 		GameObject * parent;
 
 	};

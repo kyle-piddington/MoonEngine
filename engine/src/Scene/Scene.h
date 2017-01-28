@@ -21,6 +21,7 @@ namespace MoonEngine
 		/**
 		 * Find the first game object with a componentt
 		 */
+		
 		template<class T>
 		GameObject * findGameObjectWithComponent()
 		{
@@ -34,7 +35,8 @@ namespace MoonEngine
 			LOG(WARN, "Could not find GameObject with component");
 			return nullptr;
 		}
-
+		GameObject * findGameObjectWithTag(Tag t);
+		
 		const std::vector<std::shared_ptr<GameObject>> getGameObjects() const;
 		const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjects() const;
 		

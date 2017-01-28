@@ -19,7 +19,7 @@ namespace MoonEngine
 	 * Get the active Scene
 	 * @return [description]
 	 */
-	Scene * World();
+	Scene * GetWorld();
 	/**
 	 * Set the active scene that holds game objects to a scene
 	 * @param scene the scene to add game objects to.

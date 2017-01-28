@@ -51,6 +51,16 @@ void GameObject::update(float dt)
 	}
 }
 
+
+void GameObject::addTag(Tag t)
+{
+	this->tag = t;
+}
+
+Tag GameObject::getTag()
+{
+	return tag;
+}
 void GameObject::onCollisionEnter(Collision col)
 {
 	for(Component * c : components)

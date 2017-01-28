@@ -123,11 +123,23 @@ void Scene::addCustomUpdate(std::function<void(float)> fn)
 {
 	updateFunctors.push_back(fn);
 }
+//Naieve implementation
+GameObject * Scene::findGameObjectWithTag(Tag  t)
+{
+	for(auto g : _gameObjects)
+	{
+		if(g->getTag() == t)
+		{
+			return g.get();
+		}
+	}
+	return nullptr;
+}
 
 void Scene::start()
 {
-	for(auto & g : _gameObjects)
-	{
-		g->start();
-	}
+	// for(auto & g : _gameObjects)
+	// {
+	// //	g->start();
+	// }
 }

@@ -11,9 +11,11 @@ namespace MoonEngine
 	{
 	public:
 		ThirdPersonOrbitalController(float Cam_Move_Speed = 1, float CamSensitivity = 0.002);
+		void start();
 		void update(float dt);
 		std::shared_ptr<Component> clone() const;
 	private:
+		GameObject * player;
 		float _CamMoveSpeed;
 		float _CamSensitivity;
 		glm::vec3 _trac;
