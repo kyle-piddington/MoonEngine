@@ -1,2 +1,6 @@
 _build/
 .vs/
+cmake-build*
+build/
+.idea/
+.DS_Store

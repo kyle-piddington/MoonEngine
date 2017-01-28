@@ -19,7 +19,7 @@ namespace MoonEngine
 		void addGameObject(std::shared_ptr<GameObject> go);
 
 		/**
-		 * Find the first game object with a componentt
+		 * Find the first game object with a component
 		 */
 		
 		template<class T>
