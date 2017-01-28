@@ -6,6 +6,9 @@
 #include "ControllerInputService.h"
 #include "KeyboardInputService.h"
 #include "Input.h"
+
+#include "thirdparty/imgui/imgui.h"
+#include "thirdparty/imgui/imgui_impl_glfw_gl3.h"
 using namespace MoonEngine;
 void  GLFWHandler::key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
@@ -13,19 +16,57 @@ void  GLFWHandler::key_callback(GLFWwindow* window, int key, int scancode, int a
    {
       glfwSetWindowShouldClose(window, GL_TRUE);
    }
-   Keyboard::setKeyStatus(key,action);
+    /**
+    * Allow Imgui to consume the event
+    */
+   if(ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())
+   {
+      ImGui_ImplGlfwGL3_KeyCallback(window,key,scancode,action,mode);
+   }
+   else
+   {
+      Keyboard::setKeyStatus(key,action);
+   }
 
    
 }
 
 void GLFWHandler::mousePositionCallback(GLFWwindow * window, double x, double y)
 {
-	Mouse::updateMousePos((int)x, (int)y);
+   Mouse::updateMousePos(x,y);
 }
 
 void GLFWHandler::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-   Mouse::setButtonStatus(button,action);
+   //Imgui event capture
+   //Can't select a window without actually hovering
+
+   if(ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())
+   {
+      ImGui_ImplGlfwGL3_MouseButtonCallback(window,button,action,mods);
+   }
+   else
+   {
+      Mouse::setButtonStatus(button,action);
+
+   }
+
+}
+void GLFWHandler::scrollWheelCallback(GLFWwindow * window, double xOffset, double yOffset)
+{
+   if(ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())
+   {
+      ImGui_ImplGlfwGL3_ScrollCallback(window,xOffset,yOffset);
+   }
+   else
+   {
+      Mouse::setScrollStatus(xOffset, yOffset);
+   }
+}
+
+void GLFWHandler::characterCallback(GLFWwindow * window, unsigned int c)
+{
+   ImGui_ImplGlfwGL3_CharCallback(window, c);
 }
 
 void GLFWHandler::update()
@@ -50,9 +91,6 @@ void GLFWHandler::joystick_callback(int joy, int event)
           Input::provide(std::make_shared<ControllerInputService>());
 
         }
-        // The joystick was connected
-        // Test to see if joystick will be good 
-        // enough for game (2 axes)
     }
     else if (event == GLFW_DISCONNECTED)
     {
@@ -60,7 +98,6 @@ void GLFWHandler::joystick_callback(int joy, int event)
         Controller::Disconnect();
         Input::provide(std::make_shared<KeyboardInputService>());
 
-        // The joystick was disconnected
     }
 }
 
