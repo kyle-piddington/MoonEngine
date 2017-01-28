@@ -81,17 +81,17 @@ int main(int argc, char **argv) {
 
 	float accumTime;
 	int lastUpdateTime;
-	scene->addCustomUpdate([&](float dt){
-		accumTime += dt;
-		if((int)accumTime > lastUpdateTime)
-		{
-			LOG(GAME, "FPS: " + std::to_string(1.0/dt));
-			LOG(GAME, "Active Objects: " + std::to_string(scene->getGameObjects().size()));
+	// scene->addCustomUpdate([&](float dt){
+	// 	accumTime += dt;
+	// 	if((int)accumTime > lastUpdateTime)
+	// 	{
+	// 		LOG(GAME, "FPS: " + std::to_string(1.0/dt));
+	// 		LOG(GAME, "Active Objects: " + std::to_string(scene->getGameObjects().size()));
 			
-			lastUpdateTime = (int)accumTime;
-		}
+	// 		lastUpdateTime = (int)accumTime;
+	// 	}
 				
-	});
+	// });
 
 	
 

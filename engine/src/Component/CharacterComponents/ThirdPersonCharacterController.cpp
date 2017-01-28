@@ -27,12 +27,12 @@ void ThirdPersonCharacterController::update(float dt)
 	glm::vec2 direction = glm::vec2(Input::GetAxis(AXIS_HORIZONTAL_0),Input::GetAxis(AXIS_VERTICAL_0));
 	glm::vec3 playerDirection = (camForwardXZ * direction.y + camRightXZ * direction.x);
 	//Look along movement
-	if(glm::length(playerDirection) > 1e-2)
+	if(glm::length(playerDirection) > 2e-1)
 	{
 		transform->lookAt(transform->getPosition() + playerDirection);
 	}
 	transform->translate(playerSpeed * dt * playerDirection );
-	if(Keyboard::isKeyDown(GLFW_KEY_SPACE))
+	if(Input::GetButton(BUTTON_0))
 	{
 		transform->translate(glm::vec3(0,playerSpeed*dt,0));
 	}

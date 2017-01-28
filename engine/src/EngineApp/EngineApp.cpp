@@ -19,6 +19,8 @@ window(window)
 	glfwSetKeyCallback(window, GLFWHandler::key_callback);
    	glfwSetCursorPosCallback(window, GLFWHandler::mousePositionCallback);
    	glfwSetMouseButtonCallback(window, GLFWHandler::mouseButtonCallback);
+	glfwSetJoystickCallback(GLFWHandler::joystick_callback);
+	GLFWHandler::Start();
 	//Other app setup code, install callbacks etc.
 	
 }

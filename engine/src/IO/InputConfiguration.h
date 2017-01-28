@@ -7,9 +7,10 @@
  */
 namespace MoonEngine
 {
-	struct KeyboardInputConfiguration
+	struct InputConfiguration
 	{
-		KeyboardInputConfiguration();
+		static InputConfiguration DefaultKeyboardConfiguration();
+		static InputConfiguration DefaultControllerConfiguration();
 		int BUTTON_0_MAP;
 		int BUTTON_1_MAP;
 		int BUTTON_2_MAP;

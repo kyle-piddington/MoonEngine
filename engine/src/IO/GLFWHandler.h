@@ -32,7 +32,7 @@ namespace MoonEngine
     * @param joy   the joystick
     * @param event a connection state
     */
-   void joystick_callback(int joy, int event);
+   static void joystick_callback(int joy, int event);
    /**
     * Forward any mouse input events to the rest of the app
     * @param  window  the sending window of this event
@@ -45,6 +45,8 @@ namespace MoonEngine
     * Update any input handlers. (Mouse/Keyboard)
     */
    static void update();
+
+   static void Start();
 
 
  };

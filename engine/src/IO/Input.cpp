@@ -51,6 +51,16 @@ bool Input::GetButtonDown(Button b)
 {
 	return _service->getButtonDown(b);
 }
+
+bool Input::GetButton(Button button)
+{
+	return _service->getButton(button);
+}
+
+bool Input::GetButtonUp(Button button)
+{
+	return _service->getButtonUp(button);
+}
 void Input::Update(float dt)
 {
 	//Fast switching between left and right.
@@ -78,5 +88,4 @@ void Input::Update(float dt)
 	_smoothedVAxis0 = moveTowards(_smoothedVAxis0, _targVAxis0, axisSmoothSpeed * dt);
 	_smoothedVAxis1 = moveTowards(_smoothedVAxis1, _targVAxis1, axisSmoothSpeed * dt); 
 	
-
 }

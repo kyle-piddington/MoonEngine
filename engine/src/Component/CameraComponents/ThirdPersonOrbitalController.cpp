@@ -68,7 +68,7 @@ void ThirdPersonOrbitalController::update(float dt)
 		_trac =  _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi), sinf(_phi) * sinf(_theta));
 
    	}
-   	else if(Keyboard::isKeyDown(GLFW_KEY_F))
+   	else if(Input::GetButtonDown(BUTTON_3))
 	{
 		glm::vec3 fwd = player->getTransform().forward();
 		glm::vec3 camDirection = glm::normalize(

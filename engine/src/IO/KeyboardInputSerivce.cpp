@@ -2,7 +2,8 @@
 #include "IO/Keyboard.h"
 
 using namespace MoonEngine;
-KeyboardInputService::KeyboardInputService()
+KeyboardInputService::KeyboardInputService():
+inputConfig(InputConfiguration::DefaultKeyboardConfiguration())
 {
 
 }
@@ -38,7 +39,7 @@ float KeyboardInputService::getAxisRaw(Axis axis)
 
 bool KeyboardInputService::getButton(Button button)
 {
-	return Keyboard::key(getButtonMapping(button));
+	return Keyboard::isKeyDown(getButtonMapping(button));
 
 }
 
@@ -51,7 +52,7 @@ bool KeyboardInputService::getButtonUp(Button button)
 
 bool KeyboardInputService::getButtonDown(Button button)
 {
-	return Keyboard::isKeyDown(getButtonMapping(button));
+	return Keyboard::key(getButtonMapping(button));
 
 }
 

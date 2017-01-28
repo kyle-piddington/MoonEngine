@@ -1,5 +1,5 @@
 #pragma once
-#include "KeyboardServiceConfiguration.h"
+#include "InputConfiguration.h"
 #include "IO/InputService.h"
 /*
 	KeyboardInputSerivce
@@ -15,7 +15,7 @@ namespace MoonEngine
 	{
 	public:
 		KeyboardInputService();
-		KeyboardInputService(KeyboardInputConfiguration cfg);
+		KeyboardInputService(InputConfiguration cfg);
 
 		float getAxisRaw(Axis axis);
 
@@ -26,6 +26,6 @@ namespace MoonEngine
 		bool getButtonDown(Button button);
 	private:
 		int getButtonMapping(Button button);
-		KeyboardInputConfiguration inputConfig;
+		InputConfiguration inputConfig;
 	};
 }
