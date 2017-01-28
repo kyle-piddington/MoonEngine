@@ -47,7 +47,8 @@ void GLFWHandler::joystick_callback(int joy, int event)
         {
           LOG(GAME, std::to_string(joy) + " was connected");
           Controller::Connect(joy);
-      
+          Input::provide(std::make_shared<ControllerInputService>());
+
         }
         // The joystick was connected
         // Test to see if joystick will be good 
