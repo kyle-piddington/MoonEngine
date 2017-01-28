@@ -102,7 +102,7 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
 		{
 			LOG(INFO, "Loading mesh with textures");
 			vertexArrayObject->bindVertexBuffer(
-				GL_VETREX_TEXTURE_ATTRIBUTE, 
+				GL_VERTEX_TEXTURE_ATTRIBUTE,
 				*vertexBuffer, 
 				3,
 				GL_FLOAT,

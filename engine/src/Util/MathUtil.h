@@ -16,7 +16,7 @@ namespace MoonEngine
 			return std::max(std::min(x,max),min);
 		}
 		/**
-		 * Interpolate towarsd a target
+		 * Interpolate towards a target
 		 * @param  current  current value
 		 * @param  target   target value
 		 * @param  maxDelta how far will the target move each frame?
