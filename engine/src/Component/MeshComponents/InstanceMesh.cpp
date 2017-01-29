@@ -2,7 +2,7 @@
 #include "EngineApp/EngineApp.h"
 using namespace MoonEngine;
 
-InstanceMesh::InstanceMesh(std::string mesh, bool smooth) :
+InstanceMesh::InstanceMesh(std::string mesh, std::string instancedata, bool smooth) :
 	Mesh()
 {
 	_meshInfo = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed(mesh, smooth);

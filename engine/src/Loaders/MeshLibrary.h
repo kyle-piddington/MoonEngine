@@ -17,7 +17,7 @@ namespace MoonEngine
 		public:
 		MeshLibrary(std::string resourcePath);
 		~MeshLibrary();
-			MeshInfo * getInfoForMeshNamed(std::string mesh, bool smooth = false);
+		MeshInfo * getInfoForMeshNamed(std::string mesh, bool smooth = false);
 		private:
 			std::string _recPath;
 			std::unordered_map<std::string, MeshInfo * > _mapMeshToInfo;
