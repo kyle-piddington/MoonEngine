@@ -42,9 +42,34 @@ bool BoxCollider::intersects(const BoxCollider * other, glm::vec3* colnormal)
 	return _transformedBox.intersects(other->_transformedBox, colnormal);
 }
 
+
+bool BoxCollider::intersectsRay(glm::vec3 origin, glm::vec3 direction, Hit * hit) 
+{
+	glm::vec3 nor;
+	float hitDist = _transformedBox.intersectsRay(origin,direction,&nor);
+	if(hitDist >= 0)
+	{
+		if(hit != nullptr)
+		{
+			hit->object = gameObject;
+			hit->intersectionPoint = origin + direction * hitDist;
+			hit->intersectionNormal = nor;
+			hit->distance = hitDist;
+			
+		}
+		return true;
+	}
+	return false;
+}
 glm::vec3 BoxCollider::getCenter()
 {
 	return _transformedBox.centerPoint;
+}
+
+glm::vec3 BoxCollider::getHalfWidths()
+{
+	return 
+	glm::vec3(_transformedBox.xHalfWidth, _transformedBox.yHalfWidth, _transformedBox.zHalfWidth);
 }
 
 std::shared_ptr<Component> BoxCollider::clone() const

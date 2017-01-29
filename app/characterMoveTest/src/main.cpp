@@ -58,7 +58,7 @@ int main(int argc, char **argv) {
 	playerObj->addComponent(scene->createComponent<BoxCollider>());
 	
 	playerObj->getTransform().setPosition(glm::vec3(0,0.5,0));
-	playerObj->getTransform().setScale(glm::vec3(0.2,0.2,-0.2));
+	playerObj->getTransform().setScale(glm::vec3(0.2,0.2,0.2));
 	playerObj->addTag(T_Player);
 	
 	scene->addGameObject(playerObj);

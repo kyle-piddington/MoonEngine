@@ -71,6 +71,17 @@ namespace MoonEngine
 		void addCustomUpdate(std::function<void(float)> fn);
 
 		void start();
+		/**
+		 * Cast a ray into the scene. Return
+		 * true if a ray intersects that's
+		 * less than maxLen
+		 * @param  origin    the origin of the ray
+		 * @param  direction the direction of the ray
+		 * @param  maxLen    the maximum length of the ray
+		 * @param  hit       information from a hit
+		 * @return           true if hit.
+		 */
+		bool castRay(glm::vec3 origin, glm::vec3 direction, float maxLen = -1, Hit * hit = nullptr);
 
 	private:
 

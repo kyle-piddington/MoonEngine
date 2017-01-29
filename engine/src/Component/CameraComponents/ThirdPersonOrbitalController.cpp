@@ -72,7 +72,7 @@ void ThirdPersonOrbitalController::update(float dt)
 	{
 		glm::vec3 fwd = player->getTransform().forward();
 		glm::vec3 camDirection = glm::normalize(
-			glm::vec3(fwd.x, 0, fwd.z));
+			glm::vec3(-fwd.x, 0, -fwd.z));
    		
 		_phi = M_PI/3;
 		_theta = atan2(camDirection.z,camDirection.x);

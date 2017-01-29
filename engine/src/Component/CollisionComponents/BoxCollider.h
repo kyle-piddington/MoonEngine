@@ -1,6 +1,7 @@
 #pragma once
 #include "Component/Component.h"
 #include "Collision/BoundingBox.h"
+#include "Geometry/Hit.h"
 /**
  * A BoxCollider is an axis-aligned bounding box for a game object.
  * BoxColliders support AABB collision.
@@ -40,6 +41,16 @@ namespace MoonEngine
 		bool intersects(const BoxCollider * other, glm::vec3* colnormal);
 
 		/**
+		 * Intersect the box with a ray
+		 * @param  origin    the origin of the ray
+		 * @param  direction direction of the ray
+		 * @param  hit       Info returned after 
+		 * @return           true if interesection
+		 */
+		bool intersectsRay(glm::vec3 origin, glm::vec3 direction, Hit * hit);
+
+
+		/**
 		 * Return the current AABB
 		 * @return [description]
 		 */
@@ -49,6 +60,7 @@ namespace MoonEngine
 
 		virtual std::shared_ptr<Component> clone() const;
 
+		glm::vec3 getHalfWidths();
 
 	private:
 

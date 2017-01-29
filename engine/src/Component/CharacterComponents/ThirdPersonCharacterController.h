@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component/Component.h"
+#include "Component/CollisionComponents/BoxCollider.h"
 #include "Geometry/Transform.h"
 /**
  * Controls a character in a first-person matter
@@ -28,7 +29,7 @@ namespace MoonEngine
 	private:
 		void handleMove(float dt);
 		void handleJump(float dt);
-
+		void checkIfShouldFall();
 		Transform * transform;
 		float playerSpeed;
 		float jumpSpeed;
@@ -38,8 +39,9 @@ namespace MoonEngine
 		float _jumpTime;
 		float gravity;
 		PlayerState state;
-
+		float radius;
 		GameObject * mainCamera;
+		BoxCollider * bbox;
 
 
 	};

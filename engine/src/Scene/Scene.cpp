@@ -139,6 +139,33 @@ GameObject * Scene::findGameObjectWithTag(Tag  t)
 	}
 	return nullptr;
 }
+//Naieve implementation
+bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * hit)
+{
+	//Spatial data structure would go here.
+	Hit tmpHit;
+	if(glm::length(direction) > 0)
+	{
+		for(size_t i = 0; i < _boxCollisionComponents.size(); i++)
+		{
+			
+			if(_boxCollisionComponents[i]->intersectsRay(origin,direction,&tmpHit))
+			{
+				LOG(GAME, std::to_string(tmpHit.distance));
+				if(maxDist == -1 || tmpHit.distance < maxDist)
+				{
+					if(hit != nullptr)
+					{
+						*hit = tmpHit;
+					}
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+	
+}
 
 void Scene::start()
 {

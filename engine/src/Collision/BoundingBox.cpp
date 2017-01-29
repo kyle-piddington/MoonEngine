@@ -45,7 +45,7 @@ zHalfWidth(0)
 
 
 
-bool BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec3* colnormal)
+float BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec3* colnormal)
 {
 	BoundingBox::Plane minPlane = BoundingBox::Plane::X_NEAR;
     BoundingBox::Plane maxPlane  = BoundingBox::Plane::X_FAR;
@@ -84,7 +84,7 @@ bool BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec3
 		}
 		else if(origin[i] < minCoords[i] || origin[i] > maxCoords[i])
 		{
-			return false;
+			return -1;
 		}
 	}
     //Tmax must be greater than zero, and tMin.
@@ -95,20 +95,19 @@ bool BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec3
 		float t = tmin;
 		if(t < 0)
 		{
-         //Internal intersection
-			intersectPlane = maxPlane;
-			t = tmax;
+         	//Internal intersection
+			return -1;
 		}
       //Create normal by determining which plane the point is on
 		if(colnormal != nullptr)
 		{
 			*colnormal = normalFor(intersectPlane);
 		}
-		return true;
+		return t;
 	}
 	else
 	{
-		return false;
+		return -1;
 	}
 }
 
