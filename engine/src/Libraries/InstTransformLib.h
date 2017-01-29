@@ -3,18 +3,17 @@
 #include <vector>
 #include "GL/GLVertexArrayObject.h"
 #include <memory>
-#include "BasicLoader.h"
 #include "Util/Logger.h"
 #include "Util\InstanceLoader.h"
 
 namespace MoonEngine
 {
 
-	class TransformLibrary
+	class InstTransformLibrary
 	{
 	public:
-		TransformLibrary(std::string resourcePath);
-		~TransformLibrary();
+		InstTransformLibrary(std::string resourcePath);
+		~InstTransformLibrary();
 		GLVertexArrayObject* getMatrixVAO(std::string transformfile);
 	private:
 		std::string _recPath;

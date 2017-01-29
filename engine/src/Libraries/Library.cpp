@@ -7,7 +7,7 @@ void Library::Init(std::string resourcePath)
 {
 	MeshLib = std::make_shared<MeshLibrary>(resourcePath);
 	ProgramLib = std::make_shared<ProgramLibrary>(resourcePath);
-	TransformLib = std::make_shared<TransformLib>(resourcePath);
+	InstTransformLib = std::make_shared<InstTransformLibrary>(resourcePath);
 }
 void Library::Destroy()
 {

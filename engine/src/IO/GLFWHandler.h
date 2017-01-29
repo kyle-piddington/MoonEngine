@@ -2,6 +2,7 @@
 #define __GLFW_HANDLER_H__
 
 #include <GLFW/glfw3.h>
+#include <string>
 /**
  * Includes GLFW callback functions, forwards events to other parts of app
  */
