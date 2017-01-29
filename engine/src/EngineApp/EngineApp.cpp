@@ -61,7 +61,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 		glfwPollEvents();
         GLFWHandler::update();
         Input::Update(dt);
-		scene->runCollisionUpdate();
+		
 		scene->runUpdate(dt);
 		renderer->render(scene);
 		newT = (float) glfwGetTime();

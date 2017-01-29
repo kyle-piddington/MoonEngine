@@ -42,6 +42,7 @@ void Scene::runUpdate(float dt)
 	{
 		go->update(dt);
 	}
+	runCollisionUpdate();
 	if(updateFunctors.size() > 0)
 	{
 		for(auto & fun : updateFunctors)
@@ -79,6 +80,7 @@ void Scene::runCollisionUpdate()
 					//Forward to both game objects
 					c.other = _boxCollisionComponents[i]->getGameObject();
 					_boxCollisionComponents[j]->getGameObject()->onCollisionEnter(c);
+					c.normal = -colnormal;
 					c.other = _boxCollisionComponents[j]->getGameObject();
 					_boxCollisionComponents[i]->getGameObject()->onCollisionEnter(c);
 

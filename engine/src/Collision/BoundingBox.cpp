@@ -27,8 +27,8 @@ BoundingBox::BoundingBox(
 	zHalfWidth = (maxZ -minZ) / 2;
 	
 	centerPoint = glm::vec3(minX + xHalfWidth,
-							minY + yHalfWidth,
-							minZ + zHalfWidth);
+		minY + yHalfWidth,
+		minZ + zHalfWidth);
 	
 }
 
@@ -40,6 +40,78 @@ zHalfWidth(0)
 {
 
 }
+
+
+
+
+
+bool BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec3* colnormal)
+{
+	BoundingBox::Plane minPlane = BoundingBox::Plane::X_NEAR;
+    BoundingBox::Plane maxPlane  = BoundingBox::Plane::X_FAR;
+   
+	float tmin = -INT_MAX;
+	float tmax = INT_MAX;
+	glm::vec3 minCoords = centerPoint + glm::vec3(-xHalfWidth,-yHalfWidth,-zHalfWidth);
+	glm::vec3 maxCoords = centerPoint + glm::vec3(xHalfWidth,yHalfWidth,zHalfWidth);
+
+
+	for (int i = 0; i < 3; ++i) {
+
+		if(fabs(direction[i]) > 0)
+		{
+			float t1 = (minCoords[i] - origin[i])/direction[i];
+			float t2 = (maxCoords[i] - origin[i])/direction[i];
+			bool swp = false;
+			if(t1 > t2)
+			{
+				float tmp = t2;
+				t2 = t1;
+				t1 = tmp;
+				swp = true;
+			}
+			if(t1 > tmin)
+			{
+				minPlane = (BoundingBox::Plane)(2*i + swp);
+			}
+			if(t2 < tmax)
+			{
+				maxPlane = (BoundingBox::Plane)(2*i + 1 - swp);
+			}
+			tmin = fmax(tmin, t1);
+			tmax = fmin(tmax, t2);
+
+		}
+		else if(origin[i] < minCoords[i] || origin[i] > maxCoords[i])
+		{
+			return false;
+		}
+	}
+    //Tmax must be greater than zero, and tMin.
+	if(tmax > fmax(tmin, 0.0))
+	{
+         //Return lowest non-negative
+		BoundingBox::Plane intersectPlane = minPlane;
+		float t = tmin;
+		if(t < 0)
+		{
+         //Internal intersection
+			intersectPlane = maxPlane;
+			t = tmax;
+		}
+      //Create normal by determining which plane the point is on
+		if(colnormal != nullptr)
+		{
+			*colnormal = normalFor(intersectPlane);
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 
 BoundingBox BoundingBox::BoundPoints(const std::vector<glm::vec3> & points)
 {
@@ -57,11 +129,12 @@ BoundingBox BoundingBox::BoundPoints(const std::vector<glm::vec3> & points)
 		maxX = std::max(maxX, point.x);
 		maxY = std::max(maxY, point.y);
 		maxZ = std::max(maxZ, point.z);
-			
+
 	}
 
 	return BoundingBox(minX, maxX, minY, maxY, minZ, maxZ);
 }
+
 
 BoundingBox BoundingBox::transform(const glm::mat4 & transformation)
 {
@@ -96,24 +169,51 @@ std::vector<glm::vec3> BoundingBox::cornerPoints()
 //https://studiofreya.com/3d-math-and-physics/simple-aabb-vs-aabb-collision-detection/
 bool BoundingBox::intersects(const BoundingBox & other, glm::vec3* colnormal)
 {
-	colnormal = nullptr;
+	glm::vec3 nor;
 	bool x = std::abs(centerPoint.x - other.centerPoint.x) <= (xHalfWidth + other.xHalfWidth);
 	if (x && centerPoint.x < other.centerPoint.x)
-		*colnormal = glm::vec3(-1.0f, 0.0f, 0.0f);
+		nor = glm::vec3(-1.0f, 0.0f, 0.0f);
 	else if (x) 
-		*colnormal = glm::vec3(1.0f, 0.0f, 0.0f);
+		nor = glm::vec3(1.0f, 0.0f, 0.0f);
 
-    bool y = std::abs(centerPoint.y - other.centerPoint.y) <= (yHalfWidth + other.yHalfWidth);
+	bool y = std::abs(centerPoint.y - other.centerPoint.y) <= (yHalfWidth + other.yHalfWidth);
 	if (y && centerPoint.y < other.centerPoint.y)
-		*colnormal = glm::vec3(0.0f, -1.0f, 0.0f);
+		nor = glm::vec3(0.0f, -1.0f, 0.0f);
 	else if(y)
-		*colnormal = glm::vec3(0.0f, 1.0f, 0.0f);
+		nor = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    bool z = std::abs(centerPoint.z - other.centerPoint.z) <= (zHalfWidth + other.zHalfWidth);
+	bool z = std::abs(centerPoint.z - other.centerPoint.z) <= (zHalfWidth + other.zHalfWidth);
 	if (z && centerPoint.z < other.centerPoint.z)
-		*colnormal = glm::vec3(0.0f, 0.0f, -1.0f);
+		nor = glm::vec3(0.0f, 0.0f, -1.0f);
 	else if (z)
-		*colnormal = glm::vec3(0.0f, 0.0f, 1.0f);
+		nor = glm::vec3(0.0f, 0.0f, 1.0f);
 
-    return x && y && z;
+	//If an interesction occurs, calculate
+	//the normal via a raycast
+	if(x && y && z && colnormal != nullptr)
+	{
+		intersectsRay(other.centerPoint,
+			glm::normalize(centerPoint-other.centerPoint)
+			,colnormal);
+	}
+
+	return x && y && z;
+}
+
+glm::vec3 BoundingBox::normalFor(BoundingBox::Plane plane)
+{
+   switch(plane){
+      case X_NEAR:
+         return glm::vec3(-1,0,0);
+      case X_FAR:
+         return glm::vec3(1,0,0);
+      case Y_NEAR:
+         return glm::vec3(0,-1,0);
+      case Y_FAR:
+         return glm::vec3(0,1,0);
+      case Z_NEAR:
+         return glm::vec3(0,0,-1);
+      case Z_FAR:
+         return glm::vec3(0,0,1);
+   }
 }

@@ -4,7 +4,7 @@
 #include "GL/GLVertexArrayObject.h"
 #include <memory>
 #include "Util/Logger.h"
-#include "Util\InstanceLoader.h"
+#include "Util/InstanceLoader.h"
 
 namespace MoonEngine
 {

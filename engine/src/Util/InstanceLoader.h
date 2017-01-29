@@ -3,8 +3,8 @@
 #include <fstream>
 #include <vector>
 #include <string>
-#include "glm\glm.hpp"
-#include "Geometry\Transform.h"
+#include "glm/glm.hpp"
+#include "Geometry/Transform.h"
 using namespace std;
 namespace MoonEngine
 {

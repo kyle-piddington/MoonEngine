@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	Logger::SetLogLevel(GAME);
+	Logger::SetLogLevel(INFO);
 
 
 	MoonEngineCfg cfg;
@@ -50,15 +50,16 @@ int main(int argc, char **argv) {
 	std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>();
 
 	std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>();
-	playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(1));
+	playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(2.1));
 
 	
 	playerObj->addComponent(scene->createComponent<StaticMesh>("suzanne.obj",false));
 	playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "phong.program"));
+	playerObj->addComponent(scene->createComponent<BoxCollider>());
+	
 	playerObj->getTransform().setPosition(glm::vec3(0,0.5,0));
 	playerObj->getTransform().setScale(glm::vec3(0.2,0.2,-0.2));
 	playerObj->addTag(T_Player);
-	//playerObj->addComponent(scene->createComponent<BoxCollider>());
 	
 	scene->addGameObject(playerObj);
 
@@ -79,10 +80,37 @@ int main(int argc, char **argv) {
 	groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.8,0.2), "default.program"));
 	scene->addGameObject(groundObject);
 
+	//Boxes
+	Transform boxTransform;
+	boxTransform.setPosition(glm::vec3(1,0,0));
+	std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(boxTransform);
+	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8,0.8,0.8), "phong.program"));
+	boxObject->addComponent(scene->createComponent<BoxCollider>());
+	
+	scene->addGameObject(boxObject);
+
+	boxTransform.setPosition(glm::vec3(2,1,0));
+	boxObject = std::make_shared<GameObject>(boxTransform);
+	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8,0.8,0.8), "phong.program"));
+	boxObject->addComponent(scene->createComponent<BoxCollider>());
+	scene->addGameObject(boxObject);
+
+
+	boxTransform.setPosition(glm::vec3(3,2,0));
+	boxObject = std::make_shared<GameObject>(boxTransform);
+	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8,0.8,0.8), "phong.program"));
+	boxObject->addComponent(scene->createComponent<BoxCollider>());
+	scene->addGameObject(boxObject);
+
+	
+	
 	float accumTime;
 	int lastUpdateTime;
 	scene->addCustomUpdate([&](float dt){
-		ImGui::ShowTestWindow();
+		//ImGui::ShowTestWindow();
 		// accumTime += dt;
 		// if((int)accumTime > lastUpdateTime)
 		// {
