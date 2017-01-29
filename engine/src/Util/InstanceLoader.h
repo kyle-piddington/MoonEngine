@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "glm\glm.hpp"
+#include "Geometry\Transform.h"
 using namespace std;
 namespace MoonEngine
 {
@@ -19,6 +20,7 @@ namespace MoonEngine
 			std::string line;
 			while (std::getline(File, line))
 			{
+				Transform trans;
 				std::istringstream iss(line);
 				if (!(iss >> pos.x >> pos.y >> pos.z)) { 
 					break; // error in position
@@ -28,7 +30,11 @@ namespace MoonEngine
 				}
 				if (!(iss >> rot.x >> rot.y >> rot.z)) {
 					break; // error in rotation
-				}						
+				}		
+				trans.setScale(scl);
+				trans.setRotation(rot);
+				trans.setPosition(pos);
+				result.push_back(trans.getMatrix());
 			}
 			return   result;
 		}
