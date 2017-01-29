@@ -2,6 +2,7 @@
 #include "GameObject/GameObject.h"
 #include "Util/Logger.h"
 #include "Component/CollisionComponents/BoxCollider.h"
+
 #include <functional>
 namespace MoonEngine
 {
@@ -18,22 +19,24 @@ namespace MoonEngine
 		void addGameObject(std::shared_ptr<GameObject> go);
 
 		/**
-		 * Find the first game object with a componentt
+		 * Find the first game object with a component
 		 */
+		
 		template<class T>
-		std::shared_ptr<GameObject> findGameObjectWithComponent()
+		GameObject * findGameObjectWithComponent()
 		{
 			for(std::shared_ptr<GameObject> obj : _gameObjects)
 			{
 				if(obj->getComponent<T>() != nullptr)
 				{
-					return obj;
+					return obj.get();
 				}
 			}
 			LOG(WARN, "Could not find GameObject with component");
 			return nullptr;
 		}
-
+		GameObject * findGameObjectWithTag(Tag t);
+		
 		const std::vector<std::shared_ptr<GameObject>> getGameObjects() const;
 		const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjects() const;
 		

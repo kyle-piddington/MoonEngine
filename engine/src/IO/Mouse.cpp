@@ -1,5 +1,5 @@
 #include "Mouse.h"
-using namespace MoonEngine;
+
 enum Keystatus
 {
    PRESS = 1,
@@ -13,6 +13,13 @@ int Mouse::lastX = -1;
 int Mouse::lastY = -1;
 int Mouse::bfrX = -1;
 int Mouse::bfrY = -1;
+double Mouse::xScrollOffset = 0;
+double Mouse::yScrollOffset = 0;
+double Mouse::deltXOffset = 0;
+double Mouse::deltYOffset = 0;
+double Mouse::deltXBuffer = 0;
+double Mouse::deltYBuffer = 0;
+
 short Mouse::mouseButtons[GLFW_MOUSE_BUTTON_LAST]={RELEASE};
 short Mouse::bufferButtons[GLFW_MOUSE_BUTTON_LAST]={RELEASE};
 
@@ -48,6 +55,28 @@ bool Mouse::released(int button)
 {
    return mouseButtons[button] == RELEASE;
 }
+
+double Mouse::getScrollXAmount()
+{
+   return Mouse::xScrollOffset;
+}
+
+double Mouse::getScrollYAmount()
+{
+   return Mouse::yScrollOffset;
+}
+
+double Mouse::getScrollXDelta()
+{
+   return Mouse::deltXOffset;
+}
+
+double Mouse::getScrollYDelta()
+{
+   return Mouse::deltYOffset;
+}
+
+
 void Mouse::updateMousePos(int nextX, int nextY)
 {
    Mouse::bfrX = nextX;
@@ -64,6 +93,14 @@ void Mouse::setButtonStatus(int button, int action)
    {
       bufferButtons[button] = RELEASE;
    }
+}
+
+void Mouse::setScrollStatus(double xOff, double yOff)
+{
+   xScrollOffset += xOff;
+   deltXBuffer = xOff;
+   yScrollOffset += yOff;
+   deltYBuffer = yOff;
 }
 
 void Mouse::update()
@@ -103,7 +140,12 @@ void Mouse::update()
       {
          mouseButtons[i] = RELEASE;
       }
-
    }
+   //Double buffer the scroll wheel
+   deltXOffset = deltXBuffer;
+   deltYOffset = deltYBuffer;
+   deltXBuffer = deltYBuffer = 0;
 }
+
+
 

@@ -6,6 +6,7 @@
 
 #include <memory>
 #include "Collision/Collision.h"
+
 namespace MoonEngine
 {
 	class GameObject;

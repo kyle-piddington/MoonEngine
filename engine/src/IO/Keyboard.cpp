@@ -6,7 +6,8 @@ enum Keystatus
 {
    PRESS = 1,
    HOLD = 2,
-   RELEASE = -1
+   RELEASE = -1,
+   RELEASED = -2
 };
 
 short Keyboard::keyStatus[NUM_KEYS] = {RELEASE};
@@ -62,7 +63,15 @@ void Keyboard::update()
       }
       else if(bfrKeyStatus[i] == RELEASE)
       {
-         keyStatus[i] = RELEASE;
+         if(keyStatus[i] == RELEASE)
+         {
+            keyStatus[i] = RELEASED;
+         }
+         else
+         {
+            keyStatus[i] = RELEASE;            
+         }
+
       }
 
    }

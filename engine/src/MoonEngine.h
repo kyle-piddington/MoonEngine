@@ -23,7 +23,7 @@
 #include "Util/GLMUtil.h"
 
 #include "Loaders/BasicLoader.h"
-#include "Loaders/MeshLibrary.h"
+#include "Libraries/MeshLibrary.h"
 #include "Loaders/ProgramLoader.h"
 #include "Component/Components.h"
 
@@ -39,3 +39,9 @@
 
 //Globals
 #include "GlobalFuncs/Instantiate.h"
+
+//Third party
+#include "thirdparty/imgui/imgui.h"
+
+
+

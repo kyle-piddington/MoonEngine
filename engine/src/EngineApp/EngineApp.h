@@ -1,5 +1,5 @@
 #pragma once
-#include "Loaders/Library.h"
+#include "Libraries/Library.h"
 #include "Render/I_Renderer.h"
 #include "Scene/Scene.h"
 #include "MoonEngineCfg.h"
@@ -17,11 +17,13 @@ namespace MoonEngine
 		
 		
 		static Library GetAssetLibrary();
+		static Scene * GetScene();
 	private:
 
 		void initializeComponents(Scene * scene);
 		static bool assetsLoaded;
 		static Library AssetLibrary;
+		static Scene * activeScene;
 		GLFWwindow * window;
 	};
 }
