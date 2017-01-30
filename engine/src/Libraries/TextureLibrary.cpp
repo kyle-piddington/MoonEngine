@@ -1,6 +1,6 @@
 #include <string>
 #include "TextureLibrary.h"
-
+#include <memory>
 using namespace MoonEngine;
 
 TextureLibrary::TextureLibrary(std::string resourcePath):

@@ -1,6 +1,6 @@
 #include <string>
 #include "SamplerLibrary.h"
-
+#include <memory>
 using namespace MoonEngine;
 
 SamplerLibrary::SamplerLibrary() {

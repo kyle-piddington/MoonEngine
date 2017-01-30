@@ -5,6 +5,12 @@
 #include "IO/Input.h"
 #include "GlobalFuncs/GlobalFuncs.h"
 #include "thirdparty/imgui/imgui.h"
+#include <string>
+#include <algorithm>
+
+#ifndef M_PI
+#define M_PI 3.141592653589793
+#endif
 using namespace MoonEngine;
 ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed)
 {
