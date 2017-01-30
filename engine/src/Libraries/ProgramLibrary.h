@@ -17,7 +17,7 @@ namespace MoonEngine
 		public:
 		ProgramLibrary(std::string resourcePath);
 		~ProgramLibrary();
-			GLProgram * getProgramForName(std::string progName);
+		GLProgram * getProgramForName(std::string progName);
 
 		private:
 			void loadDefaultProgram();
