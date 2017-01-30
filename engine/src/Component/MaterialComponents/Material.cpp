@@ -2,15 +2,21 @@
 #include "Libraries/Library.h"
 using namespace MoonEngine;
 
-Material::Material(glm::vec3 tint, std::string program):
+Material::Material(glm::vec3 tint, std::string program, unordered_map<MaterialProperty, string> textures):
 	Component(),
 	_tint(tint)
 {
-	programPtr = Library::ProgramLib->getProgramForName(program);
-	if(programPtr == nullptr)
+	_programPtr = Library::ProgramLib->getProgramForName(program);
+	if(_programPtr == nullptr)
 	{
-		programPtr = Library::ProgramLib->getProgramForName("default.program");
+		_programPtr = Library::ProgramLib->getProgramForName("default.program");
 	}
+
+	for (auto &texture: textures) {
+		_textures[texture.first] = Library::TextureLib->getTexture(texture.second, texture.first);
+	}
+
+	_samplerPtr = Library::SamplerLib->getSampler("default");
 }
 
 const glm::vec3 & Material::getTint() const
@@ -26,9 +32,8 @@ void Material::setTint(glm::vec3 newTint)
 
 GLProgram * Material::getProgram() const
 {
-	return programPtr;
+	return _programPtr;
 }
-
 
 
 std::shared_ptr<Component> Material::clone() const
@@ -36,4 +41,18 @@ std::shared_ptr<Component> Material::clone() const
 	return std::make_shared<Material>(*this);
 }
 
+void Material::bind() {
+	//todo bind uniforms
+	for (auto &texture: _textures) {
+		texture.second->bind();
+		texture.second->bindSampler(_samplerPtr);
+	}
+}
 
+void Material::unbind() {
+	//todo unbind uniforms
+	for (auto &texture: _textures) {
+		texture.second->unbind();
+		texture.second->unbindSampler();
+	}
+}

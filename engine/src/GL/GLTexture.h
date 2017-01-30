@@ -43,12 +43,6 @@ namespace MoonEngine
         bool init(std::string textureName);
 
         /**
-         * Attach a sampler object to this texture.
-         * @param sampler the sampler to attach.
-         */
-        void attachSampler(const GLSampler & sampler);
-
-        /**
          * Bind the texture
          */
         void bind();
@@ -65,6 +59,14 @@ namespace MoonEngine
         GLuint _textureId;
         GLenum _textureType;
 
-        GLuint _handle;
+        GLuint _unit;
+    };
+
+    // TODO: Move to proper location
+    enum MaterialProperty {
+        diffuse = 1,
+        normal,
+        specular,
+        ambient
     };
 }

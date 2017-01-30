@@ -1,7 +1,10 @@
 #pragma once
 #include "Component/Component.h"
-#include "GL/GLProgram.h"
 #include <glm/glm.hpp>
+
+#include "GL/GLProgram.h"
+#include <GL/GLSampler.h>
+#include <GL/GLTexture.h>
 /**
  * Material contains the basic rendering
  * information needed for rendering a material. In this case,
@@ -19,8 +22,10 @@ namespace MoonEngine
 	class Material : public Component
 	{
 	public:
-		Material(
-				 glm::vec3 tint = glm::vec3(0,0,0), std::string programName = "default.program");
+		//TODO add sampler
+		Material(glm::vec3 tint = glm::vec3(0,0,0),
+				 std::string programName = "default.program",
+				 unordered_map<MaterialProperty, string> textures = unordered_map<MaterialProperty, string>());
 		
 		/**
 		 * retrieve a base tint material used by all
@@ -42,8 +47,15 @@ namespace MoonEngine
 
 		virtual std::shared_ptr<Component> clone() const;
 
+		void bind();
+
+		void unbind();
+
 	private:
-		GLProgram * programPtr;
+		GLProgram * _programPtr;
+		GLSampler * _samplerPtr;
+
+		unordered_map<MaterialProperty, GLTexture *> _textures;
 		glm::vec3 _tint;
 	};
 }

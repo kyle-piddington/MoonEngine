@@ -5,14 +5,14 @@
 
 using namespace MoonEngine;
 
-GLTexture::GLTexture(GLuint handle)
+GLTexture::GLTexture(GLuint unit)
 {
-    _handle = handle;
+    _unit = unit;
     _textureType = GL_TEXTURE_2D;
 }
 
-GLTexture::GLTexture(GLuint handle, GLenum textureType) {
-    _handle = handle;
+GLTexture::GLTexture(GLuint unit, GLenum textureType) {
+    _unit = unit;
     _textureType = textureType;
 }
 
@@ -49,24 +49,24 @@ bool GLTexture::init(std::string textureName) {
 
 void GLTexture::bind()
 {
-    glActiveTexture(_handle);
+    glActiveTexture(_unit);
     glBindTexture(_textureType, _textureId);
 }
 
 void GLTexture::unbind()
 {
-    glActiveTexture(_handle);
+    glActiveTexture(_unit);
     glBindTexture(_textureType, 0);
 }
 
 void GLTexture::bindSampler(GLSampler * sampler)
 {
-    glBindSampler(_handle, sampler->getId());
+    glBindSampler(_unit, sampler->getId());
 }
 
 void GLTexture::unbindSampler()
 {
-    glBindSampler(_handle, 0);
+    glBindSampler(_unit, 0);
 
 }
 

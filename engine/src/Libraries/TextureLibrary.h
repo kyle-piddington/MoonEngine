@@ -16,13 +16,11 @@ namespace MoonEngine
         TextureLibrary(std::string resourcePath);
         ~TextureLibrary();
 
-        GLTexture * getTexture(std::string textureName);
+        GLTexture * getTexture(std::string textureName, MaterialProperty materialProperty);
 
     private:
         std::string _recPath;
         void loadDefaultTexture();
         std::unordered_map<std::string, GLTexture *> _textures;
-
-        GLuint _currentHandle;
     };
 }
