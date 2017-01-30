@@ -52,7 +52,7 @@ void ThirdPersonOrbitalController::update(float dt)
 
 
 	rotate.y = (Mouse::getLastY() - Mouse::getY())* _CamSensitivity;
-	rotate.x = (Mouse::getLastX() - Mouse::getX())* _CamSensitivity;
+	rotate.x = (Mouse::getLastX() - Mouse::getX())* _CamSensitivity * -1.0;
 	rotate.y += Input::GetAxis(AXIS_VERTICAL_1)*_CamMoveSpeed*dt;
     rotate.x += Input::GetAxis(AXIS_HORIZONTAL_1)*_CamMoveSpeed*dt;
    	_targ = player->getTransform().getPosition();

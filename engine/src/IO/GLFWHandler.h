@@ -48,6 +48,7 @@ namespace MoonEngine
     */
    static void characterCallback(GLFWwindow * window, unsigned int c);
    
+   static void setMouseMode(GLFWwindow* window, int mode);
    /**
     * Forward any mouse input events to the rest of the app
     * @param  window  the sending window of this event

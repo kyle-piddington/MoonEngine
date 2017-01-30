@@ -12,18 +12,19 @@ namespace MoonEngine
 	public:
 		EngineApp(GLFWwindow * window, MoonEngineCfg config);
 		~EngineApp();
-		Scene * CreateScene();
+		Scene* CreateScene();
 		void run(Scene * scene, I_Renderer * renderer);
 		
 		
 		static Library GetAssetLibrary();
-		static Scene * GetScene();
+		static Scene* GetScene();
+		void setMouseMode(int mode);
 	private:
 
 		void initializeComponents(Scene * scene);
 		static bool assetsLoaded;
 		static Library AssetLibrary;
-		static Scene * activeScene;
-		GLFWwindow * window;
+		static Scene* _activeScene;
+		GLFWwindow* _window;
 	};
 }

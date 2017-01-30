@@ -9,11 +9,11 @@ using namespace MoonEngine;
 //Static library
 //(Refactor later)
 Library EngineApp::AssetLibrary;
-Scene * EngineApp::activeScene = nullptr;
+Scene * EngineApp::_activeScene = nullptr;
 bool EngineApp::assetsLoaded = false;
 
 EngineApp::EngineApp(GLFWwindow * window, MoonEngineCfg config):
-window(window)
+_window(window)
 {
 	AssetLibrary.Init(config.assetPath);
 	assetsLoaded = true;
@@ -41,6 +41,11 @@ Library EngineApp::GetAssetLibrary()
 	return AssetLibrary;
 }
 
+void MoonEngine::EngineApp::setMouseMode(int mode)
+{
+	GLFWHandler::setMouseMode(_window, mode);
+}
+
 void EngineApp::run(Scene * scene, I_Renderer * renderer)
 {
 	//Set the global active scene to this one.
@@ -50,9 +55,9 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 	float dt = 0;
 	renderer->setup(scene);
 	scene->start();
-	ImGui_ImplGlfwGL3_Init(window,false); //Initialize ImGui
+	ImGui_ImplGlfwGL3_Init(_window,false); //Initialize ImGui
 
-	while(!glfwWindowShouldClose(window))
+	while(!glfwWindowShouldClose(_window))
 	{
 		//ImGui implementation
 		
@@ -67,7 +72,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 		newT = (float) glfwGetTime();
 
 		ImGui::Render();
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(_window);
 		//After scene is completed and rendered, delete any gameObjects
 		scene->runDeleteGameObjects();
 		dt =  newT - t;

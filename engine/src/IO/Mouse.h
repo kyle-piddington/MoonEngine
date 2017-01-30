@@ -1,6 +1,7 @@
 #ifndef __MOUSE_H__
 #define __MOUSE_H__
 #include <GLFW/glfw3.h>
+
 class Mouse
 {
 public:
@@ -37,6 +38,7 @@ public:
    static void setButtonStatus(int button, int action);
 
    static void setScrollStatus(double xOffset, double yOffset);
+	
    //Update the mouse button status
    static void update();
 private:
