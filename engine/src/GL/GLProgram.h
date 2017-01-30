@@ -25,7 +25,7 @@ namespace MoonEngine
 		~GLProgram();
 
 		/**
-		 * Copy constructor(s) is dissallowed for programs.
+		 * Copy constructor(s) is disallowed for programs.
 		 */
 		GLProgram(const GLProgram & other) = delete;
 		GLProgram &operator=(const GLProgram &) = delete;

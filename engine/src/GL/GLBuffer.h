@@ -29,7 +29,7 @@ namespace MoonEngine
 		~GLBuffer();
 
 	/**
-	 * Copy constructor(s) is dissallowed for vertex buffers.
+	 * Copy constructor(s) is disallowed for vertex buffers.
 	 */
 		GLBuffer(const GLBuffer & other) = delete;
 		GLBuffer &operator=(const GLBuffer &) = delete;

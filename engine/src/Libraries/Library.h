@@ -2,6 +2,8 @@
 #include "MeshLibrary.h"
 #include "ProgramLibrary.h"
 #include "InstTransformLib.h"
+#include "TextureLibrary.h"
+
 namespace MoonEngine
 {
 	struct Library
@@ -11,5 +13,7 @@ namespace MoonEngine
 		static std::shared_ptr<MeshLibrary> MeshLib;
 		static std::shared_ptr<ProgramLibrary> ProgramLib;
 		static std::shared_ptr<InstTransformLibrary> InstTransformLib;
+		static std::shared_ptr<TextureLibrary> TextureLib;
+
 	};
 }

@@ -26,7 +26,7 @@ namespace MoonEngine
 		~GLShader();
 
 		/**
-		 * Copy constructor(s) is dissallowed for Shaders.
+		 * Copy constructor(s) is disallowed for Shaders.
 		 */
 		GLShader(const GLShader & other) = delete;
 		GLShader &operator=(const GLShader &) = delete;
