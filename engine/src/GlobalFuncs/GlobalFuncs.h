@@ -15,6 +15,7 @@ namespace MoonEngine
 	 */
 	std::shared_ptr<GameObject>  Instantiate(GameObject * object, glm::vec3 position, glm::vec3 rotation);
 
+	void Delete(GameObject * object);
 	/**
 	 * Get the active Scene
 	 * @return [description]

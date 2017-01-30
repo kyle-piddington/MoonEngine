@@ -56,8 +56,24 @@ namespace MoonEngine
 			return ptr.get();
 		}
 
+		/**
+		 * Create a new gameObject at a location
+		 */
 		std::shared_ptr<GameObject> instantiate(GameObject * object, const Transform & newTransform);
 		
+		/**
+		 * Delete the gameObject from the scene
+		 * @note: The gameObject will be valid until the end of frame.
+		 * @param object the object to delete.
+		 */
+		void deleteGameObject(GameObject * object);
+
+		/**
+		 * Delete GameObjects from the scene post-update.
+		 */
+		void runDeleteGameObjects();
+
+
 		/**
 		 * Call the update() method of every game object
 		 */

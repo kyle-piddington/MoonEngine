@@ -38,7 +38,7 @@
 #include "Collision/Collision.h"
 
 //Globals
-#include "GlobalFuncs/Instantiate.h"
+#include "GlobalFuncs/GlobalFuncs.h"
 
 //Third party
 #include "thirdparty/imgui/imgui.h"

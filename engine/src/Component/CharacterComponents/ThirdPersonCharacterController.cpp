@@ -3,7 +3,7 @@
 #include "IO/Keyboard.h"
 #include <glfw/glfw3.h>
 #include "IO/Input.h"
-#include "GlobalFuncs/Instantiate.h"
+#include "GlobalFuncs/GlobalFuncs.h"
 #include "thirdparty/imgui/imgui.h"
 using namespace MoonEngine;
 ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed)

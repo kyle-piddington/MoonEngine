@@ -5,7 +5,7 @@
 #include "IO/Input.h"
 #include "Geometry/World.h"
 #include "Util/Logger.h"
-#include "GlobalFuncs/Instantiate.h"
+#include "GlobalFuncs/GlobalFuncs.h"
 //Windows C++
 #ifndef M_PI
 #define M_PI 3.141592653589793

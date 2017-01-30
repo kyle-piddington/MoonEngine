@@ -2,7 +2,7 @@
 #include "IO/GLFWHandler.h"
 #include "IO/Keyboard.h"
 #include "IO/Input.h"
-#include "GlobalFuncs/Instantiate.h"
+#include "GlobalFuncs/GlobalFuncs.h"
 #include "thirdparty/imgui/imgui.h"
 #include "thirdparty/imgui/imgui_impl_glfw_gl3.h"
 using namespace MoonEngine;
@@ -68,6 +68,8 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
 
 		ImGui::Render();
 		glfwSwapBuffers(window);
+		//After scene is completed and rendered, delete any gameObjects
+		scene->runDeleteGameObjects();
 		dt =  newT - t;
 		t = newT;
 	}

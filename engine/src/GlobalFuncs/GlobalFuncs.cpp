@@ -1,4 +1,4 @@
-#include "Instantiate.h"
+#include "GlobalFuncs.h"
 using namespace MoonEngine;
 //Private global scene pointer (hacky workaround to call Instantiate from Game Objects)
 static Scene * __gActiveScene = nullptr;
@@ -37,6 +37,11 @@ std::shared_ptr<GameObject> MoonEngine::Instantiate(GameObject * object, glm::ve
 		return __gActiveScene->instantiate(object, Transform());
 	}
 	return nullptr;
+}
+
+void MoonEngine::Delete(GameObject * object)
+{
+	__gActiveScene->deleteGameObject(object);
 }
 
 	/**
