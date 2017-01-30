@@ -1,4 +1,5 @@
 #include "Transform.h"
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/orthonormalize.hpp>
 #define GLM_FORCE_RADIANS
 using namespace MoonEngine;

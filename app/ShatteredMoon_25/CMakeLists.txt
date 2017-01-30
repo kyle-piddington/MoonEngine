@@ -1,4 +1,4 @@
-project(testScene)
+project(ShatteredMoon_25)
 # Use glob to get the list of all source files.
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 

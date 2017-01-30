@@ -1,10 +1,14 @@
-﻿  Checking Build System
-  CMake is re-running because C:/Users/Derek/Documents/MoonEngine/_build/CMakeFiles/generate.stamp is out-of-date.
-    the file 'C:/Users/Derek/Documents/MoonEngine/CMakeLists.txt'
-    is newer than 'C:/Users/Derek/Documents/MoonEngine/_build/CMakeFiles/generate.stamp.depend'
-    result='-1'
-  -- Could NOT find Vulkan (missing:  VULKAN_LIBRARY VULKAN_INCLUDE_DIR) 
-  -- Using Win32 for window creation
-  -- Configuring done
-  -- Generating done
-  -- Build files have been written to: C:/Users/Derek/Documents/MoonEngine/_build
+﻿  'C:\Users\Derek' is not recognized as an internal or external command,
+  operable program or batch file.
+  Checking Build System
+  CMake does not need to re-run because C:/Users/Derek Nola/Documents/GitHub/MoonEngine/_build/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Documents/GitHub/MoonEngine/_build/deps/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Desktop/3rd_Party/glfw/debug/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Desktop/3rd_Party/glfw/debug/src/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Documents/GitHub/MoonEngine/_build/engine/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Documents/GitHub/MoonEngine/_build/app/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Documents/GitHub/MoonEngine/_build/app/glBaseClassTest/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Documents/GitHub/MoonEngine/_build/app/ShatteredMoon_25/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Documents/GitHub/MoonEngine/_build/app/glInstancingTest/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Documents/GitHub/MoonEngine/_build/app/characterMoveTest/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Derek Nola/Documents/GitHub/MoonEngine/_build/test/CMakeFiles/generate.stamp is up-to-date.

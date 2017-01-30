@@ -1,3 +1,5 @@
+/*Author: Derek Nola*/
+
 #include "InstTransformLib.h"
 
 using namespace MoonEngine;
