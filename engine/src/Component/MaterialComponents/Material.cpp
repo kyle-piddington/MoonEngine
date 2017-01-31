@@ -2,7 +2,7 @@
 #include "Libraries/Library.h"
 using namespace MoonEngine;
 
-Material::Material(glm::vec3 tint, std::string program, unordered_map<MaterialProperty, string> textures):
+Material::Material(glm::vec3 tint, std::string program, unordered_map<string, string> textures):
 	Component(),
 	_tint(tint)
 {
@@ -13,7 +13,10 @@ Material::Material(glm::vec3 tint, std::string program, unordered_map<MaterialPr
 	}
 
 	for (auto &texture: textures) {
-		_textures[texture.first] = Library::TextureLib->getTexture(texture.second, texture.first);
+        // uniform name <=> texture
+		_textures[texture.first] = Library::TextureLib->getTexture(texture.second, _unit++);
+        /* Add the uniforms */
+        //_programPtr->getUniformLocation(materialPropertyNames[texture.first]);
 	}
 
 	_samplerPtr = Library::SamplerLib->getSampler("default");
@@ -43,10 +46,11 @@ std::shared_ptr<Component> Material::clone() const
 
 void Material::bind() {
 	//todo bind uniforms
-	for (auto &texture: _textures) {
-		texture.second->bind();
-		texture.second->bindSampler(_samplerPtr);
-	}
+	for (auto &_texture: _textures) {
+        _texture.second->bind();
+        _texture.second->bindSampler(_samplerPtr);
+        glUniform1i(_programPtr->getUniformLocation(_texture.first), _texture.second->getUnit());
+    }
 }
 
 void Material::unbind() {

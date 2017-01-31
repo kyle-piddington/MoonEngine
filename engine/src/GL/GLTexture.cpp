@@ -47,6 +47,10 @@ bool GLTexture::init(std::string textureName) {
     return true;
 }
 
+GLuint GLTexture::getUnit() {
+    return _unit;
+}
+
 void GLTexture::bind()
 {
     glActiveTexture(_unit);

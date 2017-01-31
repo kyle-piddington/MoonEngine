@@ -69,7 +69,7 @@ if (WIN32)
 
 else ()
     # Enable all pedantic warnings if not on WIN32.
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic -g")
     if (APPLE)
         # Add required frameworks for GLFW.
         target_link_libraries(MoonEngine "-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo")

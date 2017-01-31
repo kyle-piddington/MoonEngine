@@ -15,11 +15,11 @@ TextureLibrary::~TextureLibrary()
 }
 
 /* Get or load a texture. Do not include an image extension */
-GLTexture * TextureLibrary::getTexture(std::string textureName, MaterialProperty materialProperty)
+GLTexture * TextureLibrary::getTexture(std::string textureName, int unit)
 {
     if (_textures.find(textureName) == _textures.end())
     {
-        std::shared_ptr<GLTexture> glTexture = std::make_shared<GLTexture>(materialProperty);
+        std::shared_ptr<GLTexture> glTexture = std::make_shared<GLTexture>(unit);
         if (glTexture->init(textureName))
         {
             _textures[textureName] = glTexture.get();

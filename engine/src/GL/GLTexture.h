@@ -42,6 +42,8 @@ namespace MoonEngine
          */
         bool init(std::string textureName);
 
+        GLuint getUnit();
+
         /**
          * Bind the texture
          */
@@ -60,13 +62,5 @@ namespace MoonEngine
         GLenum _textureType;
 
         GLuint _unit;
-    };
-
-    // TODO: Move to proper location
-    enum MaterialProperty {
-        diffuse = 1,
-        normal,
-        specular,
-        ambient
     };
 }

@@ -69,6 +69,7 @@ void ProgramRenderer::render(Scene * scene)
 			activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 		glUniformMatrix3fv(
 			activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
+
 		
 		glDrawElementsBaseVertex(GL_TRIANGLES, 
 			mesh->numTris, 

@@ -16,7 +16,7 @@ namespace MoonEngine
         TextureLibrary(std::string resourcePath);
         ~TextureLibrary();
 
-        GLTexture * getTexture(std::string textureName, MaterialProperty materialProperty);
+        GLTexture * getTexture(std::string textureName, int unit);
 
     private:
         std::string _recPath;
