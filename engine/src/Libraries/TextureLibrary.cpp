@@ -6,7 +6,9 @@ using namespace MoonEngine;
 TextureLibrary::TextureLibrary(std::string resourcePath):
         _recPath(resourcePath + "/") {
     //Add a fallback texture to the library.
+    _textures.clear();
     loadDefaultTexture();
+
 }
 
 TextureLibrary::~TextureLibrary()
@@ -20,6 +22,7 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, int unit)
     if (_textures.find(textureName) == _textures.end())
     {
         std::shared_ptr<GLTexture> glTexture = std::make_shared<GLTexture>(unit);
+        _texturePtrs.push_back(glTexture);
         if (glTexture->init(_recPath + textureName))
         {
             _textures[textureName] = glTexture.get();
