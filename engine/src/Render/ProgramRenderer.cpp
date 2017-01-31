@@ -64,7 +64,8 @@ void ProgramRenderer::render(Scene * scene)
 		const MeshInfo * mesh = obj->getComponent<StaticMesh>()->getMesh();
 		mesh->bind();
 		//@TODO: Refactor these later
-		//glUniform3f(activeProgram->getUniformLocation("tint"),tint.x,tint.y,tint.z);
+		glUniform3f(activeProgram->getUniformLocation("tint"),tint.x,tint.y,tint.z);
+		mat->bind();
 		glUniformMatrix4fv(
 			activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 		glUniformMatrix3fv(
@@ -76,6 +77,7 @@ void ProgramRenderer::render(Scene * scene)
 			GL_UNSIGNED_SHORT, 
 			mesh->indexDataOffset,
 			mesh->baseVertex);
+		mat->unbind();
 	}
 	GLVertexArrayObject::Unbind();
 }

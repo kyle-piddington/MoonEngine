@@ -62,13 +62,12 @@ void ThirdPersonCharacterController::handleMove(float dt)
 	}
 	Hit moveHit;
 	playerDirection *= playerSpeed;
-	LOG(GAME, "playerDirection: " + std::to_string(playerDirection.x) +"," + std::to_string(playerDirection.y));
-	
-	LOG(GAME, "transform: " + std::to_string(transform->forward().x) +"," + std::to_string(transform->forward().y)+"," + std::to_string(transform->forward().z));
+	//LOG(GAME, "playerDirection: " + std::to_string(playerDirection.x) +"," + std::to_string(playerDirection.y));
+	//LOG(GAME, "transform: " + std::to_string(transform->forward().x) +"," + std::to_string(transform->forward().y)+"," + std::to_string(transform->forward().z));
 	//Check and remove movement along colliding axis.
 	if(GetWorld()->castRay(transform->getPosition(),transform->forward(),radius, &moveHit))
 	{
-		LOG(GAME, "RayHit");
+		//LOG(GAME, "RayHit");
 		if(glm::dot(moveHit.intersectionNormal, playerDirection) < 0)
 		{
 			playerDirection -= moveHit.intersectionNormal * glm::dot(playerDirection , moveHit.intersectionNormal);			

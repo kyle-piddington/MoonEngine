@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
 	Camera * cam = scene->createComponent<Camera>( 3.1415/3, 800.0/600.0, 0.1, 50);
 	cameraObj->addComponent(cam);
 	cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
-	//cameraObj->getTransform().translate(glm::vec3(0,2,5));
+	cameraObj->getTransform().translate(glm::vec3(0,5,5));
 	//cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
 	scene->addGameObject(cameraObj);
 
@@ -80,14 +80,23 @@ int main(int argc, char **argv) {
 	groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.8,0.2), "default.program"));
 	scene->addGameObject(groundObject);
 
+	//Upper Platform
+	Transform levelTransform;
+	levelTransform.setScale(glm::vec3(5, 0.2, 5.0));
+	levelTransform.setPosition(glm::vec3(5, 2, 0));
+	std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(levelTransform);
+	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.8, 0.8), "phong.program"));
+	boxObject->addComponent(scene->createComponent<BoxCollider>());
+	scene->addGameObject(boxObject);
+
 	//Boxes
 	Transform boxTransform;
 	boxTransform.setPosition(glm::vec3(1,0,0));
-	std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(boxTransform);
+	boxObject = std::make_shared<GameObject>(boxTransform);
 	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
 	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8,0.8,0.8), "phong.program"));
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
-	
 	scene->addGameObject(boxObject);
 
 	boxTransform.setPosition(glm::vec3(2,1,0));
