@@ -2,13 +2,15 @@
 #include "Util/Logger.h"
 using namespace MoonEngine;
 
-GameObject::GameObject()
+GameObject::GameObject() :
+deleted(false)
 {
 
 }
 
 GameObject::GameObject(const Transform & t):
-transform(t)
+transform(t),
+deleted(false)
 {
 
 }
@@ -67,4 +69,12 @@ void GameObject::onCollisionEnter(Collision col)
 	{
 		c->onCollisionEnter(col);
 	}
+}
+bool GameObject::isDeleted()
+{
+	return deleted;
+}
+void GameObject::setDeleted()
+{
+	deleted = true;
 }
