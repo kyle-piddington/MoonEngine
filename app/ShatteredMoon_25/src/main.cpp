@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow * window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
+	GLFWwindow * window = glfwCreateWindow(1600, 900, "LearnOpenGL", nullptr, nullptr);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -80,13 +80,34 @@ int main(int argc, char **argv) {
 	groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.8,0.2), "default.program"));
 	scene->addGameObject(groundObject);
 
-	//Upper Platform
+	//Upper Platforms
 	Transform levelTransform;
-	levelTransform.setScale(glm::vec3(5, 0.2, 5.0));
-	levelTransform.setPosition(glm::vec3(5, 2, 0));
+	levelTransform.setScale(glm::vec3(1, 0.5, 1));
+	levelTransform.setPosition(glm::vec3(-1, 2, 2));
 	std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(levelTransform);
 	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
-	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.8, 0.8), "phong.program"));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program"));
+	boxObject->addComponent(scene->createComponent<BoxCollider>());
+	scene->addGameObject(boxObject);
+
+	levelTransform.setPosition(glm::vec3(-1, 2.5, 0.5));
+	boxObject = std::make_shared<GameObject>(levelTransform);
+	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.3, 0.5, 0.8), "phong.program"));
+	boxObject->addComponent(scene->createComponent<BoxCollider>());
+	scene->addGameObject(boxObject);
+
+	levelTransform.setPosition(glm::vec3(-1, 3, -1));
+	boxObject = std::make_shared<GameObject>(levelTransform);
+	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program"));
+	boxObject->addComponent(scene->createComponent<BoxCollider>());
+	scene->addGameObject(boxObject);
+
+	levelTransform.setPosition(glm::vec3(-1, 2.5, -3.5));
+	boxObject = std::make_shared<GameObject>(levelTransform);
+	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.9, 0.5), "phong.program"));
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
 	scene->addGameObject(boxObject);
 
@@ -99,7 +120,7 @@ int main(int argc, char **argv) {
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
 	scene->addGameObject(boxObject);
 
-	boxTransform.setPosition(glm::vec3(2,1,0));
+	boxTransform.setPosition(glm::vec3(2.5,0.5,0));
 	boxObject = std::make_shared<GameObject>(boxTransform);
 	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
 	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8,0.8,0.8), "phong.program"));
@@ -107,10 +128,17 @@ int main(int argc, char **argv) {
 	scene->addGameObject(boxObject);
 
 
-	boxTransform.setPosition(glm::vec3(3,2,0));
+	boxTransform.setPosition(glm::vec3(3,1,1.5));
 	boxObject = std::make_shared<GameObject>(boxTransform);
 	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
-	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8,0.8,0.8), "phong.program"));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.4,0.9,0.8), "phong.program"));
+	boxObject->addComponent(scene->createComponent<BoxCollider>());
+	scene->addGameObject(boxObject);
+
+	boxTransform.setPosition(glm::vec3(1.5, 1.5, 2));
+	boxObject = std::make_shared<GameObject>(boxTransform);
+	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.3, 0.8), "phong.program"));
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
 	scene->addGameObject(boxObject);
 
