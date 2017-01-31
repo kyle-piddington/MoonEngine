@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "GL/GLVertexArrayObject.h"
+#include "GLWrapper/GLVertexArrayObject.h"
 #include "Loaders/MeshInfo.h"
 #include <memory>
 namespace MoonEngine

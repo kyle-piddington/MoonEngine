@@ -1,6 +1,6 @@
 #include "DefaultRenderer.h"
 #include "Util/Logger.h"
-#include "GL/OpenGL.h"
+#include "GLWrapper/OpenGL.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "Component/Components.h"
 #include "GameObject/GameObject.h"

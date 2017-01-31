@@ -1,7 +1,7 @@
 #include "BasicLoader.h"
 #include "thirdparty/tiny_obj_loader.h"
 #include "Util/Logger.h"
-#include "GL/GLConstants.h"
+#include "GLWrapper/GLConstants.h"
 
 using namespace MoonEngine;
 using namespace tinyobj;

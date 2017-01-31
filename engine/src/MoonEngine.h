@@ -2,13 +2,13 @@
 /**
  * Public headers for moonEngine
  */
-#include "GL/OpenGL.h"
-#include "GL/GLVertexArrayObject.h"
-#include "GL/GLTexture.h"
-#include "GL/GLShader.h"
-#include "GL/GLFramebuffer.h"
-#include "GL/GLBuffer.h"
-#include "GL/GLProgram.h"
+#include "GLWrapper/OpenGL.h"
+#include "GLWrapper/GLVertexArrayObject.h"
+#include "GLWrapper/GLTexture.h"
+#include "GLWrapper/GLShader.h"
+#include "GLWrapper/GLFramebuffer.h"
+#include "GLWrapper/GLBuffer.h"
+#include "GLWrapper/GLProgram.h"
 
 #include "GLUtil/GLProgramUtilities.h"
 

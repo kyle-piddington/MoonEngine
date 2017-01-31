@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "MeshComponents/StaticMesh.h"
+#include "MeshComponents\InstanceMesh.h"
 #include "CameraComponents/Camera.h"
 #include "CameraComponents/FirstPersonController.h"
 #include "MaterialComponents/Material.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "GL/GLProgram.h"
+#include "GLWrapper/GLProgram.h"
 #include "I_Renderer.h"
 #include "Component/Components.h"
 /**

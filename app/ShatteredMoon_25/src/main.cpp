@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
 		return -1;
 	}
 
-	Logger::SetLogLevel(INFO);
+	Logger::SetLogLevel(GAME);
 
 
 	MoonEngineCfg cfg;
@@ -89,6 +89,8 @@ int main(int argc, char **argv) {
 	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program"));
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
 	scene->addGameObject(boxObject);
+
+
 
 	levelTransform.setPosition(glm::vec3(-1, 2.5, 0.5));
 	boxObject = std::make_shared<GameObject>(levelTransform);

@@ -11,15 +11,16 @@ InstTransformLibrary::InstTransformLibrary(std::string resourcePath) :
 InstTransformLibrary::~InstTransformLibrary()
 {
 }
-GLVertexArrayObject* InstTransformLibrary::getMatrixVAO(std::string transformfile) {
+vector<glm::mat4> MoonEngine::InstTransformLibrary::getInstanceMatrices(std::string transformfile)
+{
 	std::vector<glm::mat4>transforms;
 
-	if (_mapFileToVAO.find(transformfile) == _mapFileToVAO.end()) {
+	if (_mapFileToMatrices.find(transformfile) == _mapFileToMatrices.end()) {
 
 		//Process file and generate vector of Mat4
-		transforms = Util::InstanceLoader(transformfile);
-		//TODO: Turn the vector into a VBO and return the VAO
+		transforms = Util::InstanceLoader(_recPath + transformfile);
+		//TODO: Turn the vector into a VBO 
+		_mapFileToMatrices[transformfile] = transforms;
 	}
-
-	return _mapFileToVAO[transformfile];
+	return _mapFileToMatrices[transformfile];
 }

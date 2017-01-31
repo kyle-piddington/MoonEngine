@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GL/GLShader.h"
-#include "GL/GLProgram.h"
+#include "GLWrapper/GLShader.h"
+#include "GLWrapper/GLProgram.h"
 
 namespace MoonEngine
 {

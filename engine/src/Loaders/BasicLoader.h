@@ -2,9 +2,9 @@
  * Load an OBJ model and read it into an interchange mesh format.
  */
 
-#include "GL/GLBuffer.h"
-#include "GL/GLVertexArrayObject.h"
-#include "GL/GLConstants.h"
+#include "GLWrapper/GLBuffer.h"
+#include "GLWrapper/GLVertexArrayObject.h"
+#include "GLWrapper/GLConstants.h"
 #include "MeshInfo.h"
 #include <string>
 #include "thirdparty/tiny_obj_loader.h"

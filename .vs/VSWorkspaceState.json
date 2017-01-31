@@ -2,13 +2,11 @@
   "ExpandedNodes": [
     "",
     "\\app",
-    "\\app\\glTestScene",
-    "\\app\\glTestScene\\resources",
-    "\\app\\glTestScene\\src",
     "\\engine",
+    "\\engine\\src",
     "\\engine\\src\\Component",
-    "\\engine\\src\\Component\\GeometryComponents",
     "\\engine\\src\\EngineApp"
   ],
+  "SelectedNode": "\\engine\\src\\GL",
   "PreviewInSolutionExplorer": false
 }

@@ -2,9 +2,9 @@
 #include "Component/Component.h"
 #include <glm/glm.hpp>
 
-#include "GL/GLProgram.h"
-#include <GL/GLSampler.h>
-#include <GL/GLTexture.h>
+#include "GLWrapper/GLProgram.h"
+#include <GLWrapper/GLSampler.h>
+#include <GLWrapper/GLTexture.h>
 /**
  * Material contains the basic rendering
  * information needed for rendering a material. In this case,

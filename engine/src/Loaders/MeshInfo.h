@@ -1,5 +1,5 @@
 #pragma once
-#include "GL/GLVertexArrayObject.h"
+#include "GLWrapper/GLVertexArrayObject.h"
 #include "Collision/BoundingBox.h"
 /**
  * MeshInfo holds on to the information needed
@@ -16,14 +16,16 @@ namespace MoonEngine
 		//Bounding min and max vertices
 		BoundingBox boundingBox;
 		void bind() const{vertexObjectPtr->bind();}
-		void setVertexArrayObject(GLVertexArrayObject * vao)
-		{
+		void setVertexArrayObject(GLVertexArrayObject * vao){
 			vertexObjectPtr = vao;
+		}
+		inline GLVertexArrayObject* getVAO() { 
+			return this->vertexObjectPtr; 
 		}
 		private:
 		//Pointer to the vertex array object that contains the mesh.
 		////Most meshes are saved  in MeshLibrary, but not all.
-		const GLVertexArrayObject * vertexObjectPtr;
+		GLVertexArrayObject * vertexObjectPtr;
 		
 	};	
 }

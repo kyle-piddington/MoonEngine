@@ -5,7 +5,7 @@
  */
 #include <string>
 #include <unordered_map>
-#include "GL/GLTexture.h"
+#include "GLWrapper/GLTexture.h"
 
 namespace MoonEngine
 {
