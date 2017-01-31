@@ -65,7 +65,7 @@ void ThirdPersonCharacterController::handleMove(float dt)
 	//LOG(GAME, "playerDirection: " + std::to_string(playerDirection.x) +"," + std::to_string(playerDirection.y));
 	//LOG(GAME, "transform: " + std::to_string(transform->forward().x) +"," + std::to_string(transform->forward().y)+"," + std::to_string(transform->forward().z));
 	//Check and remove movement along colliding axis.
-	if(GetWorld()->castRay(transform->getPosition(),transform->forward(),radius, &moveHit))
+	if(GetWorld()->castRay(transform->getPosition(),transform->forward(),radius + 0.1f, &moveHit))
 	{
 		//LOG(GAME, "RayHit");
 		if(glm::dot(moveHit.intersectionNormal, playerDirection) < 0)
@@ -109,20 +109,35 @@ void ThirdPersonCharacterController::handleJump(float dt)
 		LOG(GAME, "ENDING JUMP");
 		state = FALLING;
 	}
+
+	//Check if platform under via raycast
 	if(state == JUMPING)
 	{
 		jumpSpeed = _curJumpForce;
-		transform->translate(glm::vec3(0,jumpSpeed*dt,0));
 	}
 	else if(state == FALLING)
 	{
 		jumpSpeed += dt *  gravity;
-		transform->translate(glm::vec3(0,jumpSpeed*dt,0));
 	}
 	else
 	{
 		jumpSpeed = 0;
 	}
+	Hit h;
+	if(state == FALLING && GetWorld()->castRay(transform->getPosition(),glm::vec3(0,-1,0),bbox->getHalfWidths().y + jumpSpeed * dt, &h))
+	{
+		//Translate to hit position
+		transform->translate(
+			h.intersectionPoint - transform->getPosition() + glm::vec3(0,bbox->getHalfWidths().y,0));
+		state = GROUND;
+		jumpSpeed = 0;
+	}
+	else
+	{
+		transform->translate(glm::vec3(0.f,jumpSpeed*dt,0.f));
+	}
+
+	//Check if on ground plane
 	if(transform->getPosition().y <= bbox->getHalfWidths().y && state == FALLING){
 		transform->setPosition(
 			glm::vec3(transform->getPosition().x,bbox->getHalfWidths().y,transform->getPosition().z));
@@ -138,6 +153,11 @@ void ThirdPersonCharacterController::onCollisionEnter(Collision col)
 		LOG(GAME, "Hit ground");
 		state = GROUND;		
 	}
+	else if(state == JUMPING && glm::dot(col.normal, glm::vec3(0,-1,0)) > cosf(M_PI/3))
+	{
+		state = FALLING;
+		jumpSpeed = 0;
+	}
 }
 
 
@@ -146,10 +166,9 @@ void ThirdPersonCharacterController::checkIfShouldFall()
 	//Early break if on ground.
 	if(transform->getPosition().y <= bbox->getHalfWidths().y)
 	{
-	
 		return;
 	}
-	if(state != JUMPING && !GetWorld()->castRay(transform->getPosition(),glm::vec3(0,-1,0),bbox->getHalfWidths().y))
+	if(state != JUMPING && !GetWorld()->castRay(transform->getPosition(),glm::vec3(0,-1,0),bbox->getHalfWidths().y + 0.1))
 	{
 		state = FALLING;
 	}
