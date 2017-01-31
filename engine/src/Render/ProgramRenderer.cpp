@@ -61,7 +61,7 @@ void ProgramRenderer::render(Scene * scene)
 		}
 
 		glm::vec3 tint = mat->getTint();
-		const MeshInfo * mesh = obj->getComponent<StaticMesh>()->getMesh();
+		const MeshInfo * mesh = obj->getComponent<Mesh>()->getMesh();
 		mesh->bind();
 		//@TODO: Refactor these later
 		glUniform3f(activeProgram->getUniformLocation("tint"),tint.x,tint.y,tint.z);

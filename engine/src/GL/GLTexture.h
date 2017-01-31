@@ -38,11 +38,13 @@ namespace MoonEngine
         GLTexture &operator=(GLTexture &&other);
 
         /** Initialize texture with a file
-         *  @param [textureName].png (do not include extension)
+         *  @param [textureN`ame].png (do not include extension)
          */
         bool init(std::string textureName);
 
         GLuint getUnit();
+
+        GLint getTextureId();
 
         /**
          * Bind the texture

@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
 	boxTransform.setPosition(glm::vec3(1,0,0));
 	std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(boxTransform);
 	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
-	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8,0.8,0.8), "phong.program", textures));
+	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8,0.8,0.8), "phong.program"));
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
 	
 	scene->addGameObject(boxObject);

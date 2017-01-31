@@ -19,6 +19,7 @@ GLTexture::GLTexture(GLuint unit, GLenum textureType) {
 
 GLTexture::~GLTexture()
 {
+
 }
 
 /* We use init to ensure that loading an image didn't fail */
@@ -41,7 +42,7 @@ bool GLTexture::init(std::string textureName) {
     /* Bind the current texture to be the texture object */
     glBindTexture(_textureType, _textureId);
     /* Load the actual texture data */
-    glTexImage2D(_textureType, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(_textureType, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     /* Generate mipmap */
     glGenerateMipmap(_textureType);
 
@@ -54,6 +55,11 @@ bool GLTexture::init(std::string textureName) {
 
 GLuint GLTexture::getUnit() {
     return _unit;
+}
+
+GLint GLTexture::getTextureId()
+{
+    return _textureId;
 }
 
 void GLTexture::bind()
