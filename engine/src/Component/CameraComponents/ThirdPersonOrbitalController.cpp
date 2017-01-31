@@ -6,6 +6,7 @@
 #include "Geometry/World.h"
 #include "Util/Logger.h"
 #include "GlobalFuncs/GlobalFuncs.h"
+#include "Util/MathUtil.h"
 //Windows C++
 #ifndef M_PI
 #define M_PI 3.141592653589793
@@ -36,7 +37,7 @@ ThirdPersonOrbitalController::ThirdPersonOrbitalController(float Cam_Move_Speed,
 
 void ThirdPersonOrbitalController::start()
 {
-	_trac = _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi), sinf(_phi) * sinf(_theta));
+	_tracInterp = _trac = _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi), sinf(_phi) * sinf(_theta));
 	Transform & transform = gameObject->getTransform();
 	transform.setPosition(_trac);
 	transform.lookAt(_targ);
@@ -85,9 +86,11 @@ void ThirdPersonOrbitalController::update(float dt)
    		_theta = atan2(camDirection.z,camDirection.x);
    		_trac = _targ + glm::normalize(gameObject->getTransform().getPosition() - player->getTransform().getPosition())*_distance;
    	}
-   	_tracInterp += (_trac - _tracInterp)*0.1f;
+   	_tracInterp += (_trac - _tracInterp) * dt * 5.0f;
 	Transform & transform = gameObject->getTransform();
 	transform.setPosition(_tracInterp);
+
+
 	//_targ = transform.getPosition();
 	transform.lookAt(_targ);
 	
