@@ -15,7 +15,7 @@ void main()
 	vec3 ambient = 0.3 * tint;
 	vec3 nor=normalize(fragNor);
 
-	vec3 texColor = vec3(texture(Texture, texPos));
+	vec3 texColor = vec3(texture(Texture, vec2(fragTex)));
 
 	float diff = max(dot(nor,lightDir),0.0f);
 	vec3 diffuse = diff * texColor;
