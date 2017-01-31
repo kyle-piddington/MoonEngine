@@ -148,12 +148,16 @@ void ThirdPersonCharacterController::handleJump(float dt)
 
 void ThirdPersonCharacterController::onCollisionEnter(Collision col)
 {
-	if((state == FALLING || state == JUMPING) && glm::dot(col.normal, glm::vec3(0,1,0)) > cosf(M_PI/3))
+	if((state == FALLING || state == JUMPING)
+		 && 
+		 glm::dot(col.normal, glm::vec3(0,1,0)) > cosf(M_PI/3) &&
+		jumpSpeed < 0)
+
 	{
 		LOG(GAME, "Hit ground");
 		state = GROUND;		
 	}
-	else if(state == JUMPING && glm::dot(col.normal, glm::vec3(0,-1,0)) > cosf(M_PI/3))
+	else if((state == JUMPING  || state == FALLING) && glm::dot(col.normal, glm::vec3(0,-1,0)) > cosf(M_PI/3) && jumpSpeed > 0)
 	{
 		state = FALLING;
 		jumpSpeed = 0;
