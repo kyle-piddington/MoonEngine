@@ -20,7 +20,7 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, int unit)
     if (_textures.find(textureName) == _textures.end())
     {
         std::shared_ptr<GLTexture> glTexture = std::make_shared<GLTexture>(unit);
-        if (glTexture->init(textureName))
+        if (glTexture->init(_recPath + textureName))
         {
             _textures[textureName] = glTexture.get();
         }
@@ -35,6 +35,6 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, int unit)
 void TextureLibrary::loadDefaultTexture()
 {
     std::shared_ptr<GLTexture> glTexture = std::make_shared<GLTexture>(GL_TEXTURE0);
-    glTexture->init("default");
+    glTexture->init(_recPath + "default");
     _textures["default"] = glTexture.get();
 }

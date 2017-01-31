@@ -2,6 +2,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <thirdparty/stb_image.h>
+#include <iostream>
 
 using namespace MoonEngine;
 
@@ -22,12 +23,16 @@ GLTexture::~GLTexture()
 
 /* We use init to ensure that loading an image didn't fail */
 bool GLTexture::init(std::string textureName) {
+    string texture_file = textureName + ".png";
+    std::cout << texture_file << endl;
+
     int width, height, ncomps;
 
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load(textureName.c_str(), &width, &height, &ncomps, 0);
+    unsigned char *data = stbi_load(texture_file.c_str(), &width, &height, &ncomps, 0);
     /* File not found */
     if (!data) {
+        std::cout << "NOt found";
         return false;
     }
 
