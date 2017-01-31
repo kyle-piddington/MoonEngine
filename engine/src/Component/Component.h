@@ -40,6 +40,12 @@ namespace MoonEngine
 		GameObject * getGameObject(){
 			return gameObject;
 		}
+		
+		bool isDeleted();
+
+		void setDeleted();
+	private:
+		bool deleted;
 	protected:
 		GameObject * gameObject;
 

@@ -110,6 +110,13 @@ void Scene::deleteGameObject(GameObject * object)
 {
 	//Add object to queue for deletion
 	//On frame end, these objects should be deleted.
+	object->setDeleted();
+	std::vector<Component *> components = object->getComponents();
+	int size = components.size();
+	for (int i = 0; i < size; i++)
+	{
+		components.at(i)->setDeleted();
+	}
 }
 
 
@@ -117,6 +124,57 @@ void Scene::runDeleteGameObjects()
 {
 	//Delete all components on queued gameObjects
 	//Also delete the gameObjects
+	int size = _boxCollisionComponents.size();
+	for (int i = 0; i < size; i++)
+	{
+		if (_boxCollisionComponents.at(i)->isDeleted())
+		{
+			delete _boxCollisionComponents.at(i);
+			_boxCollisionComponents.erase(_boxCollisionComponents.begin() + i);
+			i--;
+			size--;
+		}
+	}
+	size = _components.size();
+	for (int i = 0; i < size; i++)
+	{
+		if (_components.at(i) != nullptr && _components.at(i)->isDeleted())
+		{
+			_components.erase(_components.begin() + i);
+			i--;
+			size--;
+		}
+	}
+	size = _allGameObjects.size();
+	for (int i = 0; i < size; i++)
+	{
+		if (_allGameObjects.at(i) != nullptr && _allGameObjects.at(i)->isDeleted())
+		{
+			_allGameObjects.erase(_allGameObjects.begin() + i);
+			i--;
+			size--;
+		}
+	}
+	size = _renderableGameObjects.size();
+	for (int i = 0; i < size; i++)
+	{
+		if (_renderableGameObjects.at(i) != nullptr && _renderableGameObjects.at(i)->isDeleted())
+		{
+			_renderableGameObjects.erase(_renderableGameObjects.begin() + i);
+			i--;
+			size--;
+		}
+	}
+	size = _gameObjects.size();
+	for (int i = 0; i < size; i++)
+	{
+		if (_gameObjects.at(i) != nullptr && _gameObjects.at(i)->isDeleted())
+		{
+			_gameObjects.erase(_gameObjects.begin() + i);
+			i--;
+			size--;
+		}
+	}
 }
 
 void Scene::instantiateNewObjects()

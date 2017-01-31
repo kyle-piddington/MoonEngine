@@ -2,7 +2,8 @@
 #include "GameObject/GameObject.h"
 
 using namespace MoonEngine;
-Component::Component()
+Component::Component() :
+deleted(false)
 {
 	
 }
@@ -35,4 +36,13 @@ void Component::onCollisionEnter(Collision col)
 void Component::onCollisionExit(Collision col)
 {
 
+} 
+bool Component::isDeleted() 
+{
+	return deleted;
+}
+
+void Component::setDeleted()
+{
+	deleted = true;
 }

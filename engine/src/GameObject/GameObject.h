@@ -76,7 +76,8 @@ namespace MoonEngine
 		 */
 		void onCollisionExit(Collision col);
 
-
+		bool isDeleted();
+		void setDeleted();
 	
 	private:
 		/*
@@ -87,7 +88,7 @@ namespace MoonEngine
 		std::vector<Component *> components;
 		Tag tag;
 		GameObject * parent;
-
+		bool deleted;
 	};
 
 };
