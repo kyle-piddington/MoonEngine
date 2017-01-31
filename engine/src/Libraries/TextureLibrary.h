@@ -5,6 +5,7 @@
  */
 #include <string>
 #include <unordered_map>
+#include <vector>
 #include "GLWrapper/GLTexture.h"
 
 namespace MoonEngine
@@ -22,5 +23,6 @@ namespace MoonEngine
         std::string _recPath;
         void loadDefaultTexture();
         std::unordered_map<std::string, GLTexture *> _textures;
+        std::vector<std::shared_ptr<GLTexture>> _texturePtrs;
     };
 }

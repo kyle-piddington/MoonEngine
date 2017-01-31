@@ -3,7 +3,7 @@
 #include "Component/Component.h"
 #include "Mesh.h"
 #include "EngineApp/EngineApp.h"
-#include "GLWrapper\GLConstants.h"
+#include "GLWrapper/GLConstants.h"
 
 namespace MoonEngine
 {
