@@ -58,7 +58,7 @@ namespace MoonEngine
 		unordered_map<string, GLTexture *> _textures;
 		glm::vec3 _tint;
 
-        GLuint _unit = 1;
+        GLuint _texture_unit = 1;
     };
 }
 
