@@ -4,3 +4,5 @@ cmake-build*
 build/
 .idea/
 .DS_Store
+Win32/Debug/ZERO_CHECK/ZERO_CHECK.log
+Win32/Debug/ALL_BUILD/ALL_BUILD.log
