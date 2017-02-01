@@ -6,6 +6,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 #include "GLWrapper/GLTexture.h"
 
 namespace MoonEngine
