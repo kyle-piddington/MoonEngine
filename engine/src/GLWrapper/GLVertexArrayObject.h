@@ -1,6 +1,7 @@
 #pragma once
 #include "OpenGL.h"
 #include "GLBuffer.h"
+#include "GLConstants.h"
 namespace MoonEngine
 {
 	class GLVertexArrayObject

@@ -7,7 +7,7 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 # We don't really need to include header and resource files to build, but it's
 # nice to have them show up in IDEs.
 file(GLOB_RECURSE HEADERS "src/*.h")
-file(GLOB_RECURSE GLSL "resources/*.glsl")
+file(GLOB_RECURSE GLSL "resources/*.vs" "resources/*.fs" "resources/*.gs")
 
 # Set the executable.
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
