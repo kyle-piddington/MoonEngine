@@ -17,7 +17,9 @@ int main(int argc, char **argv) {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow * window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
+	int windowWidth = 1200, windowHeight = 720;
+
+	GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL", nullptr, nullptr);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -53,7 +55,7 @@ int main(int argc, char **argv) {
 
 
 	//Camera setup
-	Camera * cam = scene->createComponent<Camera>(3.1415 / 3, 800.0 / 600.0, 0.1, 50);
+	Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 50);
 	cameraObj->addComponent(cam);
 	cameraObj->addComponent(scene->createComponent<FirstPersonController>(5.0f));
 	cameraObj->getTransform().translate(glm::vec3(0,2,5));
@@ -70,7 +72,6 @@ int main(int argc, char **argv) {
 	scene->addGameObject(groundObject);
 
 	//Boxes
-	Transform boxTransform;
 	std::shared_ptr<GameObject> boxObjects = std::make_shared<GameObject>();
 	boxObjects->addComponent(scene->createComponent<InstanceMesh>("cube.obj", "testdata.dat", false));
 	boxObjects->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.8, 0.2), "instance_phong.program"));
