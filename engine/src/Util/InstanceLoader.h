@@ -19,6 +19,7 @@ namespace MoonEngine
 			glm::vec3 scl;
 			glm::vec3 rot;
 			std::ifstream File(fileName);
+			assert(File.is_open() == true);
 			std::string line;
 			while (std::getline(File, line))
 			{
