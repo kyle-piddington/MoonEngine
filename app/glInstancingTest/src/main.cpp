@@ -11,8 +11,8 @@ using namespace MoonEngine;
 int main(int argc, char **argv) {
 
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -55,8 +55,8 @@ int main(int argc, char **argv) {
 	//Camera setup
 	Camera * cam = scene->createComponent<Camera>(3.1415 / 3, 800.0 / 600.0, 0.1, 50);
 	cameraObj->addComponent(cam);
-	cameraObj->addComponent(scene->createComponent<FirstPersonController>());
-	//cameraObj->getTransform().translate(glm::vec3(0,2,5));
+	cameraObj->addComponent(scene->createComponent<FirstPersonController>(5.0f));
+	cameraObj->getTransform().translate(glm::vec3(0,2,5));
 	//cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
 	scene->addGameObject(cameraObj);
 
@@ -70,7 +70,11 @@ int main(int argc, char **argv) {
 	scene->addGameObject(groundObject);
 
 	//Boxes
-	
+	Transform boxTransform;
+	std::shared_ptr<GameObject> boxObjects = std::make_shared<GameObject>();
+	boxObjects->addComponent(scene->createComponent<InstanceMesh>("cube.obj", "testdata.dat", false));
+	boxObjects->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.8, 0.2), "instance_phong.program"));
+	scene->addGameObject(boxObjects);
 
 	float accumTime;
 	int lastUpdateTime;

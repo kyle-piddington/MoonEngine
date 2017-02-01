@@ -18,9 +18,10 @@ namespace MoonEngine
 		*/
 		const MeshInfo * getMesh();
 		virtual std::shared_ptr<Component> clone() const;
-
+		unsigned _numOfInstances;
 	private:
 		MeshInfo * _meshInfo;
+		
 		std::vector<glm::mat4> _instanceTransforms;
 	};
 }
