@@ -129,7 +129,7 @@ void Scene::runDeleteGameObjects()
 	{
 		if (_boxCollisionComponents.at(i)->isDeleted())
 		{
-			delete _boxCollisionComponents.at(i);
+			//delete _boxCollisionComponents.at(i);
 			_boxCollisionComponents.erase(_boxCollisionComponents.begin() + i);
 			i--;
 			size--;

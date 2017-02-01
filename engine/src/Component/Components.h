@@ -6,5 +6,6 @@
 #include "CameraComponents/FirstPersonController.h"
 #include "MaterialComponents/Material.h"
 #include "CollisionComponents/BoxCollider.h"
+#include "CharacterComponents/CollectableComponent.h"
 #include "CharacterComponents/ThirdPersonCharacterController.h"
 #include "CameraComponents/ThirdPersonOrbitalController.h"
