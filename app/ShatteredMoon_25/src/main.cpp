@@ -120,6 +120,7 @@ int main(int argc, char **argv) {
 	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj",false));
 	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8,0.8,0.8), "phong.program"));
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
+	//boxObject->addComponent(scene->createComponent<CollectableComponent>()); Twas a test
 	scene->addGameObject(boxObject);
 
 	boxTransform.setPosition(glm::vec3(2.5,0.5,0));
@@ -143,6 +144,8 @@ int main(int argc, char **argv) {
 	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.3, 0.8), "phong.program"));
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
 	scene->addGameObject(boxObject);
+
+
 
 	
 	

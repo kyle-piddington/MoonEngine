@@ -106,7 +106,15 @@ int main(int argc, char **argv) {
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
 	scene->addGameObject(boxObject);
 
-	
+	Transform skydomeTransform;
+	skydomeTransform.setPosition(glm::vec3(0,0,0));
+    skydomeTransform.setScale(glm::vec3(50, 50, 50));
+	std::shared_ptr<GameObject> sphereObject = std::make_shared<GameObject>(boxTransform);
+	sphereObject = std::make_shared<GameObject>(skydomeTransform);
+	sphereObject->addComponent(scene->createComponent<StaticMesh>("sphere.obj",false));
+	stringmap sky_textures({{"tint", "tint"}, {"tint2", "tint2"}, {"sun", "sun"}, {"clouds1", "clouds1"}, {"clouds2", "clouds2"}});
+	sphereObject->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures));
+	scene->addGameObject(sphereObject);
 	
 	float accumTime;
 	int lastUpdateTime;
