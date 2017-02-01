@@ -1,8 +1,8 @@
 #include "GLTexture.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <thirdparty/stb_image.h>
-#include <iostream>
+// #define STB_IMAGE_IMPLEMENTATION
+// #include <thirdparty/stb_image.h>
+// #include <iostream>
 
 using namespace MoonEngine;
 
@@ -23,19 +23,19 @@ GLTexture::~GLTexture()
 }
 
 /* We use init to ensure that loading an image didn't fail */
-bool GLTexture::init(std::string textureName) {
-    string texture_file = textureName + ".png";
-    std::cout << texture_file << endl;
+bool GLTexture::init(void * data,const  GLTextureConfiguration & cfg) {
+    // string texture_file = textureName + ".png";
+    // std::cout << texture_file << endl;
 
-    int width, height, ncomps;
+    // int width, height, ncomps;
 
-    stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load(texture_file.c_str(), &width, &height, &ncomps, 0);
-    /* File not found */
-    if (!data) {
-        std::cout << "NOt found";
-        return false;
-    }
+    // stbi_set_flip_vertically_on_load(true);
+    // unsigned char *data = stbi_load(texture_file.c_str(), &width, &height, &ncomps, 0);
+    // /* File not found */
+    // if (!data) {
+    //     std::cout << "NOt found";
+    //     return false;
+    // }
 
     /* Generate a texture buffer object */
     glGenTextures(1, &_textureId);
@@ -43,15 +43,15 @@ bool GLTexture::init(std::string textureName) {
     glBindTexture(_textureType, _textureId);
     /* Load the actual texture data */
     // How do we support both RGB & RGBA?
-    glTexImage2D(_textureType, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(_textureType, 0, cfg.getInputFormat(), cfg.getWidth(), cfg.getHeight(), 0, cfg.getOutputFormat(), cfg.getDataType(), data);
     /* Generate mipmap */
     glGenerateMipmap(_textureType);
 
     /* Let the birds free */
     glBindTexture(_textureType, 0);
-    stbi_image_free(data);
+    
 
-    return true;
+    return glGetError() == false;
 }
 
 GLuint GLTexture::getUnit() {

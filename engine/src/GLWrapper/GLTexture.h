@@ -3,6 +3,7 @@
 #include <string>
 #include "GLSampler.h"
 #include "OpenGL.h"
+#include "GLTextureConfiguration.h"
 
 namespace MoonEngine
 {
@@ -37,10 +38,13 @@ namespace MoonEngine
         GLTexture(GLTexture &&other);
         GLTexture &operator=(GLTexture &&other);
 
-        /** Initialize texture with a file
-         *  @param [textureName].png (do not include extension)
+        /**
+         * Initialize texture with data and a configuration
+         * @param  data the data of the texture
+         * @param  cfg  a configuration file describing the texture
+         * @return      true if initialization is successful.
          */
-        bool init(std::string textureName);
+        bool init(void * data, const GLTextureConfiguration & cfg);
 
         GLuint getUnit();
 

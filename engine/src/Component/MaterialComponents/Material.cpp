@@ -1,6 +1,7 @@
 #include "Material.h"
 #include "Libraries/Library.h"
 #include "thirdparty/imgui/imgui.h"
+#include <string>
 using namespace MoonEngine;
 
 Material::Material(glm::vec3 tint, std::string program, stringmap textures):
@@ -17,8 +18,14 @@ Material::Material(glm::vec3 tint, std::string program, stringmap textures):
 
 
 	for (auto &texture: textures) {
+		size_t extPos = texture.second.find('.');
+		std::string ext = ".png";
+		if(extPos != std::string::npos)
+		{
+			ext = "";
+		}
         // uniform name <=> texture
-		_textures[texture.first] = Library::TextureLib->getTexture(texture.second, _texture_unit++);
+		_textures[texture.first] = Library::TextureLib->getTexture(texture.second, _texture_unit++, ext);
         /* Add the uniforms */
         //_programPtr->getUniformLocation(materialPropertyNames[texture.first]);
 	}
@@ -51,13 +58,6 @@ std::shared_ptr<Component> Material::clone() const
 void Material::bind() {
 	//todo bind uniforms
 	for (auto &_texture: _textures) {
-		ImGui::Begin("Textures");
-		{
-			ImGui::Image((void*)(_texture.second->getTextureId()),ImVec2(256,256));
-		}
-		ImGui::End();
-		//LOG(GAME,"Texture Unit: "  + std::to_string(_texture.second->getTextureId()));
-
         _texture.second->bind();
         _texture.second->bindSampler(_samplerPtr);
         glUniform1i(_programPtr->getUniformLocation(_texture.first), _texture.second->getUnit());

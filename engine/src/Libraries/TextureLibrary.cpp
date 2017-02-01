@@ -1,6 +1,8 @@
 #include <string>
 #include "TextureLibrary.h"
+#include "Loaders/TextureLoader.h"
 #include <memory>
+#include "thirdparty/imgui/imgui.h"
 using namespace MoonEngine;
 
 TextureLibrary::TextureLibrary(std::string resourcePath):
@@ -17,13 +19,13 @@ TextureLibrary::~TextureLibrary()
 }
 
 /* Get or load a texture. Do not include an image extension */
-GLTexture * TextureLibrary::getTexture(std::string textureName, int unit)
+GLTexture * TextureLibrary::getTexture(std::string textureName, int unit, std::string extension)
 {
     if (_textures.find(textureName) == _textures.end())
     {
-        std::shared_ptr<GLTexture> glTexture = std::make_shared<GLTexture>(unit);
+        std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(unit, _recPath + textureName + extension);
         _texturePtrs.push_back(glTexture);
-        if (glTexture->init(_recPath + textureName))
+        if (glTexture != nullptr)
         {
             _textures[textureName] = glTexture.get();
         }
@@ -37,7 +39,24 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, int unit)
 
 void TextureLibrary::loadDefaultTexture()
 {
-    std::shared_ptr<GLTexture> glTexture = std::make_shared<GLTexture>(GL_TEXTURE0);
-    glTexture->init(_recPath + "default");
+    std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(0, _recPath + "default.png");
+    
     _textures["default"] = glTexture.get();
+}
+
+void TextureLibrary::Debug_ShowAllTextures()
+{
+    //LOG(GAME,"Texture Unit: "  + std::to_string(_texture.second->getTextureId()));
+    ImGui::Begin("Textures");
+    {
+        for(auto _texture : _texturePtrs)
+        {
+            if(_texture != nullptr)
+            {
+                ImGui::Image((void*)(_texture->getTextureId()),ImVec2(128,128));                
+            }
+
+        }
+    }
+    ImGui::End();
 }

@@ -79,6 +79,8 @@ void ProgramRenderer::render(Scene * scene)
 			mesh->baseVertex);
 		mat->unbind();
 	}
+	//Debug show textures
+	Library::TextureLib->Debug_ShowAllTextures();
 	GLVertexArrayObject::Unbind();
 }
 
