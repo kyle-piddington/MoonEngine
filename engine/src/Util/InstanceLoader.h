@@ -6,7 +6,7 @@
 #include <string>
 #include "glm/glm.hpp"
 #include "Geometry/Transform.h"
-
+#include "Logger.h"
 using namespace std;
 namespace MoonEngine
 {
@@ -19,6 +19,9 @@ namespace MoonEngine
 			glm::vec3 scl;
 			glm::vec3 rot;
 			std::ifstream File(fileName);
+			if (File.is_open() == false) {
+				LOG(ERROR, "Instance data file " + fileName + " Could not be loaded");
+			}
 			std::string line;
 			while (std::getline(File, line))
 			{

@@ -39,8 +39,26 @@ void GLVertexArrayObject::bindVertexBuffer(
 	assert(buffer.getType() == GL_ARRAY_BUFFER);
 	bind();
 	buffer.bind();
-	glVertexAttribPointer(attribute, size, type, normalized, stride, offset);
-	glEnableVertexAttribArray(attribute);
+	if (attribute == GL_VERTEX_INSTANCE_MATRIX_ATTRIBUTE) {
+		glEnableVertexAttribArray(attribute);
+		glVertexAttribPointer(attribute, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid*)0);
+		glEnableVertexAttribArray(attribute+1);
+		glVertexAttribPointer(attribute+1, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid*)(stride));
+		glEnableVertexAttribArray(attribute+2);
+		glVertexAttribPointer(attribute+2, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid*)(2 * stride));
+		glEnableVertexAttribArray(attribute+3);						  
+		glVertexAttribPointer(attribute+3, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid*)(3 * stride));
+
+		glVertexAttribDivisor(attribute, 1);
+		glVertexAttribDivisor(attribute+1, 1);
+		glVertexAttribDivisor(attribute+2, 1);
+		glVertexAttribDivisor(attribute+3, 1);
+	}
+	else {
+		glEnableVertexAttribArray(attribute);
+		glVertexAttribPointer(attribute, size, type, normalized, stride, offset);
+	}
+	
 	Unbind();
 }
 
