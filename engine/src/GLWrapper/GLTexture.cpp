@@ -42,12 +42,13 @@ bool GLTexture::init(std::string textureName) {
     /* Bind the current texture to be the texture object */
     glBindTexture(_textureType, _textureId);
     /* Load the actual texture data */
+    // How do we support both RGB & RGBA?
     glTexImage2D(_textureType, 0, GL_RGB8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     /* Generate mipmap */
     glGenerateMipmap(_textureType);
 
     /* Let the birds free */
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(_textureType, 0);
     stbi_image_free(data);
 
     return true;

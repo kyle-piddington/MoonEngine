@@ -56,7 +56,7 @@ void Material::bind() {
 			ImGui::Image((void*)(_texture.second->getTextureId()),ImVec2(256,256));
 		}
 		ImGui::End();
-		LOG(GAME,"Texture Unit: "  + std::to_string(_texture.second->getTextureId()));
+		//LOG(GAME,"Texture Unit: "  + std::to_string(_texture.second->getTextureId()));
 
         _texture.second->bind();
         _texture.second->bindSampler(_samplerPtr);
