@@ -1,6 +1,6 @@
 #pragma once
 #include "GLWrapper/GLTexture.h"
-
+#include <memory>
 /**
  * Load a texture from a file
  * and into a texture.
