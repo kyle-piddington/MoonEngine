@@ -4,13 +4,24 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Component/Components.h"
 #include "GameObject/GameObject.h"
+#include "Geometry/MeshCreator.h"
+#include "thirdparty/imgui/imgui.h"
+#include <iostream>
 using namespace MoonEngine;
 
 
 
 ProgramRenderer::ProgramRenderer():
-	mainCamera(nullptr)
+	mainCamera(nullptr),
+	//renderToFB(800,600),
+	framebufferColorTexture(0),
+	framebufferDepthStencilTexture(1)
 {
+	// renderQuad = MeshCreator::CreateQuad(glm::vec2(-1,1), glm::vec2(1,1));
+	// assert(framebufferColorTexture.init(GLTextureConfiguration(800,600,GL_RGB,GL_RGB,GL_UNSIGNED_BYTE)));
+	// assert(framebufferDepthStencilTexture.init(GLTextureConfiguration(800,600,GL_DEPTH24_STENCIL8,GL_DEPTH_STENCIL,GL_UNSIGNED_INT_24_8)));
+	// renderToFB.addTexture("color",framebufferColorTexture,GL_COLOR_ATTACHMENT0);
+	// renderToFB.addTexture("depthStencil",framebufferDepthStencilTexture,GL_DEPTH_STENCIL_ATTACHMENT);
 
 }
 
@@ -29,8 +40,9 @@ void ProgramRenderer::setup(Scene * scene)
 
 void ProgramRenderer::render(Scene * scene)
 {
-	//Bind program
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	
+	//Bind program
 	
 	glm::mat4 V =  mainCamera->getView();
 	glm::mat4 P = mainCamera->getProjection();
@@ -39,6 +51,8 @@ void ProgramRenderer::render(Scene * scene)
 	//(Hardcoded for now)
 	glm::vec3 lightDir(1,1,1);
 	GLProgram * activeProgram = nullptr;
+	
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	for(std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
 	{
 		glm::mat4 M = obj->getTransform().getMatrix();
@@ -82,8 +96,19 @@ void ProgramRenderer::render(Scene * scene)
 			mat->unbind();
 		}
 	}
+	
+
+	//GLFramebuffer::Unbind();
+
+	
+	// ImGui::Begin("Framebuffer");
+	// {
+	// 	ImGui::Image((void*)(framebufferColorTexture.getTextureId()),ImVec2(256,256));                
+	// 	ImGui::Image((void*)(renderToFB.getTexture("depthStencil")),ImVec2(128,128));                
+	// }
+	// ImGui::End();
 	//Debug show textures
-	Library::TextureLib->Debug_ShowAllTextures();
+	//Library::TextureLib->Debug_ShowAllTextures();
 	GLVertexArrayObject::Unbind();
 }
 

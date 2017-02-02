@@ -46,9 +46,13 @@ namespace MoonEngine
          */
         bool init(void * data, const GLTextureConfiguration & cfg);
 
-        GLuint getUnit();
+        bool init(const GLTextureConfiguration & cfg);
 
-        GLint getTextureId();
+        GLuint getUnit() const;
+
+        GLint getTextureId() const;
+
+        GLenum getTextureType() const;
 
         /**
          * Bind the texture
@@ -61,12 +65,24 @@ namespace MoonEngine
         void unbind();
 
         void bindSampler(GLSampler * sampler);
+
         void unbindSampler();
 
+        int getWidth() const ;
+
+        int getHeight() const;
+
+
+
     private:
+
+
         GLuint _textureId;
         GLenum _textureType;
+        GLenum _framebufferStatus;
 
+        int _textureWidth;
+        int _textureHeight;
         GLuint _unit;
     };
 }

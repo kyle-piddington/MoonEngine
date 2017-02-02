@@ -7,7 +7,12 @@ StaticMesh::StaticMesh(std::string mesh, bool smooth):
 {
 	_meshInfo = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed(mesh, smooth);
 }
+StaticMesh::StaticMesh(MeshInfo * _meshInfo):
+	Mesh(),
+	_meshInfo(_meshInfo)
+	{
 
+	}
 const MeshInfo * StaticMesh::getMesh()
 {
 	return _meshInfo;

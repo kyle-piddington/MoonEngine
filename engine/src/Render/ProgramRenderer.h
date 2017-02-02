@@ -2,6 +2,7 @@
 #include "GLWrapper/GLProgram.h"
 #include "I_Renderer.h"
 #include "Component/Components.h"
+#include "GLWrapper/GLFramebuffer.h"
 /**
  * The Default renderer performs a phong rendering
  * of the entire scene, using MaterialInstance.tint's 
@@ -37,5 +38,9 @@ namespace MoonEngine
 
 	private:
 		Camera * mainCamera;
+		MeshInfo * renderQuad;
+		//GLFramebuffer renderToFB;
+		//GLTexture framebufferColorTexture;
+		//GLTexture framebufferDepthStencilTexture;
 	};
 }

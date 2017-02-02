@@ -22,6 +22,7 @@ MeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smooth)
 	if(_mapMeshToInfo.find(assembledName) == _mapMeshToInfo.end())
 	{
 		//Create and add a new meshInfo
+		//(Warn: returning a pointer that i'm not deleting.)
 		MeshInfo * info = new MeshInfo;
 		_meshBuffers.push_back(std::make_shared<GLBuffer>(GL_ARRAY_BUFFER));
 		_meshBuffers.push_back(std::make_shared<GLBuffer>(GL_ELEMENT_ARRAY_BUFFER));
