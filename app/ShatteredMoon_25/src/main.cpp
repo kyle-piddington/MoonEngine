@@ -11,8 +11,8 @@ using namespace MoonEngine;
 int main(int argc, char **argv) {
 
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -52,9 +52,10 @@ int main(int argc, char **argv) {
 	std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>();
 	playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(2.1));
 
-	
-	playerObj->addComponent(scene->createComponent<StaticMesh>("suzanne.obj",false));
-	playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "phong.program"));
+	stringmap textures({ { "Texture", "penguin" } });
+
+	playerObj->addComponent(scene->createComponent<StaticMesh>("penguin.obj",false));
+	playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "phong.program", textures));
 	playerObj->addComponent(scene->createComponent<BoxCollider>());
 	
 	playerObj->getTransform().setPosition(glm::vec3(0,0.5,0));

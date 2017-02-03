@@ -12,10 +12,10 @@ using namespace MoonEngine;
 
 
 ProgramRenderer::ProgramRenderer():
-	mainCamera(nullptr),
+	mainCamera(nullptr)
 	//renderToFB(800,600),
-	framebufferColorTexture(0),
-	framebufferDepthStencilTexture(1)
+	//framebufferColorTexture(0),
+	//framebufferDepthStencilTexture(1)
 {
 	// renderQuad = MeshCreator::CreateQuad(glm::vec2(-1,1), glm::vec2(1,1));
 	// assert(framebufferColorTexture.init(GLTextureConfiguration(800,600,GL_RGB,GL_RGB,GL_UNSIGNED_BYTE)));

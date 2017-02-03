@@ -61,6 +61,11 @@ void GLFramebuffer::bind() const{
 	
 }
 
+GLuint MoonEngine::GLFramebuffer::getObject() const
+{
+	return _handle;
+}
+
 void GLFramebuffer::bindWithoutComplete() const
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, _handle);
