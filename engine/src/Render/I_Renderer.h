@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Scene/Scene.h"
 /**
  * The renderer interface is implemented by any renderer
@@ -9,11 +10,11 @@
  */
 namespace MoonEngine
 {
-	class I_Renderer
-	{
-	public:
-		virtual void setup(Scene * scene) = 0; //Initial setup for scene. Collect any info neccesary.
-		virtual void render(Scene * scene) = 0; //Perform the full render loop for this scene
-		virtual void shutdown() = 0; // Any Shutdown tasks neccesary
-	};	
+    class I_Renderer
+    {
+    public:
+        virtual void setup(Scene * scene) = 0; //Initial setup for scene. Collect any info neccesary.
+        virtual void render(Scene * scene) = 0; //Perform the full render loop for this scene
+        virtual void shutdown() = 0; // Any Shutdown tasks neccesary
+    };
 }

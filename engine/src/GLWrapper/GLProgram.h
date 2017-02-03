@@ -8,92 +8,96 @@
 #include "GLShader.h"
 #include <string>
 #include <unordered_map>
+
 namespace MoonEngine
 {
-	class GLProgram
-	{
-	public:
-	
-		/**
-		 * Create a named program object. (Useful for )
-		 */
-		GLProgram(std::string name);
+    class GLProgram
+    {
+    public:
 
-		/**
-		 * Delete a program object.
-		 */
-		~GLProgram();
+        /**
+         * Create a named program object. (Useful for )
+         */
+        GLProgram(std::string name);
 
-		/**
-		 * Copy constructor(s) is disallowed for programs.
-		 */
-		GLProgram(const GLProgram & other) = delete;
-		GLProgram &operator=(const GLProgram &) = delete;
+        /**
+         * Delete a program object.
+         */
+        ~GLProgram();
 
-		/**
-		 Move Constructor(s)
-     	*/
-		GLProgram(GLProgram &&other);
-		GLProgram &operator=(GLProgram &&other);
+        /**
+         * Copy constructor(s) is disallowed for programs.
+         */
+        GLProgram(const GLProgram & other) = delete;
 
-		/**
-		 * Attach a shader object to this program.
-		 * @param shader the shader to attach.
-		 */
-		void attachShader(const GLShader & shader);
+        GLProgram & operator=(const GLProgram &) = delete;
 
-		/**
-		 * Complete and link the program.
-		 * @return true if no issues.
-		 */
-		bool link();
+        /**
+         Move Constructor(s)
+         */
+        GLProgram(GLProgram && other);
 
-		/**
-		 * Check to see if the program is ready to be bound.
-		 * @return true if the program is compiled and linked.
-		 */
-		bool isReady() const;
+        GLProgram & operator=(GLProgram && other);
 
-		/**
-		 * Enable the program
-		 * Return true if program is enabled.
-		 */
-		bool enable() const;
+        /**
+         * Attach a shader object to this program.
+         * @param shader the shader to attach.
+         */
+        void attachShader(const GLShader & shader);
 
-		/**
-		 * Query the program for a uniform name.
-		 * @param  uniformName the name of the uniform
-		 * @return             an integer if the uniform was found, or -1
-		 */
-		GLint getUniformLocation(std::string uniformName);
-		
-		bool hasUniform(std::string uniformName);
-		
-		/**
-		 * Query the program for an attribute name
-		 * @param  attributeName the name of the attribute
-		 * @return               the name of the attribute.
-		 */
-		GLint getAttributeLocation(std::string attributeName);
+        /**
+         * Complete and link the program.
+         * @return true if no issues.
+         */
+        bool link();
 
-		std::string getName() const;
+        /**
+         * Check to see if the program is ready to be bound.
+         * @return true if the program is compiled and linked.
+         */
+        bool isReady() const;
 
-		/**
-		 * Get the handle to the program
-		 * @return the program handle
-		 */
-		GLuint getObject() const;
+        /**
+         * Enable the program
+         * Return true if program is enabled.
+         */
+        bool enable() const;
 
-	private:
+        /**
+         * Query the program for a uniform name.
+         * @param  uniformName the name of the uniform
+         * @return             an integer if the uniform was found, or -1
+         */
+        GLint getUniformLocation(std::string uniformName);
 
-		GLuint release();
-		GLuint reset(GLuint otherID = 0);
+        bool hasUniform(std::string uniformName);
 
-		GLuint _progId;
-		std::string _progName;
-		bool _linked;
-		std::unordered_map<std::string, GLint> _attribMap;
-		std::unordered_map<std::string, GLint> _uniformMap;
-			
-	};
+        /**
+         * Query the program for an attribute name
+         * @param  attributeName the name of the attribute
+         * @return               the name of the attribute.
+         */
+        GLint getAttributeLocation(std::string attributeName);
+
+        std::string getName() const;
+
+        /**
+         * Get the handle to the program
+         * @return the program handle
+         */
+        GLuint getObject() const;
+
+    private:
+
+        GLuint release();
+
+        GLuint reset(GLuint otherID = 0);
+
+        GLuint _progId;
+        std::string _progName;
+        bool _linked;
+        std::unordered_map<std::string, GLint> _attribMap;
+        std::unordered_map<std::string, GLint> _uniformMap;
+
+    };
 }

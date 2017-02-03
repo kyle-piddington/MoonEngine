@@ -3,7 +3,7 @@
 #include <string>
 #include "GLSampler.h"
 #include "OpenGL.h"
-#include "GLTextureConfiguration.h"
+#include "GLUtil/GLTextureConfiguration.h"
 
 namespace MoonEngine
 {
@@ -30,13 +30,15 @@ namespace MoonEngine
          * Copy constructor(s) is disallowed for textures.
          */
         GLTexture(const GLTexture & other) = delete;
-        GLTexture &operator=(const GLTexture &) = delete;
+
+        GLTexture & operator=(const GLTexture &) = delete;
 
         /**
         Move Constructor(s)
          */
-        GLTexture(GLTexture &&other);
-        GLTexture &operator=(GLTexture &&other);
+        GLTexture(GLTexture && other);
+
+        GLTexture & operator=(GLTexture && other);
 
         /**
          * Initialize texture with data and a configuration
@@ -68,15 +70,11 @@ namespace MoonEngine
 
         void unbindSampler();
 
-        int getWidth() const ;
+        int getWidth() const;
 
         int getHeight() const;
 
-
-
     private:
-
-
         GLuint _textureId;
         GLenum _textureType;
         GLenum _framebufferStatus;

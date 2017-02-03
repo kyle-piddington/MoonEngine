@@ -6,14 +6,17 @@
 
 namespace MoonEngine
 {
-	class CollectableComponent : public Component
-	{
-	public:
-		CollectableComponent();
-		void start();
-		void update(float dt);
-		void onCollisionEnter(Collision col);
+    class CollectableComponent: public Component
+    {
+    public:
+        CollectableComponent();
 
-		std::shared_ptr<Component> clone() const;
-	};
+        void start();
+
+        void update(float dt);
+
+        void onCollisionEnter(Collision col);
+
+        std::shared_ptr<Component> clone() const;
+    };
 }

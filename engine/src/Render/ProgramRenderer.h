@@ -1,4 +1,5 @@
 #pragma once
+
 #include "GLWrapper/GLProgram.h"
 #include "I_Renderer.h"
 #include "Component/Components.h"
@@ -13,35 +14,38 @@
 namespace MoonEngine
 {
 
-	class ProgramRenderer : public I_Renderer
-	{
-	public:
-		ProgramRenderer();
+    class ProgramRenderer: public I_Renderer
+    {
+    public:
+        ProgramRenderer();
 
-		virtual ~ProgramRenderer(){}
-		/**
-		 * Pre-setup for renderer. Gather variables
-		 * @param scene Scene to render.
-		 */
-		virtual void setup(Scene * scene);
-		/**
-		 * Render the current state of the scene
-		 * @param scene the scene to render.
-		 */
-		virtual void render(Scene * scene);
-		/**
-		 * Perform cleanup.
-		 */
-		virtual void shutdown();
+        virtual ~ProgramRenderer()
+        {}
 
-		
+        /**
+         * Pre-setup for renderer. Gather variables
+         * @param scene Scene to render.
+         */
+        virtual void setup(Scene * scene);
 
-	private:
-		Camera * mainCamera;
-		MeshInfo * renderQuad;
+        /**
+         * Render the current state of the scene
+         * @param scene the scene to render.
+         */
+        virtual void render(Scene * scene);
 
-		//GLFramebuffer renderToFB;
-		//GLTexture framebufferColorTexture;
-		//GLTexture framebufferDepthStencilTexture;
-	};
+        /**
+         * Perform cleanup.
+         */
+        virtual void shutdown();
+
+
+    private:
+        Camera * mainCamera;
+        //MeshInfo * renderQuad;
+
+        //GLFramebuffer renderToFB;
+        //GLTexture framebufferColorTexture;
+        //GLTexture framebufferDepthStencilTexture;
+    };
 }

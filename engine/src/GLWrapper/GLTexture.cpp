@@ -1,9 +1,5 @@
 #include "GLTexture.h"
 
-// #define STB_IMAGE_IMPLEMENTATION
-// #include <thirdparty/stb_image.h>
-// #include <iostream>
-
 using namespace MoonEngine;
 
 GLTexture::GLTexture(GLuint unit)
@@ -13,7 +9,8 @@ GLTexture::GLTexture(GLuint unit)
     _textureWidth = _textureHeight = -1;
 }
 
-GLTexture::GLTexture(GLuint unit, GLenum textureType) {
+GLTexture::GLTexture(GLuint unit, GLenum textureType)
+{
     _unit = unit;
     _textureType = textureType;
     _textureWidth = _textureHeight = -1;
@@ -21,10 +18,11 @@ GLTexture::GLTexture(GLuint unit, GLenum textureType) {
 
 GLTexture::~GLTexture()
 {
-    
 }
-bool GLTexture::init(const  GLTextureConfiguration & cfg){
-    init(nullptr,cfg);
+
+bool GLTexture::init(const GLTextureConfiguration & cfg)
+{
+    init(nullptr, cfg);
     _textureWidth = cfg.getWidth();
     _textureHeight = cfg.getHeight();
 
@@ -34,27 +32,19 @@ bool GLTexture::init(const  GLTextureConfiguration & cfg){
     glBindTexture(_textureType, _textureId);
     /* Load the actual texture data */
     // How do we support both RGB & RGBA?
-    glTexImage2D(_textureType, 0, cfg.getInputFormat(), cfg.getWidth(), cfg.getHeight(), 0, cfg.getOutputFormat(), cfg.getDataType(), NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
+    glTexImage2D(_textureType, 0, cfg.getInputFormat(), cfg.getWidth(), cfg.getHeight(),
+        0, cfg.getOutputFormat(), cfg.getDataType(), NULL);
+
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(_textureType, 0);
     return glGetError() == GL_NO_ERROR;
 
 }
+
 /* We use init to ensure that loading an image didn't fail */
-bool GLTexture::init(void * data,const  GLTextureConfiguration & cfg) {
-    // string texture_file = textureName + ".png";
-    // std::cout << texture_file << endl;
-
-    // int width, height, ncomps;
-
-    // stbi_set_flip_vertically_on_load(true);
-    // unsigned char *data = stbi_load(texture_file.c_str(), &width, &height, &ncomps, 0);
-    // /* File not found */
-    // if (!data) {
-    //     std::cout << "NOt found";
-    //     return false;
-    // }
+bool GLTexture::init(void * data, const GLTextureConfiguration & cfg)
+{
     _textureWidth = cfg.getWidth();
     _textureHeight = cfg.getHeight();
     /* Generate a texture buffer object */
@@ -62,19 +52,18 @@ bool GLTexture::init(void * data,const  GLTextureConfiguration & cfg) {
     /* Bind the current texture to be the texture object */
     glBindTexture(_textureType, _textureId);
     /* Load the actual texture data */
-    // How do we support both RGB & RGBA?
-    glTexImage2D(_textureType, 0, cfg.getInputFormat(), cfg.getWidth(), cfg.getHeight(), 0, cfg.getOutputFormat(), cfg.getDataType(), data);
+    glTexImage2D(_textureType, 0, cfg.getInputFormat(), cfg.getWidth(), cfg.getHeight(),
+        0, cfg.getOutputFormat(), cfg.getDataType(), data);
     /* Generate mipmap */
     glGenerateMipmap(_textureType);
 
     /* Let the birds free */
     glBindTexture(_textureType, 0);
-    
-
     return glGetError() == GL_NO_ERROR;
 }
 
-GLuint GLTexture::getUnit() const {
+GLuint GLTexture::getUnit() const
+{
     return _unit;
 }
 
@@ -120,5 +109,3 @@ void GLTexture::unbindSampler()
     glBindSampler(_unit, 0);
 
 }
-
-
