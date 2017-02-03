@@ -1,4 +1,5 @@
 #pragma once
+
 #include "OpenGL.h"
 /**
  * RAII Style vertex and element buffer array. Provide a vertex format to the 
@@ -11,64 +12,69 @@ namespace MoonEngine
 {
 
 
-	class GLBuffer
-	{
-	public:
-	/**
-	 * Construct and allocate an empty vertex buffer.
-	 */
-		GLBuffer(GLenum target);
-	/**
-	 * Construct and add data to a vertex buffer.
-	 */
-		GLBuffer(GLenum target, GLsizeiptr size, const void * data, GLenum usage);
+    class GLBuffer
+    {
+    public:
+        /**
+         * Construct and allocate an empty vertex buffer.
+         */
+        GLBuffer(GLenum target);
 
-	/**
-	 * Destroy a vertex buffer.
-	 */
-		~GLBuffer();
+        /**
+         * Construct and add data to a vertex buffer.
+         */
+        GLBuffer(GLenum target, GLsizeiptr size, const void * data, GLenum usage);
 
-	/**
-	 * Copy constructor(s) is disallowed for vertex buffers.
-	 */
-		GLBuffer(const GLBuffer & other) = delete;
-		GLBuffer &operator=(const GLBuffer &) = delete;
+        /**
+         * Destroy a vertex buffer.
+         */
+        ~GLBuffer();
 
-    /**
-    Move Constructor(s)
-     */
-		GLBuffer(GLBuffer &&other);
-		GLBuffer &operator=(GLBuffer &&other);
+        /**
+         * Copy constructor(s) is disallowed for vertex buffers.
+         */
+        GLBuffer(const GLBuffer & other) = delete;
 
-	/**
-	 * Set the data in the buffer
-	 * @param target Buffer target (Vertex/index)
-	 * @param size   size in bytes of the data
-	 * @param data   data
-	 * @param usage  Dynamic or static
-	 */
-	void setData(GLsizeiptr size, const void * data, GLenum usage) const;
+        GLBuffer & operator=(const GLBuffer &) = delete;
 
-	/**
-	 * Bind a vertex buffer to the GPU
-	 */
-	void bind() const;
+        /**
+        Move Constructor(s)
+         */
+        GLBuffer(GLBuffer && other);
 
-	/**
-	 * Retrieve the objectId of the vertex buffer.
-	 * @return objectId
-	 */
-	GLuint getObject() const;
+        GLBuffer & operator=(GLBuffer && other);
 
-	GLenum getType() const;
+        /**
+         * Set the data in the buffer
+         * @param target Buffer target (Vertex/index)
+         * @param size   size in bytes of the data
+         * @param data   data
+         * @param usage  Dynamic or static
+         */
+        void setData(GLsizeiptr size, const void * data, GLenum usage) const;
 
+        /**
+         * Bind a vertex buffer to the GPU
+         */
+        void bind() const;
 
-	private:
-		GLenum _type;
-		GLuint _objectId;
-		GLuint release();
-		GLuint reset(GLuint newObject = 0);
+        /**
+         * Retrieve the objectId of the vertex buffer.
+         * @return objectId
+         */
+        GLuint getObject() const;
+
+        GLenum getType() const;
 
 
-	};
+    private:
+        GLenum _type;
+        GLuint _objectId;
+
+        GLuint release();
+
+        GLuint reset(GLuint newObject = 0);
+
+
+    };
 };

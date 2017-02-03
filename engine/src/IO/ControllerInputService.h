@@ -1,25 +1,29 @@
 #pragma once
+
 #include "InputService.h"
 #include "InputConfiguration.h"
 #include <memory>
 
 namespace MoonEngine
 {
-	class ControllerInputService : public InputService
-	{
-	public:
-		ControllerInputService();
-		ControllerInputService(InputConfiguration cfg);
+    class ControllerInputService: public InputService
+    {
+    public:
+        ControllerInputService();
 
-		float getAxisRaw(Axis axis);
+        ControllerInputService(InputConfiguration cfg);
 
-		bool getButton(Button button);
+        float getAxisRaw(Axis axis);
 
-		bool getButtonUp(Button button);
+        bool getButton(Button button);
 
-		bool getButtonDown(Button button);
-	private:
-		int getButtonMapping(Button button);
-		InputConfiguration inputConfig;
-	};
+        bool getButtonUp(Button button);
+
+        bool getButtonDown(Button button);
+
+    private:
+        int getButtonMapping(Button button);
+
+        InputConfiguration inputConfig;
+    };
 }

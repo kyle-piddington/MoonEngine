@@ -9,40 +9,46 @@
 namespace MoonEngine
 {
 
-	enum PlayerState
-	{
-		JUMPING,
-		GROUND,
-		FALLING
-	};
+    enum PlayerState
+    {
+        JUMPING,
+        GROUND,
+        FALLING
+    };
 
-	class ThirdPersonCharacterController : public Component
-	{
-	public:
-		ThirdPersonCharacterController(float playerSpeed = 1);
-		void start();
-		void update(float dt);
-		void onCollisionEnter(Collision col);
+    class ThirdPersonCharacterController: public Component
+    {
+    public:
+        ThirdPersonCharacterController(float playerSpeed = 1);
 
-		std::shared_ptr<Component> clone() const;
+        void start();
 
-	private:
-		void handleMove(float dt);
-		void handleJump(float dt);
-		void checkIfShouldFall();
-		Transform * transform;
-		float playerSpeed;
-		float jumpSpeed;
-		float jumpForce;
-		float jumpTime;
-		float _curJumpForce;
-		float _jumpTime;
-		float gravity;
-		PlayerState state;
-		float radius;
-		GameObject * mainCamera;
-		BoxCollider * bbox;
+        void update(float dt);
+
+        void onCollisionEnter(Collision col);
+
+        std::shared_ptr<Component> clone() const;
+
+    private:
+        void handleMove(float dt);
+
+        void handleJump(float dt);
+
+        void checkIfShouldFall();
+
+        Transform * transform;
+        float playerSpeed;
+        float jumpSpeed;
+        float jumpForce;
+        float jumpTime;
+        float _curJumpForce;
+        float _jumpTime;
+        float gravity;
+        PlayerState state;
+        float radius;
+        GameObject * mainCamera;
+        BoxCollider * bbox;
 
 
-	};
+    };
 }

@@ -10,13 +10,14 @@ std::shared_ptr<SamplerLibrary> Library::SamplerLib;
 
 void Library::Init(std::string resourcePath)
 {
-	MeshLib = std::make_shared<MeshLibrary>(resourcePath);
-	ProgramLib = std::make_shared<ProgramLibrary>(resourcePath);
-	InstTransformLib = std::make_shared<InstTransformLibrary>(resourcePath);
-	TextureLib = std::make_shared<TextureLibrary>(resourcePath);
+    MeshLib = std::make_shared<MeshLibrary>(resourcePath);
+    ProgramLib = std::make_shared<ProgramLibrary>(resourcePath);
+    InstTransformLib = std::make_shared<InstTransformLibrary>(resourcePath);
+    TextureLib = std::make_shared<TextureLibrary>(resourcePath);
     SamplerLib = std::make_shared<SamplerLibrary>();
 }
+
 void Library::Destroy()
 {
-	MeshLib.reset();
+    MeshLib.reset();
 }

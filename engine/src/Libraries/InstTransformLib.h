@@ -11,14 +11,17 @@
 namespace MoonEngine
 {
 
-	class InstTransformLibrary
-	{
-	public:
-		InstTransformLibrary(std::string resourcePath);
-		~InstTransformLibrary();
-		vector<glm::mat4> getInstanceMatrices(std::string transformfile);
-	private:
-		std::string _recPath;
-		std::unordered_map<std::string, vector<glm::mat4>> _mapFileToMatrices;
-	};
+    class InstTransformLibrary
+    {
+    public:
+        InstTransformLibrary(std::string resourcePath);
+
+        ~InstTransformLibrary();
+
+        vector<glm::mat4> getInstanceMatrices(std::string transformfile);
+
+    private:
+        std::string _recPath;
+        std::unordered_map<std::string, vector<glm::mat4>> _mapFileToMatrices;
+    };
 }

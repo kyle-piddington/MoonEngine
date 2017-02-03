@@ -1,4 +1,5 @@
 #pragma once
+
 #include "GLTexture.h"
 #include <unordered_map>
 /**
@@ -11,49 +12,57 @@
 
 namespace MoonEngine
 {
-	class GLFramebuffer
-	{
-	public:
-		GLFramebuffer(int width, int height);
-		~GLFramebuffer();
+    class GLFramebuffer
+    {
+    public:
+        GLFramebuffer(int width, int height);
 
-		GLFramebuffer(const GLFramebuffer & other) = delete;
-		GLFramebuffer & operator=(const GLFramebuffer & ) = delete;
+        ~GLFramebuffer();
 
-		GLFramebuffer(GLFramebuffer && other);
-		GLFramebuffer &operator=(GLFramebuffer &&other);
-		/**
-		 * Add a texture to the framebuffer
-		 * the texture will be renderable
-		 * @param layerName the name of the texture in the framebuffer
-		 * @param texture   the texture itself.
-		 */
-		void addTexture(const std::string & textureName, const GLTexture & texture, GLenum attachmentInfo);
-		/**
-		 * Todo:
-		 * Implement a render buffer class
-		 */
-		
-		void bind() const;
-		GLuint getObject() const;
+        GLFramebuffer(const GLFramebuffer & other) = delete;
 
-		GLuint getTexture(std::string name) const;
+        GLFramebuffer & operator=(const GLFramebuffer &) = delete;
 
-		static void Unbind();
-	private:
-		GLuint release();
-		GLuint reset(GLuint newObject = 0);
+        GLFramebuffer(GLFramebuffer && other);
 
-		void bindWithoutComplete() const;
+        GLFramebuffer & operator=(GLFramebuffer && other);
 
-		int _width;
-		int _height;
-		GLuint _handle;
-		GLenum _framebufferStatus;
-		std::unordered_map<std::string, GLuint> _textureHandles;
+        /**
+         * Add a texture to the framebuffer
+         * the texture will be renderable
+         * @param layerName the name of the texture in the framebuffer
+         * @param texture   the texture itself.
+         */
+        void addTexture(const std::string & textureName, const GLTexture & texture, GLenum attachmentInfo);
+
+        /**
+         * Todo:
+         * Implement a render buffer class
+         */
+
+        void bind() const;
+
+        GLuint getObject() const;
+
+        GLuint getTexture(std::string name) const;
+
+        static void Unbind();
+
+    private:
+        GLuint release();
+
+        GLuint reset(GLuint newObject = 0);
+
+        void bindWithoutComplete() const;
+
+        int _width;
+        int _height;
+        GLuint _handle;
+        GLenum _framebufferStatus;
+        std::unordered_map<std::string, GLuint> _textureHandles;
 
 
-		//void addRenderbuffer(const GLRenderBuffer & buffer);
-		//
-	};
+        //void addRenderbuffer(const GLRenderBuffer & buffer);
+        //
+    };
 }

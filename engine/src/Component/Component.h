@@ -9,46 +9,52 @@
 
 namespace MoonEngine
 {
-	class GameObject;
-	class Component
-	{
-	public:
-		
-		/*Create a new component, and bind it to a gameObject*/
-		Component();
-		virtual ~Component();
-		/*
-			Take a reference to this gameobject, and pass
-			a reference to this component to the GameObject.
-		*/
-		void provideGameObject(GameObject * object);
-		
-		/**
-		 * Copy a component
-		 * @return a shared pointer to a new component
-		 */
-		virtual std::shared_ptr<Component> clone() const = 0;
+    class GameObject;
 
-		virtual void start();
-		//Base component functions
-		virtual void update(float dt);
+    class Component
+    {
+    public:
 
-		virtual void onCollisionEnter(Collision col);
+        /*Create a new component, and bind it to a gameObject*/
+        Component();
 
-		virtual void onCollisionExit(Collision col);
+        virtual ~Component();
 
-		GameObject * getGameObject(){
-			return gameObject;
-		}
-		
-		bool isDeleted();
+        /*
+            Take a reference to this gameobject, and pass
+            a reference to this component to the GameObject.
+        */
+        void provideGameObject(GameObject * object);
 
-		void setDeleted();
-	private:
-		bool deleted;
-	protected:
-		GameObject * gameObject;
+        /**
+         * Copy a component
+         * @return a shared pointer to a new component
+         */
+        virtual std::shared_ptr<Component> clone() const = 0;
 
-	};
+        virtual void start();
+
+        //Base component functions
+        virtual void update(float dt);
+
+        virtual void onCollisionEnter(Collision col);
+
+        virtual void onCollisionExit(Collision col);
+
+        GameObject * getGameObject()
+        {
+            return gameObject;
+        }
+
+        bool isDeleted();
+
+        void setDeleted();
+
+    private:
+        bool deleted;
+    protected:
+        GameObject * gameObject;
+
+    };
 };
 
