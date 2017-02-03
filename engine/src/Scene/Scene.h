@@ -2,8 +2,10 @@
 #include "GameObject/GameObject.h"
 #include "Util/Logger.h"
 #include "Component/CollisionComponents/BoxCollider.h"
+#include <glm/glm.hpp>
 
 #include <functional>
+
 namespace MoonEngine
 {
 	class Scene
@@ -99,7 +101,11 @@ namespace MoonEngine
 		 */
 		bool castRay(glm::vec3 origin, glm::vec3 direction, float maxLen = -1, Hit * hit = nullptr);
 
-	private:
+		float getGlobalTime();
+
+        glm::vec3 getGlobalLightDir();
+
+    private:
 
 		void instantiateNewObjects();
 		//Poorly organized list for prototyping purposes.
@@ -125,5 +131,7 @@ namespace MoonEngine
 		//Custom update
 		std::vector<std::function<void(float)>> updateFunctors;
 
-	};	
+		float _globalTime;
+		glm::vec3 _globalLightDir;
+    };
 }

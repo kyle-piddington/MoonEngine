@@ -39,6 +39,7 @@ namespace MoonEngine
 	private:
 		Camera * mainCamera;
 		MeshInfo * renderQuad;
+
 		//GLFramebuffer renderToFB;
 		//GLTexture framebufferColorTexture;
 		//GLTexture framebufferDepthStencilTexture;

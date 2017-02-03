@@ -4,14 +4,14 @@ in vec3 fragNor;
 in vec3 fragTex;
 out vec4 color;
 uniform vec3 tint;
-uniform vec3 lightDirWorld;
+uniform vec3 iGlobalLightDir;
 uniform mat4 V;
 
 uniform sampler2D Texture;
 
 void main()
 {
-	vec3 lightDir = normalize(vec3(V * vec4(lightDirWorld,0.0)));
+	vec3 lightDir = normalize(vec3(V * vec4(iGlobalLightDir,0.0)));
 	vec3 ambient = 0.3 * tint;
 	vec3 nor=normalize(fragNor);
 

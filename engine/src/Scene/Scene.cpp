@@ -3,9 +3,13 @@
 #include "Util/Logger.h"
 using namespace MoonEngine;
 
+#define TIME_MODIFIER 0.1
 
 Scene::Scene()
 {
+    _globalLightDir = glm::vec3(1, 1, 1);
+    _globalTime = 0;
+
 	_allGameObjects.clear();
 	_gameObjects.clear();
 	_renderableGameObjects.clear();
@@ -36,6 +40,9 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 
 void Scene::runUpdate(float dt)
 {
+	_globalTime += dt * TIME_MODIFIER;
+    _globalLightDir = glm::vec3(sin(_globalTime), 1, 1);
+
 	instantiateNewObjects();
 
 	for(std::shared_ptr<GameObject> go :  _gameObjects)
@@ -50,6 +57,14 @@ void Scene::runUpdate(float dt)
 			fun(dt);
 		}
 	}
+}
+
+float Scene::getGlobalTime() {
+	return _globalTime;
+}
+
+glm::vec3 Scene::getGlobalLightDir() {
+    return _globalLightDir;
 }
 
 const std::vector<std::shared_ptr<GameObject>> Scene::getGameObjects() const
@@ -198,7 +213,8 @@ void Scene::addCustomUpdate(std::function<void(float)> fn)
 {
 	updateFunctors.push_back(fn);
 }
-//Naieve implementation
+
+//Naive implementation
 GameObject * Scene::findGameObjectWithTag(Tag  t)
 {
 	for(auto g : _gameObjects)
@@ -210,7 +226,8 @@ GameObject * Scene::findGameObjectWithTag(Tag  t)
 	}
 	return nullptr;
 }
-//Naieve implementation
+
+//Naive implementation
 bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * hit)
 {
 	//Spatial data structure would go here.
