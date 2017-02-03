@@ -5,7 +5,6 @@
  */
 namespace MoonEngine
 {
-
     enum Axis
     {
         AXIS_HORIZONTAL_0,

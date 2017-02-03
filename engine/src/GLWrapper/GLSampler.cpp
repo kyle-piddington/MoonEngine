@@ -8,12 +8,10 @@ using namespace MoonEngine;
 GLSampler::GLSampler():
         _samplerId(0)
 {
-
 }
 
 GLSampler::~GLSampler()
 {
-
 }
 
 void GLSampler::init(unordered_map<GLenum, GLint> paramsi, unordered_map<GLenum, GLfloat> paramsf)
@@ -52,4 +50,3 @@ GLuint GLSampler::getId()
 {
     return _samplerId;
 }
-

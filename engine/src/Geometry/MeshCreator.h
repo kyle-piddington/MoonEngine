@@ -1,5 +1,4 @@
-#ifndef __MeshCreator_H__
-#define __MeshCreator_H__
+#pragma once
 
 #include "Loaders/MeshInfo.h"
 #include <glm/glm.hpp>
@@ -19,5 +18,3 @@ namespace MoonEngine
         static std::vector<std::shared_ptr<GLVertexArrayObject>> backingArrayObjects;
     };
 }
-
-#endif

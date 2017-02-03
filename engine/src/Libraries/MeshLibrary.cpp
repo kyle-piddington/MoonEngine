@@ -5,9 +5,8 @@
 using namespace MoonEngine;
 
 MeshLibrary::MeshLibrary(std::string resourcePath):
-        _recPath(resourcePath + "/")
+    _recPath(resourcePath + "/")
 {
-
 }
 
 MeshLibrary::~MeshLibrary()
@@ -40,5 +39,4 @@ MeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smooth)
     }
 
     return _mapMeshToInfo[assembledName];
-
 }

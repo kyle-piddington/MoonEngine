@@ -5,13 +5,12 @@
 using namespace MoonEngine;
 
 BoxCollider::BoxCollider():
-        _givenBox(false)
+    _givenBox(false)
 {
-
 }
 
 BoxCollider::BoxCollider(glm::vec3 minCoords, glm::vec3 maxCoords):
-        _givenBox(true)
+    _givenBox(true)
 {
     _originalBox = BoundingBox(minCoords.x, maxCoords.x, minCoords.y, maxCoords.y, minCoords.z, maxCoords.z);
 }
@@ -79,6 +78,3 @@ std::shared_ptr<Component> BoxCollider::clone() const
 {
     return std::make_shared<BoxCollider>(*this);
 }
-
-
-

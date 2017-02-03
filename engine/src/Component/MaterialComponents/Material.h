@@ -10,12 +10,7 @@
  * Material contains the basic rendering
  * information needed for rendering a material. In this case,
  * a program to determine how this material should be rendered,
- * and a few backup material properites, such as tint.
- */
-
-/**
- * @TODO: Bind Material with a program, instead of just using
- * tint to color the object.
+ * and a few backup material properties, such as tint.
  */
 
 namespace MoonEngine
@@ -25,8 +20,8 @@ namespace MoonEngine
     public:
         //TODO add sampler
         Material(glm::vec3 tint = glm::vec3(0, 0, 0),
-                 std::string programName = "default.program",
-                 unordered_map<string, string> textures = unordered_map<string, string>());
+             std::string programName = "default.program",
+             unordered_map<string, string> textures = unordered_map<string, string>());
 
         /**
          * retrieve a base tint material used by all

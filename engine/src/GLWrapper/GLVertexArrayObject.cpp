@@ -19,7 +19,6 @@ GLVertexArrayObject::~GLVertexArrayObject()
 GLVertexArrayObject::GLVertexArrayObject(GLVertexArrayObject && other):
         _vaoID(other.release())
 {
-
 }
 
 GLVertexArrayObject & GLVertexArrayObject::operator=(GLVertexArrayObject && other)
@@ -28,14 +27,8 @@ GLVertexArrayObject & GLVertexArrayObject::operator=(GLVertexArrayObject && othe
     return *this;
 }
 
-void GLVertexArrayObject::bindVertexBuffer(
-        GLuint attribute,
-        const GLBuffer & buffer,
-        GLint size,
-        GLenum type,
-        GLboolean normalized,
-        GLsizei stride,
-        GLvoid * offset)
+void GLVertexArrayObject::bindVertexBuffer(GLuint attribute, const GLBuffer & buffer, GLint size,
+    GLenum type, GLboolean normalized, GLsizei stride, GLvoid * offset)
 {
     assert(buffer.getType() == GL_ARRAY_BUFFER);
     bind();
@@ -72,7 +65,6 @@ void GLVertexArrayObject::bindElementBuffer(const GLBuffer & buffer)
     buffer.bind();
     Unbind();
 }
-
 
 void GLVertexArrayObject::bind() const
 {

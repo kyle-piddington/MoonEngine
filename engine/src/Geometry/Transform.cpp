@@ -8,15 +8,15 @@
 using namespace MoonEngine;
 
 Transform::Transform():
-        position(glm::vec3(0)),
-        rotation(glm::vec3(0.0)),
-        scale(glm::vec3(1.0)),
-        localUp(glm::vec4(World::Up, 0.0)),
-        localRight(glm::vec4(World::Right, 0.0)),
-        localForward(glm::vec4(World::Forward, 0.0)),
-        currentMatrix(glm::mat4(1.0)),
-        isDirty(false),
-        parent(nullptr)
+    position(glm::vec3(0)),
+    rotation(glm::vec3(0.0)),
+    scale(glm::vec3(1.0)),
+    localUp(glm::vec4(World::Up, 0.0)),
+    localRight(glm::vec4(World::Right, 0.0)),
+    localForward(glm::vec4(World::Forward, 0.0)),
+    currentMatrix(glm::mat4(1.0)),
+    isDirty(false),
+    parent(nullptr)
 {
 
 }
@@ -131,15 +131,19 @@ const glm::mat4 & Transform::getMatrix()
     {
 
 
-        glm::mat4 s = glm::mat4(this->scale.x, 0, 0, 0,
-                                0, this->scale.y, 0, 0,
-                                0, 0, this->scale.z, 0,
-                                0, 0, 0, 1);
+        glm::mat4 s = glm::mat4(
+            this->scale.x, 0, 0, 0,
+            0, this->scale.y, 0, 0,
+            0, 0, this->scale.z, 0,
+            0, 0, 0, 1
+        );
 
-        glm::mat4 t = glm::mat4(1, 0, 0, 0,
-                                0, 1, 0, 0,
-                                0, 0, 1, 0,
-                                this->position.x, this->position.y, this->position.z, 1);
+        glm::mat4 t = glm::mat4(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            this->position.x, this->position.y, this->position.z, 1
+        );
         currentMatrix = t * glm::mat4_cast(rotation) * s;
         isDirty = false;
 
@@ -173,8 +177,6 @@ void Transform::lookAt(glm::vec3 target, glm::vec3 upVec)
     this->rotation = glm::normalize(ret);
     isDirty = true;
     updateFrame();
-
-
 }
 
 void Transform::setScale(glm::vec3 scale)
@@ -213,7 +215,4 @@ void Transform::updateFrame()
     localRight = glm::normalize(rotMtx * wRt);
     localUp = glm::normalize(rotMtx * wUp);
     localForward = glm::normalize(rotMtx * wFw);
-
-
 }
-

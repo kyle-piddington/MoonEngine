@@ -4,16 +4,15 @@
 using namespace MoonEngine;
 
 StaticMesh::StaticMesh(std::string mesh, bool smooth):
-        Mesh()
+    Mesh()
 {
     _meshInfo = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed(mesh, smooth);
 }
 
 StaticMesh::StaticMesh(MeshInfo * _meshInfo):
-        Mesh(),
-        _meshInfo(_meshInfo)
+    Mesh(),
+    _meshInfo(_meshInfo)
 {
-
 }
 
 const MeshInfo * StaticMesh::getMesh()

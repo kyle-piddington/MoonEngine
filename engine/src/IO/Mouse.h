@@ -1,5 +1,4 @@
-#ifndef __MOUSE_H__
-#define __MOUSE_H__
+#pragma once
 
 #include <GLFW/glfw3.h>
 
@@ -53,7 +52,4 @@ private:
     static short mouseButtons[GLFW_MOUSE_BUTTON_LAST];
     static short bufferButtons[GLFW_MOUSE_BUTTON_LAST];
 
-
 };
-
-#endif

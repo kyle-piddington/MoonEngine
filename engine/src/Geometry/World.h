@@ -11,6 +11,5 @@ namespace MoonEngine
         static glm::vec3 Up;
         static glm::vec3 Right;
         static glm::vec3 Forward;
-
     };
 }

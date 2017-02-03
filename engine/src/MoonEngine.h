@@ -42,6 +42,3 @@
 
 //Third party
 #include "thirdparty/imgui/imgui.h"
-
-
-

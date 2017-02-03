@@ -15,6 +15,5 @@ namespace MoonEngine
 
         static std::shared_ptr<GLProgram> LoadProgram(std::string programInfo);
 
-
     };
 };

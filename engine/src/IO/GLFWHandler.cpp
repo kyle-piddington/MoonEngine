@@ -29,8 +29,6 @@ void GLFWHandler::key_callback(GLFWwindow * window, int key, int scancode, int a
     {
         Keyboard::setKeyStatus(key, action);
     }
-
-
 }
 
 void GLFWHandler::mousePositionCallback(GLFWwindow * window, double x, double y)
@@ -52,7 +50,6 @@ void GLFWHandler::mouseButtonCallback(GLFWwindow * window, int button, int actio
         Mouse::setButtonStatus(button, action);
 
     }
-
 }
 
 void GLFWHandler::scrollWheelCallback(GLFWwindow * window, double xOffset, double yOffset)
@@ -85,7 +82,6 @@ void GLFWHandler::update()
     {
         Controller::Update();
     }
-
 }
 
 void GLFWHandler::joystick_callback(int joy, int event)
@@ -97,7 +93,6 @@ void GLFWHandler::joystick_callback(int joy, int event)
             LOG(GAME, std::to_string(joy) + " was connected");
             Controller::Connect(joy);
             Input::provide(std::make_shared<ControllerInputService>());
-
         }
     }
     else if (event == GLFW_DISCONNECTED)
@@ -105,7 +100,6 @@ void GLFWHandler::joystick_callback(int joy, int event)
         LOG(GAME, std::to_string(joy) + " was disconnected");
         Controller::Disconnect();
         Input::provide(std::make_shared<KeyboardInputService>());
-
     }
 }
 
@@ -117,6 +111,5 @@ void GLFWHandler::Start()
     {
         Controller::Connect(GLFW_JOYSTICK_1);
         Input::provide(std::make_shared<ControllerInputService>());
-
     }
 }

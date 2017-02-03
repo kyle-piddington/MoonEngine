@@ -5,7 +5,7 @@
 using namespace MoonEngine;
 
 GLProgram::GLProgram(std::string name):
-        _progName(name)
+    _progName(name)
 {
     _progId = glCreateProgram();
 }
@@ -16,11 +16,11 @@ GLProgram::~GLProgram()
 }
 
 GLProgram::GLProgram(GLProgram && other):
-        _progId(other.release()),
-        _progName(other._progName),
-        _linked(other._linked),
-        _attribMap(other._attribMap),
-        _uniformMap(other._uniformMap)
+    _progId(other.release()),
+    _progName(other._progName),
+    _linked(other._linked),
+    _attribMap(other._attribMap),
+    _uniformMap(other._uniformMap)
 {
 
 }
@@ -131,5 +131,3 @@ GLuint GLProgram::reset(GLuint otherID)
     _progId = otherID;
     return _progId;
 }
-
-

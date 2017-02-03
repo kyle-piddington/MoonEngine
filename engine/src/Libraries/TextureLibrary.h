@@ -11,7 +11,6 @@
 
 namespace MoonEngine
 {
-
     class TextureLibrary
     {
     public:

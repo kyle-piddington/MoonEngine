@@ -32,7 +32,7 @@ namespace MoonEngine
 
     private:
         //Pointer to the vertex array object that contains the mesh.
-        ////Most meshes are saved  in MeshLibrary, but not all.
+        //Most meshes are saved  in MeshLibrary, but not all.
         GLVertexArrayObject * vertexObjectPtr;
 
     };

@@ -50,5 +50,4 @@ namespace MoonEngine
         glm::vec3 normalFor(BoundingBox::Plane plane);
 
     };
-
 }

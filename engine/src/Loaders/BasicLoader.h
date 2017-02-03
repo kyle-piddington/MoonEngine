@@ -15,20 +15,18 @@ namespace MoonEngine
     {
     public:
         static bool LoadIntoBuffer(std::string fileName,
-                                   GLBuffer * vertexBuffer,
-                                   GLBuffer * indexBuffer,
-                                   GLVertexArrayObject * vao,
-                                   MeshInfo * outInfo,
-                                   bool smooth = false);
+            GLBuffer * vertexBuffer,
+            GLBuffer * indexBuffer,
+            GLVertexArrayObject * vao,
+            MeshInfo * outInfo,
+            bool smooth = false);
 
     private:
         static unsigned loadFlatShade(std::vector<float> * vertexData, std::vector<unsigned short> * indexData,
-                                      const tinyobj::attrib_t & attributes,
-                                      const std::vector<tinyobj::shape_t> & shapes);
+            const tinyobj::attrib_t & attributes, const std::vector<tinyobj::shape_t> & shapes);
 
         static unsigned loadSmoothShade(std::vector<float> * vertexData, std::vector<unsigned short> * indexData,
-                                        const tinyobj::attrib_t & attributes,
-                                        const std::vector<tinyobj::shape_t> & shapes);
+            const tinyobj::attrib_t & attributes, const std::vector<tinyobj::shape_t> & shapes);
 
     };
 };

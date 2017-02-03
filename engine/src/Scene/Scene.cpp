@@ -20,7 +20,7 @@ Scene::Scene()
 
 /**
  * Add the gameobject to the active scene.
- * @param obj [description]
+ * @param obj [to add]
  */
 void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 {
@@ -39,6 +39,10 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
     }
 }
 
+/**
+ * Run updates for GameObjects, time, and collisions
+ * @param dt [time change]
+ */
 void Scene::runUpdate(float dt)
 {
     _globalTime += dt * TIME_MODIFIER;
@@ -51,6 +55,7 @@ void Scene::runUpdate(float dt)
         go->update(dt);
     }
     runCollisionUpdate();
+
     if (updateFunctors.size() > 0)
     {
         for (auto & fun : updateFunctors)
@@ -137,7 +142,6 @@ void Scene::deleteGameObject(GameObject * object)
         components.at(i)->setDeleted();
     }
 }
-
 
 void Scene::runDeleteGameObjects()
 {

@@ -12,7 +12,7 @@ using namespace MoonEngine;
 
 
 ProgramRenderer::ProgramRenderer():
-        mainCamera(nullptr)
+    mainCamera(nullptr)
 //renderToFB(800,600),
 //framebufferColorTexture(0),
 //framebufferDepthStencilTexture(1)
@@ -62,11 +62,9 @@ void ProgramRenderer::render(Scene * scene)
             activeProgram->enable();
 
             /* Bind uniforms which change per shader */
-            glUniformMatrix4fv(
-                    activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+            glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
 
-            glUniformMatrix4fv(
-                    activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+            glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 
             if (activeProgram->hasUniform("iGlobalLightDir"))
             {
@@ -81,32 +79,32 @@ void ProgramRenderer::render(Scene * scene)
 
         /* Bind uniforms which change per object */
         glm::vec3 tint = mat->getTint();
-        glUniform3f(
-                activeProgram->getUniformLocation("tint"), tint.x, tint.y, tint.z);
+        glUniform3f(activeProgram->getUniformLocation("tint"), tint.x, tint.y, tint.z);
 
-        glUniform1f(
-                activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
+        glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
 
-        glUniformMatrix4fv(
-                activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
-        glUniformMatrix3fv(
-                activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
+        glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+        glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
 
         if (obj->getComponent<InstanceMesh>() != nullptr)
         {
-            glDrawElementsInstanced(GL_TRIANGLES,
-                                    mesh->numTris,
-                                    GL_UNSIGNED_SHORT,
-                                    mesh->indexDataOffset,
-                                    obj->getComponent<InstanceMesh>()->_numOfInstances);
+            glDrawElementsInstanced(
+                GL_TRIANGLES,
+                mesh->numTris,
+                GL_UNSIGNED_SHORT,
+                mesh->indexDataOffset,
+                obj->getComponent<InstanceMesh>()->_numOfInstances
+            );
         }
         else
         {
-            glDrawElementsBaseVertex(GL_TRIANGLES,
-                                     mesh->numTris,
-                                     GL_UNSIGNED_SHORT,
-                                     mesh->indexDataOffset,
-                                     mesh->baseVertex);
+            glDrawElementsBaseVertex(
+                GL_TRIANGLES,
+                mesh->numTris,
+                GL_UNSIGNED_SHORT,
+                mesh->indexDataOffset,
+                mesh->baseVertex
+            );
         }
         mat->unbind();
     }
@@ -128,5 +126,4 @@ void ProgramRenderer::render(Scene * scene)
 
 void ProgramRenderer::shutdown()
 {
-
 }

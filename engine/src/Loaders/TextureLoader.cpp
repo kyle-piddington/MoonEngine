@@ -6,7 +6,7 @@
 #include <iostream>
 #include <memory>
 #include "Util/Logger.h"
-#include "GLWrapper/GLTextureConfiguration.h"
+#include "GLUtil/GLTextureConfiguration.h"
 
 using namespace MoonEngine;
 
@@ -47,5 +47,4 @@ std::shared_ptr<GLTexture> TextureLoader::LoadTextureFromFile(GLuint unit, const
     }
     stbi_image_free(data);
     return tex;
-
 }

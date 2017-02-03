@@ -3,7 +3,7 @@
 #include <string>
 #include "GLSampler.h"
 #include "OpenGL.h"
-#include "GLTextureConfiguration.h"
+#include "GLUtil/GLTextureConfiguration.h"
 
 namespace MoonEngine
 {
@@ -74,10 +74,7 @@ namespace MoonEngine
 
         int getHeight() const;
 
-
     private:
-
-
         GLuint _textureId;
         GLenum _textureType;
         GLenum _framebufferStatus;

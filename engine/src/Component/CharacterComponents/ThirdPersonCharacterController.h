@@ -8,7 +8,6 @@
  */
 namespace MoonEngine
 {
-
     enum PlayerState
     {
         JUMPING,
@@ -48,7 +47,6 @@ namespace MoonEngine
         float radius;
         GameObject * mainCamera;
         BoxCollider * bbox;
-
 
     };
 }

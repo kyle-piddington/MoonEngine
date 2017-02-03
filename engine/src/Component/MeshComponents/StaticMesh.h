@@ -6,8 +6,6 @@
 
 namespace MoonEngine
 {
-
-
     class StaticMesh: public Mesh
     {
     public:

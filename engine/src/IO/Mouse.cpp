@@ -150,6 +150,3 @@ void Mouse::update()
     deltYOffset = deltYBuffer;
     deltXBuffer = deltYBuffer = 0;
 }
-
-
-

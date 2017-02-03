@@ -44,7 +44,6 @@ float Input::GetAxis(Axis axis)
         case AXIS_VERTICAL_1:
             _targVAxis1 = axisVal;
             return _smoothedVAxis1;
-
     }
 }
 
@@ -83,7 +82,6 @@ void Input::Update(float dt)
         _smoothedVAxis1 = 0;
     }
     //Linear interpolation to target
-
 
     _smoothedHAxis0 = moveTowards(_smoothedHAxis0, _targHAxis0, axisSmoothSpeed * dt);
     _smoothedHAxis1 = moveTowards(_smoothedHAxis1, _targHAxis1, axisSmoothSpeed * dt);

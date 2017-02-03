@@ -53,8 +53,8 @@ std::shared_ptr<GLProgram> ProgramLoader::LoadProgram(std::string programInfo)
     rapidjson::ParseResult pr = document.Parse(programInfo.c_str());
     if (!pr)
     {
-        LOG(ERROR, "ERROR: Could not parse document json. ( " +
-                   std::string(rapidjson::GetParseError_En(pr.Code())) + " [" + std::to_string(pr.Offset()) + "] )");
+        LOG(ERROR, "ERROR: Could not parse document json. ( " + std::string(rapidjson::GetParseError_En(pr.Code())) +
+            " [" + std::to_string(pr.Offset()) + "] )");
         return nullptr;
     }
     verifyFile(document);
@@ -70,8 +70,7 @@ std::shared_ptr<GLProgram> ProgramLoader::LoadProgram(std::string programInfo)
     {
         return nullptr;
     }
-    GLShader fShader =
-            GLProgramUtilities::createShaderFromFile(GL_FRAGMENT_SHADER, fragmentShaderSource);
+    GLShader fShader = GLProgramUtilities::createShaderFromFile(GL_FRAGMENT_SHADER, fragmentShaderSource);
     if (!GLProgramUtilities::checkShaderStatus(fShader))
     {
         return nullptr;
@@ -81,8 +80,8 @@ std::shared_ptr<GLProgram> ProgramLoader::LoadProgram(std::string programInfo)
     glProgram->attachShader(fShader);
     if (document.HasMember("geometry") && document["geometry"].IsString())
     {
-        GLShader gShader =
-                GLProgramUtilities::createShaderFromFile(GL_GEOMETRY_SHADER, document["geometry"].GetString());
+        GLShader gShader = GLProgramUtilities::createShaderFromFile(
+            GL_GEOMETRY_SHADER, document["geometry"].GetString());
         if (!GLProgramUtilities::checkShaderStatus(gShader))
         {
             return nullptr;

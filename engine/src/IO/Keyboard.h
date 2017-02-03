@@ -1,5 +1,5 @@
-#ifndef __Keyboard_H__
-#define __Keyboard_H__
+#pragma once
+
 #define NUM_KEYS 1024
 namespace MoonEngine
 {
@@ -52,8 +52,5 @@ namespace MoonEngine
          */
         static void update();
 
-
     };
-
-#endif
 }

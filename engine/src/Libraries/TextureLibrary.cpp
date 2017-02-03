@@ -12,7 +12,6 @@ TextureLibrary::TextureLibrary(std::string resourcePath):
     //Add a fallback texture to the library.
     _textures.clear();
     loadDefaultTexture();
-
 }
 
 TextureLibrary::~TextureLibrary()
@@ -20,13 +19,13 @@ TextureLibrary::~TextureLibrary()
     _textures.clear();
 }
 
-/* Get or load a texture. Do not include an image extension */
+/* Get or load a texture */
 GLTexture * TextureLibrary::getTexture(std::string textureName, int unit, std::string extension)
 {
     if (_textures.find(textureName) == _textures.end())
     {
         std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(unit,
-                                                                                  _recPath + textureName + extension);
+            _recPath + textureName + extension);
         _texturePtrs.push_back(glTexture);
         if (glTexture != nullptr)
         {

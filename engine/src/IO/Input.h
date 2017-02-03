@@ -12,7 +12,6 @@
 
 namespace MoonEngine
 {
-
     class Input
     {
     public:
@@ -61,7 +60,6 @@ namespace MoonEngine
 
     private:
         static std::shared_ptr<InputService> _service;
-
 
     };
 }

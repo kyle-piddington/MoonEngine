@@ -8,11 +8,7 @@ namespace MoonEngine
     class Camera: public Component
     {
     public:
-        Camera(
-                float fov,
-                float aspect,
-                float near,
-                float far);
+        Camera(float fov, float aspect, float near, float far);
 
         /**
          * Initialize the camera

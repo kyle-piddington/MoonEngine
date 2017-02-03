@@ -11,7 +11,6 @@
 namespace MoonEngine
 {
 
-
     class GLBuffer
     {
     public:
@@ -74,7 +73,6 @@ namespace MoonEngine
         GLuint release();
 
         GLuint reset(GLuint newObject = 0);
-
 
     };
 };

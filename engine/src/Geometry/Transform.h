@@ -1,5 +1,4 @@
-#ifndef __TRANSFORM_H__
-#define __TRANSFORM_H__
+#pragma once
 
 #include <glm/glm.hpp>
 #include "World.h"
@@ -7,8 +6,6 @@
 
 namespace MoonEngine
 {
-
-
     namespace Space
     {
         enum spaceType
@@ -140,4 +137,3 @@ namespace MoonEngine
 
     };
 };
-#endif

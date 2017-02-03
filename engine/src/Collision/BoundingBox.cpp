@@ -5,20 +5,20 @@ using namespace MoonEngine;
 
 
 BoundingBox::BoundingBox(glm::vec3 center, float xHalfWidth, float yHalfWidth, float zHalfWidth):
-        centerPoint(center),
-        xHalfWidth(xHalfWidth),
-        yHalfWidth(yHalfWidth),
-        zHalfWidth(zHalfWidth)
+    centerPoint(center),
+    xHalfWidth(xHalfWidth),
+    yHalfWidth(yHalfWidth),
+    zHalfWidth(zHalfWidth)
 {
 }
 
 BoundingBox::BoundingBox(
-        float minX,
-        float maxX,
-        float minY,
-        float maxY,
-        float minZ,
-        float maxZ)
+    float minX,
+    float maxX,
+    float minY,
+    float maxY,
+    float minZ,
+    float maxZ)
 {
     assert(minX <= maxX);
     assert(minY <= maxY);
@@ -28,21 +28,17 @@ BoundingBox::BoundingBox(
     yHalfWidth = (maxY - minY) / 2;
     zHalfWidth = (maxZ - minZ) / 2;
 
-    centerPoint = glm::vec3(minX + xHalfWidth,
-                            minY + yHalfWidth,
-                            minZ + zHalfWidth);
-
+    centerPoint = glm::vec3(minX + xHalfWidth, minY + yHalfWidth, minZ + zHalfWidth);
 }
 
 BoundingBox::BoundingBox():
-        centerPoint(0),
-        xHalfWidth(0),
-        yHalfWidth(0),
-        zHalfWidth(0)
+    centerPoint(0),
+    xHalfWidth(0),
+    yHalfWidth(0),
+    zHalfWidth(0)
 {
 
 }
-
 
 float BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec3 * colnormal)
 {

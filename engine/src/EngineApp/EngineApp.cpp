@@ -27,13 +27,10 @@ EngineApp::EngineApp(GLFWwindow * window, MoonEngineCfg config):
 
     GLFWHandler::Start();
     //Other app setup code, install callbacks etc.
-
 }
 
 EngineApp::~EngineApp()
 {
-
-
 }
 
 Library EngineApp::GetAssetLibrary()
@@ -58,6 +55,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
     scene->start();
     ImGui_ImplGlfwGL3_Init(_window, false); //Initialize ImGui
 
+    /* Game loop */
     while (!glfwWindowShouldClose(_window))
     {
         //ImGui implementation

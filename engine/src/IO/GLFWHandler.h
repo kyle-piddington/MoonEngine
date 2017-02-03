@@ -1,5 +1,4 @@
-#ifndef __GLFW_HANDLER_H__
-#define __GLFW_HANDLER_H__
+#pragma once
 
 #include <GLFW/glfw3.h>
 #include <string>
@@ -66,9 +65,5 @@ namespace MoonEngine
 
         static void Start();
 
-
     };
-
-
-#endif
 }

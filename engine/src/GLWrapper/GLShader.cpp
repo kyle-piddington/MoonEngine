@@ -5,13 +5,12 @@ using namespace MoonEngine;
 
 
 GLShader::GLShader():
-        compiled(false)
+    compiled(false)
 {
-
 }
 
 GLShader::GLShader(GLenum shaderType, const char * source):
-        _shaderType(shaderType)
+    _shaderType(shaderType)
 {
     _objectId = glCreateShader(shaderType);
     glShaderSource(_objectId, 1, &source, NULL);
@@ -25,9 +24,10 @@ GLShader::~GLShader()
 }
 
 GLShader::GLShader(GLShader && other):
-        _objectId(other.release()),
-        _shaderType(other._shaderType)
-{}
+    _objectId(other.release()),
+    _shaderType(other._shaderType)
+{
+}
 
 GLShader & GLShader::operator=(GLShader && other)
 {

@@ -1,4 +1,5 @@
 #pragma once
+
 namespace MoonEngine
 {
     class GLTextureConfiguration
@@ -27,11 +28,11 @@ namespace MoonEngine
          GL_Unsigned_Byte for it's data read type.
          */
         GLTextureConfiguration(int txWidth, int txHeight):
-                width(txWidth),
-                height(txHeight),
-                textureInputFmt(GL_RGBA),
-                textureOutputFmt(GL_RGBA),
-                textureDataType(GL_UNSIGNED_BYTE)
+            width(txWidth),
+            height(txHeight),
+            textureInputFmt(GL_RGBA),
+            textureOutputFmt(GL_RGBA),
+            textureDataType(GL_UNSIGNED_BYTE)
         {
 
         }
@@ -41,11 +42,11 @@ namespace MoonEngine
          * internal storage details
          */
         GLTextureConfiguration(int txWidth, int txHeight, GLenum inputFmt, GLenum outputFmt, GLenum dataType):
-                width(txWidth),
-                height(txHeight),
-                textureInputFmt(inputFmt),
-                textureOutputFmt(outputFmt),
-                textureDataType(dataType)
+            width(txWidth),
+            height(txHeight),
+            textureInputFmt(inputFmt),
+            textureOutputFmt(outputFmt),
+            textureDataType(dataType)
         {
 
         }

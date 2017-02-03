@@ -32,5 +32,4 @@ std::string TextLoader::LoadFullFile(std::string fileName)
         LOG(ERROR, "Error opening file");
         return "";
     }
-
 }

@@ -6,13 +6,16 @@
 using namespace MoonEngine;
 using namespace tinyobj;
 
-
+/** Loads a mesh into associated data structures
+ * Loading from file and placing into structures
+ * Should really be two separate things
+ */
 bool BasicLoader::LoadIntoBuffer(std::string fileName,
-                                 GLBuffer * vertexBuffer,
-                                 GLBuffer * indexBuffer,
-                                 GLVertexArrayObject * vertexArrayObject,
-                                 MeshInfo * outInfo,
-                                 bool smooth)
+    GLBuffer * vertexBuffer,
+    GLBuffer * indexBuffer,
+    GLVertexArrayObject * vertexArrayObject,
+    MeshInfo * outInfo,
+    bool smooth)
 {
     attrib_t attributes;
     std::vector<shape_t> shapes;
@@ -45,9 +48,10 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
         for (size_t i = 0; i < attributes.vertices.size() / 3; i++)
         {
             vertPositions.push_back(glm::vec3(
-                    attributes.vertices[i * 3],
-                    attributes.vertices[i * 3 + 1],
-                    attributes.vertices[i * 3 + 2]));
+                attributes.vertices[i * 3],
+                attributes.vertices[i * 3 + 1],
+                attributes.vertices[i * 3 + 2])
+            );
         }
 
         vertexBuffer->setData(sizeof(float) * dataBuffer.size(), &(dataBuffer[0]), GL_STATIC_DRAW);
@@ -77,38 +81,41 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
         }
 
         vertexArrayObject->bindVertexBuffer(
-                GL_VERTEX_POSITION_ATTRIBUTE,
-                *vertexBuffer,
-                3,
-                GL_FLOAT,
-                false,
-                dataSize);
+            GL_VERTEX_POSITION_ATTRIBUTE,
+            *vertexBuffer,
+            3,
+            GL_FLOAT,
+            false,
+            dataSize
+        );
 
         if (hasNors)
         {
             LOG(INFO, "Loading mesh with normals");
             texCoordsOffset += sizeof(float) * 3;
             vertexArrayObject->bindVertexBuffer(
-                    GL_VERTEX_NORMAL_ATTRIBUTE,
-                    *vertexBuffer,
-                    3,
-                    GL_FLOAT,
-                    false,
-                    dataSize,
-                    (GLvoid *) (sizeof(float) * 3));
+                GL_VERTEX_NORMAL_ATTRIBUTE,
+                *vertexBuffer,
+                3,
+                GL_FLOAT,
+                false,
+                dataSize,
+                (GLvoid *) (sizeof(float) * 3)
+            );
         }
 
         if (hasTexCoords)
         {
             LOG(INFO, "Loading mesh with textures");
             vertexArrayObject->bindVertexBuffer(
-                    GL_VERTEX_TEXTURE_ATTRIBUTE,
-                    *vertexBuffer,
-                    3,
-                    GL_FLOAT,
-                    false,
-                    dataSize,
-                    (GLvoid *) texCoordsOffset);
+                GL_VERTEX_TEXTURE_ATTRIBUTE,
+                *vertexBuffer,
+                3,
+                GL_FLOAT,
+                false,
+                dataSize,
+                (GLvoid *) texCoordsOffset
+            );
         }
         vertexArrayObject->bindElementBuffer(*indexBuffer);
         outInfo->numVerts = attributes.vertices.size();
@@ -125,8 +132,8 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
     return success;
 }
 
-unsigned
-BasicLoader::loadFlatShade(std::vector<float> * dataBuffer, std::vector<unsigned short> * indexData, const attrib_t & attrib, const std::vector<shape_t> & shapes)
+unsigned BasicLoader::loadFlatShade(std::vector<float> * dataBuffer, std::vector<unsigned short> * indexData,
+    const attrib_t & attrib, const std::vector<shape_t> & shapes)
 {
     int vertIdx = 0;
     bool hasNors = attrib.normals.size() > 0;
@@ -175,8 +182,8 @@ BasicLoader::loadFlatShade(std::vector<float> * dataBuffer, std::vector<unsigned
     return vertIdx;
 }
 
-unsigned
-BasicLoader::loadSmoothShade(std::vector<float> * dataBuffer, std::vector<unsigned short> * indexData, const attrib_t & attrib, const std::vector<shape_t> & shapes)
+unsigned BasicLoader::loadSmoothShade(std::vector<float> * dataBuffer, std::vector<unsigned short> * indexData,
+    const attrib_t & attrib, const std::vector<shape_t> & shapes)
 {
     int vertIdx = 0;
     bool hasNors = attrib.normals.size() > 0;

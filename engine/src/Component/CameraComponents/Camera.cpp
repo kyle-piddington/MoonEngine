@@ -5,14 +5,13 @@
 using namespace MoonEngine;
 
 Camera::Camera(float fov, float aspect, float near, float far):
-        _aspect(aspect),
-        _near(near),
-        _far(far),
-        _fov(fov),
-        _vNeedsUpdate(true)
+    _aspect(aspect),
+    _near(near),
+    _far(far),
+    _fov(fov),
+    _vNeedsUpdate(true)
 {
 }
-
 
 void Camera::start()
 {

@@ -4,15 +4,12 @@
 using namespace MoonEngine;
 
 Component::Component():
-        deleted(false)
+    deleted(false)
 {
-
 }
-
 
 Component::~Component()
 {
-
 }
 
 void Component::start()

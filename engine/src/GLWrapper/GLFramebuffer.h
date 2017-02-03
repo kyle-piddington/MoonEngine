@@ -61,8 +61,6 @@ namespace MoonEngine
         GLenum _framebufferStatus;
         std::unordered_map<std::string, GLuint> _textureHandles;
 
-
         //void addRenderbuffer(const GLRenderBuffer & buffer);
-        //
     };
 }

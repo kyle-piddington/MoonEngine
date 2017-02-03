@@ -22,7 +22,6 @@ GLShader GLProgramUtilities::createShaderFromFile(GLenum shaderType, std::string
         LOG(ERROR, "Could not open file named " + std::string(fileName));
         return GLShader();
     }
-
 }
 
 /* Source; https://learnopengl.com/#!Getting-started/Hello-Triangle*/

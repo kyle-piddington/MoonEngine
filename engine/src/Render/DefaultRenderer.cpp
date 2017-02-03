@@ -86,10 +86,10 @@ void DefaultRenderer::render(Scene * scene)
     glm::mat4 V = mainCamera->getView();
     glm::mat4 P = mainCamera->getProjection();
     glUniformMatrix4fv(
-            basicPhongProgram.getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+        basicPhongProgram.getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
 
     glUniformMatrix4fv(
-            basicPhongProgram.getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+        basicPhongProgram.getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
     //No binning
     //World position light
     glm::vec3 lightDir(1, 1, 1);
@@ -104,20 +104,21 @@ void DefaultRenderer::render(Scene * scene)
         mesh->bind();
         glUniform3f(basicPhongProgram.getUniformLocation("tint"), tint.x, tint.y, tint.z);
         glUniformMatrix4fv(
-                basicPhongProgram.getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+            basicPhongProgram.getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
         glUniformMatrix3fv(
-                basicPhongProgram.getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
+            basicPhongProgram.getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
 
-        glDrawElementsBaseVertex(GL_TRIANGLES,
-                                 mesh->numTris,
-                                 GL_UNSIGNED_SHORT,
-                                 mesh->indexDataOffset,
-                                 mesh->baseVertex);
+        glDrawElementsBaseVertex(
+            GL_TRIANGLES,
+            mesh->numTris,
+            GL_UNSIGNED_SHORT,
+            mesh->indexDataOffset,
+            mesh->baseVertex
+        );
     }
     GLVertexArrayObject::Unbind();
 }
 
 void DefaultRenderer::shutdown()
 {
-
 }

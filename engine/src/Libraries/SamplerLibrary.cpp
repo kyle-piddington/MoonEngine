@@ -6,7 +6,6 @@ using namespace MoonEngine;
 
 SamplerLibrary::SamplerLibrary()
 {
-
 }
 
 SamplerLibrary::~SamplerLibrary()
@@ -16,8 +15,8 @@ SamplerLibrary::~SamplerLibrary()
 
 /* Create or fetch a sampler, with integer and float params */
 GLSampler * SamplerLibrary::getSampler(string samplerName,
-                                       unordered_map<GLenum, GLint> paramsi,
-                                       unordered_map<GLenum, GLfloat> paramsf)
+    unordered_map<GLenum, GLint> paramsi,
+    unordered_map<GLenum, GLfloat> paramsf)
 {
     if (_samplers.find(samplerName) == _samplers.end())
     {
@@ -39,4 +38,3 @@ GLSampler * SamplerLibrary::getSampler(std::string samplerName, unordered_map<GL
 {
     return getSampler(samplerName, params, unordered_map<GLenum, GLfloat>());
 }
-

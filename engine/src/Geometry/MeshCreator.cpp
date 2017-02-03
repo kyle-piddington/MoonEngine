@@ -55,20 +55,22 @@ MeshInfo * MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRight)
     std::shared_ptr<GLVertexArrayObject> vertexArrayObject = std::make_shared<GLVertexArrayObject>();
     backingArrayObjects.push_back(vertexArrayObject);
     vertexArrayObject->bindVertexBuffer(
-            GL_VERTEX_POSITION_ATTRIBUTE,
-            *vertexBuffer,
-            3,
-            GL_FLOAT,
-            false,
-            sizeof(float) * 5);
+        GL_VERTEX_POSITION_ATTRIBUTE,
+        *vertexBuffer,
+        3,
+        GL_FLOAT,
+        false,
+        sizeof(float) * 5
+    );
     vertexArrayObject->bindVertexBuffer(
-            GL_VERTEX_TEXTURE_ATTRIBUTE,
-            *vertexBuffer,
-            2,
-            GL_FLOAT,
-            false,
-            sizeof(float) * 5,
-            (GLvoid *) (sizeof(float) * 3));
+        GL_VERTEX_TEXTURE_ATTRIBUTE,
+        *vertexBuffer,
+        2,
+        GL_FLOAT,
+        false,
+        sizeof(float) * 5,
+        (GLvoid *) (sizeof(float) * 3)
+    );
     vertexArrayObject->bindElementBuffer(*indexBuffer);
     //Create meshInfo
     MeshInfo * info = new MeshInfo();

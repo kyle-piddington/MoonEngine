@@ -11,10 +11,7 @@ namespace MoonEngine
     class Mesh: public Component
     {
     public:
-        Mesh()
-        {
-
-        }
+        Mesh() {}
 
         virtual const MeshInfo * getMesh() = 0;
 

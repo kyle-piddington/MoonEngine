@@ -4,9 +4,8 @@
 using namespace MoonEngine;
 
 KeyboardInputService::KeyboardInputService():
-        inputConfig(InputConfiguration::DefaultKeyboardConfiguration())
+    inputConfig(InputConfiguration::DefaultKeyboardConfiguration())
 {
-
 }
 
 float KeyboardInputService::getAxisRaw(Axis axis)

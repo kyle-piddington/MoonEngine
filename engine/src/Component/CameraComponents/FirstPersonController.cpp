@@ -14,12 +14,11 @@
 using namespace MoonEngine;
 
 FirstPersonController::FirstPersonController(float Cam_Move_Speed, float CamSensitivity):
-        _CamMoveSpeed(Cam_Move_Speed),
-        _CamSensitivity(CamSensitivity),
-        _phi(0),
-        _theta(0)
+    _CamMoveSpeed(Cam_Move_Speed),
+    _CamSensitivity(CamSensitivity),
+    _phi(0),
+    _theta(0)
 {
-
 }
 
 void FirstPersonController::update(float dt)

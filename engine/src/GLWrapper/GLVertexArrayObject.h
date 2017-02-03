@@ -43,14 +43,9 @@ namespace MoonEngine
          * @param stride     Number of bytes between data objects
          * @param offset     Pointer to start of the vertex buffer.
          */
-        void bindVertexBuffer(
-                GLuint attribute,
-                const GLBuffer & buffer,
-                GLint size = 3,
-                GLenum type = GL_FLOAT,
-                GLboolean normalized = false,
-                GLsizei stride = sizeof(GLfloat) * 3,
-                GLvoid * offset = (GLvoid *) 0);
+        void bindVertexBuffer(GLuint attribute, const GLBuffer & buffer, GLint size = 3,
+            GLenum type = GL_FLOAT, GLboolean normalized = false,
+            GLsizei stride = sizeof(GLfloat) * 3, GLvoid * offset = (GLvoid *) 0);
 
 
         /**
@@ -74,7 +69,6 @@ namespace MoonEngine
         GLuint reset(GLuint newId = 0);
 
         GLuint release();
-
 
     };
 };

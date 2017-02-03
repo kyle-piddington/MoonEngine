@@ -12,7 +12,6 @@
 
 namespace MoonEngine
 {
-
     class MeshLibrary
     {
     public:

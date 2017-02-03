@@ -1,4 +1,3 @@
-/*Author: Derek Nola*/
 #pragma once
 
 #include <sstream>

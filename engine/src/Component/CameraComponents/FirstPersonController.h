@@ -6,8 +6,6 @@
  */
 namespace MoonEngine
 {
-
-
     class FirstPersonController: public Component
     {
     public:
@@ -22,7 +20,6 @@ namespace MoonEngine
         float _CamSensitivity;
         float _phi;
         float _theta;
-
 
     };
 }

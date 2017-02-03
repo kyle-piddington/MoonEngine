@@ -25,16 +25,15 @@ enum CameraStates
 };
 
 ThirdPersonOrbitalController::ThirdPersonOrbitalController(float Cam_Move_Speed, float CamSensitvity):
-        _CamMoveSpeed(Cam_Move_Speed),
-        _CamSensitivity(CamSensitvity),
-        _phi(M_PI / 6),
-        _theta(0.0f),
-        _distance(2.0f),
-        _state(NORMAL),
-        _trac(0.0f, 0.0f, 3.0f),
-        _targ(0.0f)
+    _CamMoveSpeed(Cam_Move_Speed),
+    _CamSensitivity(CamSensitvity),
+    _phi(M_PI / 6),
+    _theta(0.0f),
+    _distance(2.0f),
+    _state(NORMAL),
+    _trac(0.0f, 0.0f, 3.0f),
+    _targ(0.0f)
 {
-
 }
 
 void ThirdPersonOrbitalController::start()
@@ -53,7 +52,6 @@ void ThirdPersonOrbitalController::start()
 void ThirdPersonOrbitalController::update(float dt)
 {
     glm::vec3 rotate(0.0);
-
 
     rotate.y = (Mouse::getLastY() - Mouse::getY()) * _CamSensitivity;
     rotate.x = (Mouse::getLastX() - Mouse::getX()) * _CamSensitivity * -1.0;

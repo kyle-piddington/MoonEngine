@@ -12,7 +12,6 @@ ControllerInputService::ControllerInputService():
 ControllerInputService::ControllerInputService(InputConfiguration cfg):
         inputConfig(cfg)
 {
-
 }
 
 float ControllerInputService::getAxisRaw(Axis axis)

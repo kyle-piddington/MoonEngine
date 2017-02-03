@@ -5,13 +5,13 @@
 using namespace MoonEngine;
 
 GLBuffer::GLBuffer(GLenum target):
-        _type(target)
+    _type(target)
 {
     glGenBuffers(1, &_objectId);
 }
 
 GLBuffer::GLBuffer(GLenum target, GLsizeiptr size, const void * data, GLenum usage):
-        _type(target)
+    _type(target)
 {
     glGenBuffers(1, &_objectId);
     setData(size, data, usage);
@@ -27,10 +27,9 @@ GLBuffer::~GLBuffer()
  * Move constructor
  */
 GLBuffer::GLBuffer(GLBuffer && other):
-        _type(other._type),
-        _objectId(other.release())
+    _type(other._type),
+    _objectId(other.release())
 {
-
 }
 
 /**

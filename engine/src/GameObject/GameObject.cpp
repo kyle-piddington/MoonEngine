@@ -4,14 +4,14 @@
 using namespace MoonEngine;
 
 GameObject::GameObject():
-        deleted(false)
+    deleted(false)
 {
 
 }
 
 GameObject::GameObject(const Transform & t):
-        transform(t),
-        deleted(false)
+    transform(t),
+    deleted(false)
 {
 
 }

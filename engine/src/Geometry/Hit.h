@@ -1,6 +1,7 @@
 #pragma once
+
 /**
- * Output of a Raycast=
+ * Output of a Raycast
  */
 namespace MoonEngine
 {
