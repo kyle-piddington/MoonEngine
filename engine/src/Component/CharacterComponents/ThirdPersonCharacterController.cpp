@@ -29,7 +29,6 @@ void ThirdPersonCharacterController::start()
     mainCamera = GetWorld()->findGameObjectWithComponent<Camera>();
     transform = &gameObject->getTransform();
     bbox = gameObject->getComponent<BoxCollider>();
-
 }
 
 void ThirdPersonCharacterController::update(float dt)

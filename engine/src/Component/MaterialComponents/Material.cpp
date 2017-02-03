@@ -7,9 +7,9 @@ using namespace MoonEngine;
 
 Material::Material(glm::vec3 tint, std::string program, stringmap textures):
     Component(),
+    _textures(std::unordered_map<string, GLTexture *>()),
     _tint(tint),
-    _texture_unit(0),
-    _textures(std::unordered_map<string, GLTexture *>())
+    _texture_unit(0)
 {
     _programPtr = Library::ProgramLib->getProgramForName(program);
     if (_programPtr == nullptr)

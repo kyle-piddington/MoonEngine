@@ -55,7 +55,7 @@ void TextureLibrary::Debug_ShowAllTextures()
         {
             if (_texture != nullptr)
             {
-                ImGui::Image((void *) (_texture->getTextureId()), ImVec2(128, 128));
+                ImGui::Image((void *)(uintptr_t) (_texture->getTextureId()), ImVec2(128, 128));
             }
 
         }

@@ -126,13 +126,15 @@ namespace MoonEngine
         void updateFrame();
 
         glm::vec3 position;
+        glm::quat rotation;
+        glm::vec3 scale;
+
         glm::vec4 localUp;
         glm::vec4 localRight;
         glm::vec4 localForward;
-        glm::vec3 scale;
-        bool isDirty;
         glm::mat4 currentMatrix;
-        glm::quat rotation;
+
+        bool isDirty;
         Transform * parent;
 
     };

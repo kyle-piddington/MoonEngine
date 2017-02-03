@@ -8,8 +8,8 @@ using namespace MoonEngine;
 GLFramebuffer::GLFramebuffer(int width, int height):
     _width(width),
     _height(height),
-    _textureHandles(std::unordered_map<std::string, GLuint>()),
-    _framebufferStatus(GL_FRAMEBUFFER_UNDEFINED)
+    _framebufferStatus(GL_FRAMEBUFFER_UNDEFINED),
+    _textureHandles(std::unordered_map<std::string, GLuint>())
 {
     glGenFramebuffers(1, &_handle);
 }
@@ -23,9 +23,9 @@ GLFramebuffer::~GLFramebuffer()
 GLFramebuffer::GLFramebuffer(GLFramebuffer && other):
     _width(other._width),
     _height(other._height),
-    _textureHandles(other._textureHandles),
     _handle(other.release()),
-    _framebufferStatus(other._framebufferStatus)
+    _framebufferStatus(other._framebufferStatus),
+    _textureHandles(other._textureHandles)
 {
 }
 

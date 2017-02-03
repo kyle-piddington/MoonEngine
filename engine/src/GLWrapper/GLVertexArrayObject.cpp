@@ -36,13 +36,13 @@ void GLVertexArrayObject::bindVertexBuffer(GLuint attribute, const GLBuffer & bu
     if (attribute == GL_VERTEX_INSTANCE_MATRIX_ATTRIBUTE)
     {
         glEnableVertexAttribArray(attribute);
-        glVertexAttribPointer(attribute, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid *) 0);
+        glVertexAttribPointer(attribute, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid *)(uintptr_t) 0);
         glEnableVertexAttribArray(attribute + 1);
-        glVertexAttribPointer(attribute + 1, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid *) (stride));
+        glVertexAttribPointer(attribute + 1, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid *)(uintptr_t) (stride));
         glEnableVertexAttribArray(attribute + 2);
-        glVertexAttribPointer(attribute + 2, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid *) (2 * stride));
+        glVertexAttribPointer(attribute + 2, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid *)(uintptr_t) (2 * stride));
         glEnableVertexAttribArray(attribute + 3);
-        glVertexAttribPointer(attribute + 3, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid *) (3 * stride));
+        glVertexAttribPointer(attribute + 3, 4, GL_FLOAT, GL_FALSE, 4 * size, (GLvoid *)(uintptr_t) (3 * stride));
 
         glVertexAttribDivisor(attribute, 1);
         glVertexAttribDivisor(attribute + 1, 1);

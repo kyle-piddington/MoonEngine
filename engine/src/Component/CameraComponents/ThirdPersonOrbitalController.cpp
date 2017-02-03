@@ -27,12 +27,12 @@ enum CameraStates
 ThirdPersonOrbitalController::ThirdPersonOrbitalController(float Cam_Move_Speed, float CamSensitvity):
     _CamMoveSpeed(Cam_Move_Speed),
     _CamSensitivity(CamSensitvity),
+    _trac(0.0f, 0.0f, 3.0f),
+    _targ(0.0f),
     _phi(M_PI / 6),
     _theta(0.0f),
     _distance(2.0f),
-    _state(NORMAL),
-    _trac(0.0f, 0.0f, 3.0f),
-    _targ(0.0f)
+    _state(NORMAL)
 {
 }
 
