@@ -31,7 +31,7 @@ ThirdPersonOrbitalController::ThirdPersonOrbitalController(float Cam_Move_Speed,
     _targ(0.0f),
     _phi(M_PI / 6),
     _theta(0.0f),
-    _distance(2.0f),
+    _distance(1.5f),
     _state(NORMAL)
 {
 }
@@ -55,15 +55,22 @@ void ThirdPersonOrbitalController::update(float dt)
 
     rotate.y = (Mouse::getLastY() - Mouse::getY()) * _CamSensitivity;
     rotate.x = (Mouse::getLastX() - Mouse::getX()) * _CamSensitivity * -1.0;
-    rotate.y += Input::GetAxis(AXIS_VERTICAL_1) * _CamMoveSpeed * dt;
-    rotate.x += Input::GetAxis(AXIS_HORIZONTAL_1) * _CamMoveSpeed * dt;
+    rotate.y -= Input::GetAxis(AXIS_VERTICAL_1) * _CamMoveSpeed * dt;
+    rotate.x -= Input::GetAxis(AXIS_HORIZONTAL_1) * _CamMoveSpeed * dt;
     _targ = player->getTransform().getPosition();
     if (std::abs(rotate.y) > 1e-2 || std::abs(rotate.x) > 1e-2)
     {
         _phi += rotate.y;
         _theta += rotate.x;
-        _phi = std::min(_phi, (float) M_PI / 2.0f - 0.1f);
-        _phi = std::max(_phi, -(float) M_PI / 2.0f + 0.1f);
+
+        /* Do not look beyond straight up */
+        /* TODO allow looking all the way up.
+         * M_PI - 0.1f
+         * */
+        _phi = std::min(_phi, (float) M_PI / 2);
+
+        /* Do not look beyond straight down */
+        _phi = std::max(_phi, 0.1f);
 
         rotate.z = 0;
 

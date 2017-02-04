@@ -69,7 +69,7 @@ int main(int argc, char ** argv)
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, 800.0 / 600.0, 0.1, 50);
     cameraObj->addComponent(cam);
-    cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
+    cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>(3.0));
     //cameraObj->getTransform().translate(glm::vec3(0,2,5));
     //cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
     scene->addGameObject(cameraObj);
