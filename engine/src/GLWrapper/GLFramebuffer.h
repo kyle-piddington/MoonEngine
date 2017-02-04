@@ -2,6 +2,9 @@
 
 #include "GLTexture.h"
 #include <unordered_map>
+#include <glfw/glfw3.h>
+#include <cassert>
+#include "util/Logger.h"
 /**
  * GLFramebuffer holds on to framebuffer
  * texture information, and allows for easy querying

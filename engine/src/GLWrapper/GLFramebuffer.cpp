@@ -1,7 +1,4 @@
 #include "GLFramebuffer.h"
-#include <glfw/glfw3.h>
-#include <cassert>
-#include "util/Logger.h"
 
 using namespace MoonEngine;
 
