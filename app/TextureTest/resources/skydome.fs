@@ -11,8 +11,8 @@ uniform vec3 iGlobalLightDir;
 //uniform sampler2D tint2;//the color of the sky on the opposite half-sphere. (time x height)
 //uniform sampler2D sun;//sun texture (radius x time)
 
-//uniform sampler2D clouds1;//light clouds texture (spherical UV projection)
-//uniform sampler2D clouds2;//heavy clouds texture (spherical UV projection)
+uniform sampler2D clouds1;//light clouds texture (spherical UV projection)
+uniform sampler2D clouds2;//heavy clouds texture (spherical UV projection)
 //uniform float weather;//mixing factor (0.5 to 1.0)
 //uniform float time;
 //---------OUT------------
@@ -43,7 +43,7 @@ void main(){
     //Reading from the clouds maps
     //mixing according to the weather (1.0 -> clouds1 (sunny), 0.5 -> clouds2 (rainy))
     //+ time translation along the u-axis (horizontal) for the clouds movement
-    //float transparency = mix(texture(clouds2,vec2(u+time,v)).r,texture(clouds1,vec2(u+time,v)).r,(weather-0.5)*2.0);
+    //float transparency = mix(texture(clouds2,vec2(u+iGlobalTime,v)).r,texture(clouds1,vec2(u+iGlobalTime,v)).r,(weather-0.5)*2.0);
 
 
     //Sun

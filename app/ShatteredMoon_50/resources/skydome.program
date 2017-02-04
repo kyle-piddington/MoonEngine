@@ -1,0 +1,5 @@
+{
+	"name" : "skydome",
+	"vertex" : "resources/skydome.vs",
+	"fragment" : "resources/skydome.fs"
+}
