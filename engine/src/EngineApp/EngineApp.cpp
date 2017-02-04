@@ -44,6 +44,19 @@ void MoonEngine::EngineApp::setMouseMode(int mode)
     GLFWHandler::setMouseMode(_window, mode);
 }
 
+void handleMouseLock(GLFWwindow * window, bool * disableGui)
+{
+    if(Keyboard::key(GLFW_KEY_LEFT_CONTROL))
+    {
+        *disableGui = Keyboard::isKeyToggled(GLFW_KEY_LEFT_CONTROL);
+        if(disableGui)
+        {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
+
+    }
+}
+
 void EngineApp::run(Scene * scene, I_Renderer * renderer)
 {
     //Set the global active scene to this one.
@@ -54,13 +67,17 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
     renderer->setup(scene);
     scene->start();
     ImGui_ImplGlfwGL3_Init(_window, false); //Initialize ImGui
-
+    bool imguiOn = false;
     /* Game loop */
     while (!glfwWindowShouldClose(_window))
     {
         //ImGui implementation
+        handleMouseLock(_window, &imguiOn);
+        
+        
+        ImGui_ImplGlfwGL3_NewFrame(imguiOn);            
+        
 
-        ImGui_ImplGlfwGL3_NewFrame();
 
         glfwPollEvents();
         GLFWHandler::update();
@@ -69,8 +86,11 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
         scene->runUpdate(dt);
         renderer->render(scene);
         newT = (float) glfwGetTime();
+        if(imguiOn)
+        {
+            ImGui::Render();            
+        }
 
-        ImGui::Render();
         glfwSwapBuffers(_window);
         //After scene is completed and rendered, delete any gameObjects
         scene->runDeleteGameObjects();
@@ -80,6 +100,9 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
     renderer->shutdown();
 
 }
+
+
+
 
 void EngineApp::initializeComponents(Scene * scene)
 {
