@@ -5,17 +5,23 @@
 
 using namespace MoonEngine;
 
-Material::Material(glm::vec3 tint, std::string programName, unordered_map<string, string> textures, bool forward) :
+Material::Material(glm::vec3 tint, vector<string> programNames, unordered_map<string, string> textures, bool forward) :
     Component(),
     _textures(std::unordered_map<string, GLTexture *>()),
     _tint(tint),
+    _activeProgram(0),
     _texture_unit(0),
 	_forward(forward)
 {
-    _programPtr = Library::ProgramLib->getProgramForName(programName);
-    if (_programPtr == nullptr)
+
+    int i = 0;
+    for (i = 0; i < programNames.size(); i++)
     {
-        _programPtr = Library::ProgramLib->getProgramForName("default.program");
+        _programs[i] = Library::ProgramLib->getProgramForName(programNames[i]);
+        if (_programs[i] == nullptr)
+        {
+            _programs[i] = Library::ProgramLib->getProgramForName("default.program");
+        }
     }
 
     for (auto & texture: textures)
@@ -33,6 +39,12 @@ Material::Material(glm::vec3 tint, std::string programName, unordered_map<string
     _samplerPtr = Library::SamplerLib->getSampler("default");
 }
 
+Material::Material(glm::vec3 tint, std::string programName, unordered_map<string, string> textures, bool forward)
+{
+    vector<string> programNames = {programName};
+    Material::Material(tint, programNames, textures, forward);
+}
+
 
 const glm::vec3 & Material::getTint() const
 {
@@ -46,9 +58,13 @@ void Material::setTint(glm::vec3 newTint)
 
 GLProgram * Material::getProgram() const
 {
-    return _programPtr;
+    return _programs[_activeProgram];
 }
 
+void Material::setActiveProgram(int program)
+{
+    _activeProgram = program;
+}
 
 std::shared_ptr<Component> Material::clone() const
 {
@@ -61,7 +77,7 @@ void Material::bind()
     {
         _texture.second->bind();
         _texture.second->bindSampler(_samplerPtr);
-        glUniform1i(_programPtr->getUniformLocation(_texture.first), _texture.second->getUnit());
+        glUniform1i(_programs[_activeProgram]->getUniformLocation(_texture.first), _texture.second->getUnit());
     }
 }
 

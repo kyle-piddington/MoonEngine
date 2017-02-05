@@ -6,6 +6,7 @@
 #include "GLWrapper/GLProgram.h"
 #include <GLWrapper/GLSampler.h>
 #include <GLWrapper/GLTexture.h>
+#include <vector>
 /**
  * Material contains the basic rendering
  * information needed for rendering a material. In this case,
@@ -22,8 +23,14 @@ namespace MoonEngine
         Material(glm::vec3 tint = glm::vec3(0, 0, 0),
              std::string programName = "default.program",
              unordered_map<string, string> textures = unordered_map<string, string>(),
-			bool forward = false
-			);
+			 bool forward = false
+        );
+
+        Material(glm::vec3 tint = glm::vec3(0, 0, 0),
+                 vector<string> programNames = {"default.program"},
+                 unordered_map<string, string> textures = unordered_map<string, string>(),
+                 bool forward = false
+        );
 
         /**
          * retrieve a base tint material used by all
@@ -44,6 +51,9 @@ namespace MoonEngine
          */
         GLProgram * getProgram() const;
 
+        /* Set the currently active program for material */
+        void setActiveProgram(int program);
+
         virtual std::shared_ptr<Component> clone() const;
 
         void bind();
@@ -55,13 +65,16 @@ namespace MoonEngine
         void unbind();
 
     private:
-        GLProgram * _programPtr;
         GLSampler * _samplerPtr;
 
+        int _activeProgram;
+        vector<GLProgram *> _programs;
         unordered_map<string, GLTexture *> _textures;
+
         glm::vec3 _tint;
 		bool _forward;
         GLuint _texture_unit;
+
     };
 }
 
