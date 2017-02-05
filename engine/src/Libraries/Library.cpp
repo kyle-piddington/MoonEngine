@@ -1,19 +1,25 @@
 #include "Library.h"
 #include "SamplerLibrary.h"
+#include <iostream>
+#include <unordered_map>
 
 using namespace MoonEngine;
+
 std::shared_ptr<MeshLibrary> Library::MeshLib;
 std::shared_ptr<ProgramLibrary> Library::ProgramLib;
 std::shared_ptr<InstTransformLibrary> Library::InstTransformLib;
 std::shared_ptr<TextureLibrary> Library::TextureLib;
 std::shared_ptr<SamplerLibrary> Library::SamplerLib;
 
-void Library::Init(std::string resourcePath)
+void Library::Init(MoonEngineCfg config)
 {
-    MeshLib = std::make_shared<MeshLibrary>(resourcePath);
-    ProgramLib = std::make_shared<ProgramLibrary>(resourcePath);
-    InstTransformLib = std::make_shared<InstTransformLibrary>(resourcePath);
-    TextureLib = std::make_shared<TextureLibrary>(resourcePath);
+    string resourcePath = config.assetPath;
+    std::unordered_map<std::string, std::string> dirs = config.asset_directories;
+
+    MeshLib = std::make_shared<MeshLibrary>(resourcePath + dirs["meshes"]);
+    ProgramLib = std::make_shared<ProgramLibrary>(resourcePath + dirs["programs"]);
+    InstTransformLib = std::make_shared<InstTransformLibrary>(resourcePath + dirs["instances"]);
+    TextureLib = std::make_shared<TextureLibrary>(resourcePath + dirs["textures"]);
     SamplerLib = std::make_shared<SamplerLibrary>();
 }
 

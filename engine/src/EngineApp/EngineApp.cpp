@@ -13,10 +13,11 @@ Library EngineApp::AssetLibrary;
 Scene * EngineApp::_activeScene = nullptr;
 bool EngineApp::assetsLoaded = false;
 
-EngineApp::EngineApp(GLFWwindow * window, MoonEngineCfg config):
-        _window(window)
+EngineApp::EngineApp(GLFWwindow * window, string config):
+    _window(window)
 {
-    AssetLibrary.Init(config.assetPath);
+    MoonEngineCfg cfg(config);
+    AssetLibrary.Init(cfg);
     assetsLoaded = true;
     glfwSetKeyCallback(window, GLFWHandler::key_callback);
     glfwSetCursorPosCallback(window, GLFWHandler::mousePositionCallback);
@@ -27,6 +28,12 @@ EngineApp::EngineApp(GLFWwindow * window, MoonEngineCfg config):
 
     GLFWHandler::Start();
     //Other app setup code, install callbacks etc.
+}
+
+EngineApp::EngineApp(GLFWwindow * window):
+    _window(window)
+{
+    EngineApp(window, "moonengine.cfg");
 }
 
 EngineApp::~EngineApp()
@@ -66,6 +73,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
     float dt = 0;
     renderer->setup(scene);
     scene->start();
+
     ImGui_ImplGlfwGL3_Init(_window, false); //Initialize ImGui
     bool imguiOn = false;
     /* Game loop */
@@ -77,7 +85,6 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
         
         ImGui_ImplGlfwGL3_NewFrame(imguiOn);            
         
-
 
         glfwPollEvents();
         GLFWHandler::update();

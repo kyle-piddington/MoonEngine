@@ -23,11 +23,11 @@ namespace MoonEngine
         Material(glm::vec3 tint = glm::vec3(0, 0, 0),
              std::string programName = "default.program",
              unordered_map<string, string> textures = unordered_map<string, string>(),
-			 bool forward = false
-        );
+			bool forward = false
+			);
 
         Material(glm::vec3 tint = glm::vec3(0, 0, 0),
-                 vector<string> programNames = {"default.program"},
+                 std::vector<string> programNames = {"default.program"},
                  unordered_map<string, string> textures = unordered_map<string, string>(),
                  bool forward = false
         );
