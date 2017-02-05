@@ -46,7 +46,7 @@ void DeferredRenderer::render(Scene * scene)
 
 	vector<std::shared_ptr<GameObject>>forwardObjects;
         
-	geometryPass(scene);
+	forwardObjects = geometryPass(scene);
 	lightingPass(scene);
     // ImGui::Begin("Framebuffer");
     // {
@@ -142,6 +142,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	GLFramebuffer::Unbind();
 	//sets the mesh (VAO) back to 0
 	GLVertexArrayObject::Unbind();
+	return forwardObjects;
 }
 
 void DeferredRenderer::lightingPass(Scene * scene)
