@@ -13,15 +13,7 @@ using namespace MoonEngine;
 
 ProgramRenderer::ProgramRenderer():
     mainCamera(nullptr)
-//renderToFB(800,600),
-//framebufferColorTexture(0),
-//framebufferDepthStencilTexture(1)
 {
-    // renderQuad = MeshCreator::CreateQuad(glm::vec2(-1,1), glm::vec2(1,1));
-    // assert(framebufferColorTexture.init(GLTextureConfiguration(800,600,GL_RGB,GL_RGB,GL_UNSIGNED_BYTE)));
-    // assert(framebufferDepthStencilTexture.init(GLTextureConfiguration(800,600,GL_DEPTH24_STENCIL8,GL_DEPTH_STENCIL,GL_UNSIGNED_INT_24_8)));
-    // renderToFB.addTexture("color",framebufferColorTexture,GL_COLOR_ATTACHMENT0);
-    // renderToFB.addTexture("depthStencil",framebufferDepthStencilTexture,GL_DEPTH_STENCIL_ATTACHMENT);
 
 }
 
@@ -110,7 +102,6 @@ void ProgramRenderer::render(Scene * scene)
     }
 
 
-    //GLFramebuffer::Unbind();
 
 
     // ImGui::Begin("Framebuffer");

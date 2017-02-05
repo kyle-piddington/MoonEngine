@@ -1,5 +1,5 @@
 #pragma once
-//
+
 #include "GLWrapper/GLProgram.h"
 #include "I_Renderer.h"
 #include "Component/Components.h"
@@ -56,7 +56,7 @@ namespace MoonEngine
         MeshInfo* renderQuad;
 
         GLFramebuffer _gBuffer;
-        GLTexture _colorTex;
+		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;
         GLTexture _depthStencilTex;
     };
 }
