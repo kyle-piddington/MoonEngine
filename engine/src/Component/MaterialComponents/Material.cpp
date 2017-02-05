@@ -1,7 +1,5 @@
 #include "Material.h"
 #include "Libraries/Library.h"
-#include "thirdparty/imgui/imgui.h"
-#include <string>
 #include <iostream>
 
 using namespace MoonEngine;
@@ -50,9 +48,13 @@ Material::Material(glm::vec3 tint, std::string programName, unordered_map<string
     _texture_unit(0),
     _forward(forward)
 {
-    std::cout << programName << endl;
     vector<string> programNames;
+    if (!forward) {
+        /* If deferred and only one shader provided, use default geom */
+        programNames.push_back("geom");
+    }
     programNames.push_back(programName);
+
     *this = Material::Material(tint, programNames, textures, forward);
 }
 
