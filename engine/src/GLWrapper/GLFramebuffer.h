@@ -5,6 +5,7 @@
 #include <glfw/glfw3.h>
 #include <cassert>
 #include "util/Logger.h"
+#include "GLConstants.h"
 /**
  * GLFramebuffer holds on to framebuffer
  * texture information, and allows for easy querying
@@ -44,12 +45,25 @@ namespace MoonEngine
          * Implement a render buffer class
          */
 
-        void bind() const;
+		 /**
+		 * Bind the framebuffer
+		 * @param mode:
+		 * GL_READ_FRAMEBUFFER: bind for reading
+		 * GL_DRAW_FRAMEBUFFER: bind for writing
+		 * GL_FRAMEBUFFER: bind for both
+		 */
+        void bind(GLint mode) const;
 
         GLuint getObject() const;
 
         GLuint getTexture(std::string name) const;
-
+		/**
+		* Specify what part to of the
+		* buffer to read from
+		* @param name the name of the texture
+		*/
+		void setReadBuffer(std::string name);
+		GLuint getAttachmentMode(std::string name) const;
         static void Unbind();
 
     private:
@@ -57,13 +71,14 @@ namespace MoonEngine
 
         GLuint reset(GLuint newObject = 0);
 
-        void bindWithoutComplete() const;
+		void bindWithoutComplete(GLuint mode = GL_FRAMEBUFFER) const;
 
         int _width;
         int _height;
         GLuint _handle;
         GLenum _framebufferStatus;
         std::unordered_map<std::string, GLuint> _textureHandles;
+		std::unordered_map<std::string, GLuint> _textureAttachmentMode;
 
         //void addRenderbuffer(const GLRenderBuffer & buffer);
     };

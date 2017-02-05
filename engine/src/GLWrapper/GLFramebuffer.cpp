@@ -35,40 +35,37 @@ GLFramebuffer & GLFramebuffer::operator=(GLFramebuffer && other)
     return *this;
 }
 
-void GLFramebuffer::bind() const
+
+void GLFramebuffer::bind(GLint mode) const
 {
-    if (_framebufferStatus != GL_FRAMEBUFFER_COMPLETE)
-    {
-        switch (_framebufferStatus)
-        {
-            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-                LOG(ERROR, "Framebuffer not complete, incomplete attachment");
-                break;
-            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-                LOG(ERROR, "Framebuffer not complete, No textures attached");
-                break;
-            case GL_FRAMEBUFFER_UNSUPPORTED:
-                LOG(ERROR, "Framebuffer not complete, not supported by openGL version");
-                break;
-            default:
-                LOG(ERROR, "FrameBuffer not complete... " + std::to_string(_framebufferStatus));
+	if (_framebufferStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
+		switch (_framebufferStatus)
+		{
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+			LOG(ERROR, "Framebuffer not complete, incomplete attachment");
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+			LOG(ERROR, "Framebuffer not complete, No textures attached");
+			break;
+		case GL_FRAMEBUFFER_UNSUPPORTED:
+			LOG(ERROR, "Framebuffer not complete, not supported by openGL version");
+			break;
+		default:
+			LOG(ERROR, "FrameBuffer not complete... " + std::to_string(_framebufferStatus));
 
-        }
-    }
-    assert(_framebufferStatus == GL_FRAMEBUFFER_COMPLETE);
-    bindWithoutComplete();
-
+		}
+	}
+	assert(_framebufferStatus == GL_FRAMEBUFFER_COMPLETE);
+	bindWithoutComplete(mode);
 }
+
 
 GLuint MoonEngine::GLFramebuffer::getObject() const
 {
     return _handle;
 }
 
-void GLFramebuffer::bindWithoutComplete() const
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, _handle);
-}
 
 void GLFramebuffer::addTexture(const std::string & textureName, const GLTexture & texture, GLenum attachmentInfo)
 {
@@ -76,6 +73,7 @@ void GLFramebuffer::addTexture(const std::string & textureName, const GLTexture 
     bindWithoutComplete();
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentInfo, GL_TEXTURE_2D, texture.getTextureId(), 0);
     _textureHandles[textureName] = texture.getTextureId();
+	_textureAttachmentMode[textureName] = (GLuint) attachmentInfo;
     _framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     Unbind();
 }
@@ -95,6 +93,11 @@ GLuint GLFramebuffer::reset(GLuint newObject)
     return _handle;
 }
 
+void GLFramebuffer::bindWithoutComplete(GLuint mode) const
+{
+	glBindFramebuffer(mode, _handle);
+}
+
 void GLFramebuffer::Unbind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -108,4 +111,19 @@ GLuint GLFramebuffer::getTexture(std::string name) const
         assert(!"Could not find texture in framebuffer");
     }
     return it->second;
+}
+
+void MoonEngine::GLFramebuffer::setReadBuffer(std::string name)
+{
+	glReadBuffer(getAttachmentMode(name));
+}
+
+GLuint MoonEngine::GLFramebuffer::getAttachmentMode(std::string name) const
+{
+	auto it = _textureAttachmentMode.find(name);
+	if (it == _textureAttachmentMode.end())
+	{
+		assert(!"Could not find texture attachment in framebuffer");
+	}
+	return it->second;
 }

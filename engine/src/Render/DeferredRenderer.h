@@ -54,7 +54,7 @@ namespace MoonEngine
 		void lightingPass(Scene* scene);
         Camera* _mainCamera;
         MeshInfo* renderQuad;
-
+		GLuint _width, _height;
         GLFramebuffer _gBuffer;
 		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;
         GLTexture _depthStencilTex;

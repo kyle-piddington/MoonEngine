@@ -7,6 +7,8 @@ using namespace MoonEngine;
 DeferredRenderer::DeferredRenderer(int width, int height):
 _mainCamera(nullptr),
 _gBuffer(width, height),
+_width(width),
+_height(height),
 _positionTex(0),
 _colorTex(1),
 _normalTex(2),
@@ -16,7 +18,10 @@ _depthStencilTex(4)
     // renderQuad = MeshCreator::CreateQuad(glm::vec2(-1,1), glm::vec2(1,1));
     assert(_colorTex.init(GLTextureConfiguration(width,height,GL_RGB,GL_RGB,GL_UNSIGNED_BYTE)));
     assert(_depthStencilTex.init(GLTextureConfiguration(width,height,GL_DEPTH24_STENCIL8,GL_DEPTH_STENCIL,GL_UNSIGNED_INT_24_8)));
-    _gBuffer.addTexture("color",_colorTex,GL_COLOR_ATTACHMENT0);
+    _gBuffer.addTexture("position",_positionTex,GL_COLOR_ATTACHMENT0);
+	_gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT0+1);
+	_gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT0+2);
+	_gBuffer.addTexture("texture", _textureTex, GL_COLOR_ATTACHMENT0+3);
     _gBuffer.addTexture("depthStencil",_depthStencilTex,GL_DEPTH_STENCIL_ATTACHMENT);
 
 }
@@ -42,7 +47,7 @@ void DeferredRenderer::render(Scene * scene)
 	vector<std::shared_ptr<GameObject>>forwardObjects;
         
 	geometryPass(scene);
-    
+	lightingPass(scene);
     // ImGui::Begin("Framebuffer");
     // {
     // 	ImGui::Image((void*)(_colorTex.getTextureId()),ImVec2(256,256));
@@ -61,7 +66,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	Material* mat = nullptr;
 	vector<std::shared_ptr<GameObject>> forwardObjects;
 	
-	_gBuffer.bind();
+	_gBuffer.bind(GL_DRAW_FRAMEBUFFER);
 	glm::mat4 V = _mainCamera->getView();
 	glm::mat4 P = _mainCamera->getProjection();
 	
@@ -141,6 +146,29 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 
 void DeferredRenderer::lightingPass(Scene * scene)
 {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	_gBuffer.bind(GL_READ_FRAMEBUFFER);
+
+	GLuint halfWidth = (GLuint)_width / 2.0f;
+	GLuint halfHeight = (GLuint)_height / 2.0f;
+
+	_gBuffer.setReadBuffer("position");
+	glBlitFramebuffer(0, 0, _width, _height, 0, 0, halfWidth, 
+		halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+	_gBuffer.setReadBuffer("color");
+	glBlitFramebuffer(0, 0, _width, _height, 0, halfHeight, halfWidth,
+		halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+	_gBuffer.setReadBuffer("normal");
+	glBlitFramebuffer(0, 0, _width, _height, halfWidth, halfHeight, 
+		_width, _height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
+	_gBuffer.setReadBuffer("texture");
+	glBlitFramebuffer(0, 0, _width, _height, halfWidth, 0, _width,
+		halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+
 }
 
 
