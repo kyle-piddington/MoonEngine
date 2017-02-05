@@ -11,7 +11,9 @@ namespace MoonEngine
     struct EngineApp
     {
     public:
-        EngineApp(GLFWwindow * window, MoonEngineCfg config);
+        EngineApp(GLFWwindow * window);
+
+        EngineApp(GLFWwindow * window, string config);
 
         ~EngineApp();
 

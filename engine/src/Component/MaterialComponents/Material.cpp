@@ -2,6 +2,7 @@
 #include "Libraries/Library.h"
 #include "thirdparty/imgui/imgui.h"
 #include <string>
+#include <iostream>
 
 using namespace MoonEngine;
 
@@ -10,17 +11,19 @@ Material::Material(glm::vec3 tint, vector<string> programNames, unordered_map<st
     _textures(std::unordered_map<string, GLTexture *>()),
     _tint(tint),
     _activeProgram(0),
+    _programs(std::vector<GLProgram *>()),
     _texture_unit(0),
 	_forward(forward)
 {
 
-    int i = 0;
-    for (i = 0; i < programNames.size(); i++)
+    _programs.reserve(programNames.size() + 1);
+    for (int i = 0; i < programNames.size(); i++)
     {
         _programs[i] = Library::ProgramLib->getProgramForName(programNames[i]);
-        if (_programs[i] == nullptr)
+
+        if (_programs.at(i) == nullptr)
         {
-            _programs[i] = Library::ProgramLib->getProgramForName("default.program");
+            _programs.push_back(Library::ProgramLib->getProgramForName("default.program"));
         }
     }
 
@@ -39,8 +42,17 @@ Material::Material(glm::vec3 tint, vector<string> programNames, unordered_map<st
     _samplerPtr = Library::SamplerLib->getSampler("default");
 }
 
-Material::Material(glm::vec3 tint, std::string programName, unordered_map<string, string> textures, bool forward)
+Material::Material(glm::vec3 tint, std::string programName, unordered_map<string, string> textures, bool forward):
+    Component(),
+    _textures(std::unordered_map<string, GLTexture *>()),
+    _tint(tint),
+    _activeProgram(0),
+    _programs(std::vector<GLProgram *>()),
+    _texture_unit(0),
+    _forward(forward)
 {
+    std::cout << programName << endl;
+
     vector<string> programNames = {programName};
     Material::Material(tint, programNames, textures, forward);
 }

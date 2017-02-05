@@ -5,7 +5,7 @@
 using namespace MoonEngine;
 
 MeshLibrary::MeshLibrary(std::string resourcePath):
-    _recPath(resourcePath + "/")
+    _recPath(resourcePath)
 {
 }
 

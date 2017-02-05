@@ -7,7 +7,7 @@
 using namespace MoonEngine;
 
 TextureLibrary::TextureLibrary(std::string resourcePath):
-        _recPath(resourcePath + "/")
+        _recPath(resourcePath)
 {
     //Add a fallback texture to the library.
     _textures.clear();
