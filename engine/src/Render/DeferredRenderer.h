@@ -1,5 +1,5 @@
 #pragma once
-
+//
 #include "GLWrapper/GLProgram.h"
 #include "I_Renderer.h"
 #include "Component/Components.h"
@@ -13,11 +13,11 @@
 #include "thirdparty/imgui/imgui.h"
 #include <iostream>
 /**
- * The Default renderer performs a phong rendering
- * of the entire scene, using MaterialInstance.tint's 
- * property to color objects. The renderer
- * does not switch programs, or perform
- * any binning.
+ * The Deferred renderer performs a phong rendering
+ * of the entire scene, but with a two stage defferred
+ * render pass. Light volumes are used to cull fragments.
+ * Some binning is done in ensureing only defferred objects
+ * get drawn, then forward objects after. 
  */
 namespace MoonEngine
 {
@@ -25,7 +25,7 @@ namespace MoonEngine
     class DeferredRenderer: public I_Renderer
     {
     public:
-        DeferredRenderer();
+        DeferredRenderer(int width, int height);
 
         virtual ~DeferredRenderer()
         {}
@@ -49,11 +49,14 @@ namespace MoonEngine
 
 
     private:
+
+		void geometryPass(Scene* scene);
+		void lightingPass(Scene* scene);
         Camera * mainCamera;
         MeshInfo * renderQuad;
 
-        //GLFramebuffer renderToFB;
-        //GLTexture framebufferColorTexture;
-        //GLTexture framebufferDepthStencilTexture;
+        GLFramebuffer _gBuffer;
+        GLTexture _colorTex;
+        GLTexture _depthStencilTex;
     };
 }

@@ -4,17 +4,17 @@
 using namespace MoonEngine;
 
 
-DeferredRenderer::DeferredRenderer():
-    mainCamera(nullptr)
-//renderToFB(800,600),
-//framebufferColorTexture(0),
-//framebufferDepthStencilTexture(1)
+DeferredRenderer::DeferredRenderer(int width, int height):
+mainCamera(nullptr),
+_gBuffer(width, height),
+_colorTex(0),
+_depthStencilTex(1)
 {
     // renderQuad = MeshCreator::CreateQuad(glm::vec2(-1,1), glm::vec2(1,1));
-    // assert(framebufferColorTexture.init(GLTextureConfiguration(800,600,GL_RGB,GL_RGB,GL_UNSIGNED_BYTE)));
-    // assert(framebufferDepthStencilTexture.init(GLTextureConfiguration(800,600,GL_DEPTH24_STENCIL8,GL_DEPTH_STENCIL,GL_UNSIGNED_INT_24_8)));
-    // renderToFB.addTexture("color",framebufferColorTexture,GL_COLOR_ATTACHMENT0);
-    // renderToFB.addTexture("depthStencil",framebufferDepthStencilTexture,GL_DEPTH_STENCIL_ATTACHMENT);
+    assert(_colorTex.init(GLTextureConfiguration(width,height,GL_RGB,GL_RGB,GL_UNSIGNED_BYTE)));
+    assert(_depthStencilTex.init(GLTextureConfiguration(width,height,GL_DEPTH24_STENCIL8,GL_DEPTH_STENCIL,GL_UNSIGNED_INT_24_8)));
+    _gBuffer.addTexture("color",_colorTex,GL_COLOR_ATTACHMENT0);
+    _gBuffer.addTexture("depthStencil",_depthStencilTex,GL_DEPTH_STENCIL_ATTACHMENT);
 
 }
 
@@ -29,7 +29,13 @@ void DeferredRenderer::setup(Scene * scene)
 
     glClearColor(0.2f, 0.2f, 0.6f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+
+	//Setup the GBuffer
+
+
+
 }
+
 
 void DeferredRenderer::render(Scene * scene)
 {
@@ -46,6 +52,7 @@ void DeferredRenderer::render(Scene * scene)
 	{
 		Material * mat = obj->getComponent<Material>();
 
+
 		if (mat->isForward()) {
 			forwardObjects.push_back(obj);
 			continue;
@@ -54,6 +61,9 @@ void DeferredRenderer::render(Scene * scene)
 		glm::mat4 M = obj->getTransform().getMatrix();
 		glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
 		
+
+
+
 		const MeshInfo * mesh = obj->getComponent<Mesh>()->getMesh();
 		mesh->bind();
 		mat->bind();
@@ -72,6 +82,17 @@ void DeferredRenderer::render(Scene * scene)
     GLVertexArrayObject::Unbind();
 }
 
+void DeferredRenderer::geometryPass(Scene * scene)
+{
+}
+
+void DeferredRenderer::lightingPass(Scene * scene)
+{
+}
+
+
 void DeferredRenderer::shutdown()
 {
 }
+
+

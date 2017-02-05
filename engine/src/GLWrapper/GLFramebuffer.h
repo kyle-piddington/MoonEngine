@@ -18,6 +18,7 @@ namespace MoonEngine
     class GLFramebuffer
     {
     public:
+
         GLFramebuffer(int width, int height);
 
         ~GLFramebuffer();
