@@ -16,11 +16,10 @@ Material::Material(glm::vec3 tint, vector<string> programNames, unordered_map<st
 	_forward(forward)
 {
 
-    _programs.reserve(programNames.size() + 1);
+    _programs.reserve(programNames.size());
     for (int i = 0; i < programNames.size(); i++)
     {
-        _programs[i] = Library::ProgramLib->getProgramForName(programNames[i]);
-
+        _programs.push_back( Library::ProgramLib->getProgramForName(programNames[i]));
         if (_programs.at(i) == nullptr)
         {
             _programs.push_back(Library::ProgramLib->getProgramForName("default.program"));
@@ -52,9 +51,9 @@ Material::Material(glm::vec3 tint, std::string programName, unordered_map<string
     _forward(forward)
 {
     std::cout << programName << endl;
-
-    vector<string> programNames = {programName};
-    Material::Material(tint, programNames, textures, forward);
+    vector<string> programNames;
+    programNames.push_back(programName);
+    *this = Material::Material(tint, programNames, textures, forward);
 }
 
 
