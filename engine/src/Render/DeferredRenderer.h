@@ -50,7 +50,7 @@ namespace MoonEngine
 
     private:
         Camera * mainCamera;
-        //MeshInfo * renderQuad;
+        MeshInfo * renderQuad;
 
         //GLFramebuffer renderToFB;
         //GLTexture framebufferColorTexture;

@@ -33,12 +33,31 @@ void DeferredRenderer::setup(Scene * scene)
 
 void DeferredRenderer::render(Scene * scene)
 {
+
+	GLProgram * activeProgram = nullptr;
+
+	vector<std::shared_ptr<GameObject>>forwardObjects;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 V = mainCamera->getView();
     glm::mat4 P = mainCamera->getProjection();
 	
+	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
+	{
+		Material * mat = obj->getComponent<Material>();
 
+		if (mat->isForward()) {
+			forwardObjects.push_back(obj);
+			continue;
+		}
+		
+		glm::mat4 M = obj->getTransform().getMatrix();
+		glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
+		
+		const MeshInfo * mesh = obj->getComponent<Mesh>()->getMesh();
+		mesh->bind();
+		mat->bind();
+	}
     //GLFramebuffer::Unbind();
 
 

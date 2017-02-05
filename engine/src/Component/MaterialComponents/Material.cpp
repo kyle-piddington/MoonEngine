@@ -5,13 +5,14 @@
 
 using namespace MoonEngine;
 
-Material::Material(glm::vec3 tint, std::string program, stringmap textures):
+Material::Material(glm::vec3 tint, std::string programName, unordered_map<string, string> textures, bool forward) :
     Component(),
     _textures(std::unordered_map<string, GLTexture *>()),
     _tint(tint),
-    _texture_unit(0)
+    _texture_unit(0),
+	_forward(forward)
 {
-    _programPtr = Library::ProgramLib->getProgramForName(program);
+    _programPtr = Library::ProgramLib->getProgramForName(programName);
     if (_programPtr == nullptr)
     {
         _programPtr = Library::ProgramLib->getProgramForName("default.program");
@@ -31,6 +32,7 @@ Material::Material(glm::vec3 tint, std::string program, stringmap textures):
 
     _samplerPtr = Library::SamplerLib->getSampler("default");
 }
+
 
 const glm::vec3 & Material::getTint() const
 {

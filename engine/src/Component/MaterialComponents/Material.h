@@ -21,7 +21,9 @@ namespace MoonEngine
         //TODO add sampler
         Material(glm::vec3 tint = glm::vec3(0, 0, 0),
              std::string programName = "default.program",
-             unordered_map<string, string> textures = unordered_map<string, string>());
+             unordered_map<string, string> textures = unordered_map<string, string>(),
+			bool forward = false
+			);
 
         /**
          * retrieve a base tint material used by all
@@ -46,6 +48,10 @@ namespace MoonEngine
 
         void bind();
 
+		inline bool isForward() {
+			return _forward;
+		};
+
         void unbind();
 
     private:
@@ -54,7 +60,7 @@ namespace MoonEngine
 
         unordered_map<string, GLTexture *> _textures;
         glm::vec3 _tint;
-
+		bool _forward;
         GLuint _texture_unit;
     };
 }
