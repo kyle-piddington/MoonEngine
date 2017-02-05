@@ -5,7 +5,7 @@ using namespace MoonEngine;
 
 
 DeferredRenderer::DeferredRenderer(int width, int height):
-mainCamera(nullptr),
+_mainCamera(nullptr),
 _gBuffer(width, height),
 _colorTex(0),
 _depthStencilTex(1)
@@ -20,8 +20,8 @@ _depthStencilTex(1)
 
 void DeferredRenderer::setup(Scene * scene)
 {
-    mainCamera = scene->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
-    if (mainCamera == nullptr)
+    _mainCamera = scene->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
+    if (_mainCamera == nullptr)
     {
         LOG(ERROR, "No Camera in scene!");
     }
@@ -40,34 +40,9 @@ void DeferredRenderer::setup(Scene * scene)
 void DeferredRenderer::render(Scene * scene)
 {
 
-	GLProgram * activeProgram = nullptr;
-
 	vector<std::shared_ptr<GameObject>>forwardObjects;
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glm::mat4 V = mainCamera->getView();
-    glm::mat4 P = mainCamera->getProjection();
+        
 	
-	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
-	{
-		Material * mat = obj->getComponent<Material>();
-
-
-		if (mat->isForward()) {
-			forwardObjects.push_back(obj);
-			continue;
-		}
-		
-		glm::mat4 M = obj->getTransform().getMatrix();
-		glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
-		
-
-
-
-		const MeshInfo * mesh = obj->getComponent<Mesh>()->getMesh();
-		mesh->bind();
-		mat->bind();
-	}
     //GLFramebuffer::Unbind();
 
 
@@ -82,8 +57,43 @@ void DeferredRenderer::render(Scene * scene)
     GLVertexArrayObject::Unbind();
 }
 
-void DeferredRenderer::geometryPass(Scene * scene)
+vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene)
 {
+	GLProgram* activeProgram = nullptr;
+	vector<std::shared_ptr<GameObject>> forwardObjects;
+	glm::mat4 V = _mainCamera->getView();
+	glm::mat4 P = _mainCamera->getProjection();
+	
+	// Only the geometry pass writes to the depth buffer
+	glDepthMask(GL_TRUE);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+
+	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
+	{
+		Material * mat = obj->getComponent<Material>();
+
+
+		if (mat->isForward()) {
+			forwardObjects.push_back(obj);
+			continue;
+		}
+
+		glm::mat4 M = obj->getTransform().getMatrix();
+		glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
+		//mat->setActiveProgram(0);
+
+		if (activeProgram != mat->getProgram()) {
+			activeProgram = mat->getProgram();
+			activeProgram->enable();
+		}
+
+
+		const MeshInfo * mesh = obj->getComponent<Mesh>()->getMesh();
+		mesh->bind();
+		mat->bind();
+	}
 }
 
 void DeferredRenderer::lightingPass(Scene * scene)

@@ -50,10 +50,10 @@ namespace MoonEngine
 
     private:
 
-		void geometryPass(Scene* scene);
+		vector<std::shared_ptr<GameObject>> geometryPass(Scene* scene);
 		void lightingPass(Scene* scene);
-        Camera * mainCamera;
-        MeshInfo * renderQuad;
+        Camera* _mainCamera;
+        MeshInfo* renderQuad;
 
         GLFramebuffer _gBuffer;
         GLTexture _colorTex;
