@@ -13,16 +13,24 @@ _positionTex(0),
 _colorTex(1),
 _normalTex(2),
 _textureTex(3),
-_depthStencilTex(4)
+_depthTex(4)
 {
     // renderQuad = MeshCreator::CreateQuad(glm::vec2(-1,1), glm::vec2(1,1));
-    assert(_colorTex.init(GLTextureConfiguration(width,height,GL_RGB,GL_RGB,GL_UNSIGNED_BYTE)));
-    assert(_depthStencilTex.init(GLTextureConfiguration(width,height,GL_DEPTH24_STENCIL8,GL_DEPTH_STENCIL,GL_UNSIGNED_INT_24_8)));
-    _gBuffer.addTexture("position",_positionTex,GL_COLOR_ATTACHMENT0);
-	_gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT0+1);
-	_gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT0+2);
-	_gBuffer.addTexture("texture", _textureTex, GL_COLOR_ATTACHMENT0+3);
-    _gBuffer.addTexture("depthStencil",_depthStencilTex,GL_DEPTH_STENCIL_ATTACHMENT);
+	GLTextureConfiguration colorCFG(width, height, GL_RGB32F, GL_RGB, GL_FLOAT);
+	GLTextureConfiguration depthCFG(width, height, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT);
+	assert(_positionTex.init(colorCFG));
+	assert(_colorTex.init(colorCFG));
+	assert(_normalTex.init(colorCFG));
+	assert(_textureTex.init(colorCFG));
+	assert(_depthTex.init(depthCFG));
+	
+	_positionTex.init(colorCFG);
+	
+	_gBuffer.addTexture("position",_positionTex,GL_COLOR_ATTACHMENT0);
+	_gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT1);
+	_gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
+	_gBuffer.addTexture("texture", _textureTex, GL_COLOR_ATTACHMENT3);
+    _gBuffer.addTexture("depth",_depthTex,GL_DEPTH_ATTACHMENT);
 
 }
 
@@ -48,14 +56,14 @@ void DeferredRenderer::render(Scene * scene)
         
 	forwardObjects = geometryPass(scene);
 	lightingPass(scene);
-    // ImGui::Begin("Framebuffer");
-    // {
-    // 	ImGui::Image((void*)(_colorTex.getTextureId()),ImVec2(256,256));
-    // 	ImGui::Image((void*)(_gBuffer.getTexture("_depthStencilTex")),ImVec2(128,128));
-    // }
-    // ImGui::End();
+     ImGui::Begin("Framebuffer");
+     {
+     	ImGui::Image((void*)(_colorTex.getTextureId()),ImVec2(256,256));
+     	ImGui::Image((void*)(_gBuffer.getTexture("depth")),ImVec2(128,128));
+     }
+     ImGui::End();
     //Debug show textures
-    //Library::TextureLib->Debug_ShowAllTextures();
+    Library::TextureLib->Debug_ShowAllTextures();
     GLVertexArrayObject::Unbind();
 }
 
@@ -66,6 +74,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	Material* mat = nullptr;
 	vector<std::shared_ptr<GameObject>> forwardObjects;
 	
+	_gBuffer.drawColorAttachments();
 	_gBuffer.bind(GL_DRAW_FRAMEBUFFER);
 	glm::mat4 V = _mainCamera->getView();
 	glm::mat4 P = _mainCamera->getProjection();
@@ -155,20 +164,24 @@ void DeferredRenderer::lightingPass(Scene * scene)
 	GLuint halfHeight = (GLuint)_height / 2.0f;
 
 	_gBuffer.setReadBuffer("position");
-	glBlitFramebuffer(0, 0, _width, _height, 0, 0, halfWidth, 
-		halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBlitFramebuffer(0, 0, _width, _height, 
+		0, 0, halfWidth, halfHeight, 
+		GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 	_gBuffer.setReadBuffer("color");
-	glBlitFramebuffer(0, 0, _width, _height, 0, halfHeight, halfWidth,
-		halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBlitFramebuffer(0, 0, _width, _height, 
+		0, halfHeight, halfWidth, _height, 
+		GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 	_gBuffer.setReadBuffer("normal");
-	glBlitFramebuffer(0, 0, _width, _height, halfWidth, halfHeight, 
-		_width, _height, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBlitFramebuffer(0, 0, _width, _height, 
+		halfWidth, halfHeight, _width, _height, 
+		GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 	_gBuffer.setReadBuffer("texture");
-	glBlitFramebuffer(0, 0, _width, _height, halfWidth, 0, _width,
-		halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBlitFramebuffer(0, 0, _width, _height, 
+		halfWidth, 0, _width, halfHeight, 
+		GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
 }
 

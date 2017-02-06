@@ -32,6 +32,7 @@
 
 #include "Render/DefaultRenderer.h"
 #include "Render/ProgramRenderer.h"
+#include "Render/DeferredRenderer.h"
 
 // Collision
 #include "Collision/BoundingBox.h"

@@ -67,14 +67,33 @@ GLuint MoonEngine::GLFramebuffer::getObject() const
 }
 
 
-void GLFramebuffer::addTexture(const std::string & textureName, const GLTexture & texture, GLenum attachmentInfo)
+void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo)
 {
     assert(texture.getWidth() == _width && texture.getHeight() == _height);
-    bindWithoutComplete();
+    bindWithoutComplete(GL_DRAW_FRAMEBUFFER);
+	texture.bind();
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentInfo, GL_TEXTURE_2D, texture.getTextureId(), 0);
     _textureHandles[textureName] = texture.getTextureId();
 	_textureAttachmentMode[textureName] = (GLuint) attachmentInfo;
     _framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (_framebufferStatus != GL_FRAMEBUFFER_COMPLETE)
+	{
+		switch (_framebufferStatus)
+		{
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+			LOG(ERROR, "Framebuffer not complete, incomplete " + textureName +" attachment");
+			break;
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+			LOG(ERROR, "Framebuffer not complete, No textures attached");
+			break;
+		case GL_FRAMEBUFFER_UNSUPPORTED:
+			LOG(ERROR, "Framebuffer not complete, not supported by openGL version");
+			break;
+		default:
+			LOG(ERROR, "FrameBuffer not complete... " + std::to_string(_framebufferStatus));
+
+		}
+	}
     Unbind();
 }
 
@@ -113,12 +132,16 @@ GLuint GLFramebuffer::getTexture(std::string name) const
     return it->second;
 }
 
-void MoonEngine::GLFramebuffer::setReadBuffer(std::string name)
+void GLFramebuffer::setReadBuffer(std::string name)
 {
 	glReadBuffer(getAttachmentMode(name));
 }
 
-GLuint MoonEngine::GLFramebuffer::getAttachmentMode(std::string name) const
+void GLFramebuffer::drawColorAttachments() {
+	vector<GLenum> numOfColors = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+	glDrawBuffers(numOfColors.size(), &numOfColors[0]);
+}
+GLuint GLFramebuffer::getAttachmentMode(std::string name) const
 {
 	auto it = _textureAttachmentMode.find(name);
 	if (it == _textureAttachmentMode.end())

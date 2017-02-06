@@ -57,6 +57,6 @@ namespace MoonEngine
 		GLuint _width, _height;
         GLFramebuffer _gBuffer;
 		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;
-        GLTexture _depthStencilTex;
+        GLTexture _depthTex;
     };
 }

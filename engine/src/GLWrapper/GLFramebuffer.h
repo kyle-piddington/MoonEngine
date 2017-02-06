@@ -38,7 +38,7 @@ namespace MoonEngine
          * @param layerName the name of the texture in the framebuffer
          * @param texture   the texture itself.
          */
-        void addTexture(const std::string & textureName, const GLTexture & texture, GLenum attachmentInfo);
+        void addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo);
 
         /**
          * Todo:
@@ -63,6 +63,7 @@ namespace MoonEngine
 		* @param name the name of the texture
 		*/
 		void setReadBuffer(std::string name);
+		void drawColorAttachments();
 		GLuint getAttachmentMode(std::string name) const;
         static void Unbind();
 

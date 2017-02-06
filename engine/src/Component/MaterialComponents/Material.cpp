@@ -51,7 +51,7 @@ Material::Material(glm::vec3 tint, std::string programName, unordered_map<string
     vector<string> programNames;
     if (!forward) {
         /* If deferred and only one shader provided, use default geom */
-        programNames.push_back("geom");
+        programNames.push_back("geom.program");
     }
     programNames.push_back(programName);
 
