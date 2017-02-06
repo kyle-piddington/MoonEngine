@@ -25,13 +25,14 @@ _depthTex(4)
 	assert(_depthTex.init(depthCFG));
 	
 	_positionTex.init(colorCFG);
-	
+	LOG_GL(__FILE__, __LINE__);
 	_gBuffer.addTexture("position",_positionTex,GL_COLOR_ATTACHMENT0);
+	LOG_GL(__FILE__, __LINE__);
 	_gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT1);
 	_gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
 	_gBuffer.addTexture("texture", _textureTex, GL_COLOR_ATTACHMENT3);
     _gBuffer.addTexture("depth",_depthTex,GL_DEPTH_ATTACHMENT);
-
+	_gBuffer.drawColorAttachments(4);
 }
 
 void DeferredRenderer::setup(Scene * scene)
@@ -42,7 +43,6 @@ void DeferredRenderer::setup(Scene * scene)
         LOG(ERROR, "No Camera in scene!");
     }
     //Swing through all rendering components and load their programs.
-
     glClearColor(0.2f, 0.2f, 0.6f, 1.0f);
     glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
@@ -51,17 +51,16 @@ void DeferredRenderer::setup(Scene * scene)
 
 void DeferredRenderer::render(Scene * scene)
 {
-
 	vector<std::shared_ptr<GameObject>>forwardObjects;
-        
 	forwardObjects = geometryPass(scene);
 	lightingPass(scene);
-     ImGui::Begin("Framebuffer");
+
+    /* ImGui::Begin("Framebuffer");
      {
      	ImGui::Image((void*)(_colorTex.getTextureId()),ImVec2(256,256));
      	ImGui::Image((void*)(_gBuffer.getTexture("depth")),ImVec2(128,128));
      }
-     ImGui::End();
+     ImGui::End();*/
     //Debug show textures
     Library::TextureLib->Debug_ShowAllTextures();
     GLVertexArrayObject::Unbind();
@@ -73,12 +72,9 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	const MeshInfo* mesh = nullptr;
 	Material* mat = nullptr;
 	vector<std::shared_ptr<GameObject>> forwardObjects;
-	
-	_gBuffer.drawColorAttachments();
 	_gBuffer.bind(GL_DRAW_FRAMEBUFFER);
 	glm::mat4 V = _mainCamera->getView();
 	glm::mat4 P = _mainCamera->getProjection();
-	
 	// Only the geometry pass writes to the depth buffer
 	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -95,12 +91,10 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 
 		glm::mat4 M = obj->getTransform().getMatrix();
 		
-		
 		//sets the materials geometry shader as active
 		mat->setActiveProgram(0);
 		mat->bind();
 		mesh->bind();
-
 		if (activeProgram != mat->getProgram()) {
 			activeProgram = mat->getProgram();
 			activeProgram->enable();
@@ -110,6 +104,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 			glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
+			
 			//Optional Uniforms are checked here, and bound if found
 			if (activeProgram->hasUniform("tint")) {
 				glm::vec3 tint = mat->getTint();
@@ -157,9 +152,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 void DeferredRenderer::lightingPass(Scene * scene)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	_gBuffer.bind(GL_READ_FRAMEBUFFER);
-
 	GLuint halfWidth = (GLuint)_width / 2.0f;
 	GLuint halfHeight = (GLuint)_height / 2.0f;
 

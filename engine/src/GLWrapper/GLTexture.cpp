@@ -4,7 +4,7 @@ using namespace MoonEngine;
 
 GLTexture::GLTexture(GLuint unit)
 {
-    _unit = unit;
+    _unit = GL_TEXTURE0 + unit;
     _textureType = GL_TEXTURE_2D;
     _textureWidth = _textureHeight = -1;
 }
@@ -91,6 +91,11 @@ void GLTexture::bind()
 {
     glActiveTexture(_unit);
     glBindTexture(_textureType, _textureId);
+}
+
+void GLTexture::bindRaw()
+{
+	glBindTexture(_textureType, _textureId);
 }
 
 void GLTexture::unbind()

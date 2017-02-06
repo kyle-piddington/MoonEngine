@@ -1,7 +1,5 @@
 #pragma once
-
 #include <ostream>
-
 namespace MoonEngine
 {
     enum LogLevel
@@ -35,16 +33,15 @@ namespace MoonEngine
         /**
          * Write to the logger.
          */
-        static void Log(LogLevel lv, std::string log);
+        static void Log(LogLevel lv, std::string log, std::string file, int line);
 
     private:
         static std::ostream * _logStream;
         static LogLevel _logLevel;
     };
 
-    inline void LOG(LogLevel lv, std::string log)
+    inline void LOG(LogLevel lv, std::string log, std::string file = "", int line = -1)
     {
-        Logger::Log(lv, log);
+        Logger::Log(lv, log, file, line);
     }
-
 }

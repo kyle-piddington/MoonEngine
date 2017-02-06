@@ -16,7 +16,8 @@
 
 namespace MoonEngine
 {
-    class GLFramebuffer
+    
+	class GLFramebuffer
     {
     public:
 
@@ -63,7 +64,7 @@ namespace MoonEngine
 		* @param name the name of the texture
 		*/
 		void setReadBuffer(std::string name);
-		void drawColorAttachments();
+		void drawColorAttachments(int size);
 		GLuint getAttachmentMode(std::string name) const;
         static void Unbind();
 
