@@ -31,6 +31,7 @@ _depthTex(4)
 	_gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
 	_gBuffer.addTexture("texture", _textureTex, GL_COLOR_ATTACHMENT3);
     _gBuffer.addTexture("depth",_depthTex,GL_DEPTH_ATTACHMENT);
+	_gBuffer.drawColorAttachments();
 
 }
 
@@ -71,7 +72,6 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	const MeshInfo* mesh = nullptr;
 	Material* mat = nullptr;
 	vector<std::shared_ptr<GameObject>> forwardObjects;
-	_gBuffer.drawColorAttachments();
 	_gBuffer.bind(GL_DRAW_FRAMEBUFFER);
 	glm::mat4 V = _mainCamera->getView();
 	glm::mat4 P = _mainCamera->getProjection();

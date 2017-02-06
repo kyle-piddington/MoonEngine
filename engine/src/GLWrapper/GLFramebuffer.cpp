@@ -144,8 +144,8 @@ void GLFramebuffer::setReadBuffer(std::string name)
 
 void GLFramebuffer::drawColorAttachments() {
 	GLenum numOfColors[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+	bindWithoutComplete(GL_DRAW_FRAMEBUFFER);
 	glDrawBuffers(4, numOfColors);
-	LOG_GL(__FILE__, __LINE__);
 }
 GLuint GLFramebuffer::getAttachmentMode(std::string name) const
 {
