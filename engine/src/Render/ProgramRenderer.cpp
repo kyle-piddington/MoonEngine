@@ -40,6 +40,7 @@ void ProgramRenderer::setup(Scene * scene)
 
 void ProgramRenderer::render(Scene * scene)
 {
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 V = mainCamera->getView();
@@ -72,7 +73,7 @@ void ProgramRenderer::render(Scene * scene)
                 glUniform3f(activeProgram->getUniformLocation("iGlobalLightDir"), lightDir.x, lightDir.y, lightDir.z);
             }
         }
-
+        Mesh * meshComp = obj->getComponent<Mesh>();
         const MeshInfo * mesh = obj->getComponent<Mesh>()->getMesh();
         mesh->bind();
         mat->bind();
@@ -85,43 +86,12 @@ void ProgramRenderer::render(Scene * scene)
 
         glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
         glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
-
-        if (obj->getComponent<InstanceMesh>() != nullptr)
-        {
-            glDrawElementsInstanced(
-                GL_TRIANGLES,
-                mesh->numTris,
-                GL_UNSIGNED_SHORT,
-                mesh->indexDataOffset,
-                obj->getComponent<InstanceMesh>()->_numOfInstances
-            );
-        }
-        else
-        {
-            glDrawElementsBaseVertex(
-                GL_TRIANGLES,
-                mesh->numTris,
-                GL_UNSIGNED_SHORT,
-                mesh->indexDataOffset,
-                mesh->baseVertex
-            );
-        }
+        meshComp->draw();
         mat->unbind();
     }
-
-
-    //GLFramebuffer::Unbind();
-
-
-    // ImGui::Begin("Framebuffer");
-    // {
-    // 	ImGui::Image((void*)(framebufferColorTexture.getTextureId()),ImVec2(256,256));
-    // 	ImGui::Image((void*)(renderToFB.getTexture("depthStencil")),ImVec2(128,128));
-    // }
-    // ImGui::End();
-    //Debug show textures
-    //Library::TextureLib->Debug_ShowAllTextures();
+  
     GLVertexArrayObject::Unbind();
+
 }
 
 void ProgramRenderer::shutdown()

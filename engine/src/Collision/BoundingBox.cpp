@@ -1,6 +1,6 @@
 #include "BoundingBox.h"
 #include <algorithm>
-
+#include "Util/Logger.h"
 using namespace MoonEngine;
 
 
@@ -20,6 +20,7 @@ BoundingBox::BoundingBox(
     float minZ,
     float maxZ)
 {
+
     assert(minX <= maxX);
     assert(minY <= maxY);
     assert(minZ <= maxZ);
@@ -131,7 +132,7 @@ BoundingBox BoundingBox::BoundPoints(const std::vector<glm::vec3> & points)
 }
 
 
-BoundingBox BoundingBox::transform(const glm::mat4 & transformation)
+BoundingBox BoundingBox::transform(const glm::mat4 & transformation) const
 {
     std::vector<glm::vec3> boundingPoints = cornerPoints();
     for (glm::vec3 & point : boundingPoints)
@@ -142,7 +143,17 @@ BoundingBox BoundingBox::transform(const glm::mat4 & transformation)
     return BoundingBox::BoundPoints(boundingPoints);
 }
 
-std::vector<glm::vec3> BoundingBox::cornerPoints()
+glm::vec3 BoundingBox::max() const
+{
+	return glm::vec3(centerPoint.x + xHalfWidth, centerPoint.y + yHalfWidth, centerPoint.z + zHalfWidth);
+}
+
+glm::vec3 BoundingBox::min() const
+{
+	return glm::vec3(centerPoint.x - xHalfWidth, centerPoint.y - yHalfWidth, centerPoint.z - zHalfWidth);
+}
+
+std::vector<glm::vec3> BoundingBox::cornerPoints() const
 {
     std::vector<glm::vec3> boundPoints;
     for (int i = 0; i < 2; i++)
@@ -194,8 +205,65 @@ bool BoundingBox::intersects(const BoundingBox & other, glm::vec3 * colnormal)
     return x && y && z;
 }
 
-glm::vec3 BoundingBox::normalFor(BoundingBox::Plane plane)
+
+bool BoundingBox::inFrustrum(const glm::vec4 frustrum[6]) const
 {
+    glm::vec3 box[2];
+    box[0] = min();
+    box[1] = max();
+    float distance;
+    
+
+    for (int j = 0; j < 6; j++)
+    {
+        int ix = static_cast<int>(frustrum[j].x > 0.0f);
+        int iy = static_cast<int>(frustrum[j].y > 0.0f);
+        int iz = static_cast<int>(frustrum[j].z > 0.0f);
+
+        distance = (frustrum[j].x * box[ix].x + 
+            frustrum[j].y * box[iy].y + 
+            frustrum[j].z * box[iz].z);
+        if (distance < -frustrum[j].w)
+        {
+            return false;
+            break;
+        }
+    }
+    return true;
+}
+IntersectType BoundingBox::testFrustrum(const glm::vec4 frustrum[6]) const
+{
+    if(!inFrustrum(frustrum))
+    {
+        return IT_Outside;
+    }
+    else
+    {
+        
+        float distance;
+        auto pts = cornerPoints();
+        for(int i = 0; i < pts.size(); i++)
+        {
+            for(int j = 0; j < 6; j++)
+            {
+                distance = (
+                    frustrum[j].x * pts[i].x + 
+                    frustrum[j].y * pts[i].y + 
+                    frustrum[j].z * pts[i].z);
+                if (distance < -frustrum[j].w)
+                {
+                    return IT_Intersect;
+                    
+
+                }
+            }
+        }
+ 
+        return IT_Inside;     
+    }
+}
+
+glm::vec3 BoundingBox::normalFor(BoundingBox::Plane plane){
     switch (plane)
     {
         case X_NEAR:

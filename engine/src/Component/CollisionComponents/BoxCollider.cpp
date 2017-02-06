@@ -74,6 +74,11 @@ glm::vec3 BoxCollider::getHalfWidths()
             glm::vec3(_transformedBox.xHalfWidth, _transformedBox.yHalfWidth, _transformedBox.zHalfWidth);
 }
 
+const BoundingBox & BoxCollider::getBoundingBox()
+{
+	return _transformedBox;
+}
+
 std::shared_ptr<Component> BoxCollider::clone() const
 {
     return std::make_shared<BoxCollider>(*this);

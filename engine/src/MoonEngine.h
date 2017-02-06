@@ -12,6 +12,8 @@
 
 #include "GLUtil/GLProgramUtilities.h"
 
+//IO
+#include "IO/Keyboard.h"
 
 #include "GameObject/GameObject.h"
 #include "Component/Component.h"
@@ -32,6 +34,11 @@
 
 #include "Render/DefaultRenderer.h"
 #include "Render/ProgramRenderer.h"
+
+//Terrain
+#include "Geometry/Terrain/CDLODQuadtree.h"
+#include "Geometry/Terrain/IHeightmapSource.h"
+#include "Geometry/Terrain/ImplicitHeightmapSource.h"
 
 // Collision
 #include "Collision/BoundingBox.h"

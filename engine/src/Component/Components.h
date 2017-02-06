@@ -10,3 +10,4 @@
 #include "CharacterComponents/CollectableComponent.h"
 #include "CharacterComponents/ThirdPersonCharacterController.h"
 #include "CameraComponents/ThirdPersonOrbitalController.h"
+#include "MeshComponents/Terrain.h"

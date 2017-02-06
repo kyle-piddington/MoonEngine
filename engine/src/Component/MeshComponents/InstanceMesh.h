@@ -21,10 +21,17 @@ namespace MoonEngine
 
         virtual std::shared_ptr<Component> clone() const;
 
-        unsigned _numOfInstances;
+		virtual const BoundingBox & getBoundingBox();
+
+        void draw() const;
+
     private:
         MeshInfo * _meshInfo;
 
-        std::vector<glm::mat4> _instanceTransforms;
+		unsigned _numOfInstances;
+	
+		std::vector<glm::mat4> _instanceTransforms;
+
     };
+
 }

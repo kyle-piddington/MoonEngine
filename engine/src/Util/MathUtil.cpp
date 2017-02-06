@@ -31,12 +31,18 @@ float MathUtil::moveTowards(float current, float target, float maxDelta)
 }
 
 glm::vec3 MathUtil::moveTowards(glm::vec3 current, glm::vec3 target, float maxDistanceDelta)
+
+{	
+	glm::vec3 a = target - current;
+	float magnitude = glm::length(a);
+	if (magnitude <= maxDistanceDelta || magnitude == 0.f)
+	{
+		return target;
+	}
+	return current + a / magnitude * maxDistanceDelta;
+}
+
+float MathUtil::lerp(float a, float b, float amt)
 {
-    glm::vec3 a = target - current;
-    float magnitude = glm::length(a);
-    if (magnitude <= maxDistanceDelta || magnitude == 0.f)
-    {
-        return target;
-    }
-    return current + a / magnitude * maxDistanceDelta;
+	return a + (b - a) * amt;
 }
