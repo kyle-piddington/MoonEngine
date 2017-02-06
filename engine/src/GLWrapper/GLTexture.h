@@ -4,6 +4,7 @@
 #include "GLSampler.h"
 #include "OpenGL.h"
 #include "GLUtil/GLTextureConfiguration.h"
+#include "GLUtil/GL_LOG.h"
 
 namespace MoonEngine
 {
@@ -60,6 +61,8 @@ namespace MoonEngine
          * Bind the texture
          */
         void bind();
+
+		void bindRaw();
 
         /**
          * Bind the texture

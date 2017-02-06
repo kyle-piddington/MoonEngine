@@ -25,14 +25,14 @@ _depthTex(4)
 	assert(_depthTex.init(depthCFG));
 	
 	_positionTex.init(colorCFG);
-	
+	LOG_GL(__FILE__, __LINE__);
 	_gBuffer.addTexture("position",_positionTex,GL_COLOR_ATTACHMENT0);
+	LOG_GL(__FILE__, __LINE__);
 	_gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT1);
 	_gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
 	_gBuffer.addTexture("texture", _textureTex, GL_COLOR_ATTACHMENT3);
     _gBuffer.addTexture("depth",_depthTex,GL_DEPTH_ATTACHMENT);
-	_gBuffer.drawColorAttachments();
-
+	_gBuffer.drawColorAttachments(4);
 }
 
 void DeferredRenderer::setup(Scene * scene)
@@ -51,10 +51,10 @@ void DeferredRenderer::setup(Scene * scene)
 
 void DeferredRenderer::render(Scene * scene)
 {
-
 	vector<std::shared_ptr<GameObject>>forwardObjects;
 	forwardObjects = geometryPass(scene);
 	lightingPass(scene);
+
     /* ImGui::Begin("Framebuffer");
      {
      	ImGui::Image((void*)(_colorTex.getTextureId()),ImVec2(256,256));
@@ -91,12 +91,10 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 
 		glm::mat4 M = obj->getTransform().getMatrix();
 		
-		
 		//sets the materials geometry shader as active
 		mat->setActiveProgram(0);
 		mat->bind();
 		mesh->bind();
-
 		if (activeProgram != mat->getProgram()) {
 			activeProgram = mat->getProgram();
 			activeProgram->enable();
@@ -106,6 +104,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 			glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
+			
 			//Optional Uniforms are checked here, and bound if found
 			if (activeProgram->hasUniform("tint")) {
 				glm::vec3 tint = mat->getTint();
@@ -153,7 +152,6 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 void DeferredRenderer::lightingPass(Scene * scene)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	_gBuffer.bind(GL_READ_FRAMEBUFFER);
 	GLuint halfWidth = (GLuint)_width / 2.0f;
 	GLuint halfHeight = (GLuint)_height / 2.0f;
