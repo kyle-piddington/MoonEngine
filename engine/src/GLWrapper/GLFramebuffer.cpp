@@ -1,6 +1,6 @@
 #include "GLFramebuffer.h"
-
 using namespace MoonEngine;
+
 
 GLFramebuffer::GLFramebuffer(int width, int height):
     _width(width),
@@ -120,6 +120,7 @@ void GLFramebuffer::bindWithoutComplete(GLuint mode) const
 void GLFramebuffer::Unbind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 }
 
 GLuint GLFramebuffer::getTexture(std::string name) const
@@ -134,12 +135,17 @@ GLuint GLFramebuffer::getTexture(std::string name) const
 
 void GLFramebuffer::setReadBuffer(std::string name)
 {
-	glReadBuffer(getAttachmentMode(name));
+	GLuint buf = getAttachmentMode(name);
+	glReadBuffer(buf);
+	if(glGetError() != GL_INVALID_OPERATION)
+		LOG(ERROR, "Could not set " + name +" buffer", __FILE__, __LINE__);
+	
 }
 
 void GLFramebuffer::drawColorAttachments() {
-	vector<GLenum> numOfColors = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-	glDrawBuffers(numOfColors.size(), &numOfColors[0]);
+	GLenum numOfColors[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+	glDrawBuffers(4, numOfColors);
+	LOG_GL(__FILE__, __LINE__);
 }
 GLuint GLFramebuffer::getAttachmentMode(std::string name) const
 {

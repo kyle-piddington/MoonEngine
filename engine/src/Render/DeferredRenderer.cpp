@@ -42,7 +42,6 @@ void DeferredRenderer::setup(Scene * scene)
         LOG(ERROR, "No Camera in scene!");
     }
     //Swing through all rendering components and load their programs.
-
     glClearColor(0.2f, 0.2f, 0.6f, 1.0f);
     glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
@@ -53,15 +52,14 @@ void DeferredRenderer::render(Scene * scene)
 {
 
 	vector<std::shared_ptr<GameObject>>forwardObjects;
-        
 	forwardObjects = geometryPass(scene);
 	lightingPass(scene);
-     ImGui::Begin("Framebuffer");
+    /* ImGui::Begin("Framebuffer");
      {
      	ImGui::Image((void*)(_colorTex.getTextureId()),ImVec2(256,256));
      	ImGui::Image((void*)(_gBuffer.getTexture("depth")),ImVec2(128,128));
      }
-     ImGui::End();
+     ImGui::End();*/
     //Debug show textures
     Library::TextureLib->Debug_ShowAllTextures();
     GLVertexArrayObject::Unbind();
@@ -73,12 +71,10 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	const MeshInfo* mesh = nullptr;
 	Material* mat = nullptr;
 	vector<std::shared_ptr<GameObject>> forwardObjects;
-	
 	_gBuffer.drawColorAttachments();
 	_gBuffer.bind(GL_DRAW_FRAMEBUFFER);
 	glm::mat4 V = _mainCamera->getView();
 	glm::mat4 P = _mainCamera->getProjection();
-	
 	// Only the geometry pass writes to the depth buffer
 	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -159,7 +155,6 @@ void DeferredRenderer::lightingPass(Scene * scene)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	_gBuffer.bind(GL_READ_FRAMEBUFFER);
-
 	GLuint halfWidth = (GLuint)_width / 2.0f;
 	GLuint halfHeight = (GLuint)_height / 2.0f;
 
