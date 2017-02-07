@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
 	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program"));
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
-	scene->addGameObject(boxObject);
+	//scene->addGameObject(boxObject);
 
 	CDLODQuadtree::CreateInfo createInfo;
 	TextureHeightmapSource texSource("resources","canyonlands",".png");
