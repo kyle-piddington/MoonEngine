@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "IntersectionType.h"
+#include <algorithm>
 namespace MoonEngine
 {
 

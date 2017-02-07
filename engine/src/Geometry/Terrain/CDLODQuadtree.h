@@ -9,6 +9,7 @@
 #include "MapDimensions.h"
 #include "collision/BoundingBox.h"
 #include "collision/IntersectionType.h"
+#include <string>
 namespace MoonEngine
 {
     class CDLODQuadtree
