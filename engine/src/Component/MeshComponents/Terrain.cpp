@@ -99,6 +99,7 @@ void Terrain::setupMainUniforms(GLProgram * program) const
 	glUniform4fv(program->getUniformLocation("g_terrainScale"),1,glm::value_ptr(g_terrainScale));
 	glUniform4fv(program->getUniformLocation("g_terrainOffset"),1,glm::value_ptr(g_terrainOffset));
 	glUniform2fv(program->getUniformLocation("g_quadWorldMax"),1,glm::value_ptr(g_quadWorldMax));
+    glUniform2f(program->getUniformLocation("t_resolution"), (float)textureWidth, (float)textureHeight);
    //V( vertexShader.SetFloatArray( "g_terrainScale", mapDims.SizeX, mapDims.SizeY, mapDims.SizeZ, 0.0f ) );
    //V( vertexShader.SetFloatArray( "g_terrainOffset", mapDims.MinX, mapDims.MinY, mapDims.MinZ, 0.0f ) );
    //V( vertexShader.SetFloatArray( "g_samplerWorldToTextureScale", (textureWidth-1.0f) / (float)textureWidth, (textureHeight-1.0f) / (float)textureHeight ) );

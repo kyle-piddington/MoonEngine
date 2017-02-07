@@ -31,6 +31,7 @@ out vec3 fragTex;
 
 uniform sampler2D heightmap;
 
+
 vec4 getBaseVertexPos( vec4 inPos )
 {
    vec4 ret = inPos * t_param.g_quadScale + t_param.g_quadOffset;
