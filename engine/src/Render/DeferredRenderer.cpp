@@ -149,9 +149,26 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	return forwardObjects;
 }
 
+
+void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr)
+{
+	auto texHandles = bfr->getTextureHandles();
+	ImGui::Begin(guiName.c_str());
+	for(auto texHandlePair : texHandles)
+	{
+		ImGui::Image((void *)(uintptr_t) (texHandlePair.second), ImVec2(128, 128));
+	}
+	ImGui::End();
+
+
+}
+
 void DeferredRenderer::lightingPass(Scene * scene)
 {
+	GLFramebuffer::Unbind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 	_gBuffer.bind(GL_READ_FRAMEBUFFER);
 	GLuint halfWidth = (GLuint)_width / 2.0f;
 	GLuint halfHeight = (GLuint)_height / 2.0f;
@@ -175,6 +192,10 @@ void DeferredRenderer::lightingPass(Scene * scene)
 	glBlitFramebuffer(0, 0, _width, _height, 
 		halfWidth, 0, _width, halfHeight, 
 		GL_COLOR_BUFFER_BIT, GL_LINEAR);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	drawBufferToImgui("GBuffer", &_gBuffer);
+
+
 
 }
 

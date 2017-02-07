@@ -140,7 +140,6 @@ void GLFramebuffer::setReadBuffer(std::string name)
 	glReadBuffer(buf);
 	//if(glGetError() != GL_INVALID_OPERATION)
 		//LOG(ERROR, "Could not set " + name +" buffer", __FILE__, __LINE__);
-	
 }
 
 void GLFramebuffer::drawColorAttachments(int size) {
@@ -158,4 +157,9 @@ GLuint GLFramebuffer::getAttachmentMode(std::string name) const
 		assert(!"Could not find texture attachment in framebuffer");
 	}
 	return it->second;
+}
+
+const std::unordered_map<std::string, GLuint> & GLFramebuffer::getTextureHandles() const
+{
+	return _textureHandles;
 }

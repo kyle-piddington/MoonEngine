@@ -6,6 +6,7 @@
 #include <cassert>
 #include "util/Logger.h"
 #include "GLConstants.h"
+#include <vector>
 /**
  * GLFramebuffer holds on to framebuffer
  * texture information, and allows for easy querying
@@ -66,6 +67,9 @@ namespace MoonEngine
 		void setReadBuffer(std::string name);
 		void drawColorAttachments(int size);
 		GLuint getAttachmentMode(std::string name) const;
+
+		const std::unordered_map<std::string, GLuint> & getTextureHandles() const;
+
         static void Unbind();
 
     private:
