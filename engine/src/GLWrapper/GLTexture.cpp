@@ -56,6 +56,10 @@ bool GLTexture::init(void * data, const GLTextureConfiguration & cfg)
     {
         glPixelStorei(GL_UNPACK_ALIGNMENT,1);        
     }
+    else if(cfg.getInputFormat() == GL_RED && cfg.getDataType() == GL_UNSIGNED_SHORT)
+    {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+    }
     else
     {
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4);

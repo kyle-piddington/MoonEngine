@@ -3,6 +3,7 @@
 #include "Loaders/TextureLoader.h"
 #include <memory>
 #include "thirdparty/imgui/imgui.h"
+#include "Util/Logger.h"
 
 using namespace MoonEngine;
 
@@ -20,12 +21,22 @@ TextureLibrary::~TextureLibrary()
 }
 
 /* Get or load a texture */
-GLTexture * TextureLibrary::getTexture(std::string textureName, int unit, std::string extension)
+GLTexture * TextureLibrary::getTexture(std::string textureName, int unit, std::string extension, bool is16f)
 {
     if (_textures.find(textureName) == _textures.end())
     {
-        std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(unit,
+        LOG(GAME, "Loading texture " + textureName);
+        std::shared_ptr<GLTexture> glTexture;
+        if(is16f)
+        { 
+            glTexture = TextureLoader::LoadTextureFromFile16f(unit,
             _recPath + textureName + extension);
+
+        } 
+        else{
+            glTexture = TextureLoader::LoadTextureFromFile(unit,
+            _recPath + textureName + extension);
+        }
         _texturePtrs.push_back(glTexture);
         if (glTexture != nullptr)
         {

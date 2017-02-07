@@ -156,7 +156,7 @@ void Terrain::draw() const
 	int lastLOD = -1;
 
 	MeshInfo * meshInfo = gridInfo.meshInfo;
-	LOG(INFO, "Drawing " + std::to_string(currentSelection.getSelectionCount()) + "nodes");
+	//LOG(INFO, "Drawing " + std::to_string(currentSelection.getSelectionCount()) + "nodes");
 	for(int idx = 0; idx < currentSelection.getSelectionCount(); idx++)
 	{
 		CDLODQuadtree::SelectedNode node = selectionBuffer[idx];

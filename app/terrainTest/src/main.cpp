@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 	//Camera setup
 	Camera * cam = scene->createComponent<Camera>( 3.1415/3, windowWidth/windowHeight, 0.1, 2000);
 	cameraObj->addComponent(cam);
-	cameraObj->addComponent(scene->createComponent<FirstPersonController>(5));
+	cameraObj->addComponent(scene->createComponent<FirstPersonController>(20));
 	scene->addGameObject(cameraObj);
 
 
@@ -78,8 +78,12 @@ int main(int argc, char **argv) {
 	createInfo.dimensions = mapDims;
 	std::shared_ptr<GameObject> terrainObject = std::make_shared<GameObject>(Transform());
 	terrainObject->addComponent(scene->createComponent<Terrain>(createInfo));
+	
+	//Preload canyon 32f texture
+	EngineApp::GetAssetLibrary().TextureLib->getTexture("canyonlands",0,".png",true);
+	
 	stringmap canyon_texture(
-            {{"heightmap", "canyonlands.png"}});
+            {{"heightmap", "canyonlands"}});
     
 	terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain.program",canyon_texture));
 	scene->addGameObject(terrainObject);

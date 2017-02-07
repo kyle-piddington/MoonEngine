@@ -37,6 +37,6 @@ namespace MoonEngine
 	private:
 		int _texWidth;
 		int _texHeight;
-		unsigned char * data;
+		unsigned short * data;
 	};
 }
