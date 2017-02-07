@@ -52,9 +52,9 @@ int main(int argc, char **argv) {
 
 
 	//Camera setup
-	Camera * cam = scene->createComponent<Camera>( 3.1415/3, windowWidth/windowHeight, 0.1, 500);
+	Camera * cam = scene->createComponent<Camera>( 3.1415/3, windowWidth/windowHeight, 0.1, 2000);
 	cameraObj->addComponent(cam);
-	cameraObj->addComponent(scene->createComponent<FirstPersonController>(10));
+	cameraObj->addComponent(scene->createComponent<FirstPersonController>(5));
 	scene->addGameObject(cameraObj);
 
 
@@ -66,20 +66,20 @@ int main(int argc, char **argv) {
 	scene->addGameObject(boxObject);
 
 	CDLODQuadtree::CreateInfo createInfo;
-	TextureHeightmapSource texSource("resources","monument",".png");
+	TextureHeightmapSource texSource("resources","canyonlands",".png");
 	createInfo.source = &texSource;
 	createInfo.leafNodeSize = 1;
 	createInfo.LODLevelCount = 7;
 	MapDimensions mapDims;
 	
-	mapDims.size = glm::vec3(100,20,100);
+	mapDims.size = glm::vec3(1000,200,1000);
 	mapDims.minCoords = -mapDims.size/2.0f;
 	mapDims.minCoords.y = 0;
 	createInfo.dimensions = mapDims;
 	std::shared_ptr<GameObject> terrainObject = std::make_shared<GameObject>(Transform());
 	terrainObject->addComponent(scene->createComponent<Terrain>(createInfo));
 	stringmap canyon_texture(
-            {{"heightmap", "monument.png"}});
+            {{"heightmap", "canyonlands.png"}});
     
 	terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain.program",canyon_texture));
 	scene->addGameObject(terrainObject);
