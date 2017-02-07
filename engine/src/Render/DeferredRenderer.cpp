@@ -23,8 +23,6 @@ _depthTex(4)
 	assert(_normalTex.init(colorCFG));
 	assert(_textureTex.init(colorCFG));
 	assert(_depthTex.init(depthCFG));
-	
-	_positionTex.init(colorCFG);
 	LOG_GL(__FILE__, __LINE__);
 	_gBuffer.addTexture("position",_positionTex,GL_COLOR_ATTACHMENT0);
 	LOG_GL(__FILE__, __LINE__);
@@ -156,7 +154,8 @@ void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr)
 	ImGui::Begin(guiName.c_str());
 	for(auto texHandlePair : texHandles)
 	{
-		ImGui::Image((void *)(uintptr_t) (texHandlePair.second), ImVec2(128, 128));
+		//LOG(GAME, std::to_string(texHandlePair.second));
+		ImGui::Image((void *)texHandlePair.second, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
 	}
 	ImGui::End();
 
@@ -165,6 +164,7 @@ void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr)
 
 void DeferredRenderer::lightingPass(Scene * scene)
 {
+	drawBufferToImgui("GBuffer", &_gBuffer);
 	GLFramebuffer::Unbind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -193,8 +193,7 @@ void DeferredRenderer::lightingPass(Scene * scene)
 		halfWidth, 0, _width, halfHeight, 
 		GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-	drawBufferToImgui("GBuffer", &_gBuffer);
-
+	
 
 
 }
@@ -202,6 +201,7 @@ void DeferredRenderer::lightingPass(Scene * scene)
 
 void DeferredRenderer::shutdown()
 {
+
 }
 
 

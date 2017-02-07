@@ -22,7 +22,7 @@ GLTexture::~GLTexture()
 
 bool GLTexture::init(const GLTextureConfiguration & cfg)
 {
-    init(nullptr, cfg);
+    
     _textureWidth = cfg.getWidth();
     _textureHeight = cfg.getHeight();
 
@@ -34,9 +34,8 @@ bool GLTexture::init(const GLTextureConfiguration & cfg)
     // How do we support both RGB & RGBA?
     glTexImage2D(_textureType, 0, cfg.getInputFormat(), cfg.getWidth(), cfg.getHeight(),
         0, cfg.getOutputFormat(), cfg.getDataType(), NULL);
-
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(_textureType, 0);
     return glGetError() == GL_NO_ERROR;
 
