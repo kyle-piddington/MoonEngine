@@ -97,26 +97,28 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			activeProgram = mat->getProgram();
 			activeProgram->enable();
 
-			//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
+			//Place Uniforms that do not change per GameObject
 			glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
 			glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-			glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
-
-			
-			//Optional Uniforms are checked here, and bound if found
-			if (activeProgram->hasUniform("tint")) {
-				glm::vec3 tint = mat->getTint();
-				glUniform3f(activeProgram->getUniformLocation("tint"), tint.x, tint.y, tint.z);
-			}
 			if (activeProgram->hasUniform("iGLobalTime")) {
 				glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
 			}
-			if (activeProgram->hasUniform("N")) {
-				glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
-				glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
-			}
-
 		}
+
+		//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
+		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+
+
+		//Optional Uniforms are checked here, and bound if found
+		if (activeProgram->hasUniform("tint")) {
+			glm::vec3 tint = mat->getTint();
+			glUniform3f(activeProgram->getUniformLocation("tint"), tint.x, tint.y, tint.z);
+		}
+		if (activeProgram->hasUniform("N")) {
+			glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
+			glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
+		}
+		
 
 		if (obj->getComponent<InstanceMesh>() != nullptr)
 		{
