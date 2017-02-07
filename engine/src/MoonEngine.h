@@ -39,6 +39,7 @@
 #include "Geometry/Terrain/CDLODQuadtree.h"
 #include "Geometry/Terrain/IHeightmapSource.h"
 #include "Geometry/Terrain/ImplicitHeightmapSource.h"
+#include "Geometry/Terrain/TextureHeightmapSource.h"
 
 // Collision
 #include "Collision/BoundingBox.h"

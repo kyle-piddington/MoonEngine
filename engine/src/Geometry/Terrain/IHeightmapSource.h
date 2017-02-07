@@ -40,6 +40,6 @@ namespace MoonEngine
      * @note returned value is converted to height using following formula:
      * @note 'WorldHeight = WorldMinZ + GetHeightAt(,) * WorldSizeZ / 65535.0f;
      */
-        virtual void           getAreaMinMaxY( int x, int z, int sizeX, int sizeZ, unsigned short & minY, unsigned short & maxY ) = 0;
+        virtual void           getAreaMinMaxY( int x, int z, int sizeX, int sizeZ, unsigned short & minY, unsigned short & maxY );
     };
 }

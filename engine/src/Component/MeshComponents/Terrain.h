@@ -12,7 +12,7 @@ namespace MoonEngine
 	/**
 	 * Create a new terrain
 	 */
-		Terrain(CDLODQuadtree::CreateInfo info, int tileVerts = 9, int maxRenderedTiles = 2048);
+		Terrain(CDLODQuadtree::CreateInfo info, int tileVerts = 9, int maxRenderedTiles = 4096);
 		~Terrain();
 		Terrain(const Terrain & other);
 

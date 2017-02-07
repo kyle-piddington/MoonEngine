@@ -52,9 +52,9 @@ int main(int argc, char **argv) {
 
 
 	//Camera setup
-	Camera * cam = scene->createComponent<Camera>( 3.1415/3, windowWidth/windowHeight, 0.1, 50);
+	Camera * cam = scene->createComponent<Camera>( 3.1415/3, windowWidth/windowHeight, 0.1, 500);
 	cameraObj->addComponent(cam);
-	cameraObj->addComponent(scene->createComponent<FirstPersonController>(5));
+	cameraObj->addComponent(scene->createComponent<FirstPersonController>(10));
 	scene->addGameObject(cameraObj);
 
 
@@ -63,22 +63,25 @@ int main(int argc, char **argv) {
 	boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
 	boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program"));
 	boxObject->addComponent(scene->createComponent<BoxCollider>());
-	//scene->addGameObject(boxObject);
+	scene->addGameObject(boxObject);
 
 	CDLODQuadtree::CreateInfo createInfo;
-	ImplicitHeightmapSource impHeightSource(4096,4096,[](int x, int y){return 65535 * (0.5 + (0.25*cos(10*x/4096.f) + 0.25*sin(10*y/4096.f)));});
-	createInfo.source = &impHeightSource;
-	createInfo.leafNodeSize = 4;
-	createInfo.LODLevelCount = 8;
+	TextureHeightmapSource texSource("resources","monument",".png");
+	createInfo.source = &texSource;
+	createInfo.leafNodeSize = 1;
+	createInfo.LODLevelCount = 7;
 	MapDimensions mapDims;
 	
-	mapDims.size = glm::vec3(50,5,50);
+	mapDims.size = glm::vec3(100,20,100);
 	mapDims.minCoords = -mapDims.size/2.0f;
 	mapDims.minCoords.y = 0;
 	createInfo.dimensions = mapDims;
 	std::shared_ptr<GameObject> terrainObject = std::make_shared<GameObject>(Transform());
 	terrainObject->addComponent(scene->createComponent<Terrain>(createInfo));
-	terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain.program"));
+	stringmap canyon_texture(
+            {{"heightmap", "monument.png"}});
+    
+	terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain.program",canyon_texture));
 	scene->addGameObject(terrainObject);
 	
 	float accumTime;
@@ -95,6 +98,7 @@ int main(int argc, char **argv) {
 				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 			}
 		}
+		Library::TextureLib->Debug_ShowAllTextures();
 		//ImGui::ShowTestWindow();
 		// accumTime += dt;
 		// if((int)accumTime > lastUpdateTime)

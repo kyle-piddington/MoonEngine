@@ -3,6 +3,7 @@ in vec3 fragPos;
 in vec3 fragTex;
 out vec4 color;
 uniform vec3 tint;
+uniform sampler2D heightmap;
 
 vec3 hsv2rgb(vec3 c)
 {
@@ -14,5 +15,5 @@ vec3 hsv2rgb(vec3 c)
 void main()
 {
 
-	color = vec4(vec3(fragTex.xy,0) ,1.0);
+	color = vec4((vec3(fragTex.xy,0) * 0.5 + 0.5) * texture(heightmap,fragTex.xy).r ,1.0);
 }

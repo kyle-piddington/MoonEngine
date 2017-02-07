@@ -85,6 +85,8 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
         newT = (float) glfwGetTime();
         if(imguiOn)
         {
+        	//Render materials
+        	
             ImGui::Render();            
         }
 

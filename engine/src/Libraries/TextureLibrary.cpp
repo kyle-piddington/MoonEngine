@@ -46,6 +46,9 @@ void TextureLibrary::loadDefaultTexture()
     _textures["default"] = glTexture.get();
 }
 
+
+
+
 void TextureLibrary::Debug_ShowAllTextures()
 {
     //LOG(GAME,"Texture Unit: "  + std::to_string(_texture.second->getTextureId()));

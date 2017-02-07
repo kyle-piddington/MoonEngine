@@ -22,7 +22,7 @@ namespace MoonEngine
 
 		unsigned short getHeightAt(int x, int z);
 
-		void getAreaMinMaxY( int x, int z, int sizeX, int sizeZ, unsigned short & minY, unsigned short & maxY );
+		
 
 	};
 

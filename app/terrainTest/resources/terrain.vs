@@ -29,6 +29,8 @@ uniform vec2 g_quadWorldMax;
 out vec3 fragPos;
 out vec3 fragTex;
 
+uniform sampler2D heightmap;
+
 vec4 getBaseVertexPos( vec4 inPos )
 {
    vec4 ret = inPos * t_param.g_quadScale + t_param.g_quadOffset;
@@ -53,7 +55,7 @@ vec2 calcGlobalUV( vec2 vertex )
 
 float sampleHeightmap(vec2 globalUV)
 {
-	return (0.5 + (0.25*cos(10*globalUV.x) + 0.25*sin(10*globalUV.y)));
+	return texture(heightmap, globalUV).r;
 }
 
 void processCDLODVertex(
