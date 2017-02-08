@@ -51,6 +51,7 @@ void DeferredRenderer::render(Scene * scene)
 {
     vector<std::shared_ptr<GameObject>> forwardObjects;
     forwardObjects = geometryPass(scene);
+
     lightingPass(scene);
 
     /* ImGui::Begin("Framebuffer");
@@ -76,15 +77,13 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
     // Only the geometry pass writes to the depth buffer
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    LOG_GL(__FILE__, __LINE__);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
 
     for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
     {
-        LOG_GL(__FILE__, __LINE__);
         mat = obj->getComponent<Material>();
-        LOG_GL(__FILE__, __LINE__);
         mesh = obj->getComponent<Mesh>()->getMesh();
-        LOG_GL(__FILE__, __LINE__);
 
         if (mat->isForward())
         {
@@ -102,7 +101,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
             //Place Uniforms that do not change per GameObject
             glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
             glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-            if (activeProgram->hasUniform("iGLobalTime"))
+            if (activeProgram->hasUniform("iGlobalTime"))
             {
                 glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
             }
@@ -158,6 +157,10 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
     GLFramebuffer::Unbind();
     //sets the mesh (VAO) back to 0
     GLVertexArrayObject::Unbind();
+
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+
     return forwardObjects;
 }
 
@@ -177,13 +180,20 @@ void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr)
 
 void DeferredRenderer::lightingPass(Scene * scene)
 {
-    LOG_GL(__FILE__, __LINE__);
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_ONE, GL_ONE);
+
+    _gBuffer.bind(GL_READ_FRAMEBUFFER);
+
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    /*LOG_GL(__FILE__, __LINE__);
     drawBufferToImgui("GBuffer", &_gBuffer);
     GLFramebuffer::Unbind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    _gBuffer.bind(GL_READ_FRAMEBUFFER);
     GLuint halfWidth = (GLuint) _width / 2.0f;
     GLuint halfHeight = (GLuint) _height / 2.0f;
 
@@ -207,7 +217,7 @@ void DeferredRenderer::lightingPass(Scene * scene)
         halfWidth, 0, _width, halfHeight,
         GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);*/
 }
 
 
