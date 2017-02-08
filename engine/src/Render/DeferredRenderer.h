@@ -51,7 +51,9 @@ namespace MoonEngine
     private:
 
 		vector<std::shared_ptr<GameObject>> geometryPass(Scene* scene);
-		void lightingPass(Scene* scene);
+        void lightingSetup();
+        void pointLightingPass(Scene* scene);
+        void directionalLightingPass(Scene* scene);
         Camera* _mainCamera;
         MeshInfo* renderQuad;
 		GLuint _width, _height;

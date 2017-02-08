@@ -42,8 +42,6 @@ void DeferredRenderer::setup(Scene * scene)
     }
     //Swing through all rendering components and load their programs.
     glClearColor(0.2f, 0.2f, 0.6f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-	glDisable(GL_BLEND);
 }
 
 
@@ -51,7 +49,8 @@ void DeferredRenderer::render(Scene * scene)
 {
 	vector<std::shared_ptr<GameObject>>forwardObjects;
 	forwardObjects = geometryPass(scene);
-	lightingPass(scene);
+    lightingSetup();
+	pointLightingPass(scene);
 
     /* ImGui::Begin("Framebuffer");
      {
@@ -73,9 +72,12 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	_gBuffer.bind(GL_DRAW_FRAMEBUFFER);
 	glm::mat4 V = _mainCamera->getView();
 	glm::mat4 P = _mainCamera->getProjection();
+
 	// Only the geometry pass writes to the depth buffer
 	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
 
 	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
 	{
@@ -100,7 +102,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			//Place Uniforms that do not change per GameObject
 			glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
 			glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-			if (activeProgram->hasUniform("iGLobalTime")) {
+			if (activeProgram->hasUniform("iGlobalTime")) {
 				glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
 			}
 		}
@@ -142,6 +144,10 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 		}
 		mat->unbind();
 	}
+
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+
 	//sets the framebuffer back to the default(0)
 	GLFramebuffer::Unbind();
 	//sets the mesh (VAO) back to 0
@@ -149,22 +155,17 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	return forwardObjects;
 }
 
-
-void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr)
+void MoonEngine::DeferredRenderer::lightingSetup()
 {
-	auto texHandles = bfr->getTextureHandles();
-	ImGui::Begin(guiName.c_str());
-	for(auto texHandlePair : texHandles)
-	{
-		//LOG(GAME, std::to_string(texHandlePair.second));
-		ImGui::Image((void *)texHandlePair.second, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
-	}
-	ImGui::End();
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_ONE, GL_ONE);
 
-
+    _gBuffer.bind(GL_READ_FRAMEBUFFER);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void DeferredRenderer::lightingPass(Scene * scene)
+void DeferredRenderer::pointLightingPass(Scene* scene)
 {
 	drawBufferToImgui("GBuffer", &_gBuffer);
 	GLFramebuffer::Unbind();
@@ -200,6 +201,10 @@ void DeferredRenderer::lightingPass(Scene * scene)
 
 }
 
+void MoonEngine::DeferredRenderer::directionalLightingPass(Scene * scene)
+{
+}
+
 
 void DeferredRenderer::shutdown()
 {
@@ -207,3 +212,16 @@ void DeferredRenderer::shutdown()
 }
 
 
+void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr)
+{
+    auto texHandles = bfr->getTextureHandles();
+    ImGui::Begin(guiName.c_str());
+    for (auto texHandlePair : texHandles)
+    {
+        //LOG(GAME, std::to_string(texHandlePair.second));
+        ImGui::Image((void *)texHandlePair.second, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
+    }
+    ImGui::End();
+
+
+}
