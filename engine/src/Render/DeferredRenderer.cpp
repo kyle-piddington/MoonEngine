@@ -9,11 +9,11 @@ DeferredRenderer::DeferredRenderer(int width, int height):
     _gBuffer(width, height),
     _width(width),
     _height(height),
-    _positionTex(0),
-    _colorTex(1),
-    _normalTex(2),
-    _textureTex(3),
-    _depthTex(4)
+    _positionTex(),
+    _colorTex(),
+    _normalTex(),
+    _textureTex(),
+    _depthTex()
 {
     // renderQuad = MeshCreator::CreateQuad(glm::vec2(-1,1), glm::vec2(1,1));
     GLTextureConfiguration colorCFG(width, height, GL_RGB32F, GL_RGB, GL_FLOAT);
