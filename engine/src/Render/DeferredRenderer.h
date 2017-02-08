@@ -52,9 +52,9 @@ namespace MoonEngine
 
     private:
 
-		vector<std::shared_ptr<GameObject>> geometryPass(Scene* scene);
+		vector<std::shared_ptr<GameObject>> geometryPass(Scene* scene, vector<shared_ptr<GameObject>> &lights);
         void lightingSetup();
-        void pointLightingPass(Scene* scene);
+        void pointLightingPass(Scene* scene, vector<std::shared_ptr<GameObject>> &lights);
         void directionalLightingPass(Scene* scene);
         Camera* _mainCamera;
         MeshInfo* renderQuad;
@@ -63,4 +63,6 @@ namespace MoonEngine
 		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;
         GLTexture _depthTex;
     };
+
+    void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr);
 }
