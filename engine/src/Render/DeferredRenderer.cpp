@@ -76,24 +76,24 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	// Only the geometry pass writes to the depth buffer
 	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    LOG_GL(__FILE__, __LINE__);
 
 	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
 	{
-		mat = obj->getComponent<Material>();
-		mesh = obj->getComponent<Mesh>()->getMesh();
+        LOG_GL(__FILE__, __LINE__);
+        mat = obj->getComponent<Material>();
+        LOG_GL(__FILE__, __LINE__);
+        mesh = obj->getComponent<Mesh>()->getMesh();
+        LOG_GL(__FILE__, __LINE__);
 
-		if (mat->isForward()) {
+        if (mat->isForward()) {
 			forwardObjects.push_back(obj);
 			continue;
 		}
 
 		glm::mat4 M = obj->getTransform().getMatrix();
-		
-		//sets the materials geometry shader as active
-		mat->setActiveProgram(0);
-		mat->bind();
-		mesh->bind();
-		if (activeProgram != mat->getProgram()) {
+
+        if (activeProgram != mat->getProgram()) {
 			activeProgram = mat->getProgram();
 			activeProgram->enable();
 
@@ -104,6 +104,11 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 				glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
 			}
 		}
+
+        //sets the materials geometry shader as active
+        mat->setActiveProgram(0);
+        mat->bind();
+        mesh->bind();
 
 		//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
 		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
@@ -140,7 +145,9 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 				mesh->baseVertex
 			);
 		}
-		mat->unbind();
+        LOG_GL(__FILE__, __LINE__);
+
+        mat->unbind();
 	}
 	//sets the framebuffer back to the default(0)
 	GLFramebuffer::Unbind();
@@ -166,6 +173,7 @@ void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr)
 
 void DeferredRenderer::lightingPass(Scene * scene)
 {
+    LOG_GL(__FILE__, __LINE__);
 	drawBufferToImgui("GBuffer", &_gBuffer);
 	GLFramebuffer::Unbind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -195,9 +203,6 @@ void DeferredRenderer::lightingPass(Scene * scene)
 		halfWidth, 0, _width, halfHeight, 
 		GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-	
-
-
 }
 
 

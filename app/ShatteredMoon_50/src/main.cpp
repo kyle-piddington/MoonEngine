@@ -154,8 +154,7 @@ int main(int argc, char ** argv)
 
     });
 
-
-	DeferredRenderer * renderer = new DeferredRenderer(windowWidth, windowHeight);
+	DeferredRenderer * renderer = new DeferredRenderer(width, height);
     app->run(scene, renderer);
 
     delete scene;

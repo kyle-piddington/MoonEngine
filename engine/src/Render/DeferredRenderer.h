@@ -12,6 +12,8 @@
 #include "Geometry/MeshCreator.h"
 #include "thirdparty/imgui/imgui.h"
 #include <iostream>
+#include "GLUtil/GL_LOG.h"
+
 /**
  * The Deferred renderer performs a phong rendering
  * of the entire scene, but with a two stage defferred
