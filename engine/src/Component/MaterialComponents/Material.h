@@ -21,15 +21,15 @@ namespace MoonEngine
     public:
         //TODO add sampler
         Material(glm::vec3 tint = glm::vec3(0, 0, 0),
-             std::string programName = "default.program",
-             unordered_map<string, string> textures = unordered_map<string, string>(),
+            std::string programName = "default.program",
+            unordered_map<string, string> textures = unordered_map<string, string>(),
 			bool forward = false
-			);
+		);
 
         Material(glm::vec3 tint = glm::vec3(0, 0, 0),
-                 std::vector<string> programNames = {"default.program"},
-                 unordered_map<string, string> textures = unordered_map<string, string>(),
-                 bool forward = false
+            std::vector<string> programNames = {"default.program"},
+            unordered_map<string, string> textures = unordered_map<string, string>(),
+            bool forward = false
         );
 
         /**
@@ -65,16 +65,21 @@ namespace MoonEngine
         void unbind();
 
     private:
-        GLSampler * _samplerPtr;
+        struct texture_unit {
+            GLTexture * gl_texture;
+            GLuint unit;
+        };
+
+        GLSampler * _sampler;
 
         int _activeProgram;
         vector<GLProgram *> _programs;
-        unordered_map<string, GLTexture *> _textures;
 
         glm::vec3 _tint;
-		bool _forward;
+        unordered_map<string, texture_unit> _textures;
         GLuint _texture_unit;
 
+		bool _forward;
     };
 }
 

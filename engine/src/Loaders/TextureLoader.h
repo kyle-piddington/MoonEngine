@@ -11,7 +11,7 @@ namespace MoonEngine
 {
     namespace TextureLoader
     {
-        std::shared_ptr<GLTexture> LoadTextureFromFile(GLuint handle, const std::string & textureName);
+        std::shared_ptr<GLTexture> LoadTextureFromFile(const std::string & textureName);
     }
 
 }
