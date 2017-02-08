@@ -2,16 +2,14 @@
 
 using namespace MoonEngine;
 
-GLTexture::GLTexture(GLuint unit)
+GLTexture::GLTexture()
 {
-    _unit = GL_TEXTURE0 + unit;
     _textureType = GL_TEXTURE_2D;
     _textureWidth = _textureHeight = -1;
 }
 
-GLTexture::GLTexture(GLuint unit, GLenum textureType)
+GLTexture::GLTexture(GLenum textureType)
 {
-    _unit = unit;
     _textureType = textureType;
     _textureWidth = _textureHeight = -1;
 }
@@ -61,11 +59,6 @@ bool GLTexture::init(void * data, const GLTextureConfiguration & cfg)
     return glGetError() == GL_NO_ERROR;
 }
 
-GLuint GLTexture::getUnit() const
-{
-    return _unit;
-}
-
 GLint GLTexture::getTextureId() const
 {
     return _textureId;
@@ -86,9 +79,9 @@ int GLTexture::getHeight() const
     return _textureHeight;
 }
 
-void GLTexture::bind()
+void GLTexture::bind(GLuint unit)
 {
-    glActiveTexture(_unit);
+    glActiveTexture(GL_TEXTURE0 + unit);
     glBindTexture(_textureType, _textureId);
 }
 
@@ -97,19 +90,8 @@ void GLTexture::bindRaw()
 	glBindTexture(_textureType, _textureId);
 }
 
-void GLTexture::unbind()
+void GLTexture::unbind(GLuint unit)
 {
-    glActiveTexture(_unit);
+    glActiveTexture(GL_TEXTURE0 + unit);
     glBindTexture(_textureType, 0);
-}
-
-void GLTexture::bindSampler(GLSampler * sampler)
-{
-    glBindSampler(_unit, sampler->getId());
-}
-
-void GLTexture::unbindSampler()
-{
-    glBindSampler(_unit, 0);
-
 }

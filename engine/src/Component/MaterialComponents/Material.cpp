@@ -6,14 +6,13 @@ using namespace MoonEngine;
 
 Material::Material(glm::vec3 tint, vector<string> programNames, unordered_map<string, string> textures, bool forward) :
     Component(),
-    _textures(std::unordered_map<string, GLTexture *>()),
-    _tint(tint),
     _activeProgram(0),
     _programs(std::vector<GLProgram *>()),
+    _tint(tint),
+    _textures(std::unordered_map<string, texture_unit>()),
     _texture_unit(0),
 	_forward(forward)
 {
-
     _programs.reserve(programNames.size());
     for (int i = 0; i < programNames.size(); i++)
     {
@@ -33,18 +32,19 @@ Material::Material(glm::vec3 tint, vector<string> programNames, unordered_map<st
             ext = "";
         }
         // uniform name <=> texture
-        _textures[texture.first] = Library::TextureLib->getTexture(texture.second, _texture_unit++, ext);
+        texture_unit textureUnit = {Library::TextureLib->getTexture(texture.second, ext), _texture_unit++};
+        _textures[texture.first] = textureUnit;
     }
 
-    _samplerPtr = Library::SamplerLib->getSampler("default");
+    _sampler = Library::SamplerLib->getSampler("default");
 }
 
 Material::Material(glm::vec3 tint, std::string programName, unordered_map<string, string> textures, bool forward):
     Component(),
-    _textures(std::unordered_map<string, GLTexture *>()),
-    _tint(tint),
     _activeProgram(0),
     _programs(std::vector<GLProgram *>()),
+    _tint(tint),
+    _textures(std::unordered_map<string, texture_unit>()),
     _texture_unit(0),
     _forward(forward)
 {
@@ -88,18 +88,22 @@ void Material::bind()
 {
     for (auto & _texture: _textures)
     {
-        _texture.second->bind();
-        _texture.second->bindSampler(_samplerPtr);
-        glUniform1i(_programs[_activeProgram]->getUniformLocation(_texture.first), _texture.second->getUnit());
+        texture_unit texture = _texture.second;
+
+        texture.gl_texture->bind(texture.unit);
+        glBindSampler(texture.unit, _sampler->getId());
+        glUniform1i(_programs[_activeProgram]->getUniformLocation(_texture.first), texture.unit);
     }
 }
 
 void Material::unbind()
 {
     //todo unbind uniforms
-    for (auto & texture: _textures)
+    for (auto & _texture: _textures)
     {
-        texture.second->unbind();
-        texture.second->unbindSampler();
+        texture_unit texture = _texture.second;
+
+        texture.gl_texture->unbind(texture.unit);
+        glBindSampler(texture.unit, 0);
     }
 }

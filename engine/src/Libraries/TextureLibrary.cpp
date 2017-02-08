@@ -20,12 +20,11 @@ TextureLibrary::~TextureLibrary()
 }
 
 /* Get or load a texture */
-GLTexture * TextureLibrary::getTexture(std::string textureName, int unit, std::string extension)
+GLTexture * TextureLibrary::getTexture(std::string textureName, std::string extension)
 {
     if (_textures.find(textureName) == _textures.end())
     {
-        std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(unit,
-            _recPath + textureName + extension);
+        std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(_recPath + textureName + extension);
         _texturePtrs.push_back(glTexture);
         if (glTexture != nullptr)
         {
@@ -41,7 +40,7 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, int unit, std::s
 
 void TextureLibrary::loadDefaultTexture()
 {
-    std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(0, _recPath + "default.png");
+    std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(_recPath + "default.png");
 
     _textures["default"] = glTexture.get();
 }
