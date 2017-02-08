@@ -6,16 +6,63 @@
 using namespace MoonEngine;
 
 Node::Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis) :
-	gameObjects(gameObjects),
 	maxObjects(maxObjects),
-	axis(axis)
+	axis(axis),
+	isLeaf(false)
 {
-	sortObjectsAndMakeChildren();
+	sortObjectsAndMakeChildren(gameObjects);
 };
 
 std::vector<std::shared_ptr<GameObject>> Node::getGameObjects()
 {
 	return gameObjects;
+}
+
+std::unordered_set<std::shared_ptr<GameObject>> Node::getObjectsInFrustrum(glm::vec4 frust[6])
+{
+	std::unordered_set<std::shared_ptr<GameObject>> objectsInFrust;
+	//toADD: if our bounding box is within the frustrum, do this. Otherwise Return.
+	if (!isLeaf)
+	{
+		std::unordered_set<std::shared_ptr<GameObject>> left = leftChild->getObjectsInFrustrum(frust);
+		std::unordered_set<std::shared_ptr<GameObject>> right = rightChild->getObjectsInFrustrum(frust);
+
+		objectsInFrust.insert(left.begin(), left.end());
+		objectsInFrust.insert(right.begin(), right.end());
+	}
+	else
+	{
+		float distance;
+		glm::vec3 currBox[2];
+		bool inside;
+		for (int i = 0; i < gameObjects.size(); i++)
+		{
+			const BoundingBox & box =
+				gameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
+
+			currBox[0] = (box.min());
+			currBox[1] = (box.max());
+			inside = true;
+			for (int j = 0; j < 6; j++)
+			{
+				int ix = static_cast<int>(frust[j].x > 0.0f);
+				int iy = static_cast<int>(frust[j].y > 0.0f);
+				int iz = static_cast<int>(frust[j].z > 0.0f);
+
+				distance = (frust[j].x * currBox[ix].x +
+					frust[j].y * currBox[iy].y +
+					frust[j].z * currBox[iz].z);
+				if (distance < -frust[j].w)
+				{
+					inside = false;
+					break;
+				}
+			}
+			if (inside)
+				objectsInFrust.insert(gameObjects.at(i));
+		}
+	}
+	return objectsInFrust;
 }
 
 std::shared_ptr<Node> Node::getLeftChild()
@@ -42,7 +89,7 @@ void Node::median()
 {
 	int which = axis % 3;
 	int size = gameObjects.size();
-	if (!axis)
+	if (axis == 0)
 	{
 		std::vector<float> xList;
 		for (int i = 0; i < size; i++)
@@ -75,17 +122,21 @@ void Node::median()
 	}
 }
 
-void Node::sortObjectsAndMakeChildren()
+void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject>> gameObjects)
 {
-	if (maxObjects >= gameObjects.size())
+	if (maxObjects < gameObjects.size())
 	{
 		std::vector<std::shared_ptr<GameObject>> left, right;
-		float distance;
+		float distanceMax, distanceMin;
 		glm::vec3 currBox[2];
 		int size = gameObjects.size();
+		median();
 		int ix = static_cast<int>(plane.x > 0.0f);
 		int iy = static_cast<int>(plane.y > 0.0f);
 		int iz = static_cast<int>(plane.z > 0.0f);
+		int mx = static_cast<int>(-plane.x > 0.0f);
+		int my = static_cast<int>(-plane.y > 0.0f);
+		int mz = static_cast<int>(-plane.z > 0.0f);
 		for (int i = 0; i < size; i++)
 		{
 			const BoundingBox & box =
@@ -94,17 +145,24 @@ void Node::sortObjectsAndMakeChildren()
 			currBox[0] = (box.min());
 			currBox[1] = (box.max());
 
-			distance = (plane.x * currBox[ix].x +
+			distanceMax = (plane.x * currBox[ix].x +
 				plane.y * currBox[iy].y +
 				plane.z * currBox[iz].z);
-			if (distance < -plane.w)
-				right.push_back(gameObjects.at(i));
-			else
+			distanceMin = (plane.x * currBox[ix].x +
+				plane.y * currBox[iy].y +
+				plane.z * currBox[iz].z);
+			if (distanceMax >= -plane.w)
 				left.push_back(gameObjects.at(i));
+			if (distanceMin < -plane.w)
+				right.push_back(gameObjects.at(i));
 		}
-		median();
 		axis++;
 		leftChild = std::make_shared<Node>(left, maxObjects, axis);
 		rightChild = std::make_shared<Node>(right, maxObjects, axis);
+	}
+	else
+	{
+		isLeaf = true;
+		this->gameObjects = gameObjects;
 	}
 }
