@@ -87,11 +87,11 @@ int main(int argc, char **argv) {
 	//ImplicitHeightmapSource heightSource(256,256,[](int, int){return 0;});
 	TextureHeightmapSource texSource("resources","canyonlands",".png");
 	createInfo.source = &texSource;
-	createInfo.leafNodeSize = 16;
-	createInfo.LODLevelCount = 4;
+	createInfo.leafNodeSize = 1;
+	createInfo.LODLevelCount = 5;
 	MapDimensions mapDims;
 	
-	mapDims.size = glm::vec3(100,20,100);
+	mapDims.size = glm::vec3(1000,100,1000);
 	mapDims.minCoords = glm::vec3(0,0,0);
 	//mapDims.minCoords = -mapDims.size/2.0f;
 	//mapDims.minCoords.y = 0;

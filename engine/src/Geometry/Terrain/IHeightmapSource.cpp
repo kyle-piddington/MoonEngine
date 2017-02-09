@@ -24,9 +24,9 @@ float IHeightmapSource::getHeightAtFloat(float x, float z)
 	int ux = (int)(x + 1);
 	int uy = (int)(z + 1);
 	unsigned short sampleBL = getHeightAt(lx,ly);
-	unsigned short sampleBR = getHeightAt(lx,ly);
-	unsigned short sampleUL = getHeightAt(lx,ly);
-	unsigned short sampleUR = getHeightAt(lx,ly);
+	unsigned short sampleBR = getHeightAt(ux,ly);
+	unsigned short sampleUL = getHeightAt(lx,uy);
+	unsigned short sampleUR = getHeightAt(ux,uy);
 	float xy1 = (ux - x) /(ux - lx) * sampleBL +  (x-lx)/(ux - lx) * sampleBR;
 	float xy2 = (ux - x ) /(ux - lx) * sampleUL + (x-lx)/(ux - lx) * sampleUR;
 	float yInterp = (uy - z) / (uy - ly)  * xy1 + (z - ly) / (uy - ly) * xy2;

@@ -271,6 +271,6 @@ float Terrain::heightAt(float x, float z)
 	px = std::max(std::min(px, rasterSizeX - 1), 0.0f);
 	pz = std::max(std::min(pz, rasterSizeZ - 1), 0.0f);
 	float sourceHeight = creationInfo.source->getHeightAtFloat(px,pz);
-	return minCoords.y + sourceHeight/65535 * mapScale.y;
+	return minCoords.y + sourceHeight/65535.0f * mapScale.y;
 
 }
