@@ -48,9 +48,7 @@ void Scene::runUpdate(float dt)
 {
 
 	_globalTime += dt * TIME_MODIFIER;
-	_globalLightDir = glm::vec3(sin(_globalTime), 1, 1);
-    _globalTime += dt * TIME_MODIFIER;
-    _globalLightDir = glm::vec3(sin(_globalTime), 1, 1);
+	_globalLightDir = glm::vec3(sin(_globalTime), 1, cos(_globalTime));
     instantiateNewObjects();
 
     for (std::shared_ptr<GameObject> go : _gameObjects)

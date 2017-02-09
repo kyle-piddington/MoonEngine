@@ -48,6 +48,8 @@ namespace MoonEngine
 
         void unbind();
 
+        void addTexture(std::string uniformName, GLTexture * texture);
+
     private:
         GLProgram * _programPtr;
         GLSampler * _samplerPtr;

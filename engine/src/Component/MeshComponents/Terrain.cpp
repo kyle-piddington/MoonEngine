@@ -2,6 +2,7 @@
 #include "Geometry/MeshCreator.h"
 #include "GlobalFuncs/GlobalFuncs.h"
 #include "Util/Logger.h"
+#include "GLUtil/GLNormalMapCreator.h"
 #include <cassert>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -51,7 +52,14 @@ Terrain::~Terrain()
 
 void Terrain::start()
 {
+	//Create Heightmap
+	GLNormalMapCreator creator;
+	GLTextureConfiguration normalMapCfg(creationInfo.source->getSizeX(), creationInfo.source->getSizeZ());
+	auto tex = creator.GenerateNormalMap(creationInfo.source, normalMapCfg,creationInfo.dimensions);
+	//Track the heightmap in the texture library.
+	Library::TextureLib->addTexture("heightmap_normal",tex);
 	terrainMaterial = gameObject->getComponent<Material>();
+	terrainMaterial->addTexture("heightmap_normal",tex.get());
 	mainCamera = GetWorld()->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
 	assert(mainCamera != nullptr);
 

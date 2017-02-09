@@ -18,11 +18,13 @@ void IHeightmapSource::getAreaMinMaxY(int x, int z, int sizeX, int sizeZ, unsign
 //Perform bilinear interpolation
 float IHeightmapSource::getHeightAtFloat(float x, float z)
 {
+	int sx = getSizeX();
+	int sz = getSizeZ();
 	//Samples
-	int lx = (int)(x);
-	int ly = (int)(z);
-	int ux = (int)(x + 1);
-	int uy = (int)(z + 1);
+	int lx = std::min(sx - 1,std::max(0,(int)(x)));
+	int ly = std::min(sz - 1,std::max(0,(int)(z)));
+	int ux = std::min(sx - 1, std::max(0,(int)(x + 1)));
+	int uy = std::min(sz - 1, std::max(0,(int)(z + 1)));
 	unsigned short sampleBL = getHeightAt(lx,ly);
 	unsigned short sampleBR = getHeightAt(ux,ly);
 	unsigned short sampleUL = getHeightAt(lx,uy);

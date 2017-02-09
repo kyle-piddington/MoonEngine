@@ -31,14 +31,15 @@ ThirdPersonOrbitalController::ThirdPersonOrbitalController(float Cam_Move_Speed,
     _targ(0.0f),
     _phi(M_PI / 6),
     _theta(0.0f),
-    _distance(1.5f),
-    _state(NORMAL)
+    _distance(2.0f),
+    _state(NORMAL),
+    _camHeight(0.15)
 {
 }
 
 void ThirdPersonOrbitalController::start()
 {
-    _tracInterp = _trac = _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi), sinf(_phi) * sinf(_theta));
+    _tracInterp = _trac = _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi) + _camHeight, sinf(_phi) * sinf(_theta));
     Transform & transform = gameObject->getTransform();
     transform.setPosition(_trac);
     transform.lookAt(_targ);
@@ -74,7 +75,7 @@ void ThirdPersonOrbitalController::update(float dt)
 
         rotate.z = 0;
 
-        _trac = _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi), sinf(_phi) * sinf(_theta));
+        _trac = _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi) + _camHeight, sinf(_phi) * sinf(_theta));
 
     }
     else if (Input::GetButtonDown(BUTTON_3))
@@ -85,16 +86,17 @@ void ThirdPersonOrbitalController::update(float dt)
 
         _phi = M_PI / 3;
         _theta = atan2(camDirection.z, camDirection.x);
-        _trac = _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi), sinf(_phi) * sinf(_theta));
+        _trac = _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi) + _camHeight, sinf(_phi) * sinf(_theta));
     }
     else if (glm::length(gameObject->getTransform().getPosition() - player->getTransform().getPosition()) > _distance)
     {
+        glm::vec3 camPosition = (glm::vec3(0,-_camHeight,0) + player->getTransform().getPosition());
         glm::vec3 camDirection = glm::normalize(
                 gameObject->getTransform().getPosition() - player->getTransform().getPosition());
         _phi = acos(glm::dot(camDirection, glm::normalize(glm::vec3(World::Up))));
         _theta = atan2(camDirection.z, camDirection.x);
         _trac = _targ + glm::normalize(
-                gameObject->getTransform().getPosition() - player->getTransform().getPosition()) * _distance;
+                gameObject->getTransform().getPosition() - camPosition) * _distance;
     }
     _tracInterp += (_trac - _tracInterp) * dt * 5.0f;
     Transform & transform = gameObject->getTransform();

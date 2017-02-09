@@ -103,13 +103,13 @@ int GLTexture::getHeight() const
 
 void GLTexture::bind()
 {
-    glActiveTexture(_unit);
+    glActiveTexture(GL_TEXTURE0 + _unit);
     glBindTexture(_textureType, _textureId);
 }
 
 void GLTexture::unbind()
 {
-    glActiveTexture(_unit);
+    glActiveTexture(GL_TEXTURE0 + _unit);
     glBindTexture(_textureType, 0);
 }
 

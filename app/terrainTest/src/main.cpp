@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1000);
     cameraObj->addComponent(cam);
-    cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
+    cameraObj->addComponent(scene->createComponent<FirstPersonController>(50));
     cameraObj->getTransform().translate(glm::vec3(0, 100, 0));
     //cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
     scene->addGameObject(cameraObj);
@@ -92,13 +92,26 @@ int main(int argc, char **argv) {
 	MapDimensions mapDims;
 	
 	mapDims.size = glm::vec3(1000,100,1000);
-	mapDims.minCoords = glm::vec3(0,0,0);
-	//mapDims.minCoords = -mapDims.size/2.0f;
-	//mapDims.minCoords.y = 0;
+	mapDims.minCoords = glm::vec3(0,0,0);	
+	mapDims.minCoords = -mapDims.size/2.0f;
+	mapDims.minCoords.y = 0;
 	createInfo.dimensions = mapDims;
 	std::shared_ptr<GameObject> terrainObject = std::make_shared<GameObject>(Transform());
 	terrainObject->addComponent(scene->createComponent<Terrain>(createInfo));
 	
+
+	Transform skydomeTransform;
+    skydomeTransform.setPosition(glm::vec3(0, 0, 0));
+    skydomeTransform.setScale(glm::vec3(1000, 1000, 1000));
+    std::shared_ptr<GameObject> sphereObject = std::make_shared<GameObject>(skydomeTransform);
+    sphereObject = std::make_shared<GameObject>(skydomeTransform);
+    sphereObject->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
+    stringmap sky_textures({{"skycolor", "skycolor"}});
+    sphereObject->addComponent(
+            scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures));
+    scene->addGameObject(sphereObject);
+
+
 	//Preload canyon 32f texture
 	EngineApp::GetAssetLibrary().TextureLib->getTexture("canyonlands",0,".png",true);
 	

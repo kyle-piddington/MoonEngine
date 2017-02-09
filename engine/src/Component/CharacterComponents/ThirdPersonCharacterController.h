@@ -42,6 +42,7 @@ namespace MoonEngine
         float jumpForce;
         float jumpTime;
         float _curJumpForce;
+        
         float _jumpTime;
         float gravity;
         float _lastGround;

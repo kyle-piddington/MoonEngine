@@ -57,7 +57,10 @@ void TextureLibrary::loadDefaultTexture()
     _textures["default"] = glTexture.get();
 }
 
-
+void TextureLibrary::addTexture(std::string textureName, std::shared_ptr<GLTexture> ptr){
+    _texturePtrs.push_back(ptr);
+    _textures[textureName] = ptr.get();
+}
 
 
 void TextureLibrary::Debug_ShowAllTextures()
