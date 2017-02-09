@@ -2,6 +2,8 @@
 #include "Util/Logger.h"
 #include <algorithm>
 #include "util/MathUtil.h"
+#include <glm/gtc/type_ptr.hpp>
+#include "util/MathUtil.h"
 using namespace MoonEngine;
 CDLODQuadtree::CDLODQuadtree():
 m_allNodesBuffer(nullptr),
@@ -124,7 +126,7 @@ void CDLODQuadtree::Node::create(int x, int z, int size, int level, const Create
     	//be at the bottom.
 		assert(level == (createInfo.LODLevelCount - 1));
     	//Tag the leaf level with the leaf tag.
-		level |= LEAF_FLAG;
+		this->level |= LEAF_FLAG;
 
     	//Determine the height of the patch
 		int limitX = std::min(rasterSizeX, X + size + 1);
@@ -135,17 +137,17 @@ void CDLODQuadtree::Node::create(int x, int z, int size, int level, const Create
 		//reuse node pointers for ray casting
 		//in to node.
 		{
-			float * pTLZ = (float *)&this->SubTL;
-			float * pTRZ = (float *)&this->SubTR;
-			float * pBLZ = (float *)&this->SubBL;
-			float * pBRZ = (float *)&this->SubBR;
+			float * pTLY = (float *)&this->SubTL;
+			float * pTRY = (float *)&this->SubTR;
+			float * pBLY = (float *)&this->SubBL;
+			float * pBRY = (float *)&this->SubBR;
 
 			int limitX = std::min( rasterSizeX - 1, X + size );
 			int limitZ = std::min( rasterSizeZ - 1, Z + size );
-			*pTLZ = createInfo.dimensions.size.y + createInfo.source->getHeightAt( X, Z ) * createInfo.dimensions.size.y/ 65535.0f;
-			*pTRZ = createInfo.dimensions.size.y + createInfo.source->getHeightAt( limitX, Z ) * createInfo.dimensions.size.y/ 65535.0f;
-			*pBLZ = createInfo.dimensions.size.y + createInfo.source->getHeightAt( X, limitZ) * createInfo.dimensions.size.y/ 65535.0f;
-			*pBRZ = createInfo.dimensions.size.y + createInfo.source->getHeightAt( limitX, limitZ ) * createInfo.dimensions.size.y/ 65535.0f;
+			*pTLY = createInfo.dimensions.minCoords.y + createInfo.source->getHeightAt( X, Z ) * createInfo.dimensions.size.y/ 65535.0f;
+			*pTRY = createInfo.dimensions.minCoords.y + createInfo.source->getHeightAt( limitX, Z ) * createInfo.dimensions.size.y/ 65535.0f;
+			*pBLY = createInfo.dimensions.minCoords.y + createInfo.source->getHeightAt( X, limitZ) * createInfo.dimensions.size.y/ 65535.0f;
+			*pBRY = createInfo.dimensions.minCoords.y + createInfo.source->getHeightAt( limitX, limitZ ) * createInfo.dimensions.size.y/ 65535.0f;
 
 		}
 	}
@@ -245,12 +247,12 @@ CDLODQuadtree::Node::LODSelectResult CDLODQuadtree::Node::LODSelect(LODSelectInf
 		int LODLevel = selInfo.stopAtLevel - this->getLevel();
 		//Add ourselves to the selection buffer,
 		selInfo.selectionObj->m_selectionBuffer[selInfo.selectionCount++] = 
-			SelectedNode( this, 
-				LODLevel, 
-				!bRemoveSubTL, 
-				!bRemoveSubTR, 
-				!bRemoveSubBL, 
-				!bRemoveSubBR );
+		SelectedNode( this, 
+			LODLevel, 
+			!bRemoveSubTL, 
+			!bRemoveSubTR, 
+			!bRemoveSubBL, 
+			!bRemoveSubBR );
 		if(this->getLevel() != 0)
 		{
 			float maxCamDist = sqrtf(box.maxDistFromPointSq(observerPos));
@@ -272,30 +274,213 @@ CDLODQuadtree::Node::LODSelectResult CDLODQuadtree::Node::LODSelect(LODSelectInf
 		return IT_OutOfFrustrum;
 }
 
-void CDLODQuadtree::LODSelect(LODSelection  * selectionObj) const
+/**
+ * Fill an array of nodes with the 
+ * subnodes of the CDLOD node.
+ */
+void CDLODQuadtree::Node::fillSubNodes( Node * nodes[4], int & count ) const
 {
-	const glm::vec3 & cameraPos = selectionObj->m_observerPos;
-	const float visibilityDistance = selectionObj->m_visibilityDistance;
-	const int layerCount = m_createInfo.LODLevelCount;
+	count = 0;
 
-	float LODNear = 0;
-	float LODFar = visibilityDistance;
-	float detailBalance = selectionObj->m_LODDistanceRatio;
+	if( this->isLeaf() )
+		return;
 
-	float total = 0;
-	float currentDetailBalance = 1.0f;
+	nodes[count++] = this->SubTL;
 
-	selectionObj->m_quadTree = this;
-	selectionObj->m_visDistTooSmall = false;
+	if( this->SubTR != nullptr )
+		nodes[count++] = this->SubTR;
+	if( this->SubBL != nullptr )
+		nodes[count++] = this->SubBL;
+	if( this->SubBR != nullptr )
+		nodes[count++] = this->SubBR;
+
+}
+
+//
+// Ray-Triangle Intersection Test Routines          //
+// Different optimizations of my and Ben Trumbore's //
+// code from journals of graphics tools (JGT)       //
+// http://www.acm.org/jgt/                          //
+// by Tomas Moller, May 2000                        //
+//
+
+
+bool AABBRay( const glm::vec3 & rayOrigin, const glm::vec3 & rayDirection, const BoundingBox & box, float & distance )
+{
+      float tmin = -FLT_MAX;        // set to -FLT_MAX to get first hit on line
+      float tmax = FLT_MAX;		   // set to max distance ray can travel
+
+      const glm::vec3 _rayOrigin     = rayOrigin;
+      const glm::vec3 _rayDirection   = rayDirection;
+      const glm::vec3 _min           = box.min();
+      const glm::vec3 _max 	= 		   box.max();
+
+      const float EPSILON = 1e-5f;
+
+      for (int i = 0; i < 3; i++) 
+      {
+      	if ( fabsf(_rayDirection[i]) < EPSILON) 
+      	{
+            // Parallel to the plane
+      		if( _rayOrigin[i] < _min[i] || _rayOrigin[i] > _max[i] )
+      		{
+               //assert( !k );
+               //hits1_false++;
+      			return false;
+      		}
+      	} 
+      	else 
+      	{
+      		float ood = 1.0f / _rayDirection[i];
+      		float t1 = (_min[i] - _rayOrigin[i]) * ood;
+      		float t2 = (_max[i] - _rayOrigin[i]) * ood;
+
+      		if (t1 > t2) std::swap( t1, t2 );
+
+      		if (t1 > tmin) tmin = t1;
+      		if (t2 < tmax) tmax = t2;
+
+      		if (tmin > tmax)
+      		{
+               //assert( !k );
+               //hits1_false++;
+      			return false;
+      		}
+
+      	}
+      }
+
+      distance = tmin;
+
+      return true;
+  }
+
+  bool CDLODQuadtree::Node::IntersectRay( 
+  	const glm::vec3 & rayOrigin, 
+  	const glm::vec3 & rayDirection, 
+  	float maxDistance, 
+  	LODHitInfo & hitInfo, 
+  	const CDLODQuadtree & quadTree ) const
+  {
+  	BoundingBox boundingBox;
+  	getAABB( boundingBox, quadTree.m_rasterSizeX, quadTree.m_rasterSizeZ, quadTree.m_createInfo.dimensions );
+  	float hitDistance;
+  	if( !AABBRay(rayOrigin, rayDirection, boundingBox, hitDistance ) )
+  		return false;
+
+  	if( hitDistance > maxDistance )
+  		return false;
+
+
+  	if(this->isLeaf())
+  	{
+  		LOG(GAME, "OMG a leaf");
+
+	    // This is the place to place your custom heightmap subsection ray intersection.
+	    // Area that needs to be tested lays between this node's [X, Y] and [X + Size, Y + Size] in
+	    // the source heightmap coordinates.
+	    // Following is the simple two-triangle per leaf-quad approximation.
+
+  		float * pTLY = (float *)&this->SubTL;
+  		float * pTRY = (float *)&this->SubTR;
+  		float * pBLY = (float *)&this->SubBL;
+  		float * pBRY = (float *)&this->SubBR;
+  		glm::vec3 bbMin = boundingBox.min();
+  		glm::vec3 bbMax = boundingBox.max();
+  		glm::vec3 tl( bbMin.x, *pTLY, bbMin.z);
+  		glm::vec3 tr( bbMax.x, *pTRY, bbMin.z);
+  		glm::vec3 bl( bbMin.x, *pBLY, bbMax.z);
+  		glm::vec3 br( bbMax.x, *pBRY, bbMax.z);
+
+  		float u0, v0, dist0;
+  		float u1, v1, dist1;
+  		bool t0 = MathUtil::IntersectTri( rayOrigin, rayDirection, tl, tr, bl, u0, v0, dist0 );
+  		bool t1 = MathUtil::IntersectTri( rayOrigin, rayDirection, tr, bl, br, u1, v1, dist1 );
+  		if( t0 && (dist0 > maxDistance) ) t0 = false;
+  		if( t1 && (dist1 > maxDistance) ) t1 = false;
+
+  		if( !t0 && !t1 )
+  			return false;
+
+  		if( (t0 && !t1) || ((t0 && t1) && (dist0 < dist1)) )
+  		{
+
+  			hitInfo.hit = true;
+  			hitInfo.position = rayOrigin + rayDirection * dist0;
+  			hitInfo.normal = glm::normalize(glm::cross(bl - tr, br - tr));
+  			hitInfo.hitNode = this;
+  			LOG(ERROR, "OMG A HIT");
+  			return true;
+  		}
+
+  		hitInfo.position = rayOrigin + rayDirection * dist1;
+  		hitInfo.normal = glm::normalize(glm::cross(br-tl, bl-tl));
+  		hitInfo.hit = true;
+  		hitInfo.hitNode = this;
+  		LOG(ERROR, "OMG A HIT");
+  		return true;
+  	}
+
+  	else
+  	{
+  		Node * subNodes[4];
+  		int subNodeCount;
+  		fillSubNodes( subNodes, subNodeCount );
+
+  		float       closestHitDist = FLT_MAX;
+  		LODHitInfo closestHit;
+
+  		for( int i = 0; i < subNodeCount; i++ )
+  		{
+  			LODHitInfo tmpinfo;
+  			if( subNodes[i]->IntersectRay( rayOrigin, rayDirection, maxDistance, tmpinfo, quadTree ) )
+  			{
+  				glm::vec3 diff = tmpinfo.position - rayOrigin;
+  				float dist = glm::length(diff);
+  				assert( dist <= maxDistance );
+  				if( dist < closestHitDist )
+  				{
+  					closestHitDist = dist;
+  					closestHit = tmpinfo;
+  				}
+  			}
+  		}
+
+  		if( closestHitDist != FLT_MAX )
+  		{
+  			hitInfo = closestHit;  
+  			return true;
+  		}
+  		return false;
+  	}
+
+  }
+
+
+  void CDLODQuadtree::LODSelect(LODSelection  * selectionObj) const
+  {
+  	const glm::vec3 & cameraPos = selectionObj->m_observerPos;
+  	const float visibilityDistance = selectionObj->m_visibilityDistance;
+  	const int layerCount = m_createInfo.LODLevelCount;
+
+  	float LODNear = 0;
+  	float LODFar = visibilityDistance;
+  	float detailBalance = selectionObj->m_LODDistanceRatio;
+
+  	float total = 0;
+  	float currentDetailBalance = 1.0f;
+
+  	selectionObj->m_quadTree = this;
+  	selectionObj->m_visDistTooSmall = false;
 	//Sanity checks.
-	assert(layerCount <= c_maxLODLevels);
+  	assert(layerCount <= c_maxLODLevels);
 
 	//Determine total max detail
-	for(int i = 0; i < layerCount; i++)
-	{
-		total += currentDetailBalance;
-		currentDetailBalance *= detailBalance;
-	}
+  	for(int i = 0; i < layerCount; i++)
+  	{
+  		total += currentDetailBalance;
+  		currentDetailBalance *= detailBalance;
+  	}
 
 	//Set visibility ranges with a detail balancing 
 	float sect = (LODFar - LODNear) / total; //(Detail per meter)
@@ -353,7 +538,7 @@ void CDLODQuadtree::Clean()
 
 		}
 		delete [] m_topLevelNodes;
-			
+
 	}
 	m_topLevelNodes = nullptr;	
 
@@ -380,17 +565,69 @@ CDLODQuadtree::LODSelection::LODSelection(SelectedNode * selbuffer, int maxSelec
 
 void CDLODQuadtree::LODSelection::getMorphConsts( int LODLevel, float consts[4] ) const
 {
-   float mStart = m_morphStart[LODLevel];
-   float mEnd = m_morphEnd[LODLevel];
+	float mStart = m_morphStart[LODLevel];
+	float mEnd = m_morphEnd[LODLevel];
    //
-   const float errorFudge = 0.01f;
-   mEnd = MathUtil::lerp( mEnd, mStart, errorFudge );
+	const float errorFudge = 0.01f;
+	mEnd = MathUtil::lerp( mEnd, mStart, errorFudge );
    //
-   consts[0] = mStart;
-   consts[1] = 1.0f / (mEnd-mStart);
+	consts[0] = mStart;
+	consts[1] = 1.0f / (mEnd-mStart);
    //
-   consts[2] = mEnd / (mEnd-mStart);
-   consts[3] = 1.0f / (mEnd-mStart);
+	consts[2] = mEnd / (mEnd-mStart);
+	consts[3] = 1.0f / (mEnd-mStart);
+}
+
+
+CDLODQuadtree::LODHitInfo CDLODQuadtree::IntersectRay( const glm::vec3 & rayOrigin, const glm::vec3 & rayDirection, float maxDistance, LODHitInfo * previousInfo) const
+{
+	LODHitInfo hitInfo;
+	//Cached check, pass back in information to determine whether or not 
+	if(previousInfo && previousInfo->hitNode)
+	{
+		if(previousInfo->hitNode->IntersectRay(rayOrigin,rayDirection,maxDistance,hitInfo, *this))
+		{
+			if(glm::length(hitInfo.position - rayOrigin) <= maxDistance)
+			{
+				hitInfo.hit = true;
+				return hitInfo;				
+			}
+
+		}
+	}
+	
+	float       closestHitDist = FLT_MAX;
+	LODHitInfo closestHit;
+
+	for( int z = 0; z < m_topNodeCountZ; z++ )
+	{
+		for( int x = 0; x < m_topNodeCountX; x++ )
+		{	
+			LODHitInfo hit;
+			if( m_topLevelNodes[z][x]->IntersectRay( rayOrigin, rayDirection, maxDistance, hit, *this ) )
+			{
+				glm::vec3 diff = hit.position - rayOrigin;
+				float dist = glm::length(diff);
+				assert( dist <= maxDistance );
+				if( dist < closestHitDist )
+				{
+					closestHitDist = dist;
+					closestHit = hit;
+				}
+			}
+		}
+
+		if( closestHitDist != FLT_MAX )
+		{
+			hitInfo.hit = true;
+			hitInfo.position = closestHitDist * rayDirection + rayOrigin;
+			return hitInfo;
+		}
+		hitInfo.hit = false;
+		return hitInfo;
+	}
+	return hitInfo;
+
 }
 
 

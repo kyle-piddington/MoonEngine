@@ -4,6 +4,7 @@
 #include "Component/MaterialComponents/Material.h"
 #include "Mesh.h"
 #include "Geometry/MeshCreator.h"
+#include "Geometry/Hit.h"
 namespace MoonEngine
 {
 	class Terrain : public Mesh
@@ -38,6 +39,9 @@ namespace MoonEngine
 	 */
 		void draw() const override;
 
+		bool intersectsRay(glm::vec3 origin, glm::vec3 direction, Hit * hit);
+
+		float heightAt(float X, float Z);
 	private:
 
 		void setupMainUniforms(GLProgram * program) const;
@@ -53,6 +57,10 @@ namespace MoonEngine
 		CDLODQuadtree::LODSelection currentSelection;
 		GridInfo gridInfo;
 		BoundingBox fullBoundingBox;
+		float rasterSizeX;
+		float rasterSizeZ;
+
+		CDLODQuadtree::LODHitInfo lastHitInfo;
 
 		//Some bullshit debugging
 		MeshInfo * debugMesh;

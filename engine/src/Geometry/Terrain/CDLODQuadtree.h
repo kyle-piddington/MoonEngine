@@ -53,6 +53,22 @@ namespace MoonEngine
             void    getAABB( BoundingBox & aabb, int rasterSizeX, int rasterSizeY, const MapDimensions & mapDims ) const;
         };
 
+        /**
+         * Hit response from a raycast
+         */
+        class LODHitInfo
+        {
+        public:
+            bool hit;
+            glm::vec3 normal;
+            glm::vec3 position;
+        private:
+            friend class CDLODQuadtree;
+            const Node * hitNode; //For use of priming the CDLODQuadtree raycaster
+        };
+
+
+
         class LODSelection
         {
         private:
@@ -231,13 +247,16 @@ namespace MoonEngine
 
             void getAABB(BoundingBox & aabb, int rasterSizeX, int rasterSizeZ, const MapDimensions & mDims) const;
             void getBoundingSphere(glm::vec3 & sphereCenter, float & sphereRad, const CDLODQuadtree & quadTree) const;
-
+            void fillSubNodes( Node * nodes[4], int & count ) const;
         private:
             void create(int x, int y, int size, int level, const CreateInfo & CreateInfo, Node * allNodesBuffer, int &allNodesBufferLastIdx);
 
             LODSelectResult LODSelect(LODSelectInfo & selInfo, bool parentInFrustrum) const;
 
             void getAreaMinMaxHeight(int fromX, int fromZ, int toX, int toZ, float &minY, float &maxY, const CDLODQuadtree & quadtree) const;
+        
+            bool IntersectRay( const glm::vec3 & rayOrigin, const glm::vec3 & rayDirection, float maxDistance, LODHitInfo & hitInfo, const CDLODQuadtree & quadTree ) const;
+
         };
     private:
         CreateInfo m_createInfo;
@@ -288,6 +307,9 @@ namespace MoonEngine
             assert (lodLevel >= 0 && lodLevel < m_createInfo.LODLevelCount);
             return m_LODLevelNodDiagSizes[lodLevel];
         }
+
+        LODHitInfo IntersectRay( const glm::vec3 & rayOrigin, const glm::vec3 & rayDirection, float maxDistance, LODHitInfo * previousInfo = nullptr ) const;
+
 
         const MapDimensions & getWorldMapDims() const { return m_createInfo.dimensions;}
     };
@@ -343,6 +365,7 @@ namespace MoonEngine
         getWorldMinMaxY(minY,maxY,mapDims);
         getWorldMinMaxZ(minZ,maxZ,rasterSizeZ,mapDims);
         box = BoundingBox(minX,maxX,minY,maxY,minZ,maxZ);
+        //box.yHalfWidth = std::max(box.yHalfWidth, 1e-3f);
            
     }
 
@@ -357,6 +380,7 @@ namespace MoonEngine
        minZ = mapDims.minCoords.z + this->Z * mapDims.size.z / (float)(rasterSizeZ-1);
        maxZ = mapDims.minCoords.z + (this->Z+this->Size) * mapDims.size.z / (float)(rasterSizeZ-1);
        aabb = BoundingBox(minX,maxX,minY,maxY,minZ,maxZ);
+       //aabb.yHalfWidth = std::max(aabb.yHalfWidth, 1e-3f);
     }
     inline CDLODQuadtree::SelectedNode::SelectedNode( const Node * node, int LODLevel, bool tl, bool tr, bool bl, bool br )
    : LODLevel(LODLevel), TL(tl), TR(tr), BL(bl), BR(br)

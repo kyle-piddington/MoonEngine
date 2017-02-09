@@ -29,6 +29,10 @@ namespace MoonEngine
      * @note 'WorldHeight = WorldMinZ + GetHeightAt(,) * WorldSizeZ / 65535.0f'
      */
         virtual unsigned short getHeightAt(int x, int z) = 0;
+
+        virtual float getHeightAtFloat(float x, float z);
+
+
     /**
      * Get the maxaimum and minimum size for an area
      * @param  x     lower left

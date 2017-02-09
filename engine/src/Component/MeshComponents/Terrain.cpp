@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include <algorithm>
 //Debug shit
 #include "Libraries/Library.h"
 using namespace MoonEngine;
@@ -22,7 +23,10 @@ currentSelection(CDLODQuadtree::LODSelection(selectionBuffer,maxRenderedTiles,gl
 	glm::vec3 worldCenter = info.dimensions.minCoords + worldSize/2.0f;
 	fullBoundingBox = BoundingBox(worldCenter,worldSize.x,worldSize.y,worldSize.z);
 	debugMesh = Library::MeshLib->getInfoForMeshNamed("cube.obj",false);
-	
+	lastHitInfo.hit = false;
+	rasterSizeX = creationInfo.source->getSizeX();
+	rasterSizeZ = creationInfo.source->getSizeZ();
+
 }
 
 Terrain::Terrain(const Terrain & other):
@@ -149,6 +153,7 @@ void Terrain::drawDebugNode(CDLODQuadtree::SelectedNode node) const
 	gridInfo.meshInfo->bind();
 	terrainMaterial->getProgram()->enable();
 }
+
 void Terrain::draw() const
 {
 	Transform t;
@@ -220,9 +225,52 @@ void Terrain::draw() const
 				
 			}
 		}
-
-
-
 	}
+}
+
+
+
+bool Terrain::intersectsRay(glm::vec3 origin, glm::vec3 direction, Hit * hit)
+{
+
+	CDLODQuadtree::LODHitInfo * cachedInfo = nullptr;
+	if(lastHitInfo.hit)
+	{
+		LOG(GAME, "Using cached node");
+		//cachedInfo = &lastHitInfo;
+	}
+	lastHitInfo = tree.IntersectRay(origin,direction,FLT_MAX, cachedInfo);
+
+	if(lastHitInfo.hit)
+	{
+		LOG(GAME, "Terrain intersection");
+		if(hit != nullptr)
+		{
+			hit->object = this->gameObject;
+			hit->intersectionPoint = lastHitInfo.position;
+			hit->intersectionNormal = lastHitInfo.normal;
+
+			hit->distance = glm::length(origin - lastHitInfo.position);
+			LOG(GAME, "Hit distance: " + std::to_string(hit->distance));
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+float Terrain::heightAt(float x, float z)
+{
+	//Convert world to pixel coordinates.
+	glm::vec3 minCoords = creationInfo.dimensions.minCoords;
+	glm::vec3 mapScale = creationInfo.dimensions.size;
+	float px = (x - minCoords.x)/mapScale.x * rasterSizeX;
+	float pz = (z - minCoords.z)/mapScale.z * rasterSizeZ;
+	px = std::max(std::min(px, rasterSizeX - 1), 0.0f);
+	pz = std::max(std::min(pz, rasterSizeZ - 1), 0.0f);
+	float sourceHeight = creationInfo.source->getHeightAtFloat(px,pz);
+	return minCoords.y + sourceHeight/65535 * mapScale.y;
 
 }

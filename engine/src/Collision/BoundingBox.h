@@ -32,7 +32,7 @@ namespace MoonEngine
          */
         float intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec3 * colnormal);
 
-
+        bool contains(const glm::vec3 & point) const;
 
         std::vector<glm::vec3> cornerPoints() const;
 

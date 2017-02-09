@@ -53,18 +53,18 @@ void Scene::runUpdate(float dt)
     _globalLightDir = glm::vec3(sin(_globalTime), 1, 1);
     instantiateNewObjects();
 
-	for (std::shared_ptr<GameObject> go : _gameObjects)
-	{
-		go->update(dt);
-	}
-	runCollisionUpdate();
-	if (updateFunctors.size() > 0)
-	{
-		for (auto & fun : updateFunctors)
-		{
-			fun(dt);
-		}
-	}
+    for (std::shared_ptr<GameObject> go : _gameObjects)
+    {
+      go->update(dt);
+  }
+  runCollisionUpdate();
+  if (updateFunctors.size() > 0)
+  {
+      for (auto & fun : updateFunctors)
+      {
+         fun(dt);
+     }
+ }
 
 }
 
@@ -151,30 +151,30 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjectsIn
 	for (int i = 0; i < _renderableGameObjects.size(); i++)
 	{
 		const BoundingBox & box = 
-			_renderableGameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
+     _renderableGameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
 
-		currBox[0] = (box.min());
-		currBox[1] = (box.max());
-		inside = true;
-		for (int j = 0; j < planes.size(); j++)
-		{
-			int ix = static_cast<int>(planes.at(j).x > 0.0f);
-			int iy = static_cast<int>(planes.at(j).y > 0.0f);
-			int iz = static_cast<int>(planes.at(j).z > 0.0f);
+     currBox[0] = (box.min());
+     currBox[1] = (box.max());
+     inside = true;
+     for (int j = 0; j < planes.size(); j++)
+     {
+         int ix = static_cast<int>(planes.at(j).x > 0.0f);
+         int iy = static_cast<int>(planes.at(j).y > 0.0f);
+         int iz = static_cast<int>(planes.at(j).z > 0.0f);
 
-			distance = (planes.at(j).x * currBox[ix].x + 
-						planes.at(j).y * currBox[iy].y + 
-						planes.at(j).z * currBox[iz].z);
-			if (distance < -planes.at(j).w)
-			{
-				inside = false;
-				break;
-			}
-		}
-		if (inside)
-			objectsInFrustrum.push_back(_renderableGameObjects.at(i));
-	}
-	return objectsInFrustrum;
+         distance = (planes.at(j).x * currBox[ix].x + 
+          planes.at(j).y * currBox[iy].y + 
+          planes.at(j).z * currBox[iz].z);
+         if (distance < -planes.at(j).w)
+         {
+            inside = false;
+            break;
+        }
+    }
+    if (inside)
+     objectsInFrustrum.push_back(_renderableGameObjects.at(i));
+}
+return objectsInFrustrum;
 }
 
 void Scene::runCollisionUpdate()
@@ -188,7 +188,7 @@ void Scene::runCollisionUpdate()
             {
                 //Try collision between i and j
                 if (_boxCollisionComponents[i]->intersects(
-                        _boxCollisionComponents[j], &colnormal))
+                    _boxCollisionComponents[j], &colnormal))
                 {
                     //Create a new collision
                     Collision c;
@@ -332,24 +332,32 @@ bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * 
 {
     //Spatial data structure would go here.
     Hit tmpHit;
+    float closestDist = FLT_MAX;
     if (glm::length(direction) > 0)
     {
         for (size_t i = 0; i < _boxCollisionComponents.size(); i++)
         {
-
-            if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &tmpHit))
+            Hit thisHit;
+            if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &thisHit))
             {
                 LOG(GAME, std::to_string(tmpHit.distance));
-                if (maxDist == -1 || tmpHit.distance < maxDist)
-                {
-                    if (hit != nullptr)
-                    {
-                        *hit = tmpHit;
-                    }
-                    return true;
+                if ((maxDist == -1 || thisHit.distance < maxDist) && 
+                    thisHit.distance  < closestDist)
+                {   
+                    tmpHit = thisHit;
+                    closestDist = thisHit.distance;
                 }
             }
         }
+        if (closestDist != FLT_MAX)
+        {
+            if(hit != nullptr)
+            {
+                *hit = tmpHit;                
+            }
+            return true;
+        }
+
     }
     return false;
 

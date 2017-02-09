@@ -28,5 +28,8 @@ namespace MoonEngine
 		glm::vec3 moveTowards(glm::vec3 current, glm::vec3 target, float maxDistanceDelta);
  		
  		float lerp(float a, float b, float amt);
+
+ 		bool IntersectTri(const glm::vec3 & _orig, const glm::vec3 & _dir, const glm::vec3 & _vert0, const glm::vec3 & _vert1, 
+    					  const glm::vec3 & _vert2, float &u, float &v, float &dist);
 	}
 }

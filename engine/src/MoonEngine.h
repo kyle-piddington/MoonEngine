@@ -23,6 +23,8 @@
 
 #include "Util/Logger.h"
 #include "Util/GLMUtil.h"
+//Math
+#include "Util/MathUtil.h"
 
 #include "Loaders/BasicLoader.h"
 #include "Libraries/MeshLibrary.h"
@@ -34,6 +36,8 @@
 
 #include "Render/DefaultRenderer.h"
 #include "Render/ProgramRenderer.h"
+
+
 
 //Terrain
 #include "Geometry/Terrain/CDLODQuadtree.h"
