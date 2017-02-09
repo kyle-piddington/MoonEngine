@@ -46,14 +46,13 @@ void DeferredRenderer::setup(Scene * scene)
 void DeferredRenderer::render(Scene * scene)
 {
 	vector<std::shared_ptr<GameObject>>forwardObjects;
-    vector<std::shared_ptr<GameObject>>pointLights;
-	forwardObjects = geometryPass(scene, pointLights);
+	forwardObjects = geometryPass(scene);
     lightingSetup();
-	pointLightingPass(scene, pointLights);
+	pointLightingPass(scene);
     GLVertexArrayObject::Unbind();
 }
 
-vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene, vector<shared_ptr<GameObject>> &lights)
+vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene)
 {
 	GLProgram* activeProgram = nullptr;
 	const MeshInfo* mesh = nullptr;
@@ -78,10 +77,6 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			forwardObjects.push_back(obj);
 			continue;
 		}
-        else if (obj->getComponent<PointLight>() != nullptr) {
-            lights.push_back(obj);
-            continue;
-        }
 
 		glm::mat4 M = obj->getTransform().getMatrix();
 		
@@ -161,7 +156,7 @@ void MoonEngine::DeferredRenderer::lightingSetup()
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void DeferredRenderer::pointLightingPass(Scene* scene, vector<std::shared_ptr<GameObject>> &lights)
+void DeferredRenderer::pointLightingPass(Scene* scene)
 {
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
@@ -176,19 +171,73 @@ void DeferredRenderer::pointLightingPass(Scene* scene, vector<std::shared_ptr<Ga
     GLuint halfHeight = (GLuint) _height / 2.0f;
 
 
+    GLProgram* activeProgram = nullptr;
+	const MeshInfo* lightSphere = nullptr;
+	Material* mat = nullptr;
+	glm::mat4 V = _mainCamera->getView();
+	glm::mat4 P = _mainCamera->getProjection();
+
+	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
+	{
+		mat = obj->getComponent<Material>();
+		lightSphere = obj->getComponent<PointLight>()->getSphere();
+
+		glm::mat4 M = obj->getTransform().getMatrix();
+		
+		//sets the point light shader as active
+		mat->setActiveProgram(1);
+		mat->bind();
+		lightSphere->bind();
+		if (activeProgram != mat->getProgram()) {
+			activeProgram = mat->getProgram();
+			activeProgram->enable();
+
+			//Place Uniforms that do not change per Light
+			glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+			glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+            glUniform1f(activeProgram->getUniformLocation("pointLight.ambient"), obj->getComponent<PointLight>()->getAmbient());
+            glUniform1f(activeProgram->getUniformLocation("pointLight.intensity"), obj->getComponent<PointLight>()->getIntensity());
+		}
+
+		//Assumptions about the light points are: P, V, M Matrices 
+        //and the point light values
+
+        //These values update for every light
+		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+        glUniform3fv(activeProgram->getUniformLocation("pointLight.color"), 3, 
+            glm::value_ptr(obj->getComponent<PointLight>()->getColor()));
+        glUniform3fv(activeProgram->getUniformLocation("pointLight.position"), 3,
+            glm::value_ptr(obj->getComponent<PointLight>()->getPosition()));
+
+        glUniform1f(activeProgram->getUniformLocation("atten.constant"), obj->getComponent<PointLight>()->getAttenuation().x);
+        glUniform1f(activeProgram->getUniformLocation("atten.linear"), obj->getComponent<PointLight>()->getAttenuation().y);
+        glUniform1f(activeProgram->getUniformLocation("atten.exp"), obj->getComponent<PointLight>()->getAttenuation().z);
+
+
+		glDrawElementsBaseVertex(
+			GL_TRIANGLES,
+			lightSphere->numTris,
+			GL_UNSIGNED_SHORT,
+            lightSphere->indexDataOffset,
+            lightSphere->baseVertex
+		);
+		mat->unbind();
+	}
+
+
 }
 
-void MoonEngine::DeferredRenderer::directionalLightingPass(Scene * scene)
+void DeferredRenderer::directionalLightingPass(Scene* scene)
 {
-}
 
+}
 
 void DeferredRenderer::shutdown()
 {
 
 }
 
-void MoonEngine::drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr)
+void MoonEngine::drawBufferToImgui(std::string guiName, const GLFramebuffer* bfr)
 {
     auto texHandles = bfr->getTextureHandles();
     ImGui::Begin(guiName.c_str());

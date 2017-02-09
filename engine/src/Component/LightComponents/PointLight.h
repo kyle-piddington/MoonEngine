@@ -15,10 +15,16 @@ namespace MoonEngine
 
         void setRange(float distance);
 
+        glm::vec3 getPosition() { return _position; }
+        MeshInfo* getSphere() { return _bSphere; }
+        glm::vec3 getAttenuation() {
+            return glm::vec3(_attenuation.constant, _attenuation.linear, _attenuation.exp);
+        }
+
     private:
         MeshInfo* _bSphere;
         glm::vec3 _position;
-        struct
+        struct Attenuation
         {
             float constant;
             float linear;

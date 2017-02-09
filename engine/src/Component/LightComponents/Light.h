@@ -19,10 +19,18 @@ namespace MoonEngine
             return _color;
         }
 
+        GLfloat getAmbient() {
+            return _ambient;
+        }
+
+        GLfloat getIntensity() {
+            return _intensity;
+        }
+
     private:
         glm::vec3 _color;
-        float _ambient;
-        float _intensity;
+        GLfloat _ambient;
+        GLfloat _intensity;
     };
 
 

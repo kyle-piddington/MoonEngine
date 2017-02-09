@@ -85,6 +85,16 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjects()
     return _renderableGameObjects;
 }
 
+const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getLightObjects() const
+{
+    return std::vector<std::shared_ptr<GameObject>>();
+}
+
+const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getDirLights() const
+{
+    return std::vector<std::shared_ptr<GameObject>>();
+}
+
 void Scene::runCollisionUpdate()
 {
     glm::vec3 colnormal;

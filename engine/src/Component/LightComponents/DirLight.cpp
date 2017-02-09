@@ -1,16 +1,25 @@
 #include "DirLight.h"
 
-MoonEngine::DirLight::DirLight(glm::vec3 color, glm::vec3 direction) :
+
+using namespace MoonEngine;
+
+DirLight::DirLight(glm::vec3 color, glm::vec3 direction, std::string program) :
     Light(color), _direction(direction)
 {
+    _program = Library::ProgramLib->getProgramForName(program);
 }
 
-void MoonEngine::DirLight::update(glm::vec3 direction)
+void DirLight::update(glm::vec3 direction)
 {
     _direction = direction;
 }
 
-glm::vec3 MoonEngine::DirLight::getDirection()
+glm::vec3 DirLight::getDirection()
 {
     return _direction;
+}
+
+GLProgram* DirLight::getProgram()
+{
+    return _program;
 }

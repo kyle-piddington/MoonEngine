@@ -46,6 +46,10 @@ namespace MoonEngine
 
         const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjects() const;
 
+        const std::vector<std::shared_ptr<GameObject>> getLightObjects() const;
+
+        const std::vector<std::shared_ptr<GameObject>> getDirLights() const;
+
         std::shared_ptr<GameObject> createGameObject()
         {
             std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
