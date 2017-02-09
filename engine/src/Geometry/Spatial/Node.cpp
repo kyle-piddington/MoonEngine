@@ -5,10 +5,11 @@
 #include "Component\CollisionComponents\BoxCollider.h"
 using namespace MoonEngine;
 
-Node::Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis) :
+Node::Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis, BoundingBox ourBoundary) :
 	maxObjects(maxObjects),
 	axis(axis),
-	isLeaf(false)
+	isLeaf(false),
+	ourBoundary(ourBoundary)
 {
 	sortObjectsAndMakeChildren(gameObjects);
 };
@@ -20,48 +21,51 @@ std::vector<std::shared_ptr<GameObject>> Node::getGameObjects()
 
 std::unordered_set<std::shared_ptr<GameObject>> Node::getObjectsInFrustrum(glm::vec4 frust[6])
 {
-	std::unordered_set<std::shared_ptr<GameObject>> objectsInFrust;
-	//toADD: if our bounding box is within the frustrum, do this. Otherwise Return.
-	if (!isLeaf)
+	std::unordered_set< std::shared_ptr<GameObject> > objectsInFrust;
+	if (ourBoundary.inFrustrum(frust))
 	{
-		std::unordered_set<std::shared_ptr<GameObject>> left = leftChild->getObjectsInFrustrum(frust);
-		std::unordered_set<std::shared_ptr<GameObject>> right = rightChild->getObjectsInFrustrum(frust);
-
-		objectsInFrust.insert(left.begin(), left.end());
-		objectsInFrust.insert(right.begin(), right.end());
-	}
-	else
-	{
-		float distance;
-		glm::vec3 currBox[2];
-		bool inside;
-		for (int i = 0; i < gameObjects.size(); i++)
+		if (!isLeaf)
 		{
-			const BoundingBox & box =
-				gameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
+			std::unordered_set< std::shared_ptr<GameObject> > left = leftChild->getObjectsInFrustrum(frust);
+			std::unordered_set< std::shared_ptr<GameObject> > right = rightChild->getObjectsInFrustrum(frust);
 
-			currBox[0] = (box.min());
-			currBox[1] = (box.max());
-			inside = true;
-			for (int j = 0; j < 6; j++)
+			objectsInFrust.insert(left.begin(), left.end());
+			objectsInFrust.insert(right.begin(), right.end());
+		}
+		else
+		{
+			float distance;
+			glm::vec3 currBox[2];
+			bool inside;
+			for (int i = 0; i < gameObjects.size(); i++)
 			{
-				int ix = static_cast<int>(frust[j].x > 0.0f);
-				int iy = static_cast<int>(frust[j].y > 0.0f);
-				int iz = static_cast<int>(frust[j].z > 0.0f);
+				const BoundingBox & box =
+					gameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
 
-				distance = (frust[j].x * currBox[ix].x +
-					frust[j].y * currBox[iy].y +
-					frust[j].z * currBox[iz].z);
-				if (distance < -frust[j].w)
+				currBox[0] = (box.min());
+				currBox[1] = (box.max());
+				inside = true;
+				for (int j = 0; j < 6; j++)
 				{
-					inside = false;
-					break;
+					int ix = static_cast<int>(frust[j].x > 0.0f);
+					int iy = static_cast<int>(frust[j].y > 0.0f);
+					int iz = static_cast<int>(frust[j].z > 0.0f);
+
+					distance = (frust[j].x * currBox[ix].x +
+						frust[j].y * currBox[iy].y +
+						frust[j].z * currBox[iz].z);
+					if (distance < -frust[j].w)
+					{
+						inside = false;
+						break;
+					}
 				}
+				if (inside)
+					objectsInFrust.insert(gameObjects.at(i));
 			}
-			if (inside)
-				objectsInFrust.insert(gameObjects.at(i));
 		}
 	}
+	
 	return objectsInFrust;
 }
 
@@ -108,7 +112,7 @@ void Node::median()
 			yList.push_back(gameObjects.at(i)->getComponent<BoxCollider>()->getBoundingBox().centerPoint.y);
 		}
 		std::sort(yList.begin(), yList.end());
-		plane = glm::vec4(1.0f, 0.0f, 0.0f, -yList.at(size / 2));
+		plane = glm::vec4(0.0f, 1.0f, 0.0f, -yList.at(size / 2));
 	}
 	else
 	{
@@ -118,19 +122,38 @@ void Node::median()
 			zList.push_back(gameObjects.at(i)->getComponent<BoxCollider>()->getBoundingBox().centerPoint.z);
 		}
 		std::sort(zList.begin(), zList.end());
-		plane = glm::vec4(1.0f, 0.0f, 0.0f, -zList.at(size / 2));
+		plane = glm::vec4(0.0f, 0.0f, 1.0f, -zList.at(size / 2));
 	}
 }
 
-void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject>> gameObjects)
+void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > gameObjects)
 {
 	if (maxObjects < gameObjects.size())
 	{
-		std::vector<std::shared_ptr<GameObject>> left, right;
+		std::vector<std::shared_ptr<GameObject> > left, right;
 		float distanceMax, distanceMin;
 		glm::vec3 currBox[2];
 		int size = gameObjects.size();
 		median();
+		glm::vec3 boxMin, newMin = ourBoundary.min();
+		glm::vec3 boxMax, newMax = ourBoundary.max();
+		if (axis == 0)
+		{
+			newMin.x += plane.w;
+			newMax.x -= plane.w;
+		}
+		else if (axis == 1)
+		{
+			newMin.y += plane.w;
+			newMax.y -= plane.w;
+		}
+		else
+		{
+			newMin.z += plane.w;
+			newMax.z -= plane.w;
+		}
+		BoundingBox leftBox(newMin.x, boxMax.x, newMin.y, boxMax.y, newMin.z, boxMax.z);
+		BoundingBox rightBox(boxMin.x, newMax.x, boxMin.y, newMax.y, boxMin.z, newMax.z);
 		int ix = static_cast<int>(plane.x > 0.0f);
 		int iy = static_cast<int>(plane.y > 0.0f);
 		int iz = static_cast<int>(plane.z > 0.0f);
@@ -140,7 +163,7 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject>> g
 		for (int i = 0; i < size; i++)
 		{
 			const BoundingBox & box =
-				gameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
+				gameObjects.at(i)->getComponent<BoxCollider>()->getBoundingBox();
 
 			currBox[0] = (box.min());
 			currBox[1] = (box.max());
@@ -157,8 +180,8 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject>> g
 				right.push_back(gameObjects.at(i));
 		}
 		axis++;
-		leftChild = std::make_shared<Node>(left, maxObjects, axis);
-		rightChild = std::make_shared<Node>(right, maxObjects, axis);
+		leftChild = std::make_shared<Node>(left, maxObjects, axis, leftBox);
+		rightChild = std::make_shared<Node>(right, maxObjects, axis, rightBox);
 	}
 	else
 	{

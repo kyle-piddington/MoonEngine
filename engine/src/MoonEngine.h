@@ -45,6 +45,9 @@
 #include "Collision/BoundingBox.h"
 #include "Collision/Collision.h"
 
+//Spatial Structure
+#include "Geometry/Spatial/Node.h"
+
 //Globals
 #include "GlobalFuncs/GlobalFuncs.h"
 

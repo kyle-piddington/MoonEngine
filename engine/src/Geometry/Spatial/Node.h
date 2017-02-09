@@ -4,13 +4,13 @@
 #include <memory>
 #include <unordered_set>
 #include "GameObject\GameObject.h"
-
+#include "Collision\BoundingBox.h"
 namespace MoonEngine
 {
 	class Node
 	{
 	public:
-		Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis);
+		Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis, BoundingBox ourBoundary);
 		std::vector<std::shared_ptr<GameObject>> getGameObjects();
 		std::unordered_set<std::shared_ptr<GameObject>> getObjectsInFrustrum(glm::vec4 frust[6]);
 		std::shared_ptr<Node> getLeftChild();
@@ -27,5 +27,6 @@ namespace MoonEngine
 		int maxObjects;
 		int axis;
 		bool isLeaf;
+		BoundingBox ourBoundary;
 	};
 }
