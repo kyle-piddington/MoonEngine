@@ -60,6 +60,8 @@ namespace MoonEngine
 		float rasterSizeX;
 		float rasterSizeZ;
 
+		bool _showAOMap;
+
 		CDLODQuadtree::LODHitInfo lastHitInfo;
 
 		//Some bullshit debugging

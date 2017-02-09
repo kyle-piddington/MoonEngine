@@ -10,6 +10,8 @@ uniform vec2 t_resolution;
 uniform vec3 g_cameraPosition;
 uniform vec3 iGlobalLightDir;
 
+uniform bool showAO;
+
 
 vec3 hsv2rgb(vec3 c)
 {
@@ -35,6 +37,9 @@ void main()
 	//float spec = pow(max(dot(reflectDir,viewDir),0.0),32);
 	//vec3 specular = spec * vec3(1,1,1);
 	vec3 result = (diffuse + ambient);
-	
-	color = vec4(result * norAO.w,1.0);
+	if(showAO)
+	{
+		result *= min(1, (0.5 + norAO.w));
+	}
+	color = vec4(result,1.0);
 }

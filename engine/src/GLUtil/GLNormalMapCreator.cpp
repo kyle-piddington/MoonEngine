@@ -12,6 +12,7 @@ GLNormalMapCreator::GLNormalMapCreator()
 
 }
 
+//AO creation based off of https://learnopengl.com/#!Advanced-Lighting/SSAO
 float sampleAO(IHeightmapSource * heightmap,  glm::vec2 sampleCenter,const MapDimensions & mDims)
 {
 	int rasterSizeX = heightmap->getSizeX();
@@ -22,29 +23,35 @@ float sampleAO(IHeightmapSource * heightmap,  glm::vec2 sampleCenter,const MapDi
 	float occlusion = 0.0f;
 	float radius = 0.5f;
 	int numSamples = 64;
+	//For each pixel in the heightmap, create 16 samples
 	for (GLuint i = 0; i < numSamples; ++i)
 	{
+		//Choose a random position on a unit sphere
 	    glm::vec3 sample(
 	        randomFloats(generator) * 2.0 - 1.0, 
 	        randomFloats(generator) * 2.0 - 1.0, 
 	        randomFloats(generator) * 2.0 - 1.0
 	    );
+	    //Normalize and scale
 	    sample  = glm::normalize(sample);
 	    sample *= randomFloats(generator);
+	    //Create samples near and far from the center
 	    float scale = (float)i / numSamples; 
+	    //Scale samples
 	    scale   = MathUtil::lerp(0.1f, 1.0f, scale * scale);
-
+	    //Transform to pixel space
 	    sample.x *=  scale * radius *  (float)rasterSizeX/mDims.size.x;
 	    sample.y *=  scale * radius * 65535.f/(float)mDims.size.y;
 	    sample.z *=  scale * radius * (float)rasterSizeY/mDims.size.x;
+	    //Offset to pixel coords
 	    sample+= glm::vec3(sampleCenter.x, center, sampleCenter.y);
-
+	    //Choose sample
 	    float sampleDepth = heightmap->getHeightAtFloat(sample.x, sample.z);
-	    float rangeCheck = MathUtil::smoothstep(0.0, 1.0, radius / fabsf(center - sampleDepth));
-		occlusion       += (sampleDepth >= sample.y);       
+	    //Add to occlusion
+	    occlusion       += (sampleDepth >= sample.y);       
    		
 	}
-	
+	//Return AO sample amount.
 	return std::max(0.0f,1 - occlusion/numSamples);
 }
 

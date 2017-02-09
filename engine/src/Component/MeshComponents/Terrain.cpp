@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <algorithm>
+#include "thirdparty/imgui/imgui.h"
 //Debug shit
 #include "Libraries/Library.h"
 using namespace MoonEngine;
@@ -73,6 +74,13 @@ void Terrain::update(float dt)
 		mainCamera->getFar(),planes,4.0f);
 
 	tree.LODSelect(&currentSelection);
+
+	ImGui::Begin("Terrain rendering");
+	{
+		ImGui::Checkbox("Terrain AO ", &_showAOMap);
+
+	}
+	ImGui::End();
 }
 
 const BoundingBox & Terrain::getBoundingBox()
@@ -111,7 +119,10 @@ void Terrain::setupMainUniforms(GLProgram * program) const
 	glUniform4fv(program->getUniformLocation("g_terrainScale"),1,glm::value_ptr(g_terrainScale));
 	glUniform4fv(program->getUniformLocation("g_terrainOffset"),1,glm::value_ptr(g_terrainOffset));
 	glUniform2fv(program->getUniformLocation("g_quadWorldMax"),1,glm::value_ptr(g_quadWorldMax));
-    glUniform2f(program->getUniformLocation("t_resolution"), (float)textureWidth, (float)textureHeight);
+	glUniform2f(program->getUniformLocation("t_resolution"), (float)textureWidth, (float)textureHeight);
+
+	glUniform1i(program->getUniformLocation("showAO"),_showAOMap);
+
    //V( vertexShader.SetFloatArray( "g_terrainScale", mapDims.SizeX, mapDims.SizeY, mapDims.SizeZ, 0.0f ) );
    //V( vertexShader.SetFloatArray( "g_terrainOffset", mapDims.MinX, mapDims.MinY, mapDims.MinZ, 0.0f ) );
    //V( vertexShader.SetFloatArray( "g_samplerWorldToTextureScale", (textureWidth-1.0f) / (float)textureWidth, (textureHeight-1.0f) / (float)textureHeight ) );
@@ -154,10 +165,10 @@ void Terrain::drawDebugNode(CDLODQuadtree::SelectedNode node) const
 	glUniformMatrix4fv(dbg->getUniformLocation("M"),1,GL_FALSE,glm::value_ptr(boxTrasnform.getMatrix()));
 	debugMesh->bind();
 	glDrawElementsBaseVertex(GL_TRIANGLES,
-				debugMesh->numTris,
-				GL_UNSIGNED_SHORT,
-				debugMesh->indexDataOffset,
-				debugMesh->baseVertex);
+		debugMesh->numTris,
+		GL_UNSIGNED_SHORT,
+		debugMesh->indexDataOffset,
+		debugMesh->baseVertex);
 	gridInfo.meshInfo->bind();
 	terrainMaterial->getProgram()->enable();
 }
@@ -191,45 +202,45 @@ void Terrain::draw() const
 			int quarterTris = meshInfo->numTris / 4;
 			if(node.TL)
 			{
-					glUniform3f(prog->getUniformLocation("tint"),1,0,0);
+				glUniform3f(prog->getUniformLocation("tint"),1,0,0);
 				//LOG(INFO, "Drawing TL");
 				glDrawElementsBaseVertex(GL_TRIANGLES,
-				quarterTris,
-				GL_UNSIGNED_SHORT,
-				(GLvoid *)((unsigned short * ) meshInfo->indexDataOffset + gridInfo.tlIdx),
-				meshInfo->baseVertex);
-			
+					quarterTris,
+					GL_UNSIGNED_SHORT,
+					(GLvoid *)((unsigned short * ) meshInfo->indexDataOffset + gridInfo.tlIdx),
+					meshInfo->baseVertex);
+
 			}
 			if(node.TR)
 			{
 				//LOG(INFO, "Drawing TR");
 				glUniform3f(prog->getUniformLocation("tint"),0,1,0);
 				glDrawElementsBaseVertex(GL_TRIANGLES,
-				quarterTris,
-				GL_UNSIGNED_SHORT,
-				(GLvoid *)((unsigned short * ) meshInfo->indexDataOffset + gridInfo.trIdx),
-				meshInfo->baseVertex);
-			
+					quarterTris,
+					GL_UNSIGNED_SHORT,
+					(GLvoid *)((unsigned short * ) meshInfo->indexDataOffset + gridInfo.trIdx),
+					meshInfo->baseVertex);
+
 			}
 			if(node.BL)
 			{
 				//LOG(INFO, "Drawing BL");
 				glUniform3f(prog->getUniformLocation("tint"),0,0,1);
 				glDrawElementsBaseVertex(GL_TRIANGLES,
-				quarterTris,
-				GL_UNSIGNED_SHORT,
-				(GLvoid *)((unsigned short * ) meshInfo->indexDataOffset + gridInfo.blIdx),
-				meshInfo->baseVertex);
+					quarterTris,
+					GL_UNSIGNED_SHORT,
+					(GLvoid *)((unsigned short * ) meshInfo->indexDataOffset + gridInfo.blIdx),
+					meshInfo->baseVertex);
 				
 			}
 			if(node.BR)
 			{	
 				glUniform3f(prog->getUniformLocation("tint"),0,0,0);
 				glDrawElementsBaseVertex(GL_TRIANGLES,
-				quarterTris,
-				GL_UNSIGNED_SHORT,
-				(GLvoid *)((unsigned short * ) meshInfo->indexDataOffset + gridInfo.brIdx),
-				meshInfo->baseVertex);
+					quarterTris,
+					GL_UNSIGNED_SHORT,
+					(GLvoid *)((unsigned short * ) meshInfo->indexDataOffset + gridInfo.brIdx),
+					meshInfo->baseVertex);
 				
 			}
 		}

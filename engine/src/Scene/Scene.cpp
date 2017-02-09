@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace MoonEngine;
 
-#define TIME_MODIFIER 0.1
+#define TIME_MODIFIER 0.01
 
 Scene::Scene()
 {
