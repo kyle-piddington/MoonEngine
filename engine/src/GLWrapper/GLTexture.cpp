@@ -51,6 +51,20 @@ bool GLTexture::init(void * data, const GLTextureConfiguration & cfg)
     glGenTextures(1, &_textureId);
     /* Bind the current texture to be the texture object */
     glBindTexture(_textureType, _textureId);
+    //Bind correct texture
+    if(cfg.getInputFormat() != GL_RGBA)
+    {
+        glPixelStorei(GL_UNPACK_ALIGNMENT,1);        
+    }
+    else if(cfg.getInputFormat() == GL_RED && cfg.getDataType() == GL_UNSIGNED_SHORT)
+    {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+    }
+    else
+    {
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+    }
+
     /* Load the actual texture data */
     glTexImage2D(_textureType, 0, cfg.getInputFormat(), cfg.getWidth(), cfg.getHeight(),
         0, cfg.getOutputFormat(), cfg.getDataType(), data);
@@ -89,13 +103,13 @@ int GLTexture::getHeight() const
 
 void GLTexture::bind()
 {
-    glActiveTexture(_unit);
+    glActiveTexture(GL_TEXTURE0 + _unit);
     glBindTexture(_textureType, _textureId);
 }
 
 void GLTexture::unbind()
 {
-    glActiveTexture(_unit);
+    glActiveTexture(GL_TEXTURE0 + _unit);
     glBindTexture(_textureType, 0);
 }
 

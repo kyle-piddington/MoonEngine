@@ -29,6 +29,7 @@ void ThirdPersonCharacterController::start()
     mainCamera = GetWorld()->findGameObjectWithComponent<Camera>();
     transform = &gameObject->getTransform();
     bbox = gameObject->getComponent<BoxCollider>();
+    worldTerrain = GetWorld()->findGameObjectWithComponent<Terrain>()->getComponent<Terrain>();
 }
 
 void ThirdPersonCharacterController::update(float dt)
@@ -38,12 +39,23 @@ void ThirdPersonCharacterController::update(float dt)
         radius = std::max(std::max(bbox->getHalfWidths().x, bbox->getHalfWidths().y), bbox->getHalfWidths().z);
         LOG(GAME, "Radius: " + std::to_string(radius));
     }
+    findMinGround();
     checkIfShouldFall();
     handleMove(dt);
     handleJump(dt);
 
 }
 
+void ThirdPersonCharacterController::findMinGround()
+{
+    if(worldTerrain != nullptr)
+    {
+        glm::vec3 pos = gameObject->getTransform().getPosition();
+        _lastGround = worldTerrain->heightAt(pos.x,pos.z);
+    }
+    
+
+}
 void ThirdPersonCharacterController::handleMove(float dt)
 {
     glm::vec3 camForward = mainCamera->getTransform().forward();
@@ -75,6 +87,10 @@ void ThirdPersonCharacterController::handleMove(float dt)
 
     }
     transform->translate(dt * playerDirection);
+    transform->setPosition(
+        glm::vec3(transform->getPosition().x, 
+        std::max(transform->getPosition().y, _lastGround), 
+        transform->getPosition().z));
 
 }
 
@@ -139,10 +155,10 @@ void ThirdPersonCharacterController::handleJump(float dt)
     }
 
     //Check if on ground plane
-    if (transform->getPosition().y <= bbox->getHalfWidths().y && state == FALLING)
+    if (transform->getPosition().y - bbox->getHalfWidths().y <= _lastGround && state == FALLING)
     {
         transform->setPosition(glm::vec3(transform->getPosition().x,
-            bbox->getHalfWidths().y, transform->getPosition().z));
+            _lastGround + bbox->getHalfWidths().y, transform->getPosition().z));
         state = GROUND;
     }
 
@@ -168,7 +184,7 @@ void ThirdPersonCharacterController::onCollisionEnter(Collision col)
 void ThirdPersonCharacterController::checkIfShouldFall()
 {
     //Early break if on ground.
-    if (transform->getPosition().y <= bbox->getHalfWidths().y)
+    if (transform->getPosition().y - bbox->getHalfWidths().y <= _lastGround)
     {
         return;
     }

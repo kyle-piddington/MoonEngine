@@ -1,1 +1,15 @@
-﻿
+﻿  Checking Build System
+  CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/deps/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Zachary/glfw-3.2.1/glfw-3.2.1/debug/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Zachary/glfw-3.2.1/glfw-3.2.1/debug/src/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/engine/CMakeFiles/generate.stamp is up-to-date.
+  CMake is re-running because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/CMakeFiles/generate.stamp is out-of-date.
+    the file 'C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/app/CMakeLists.txt'
+    is newer than 'C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/CMakeFiles/generate.stamp.depend'
+    result='-1'
+  -- Could NOT find Vulkan (missing:  VULKAN_LIBRARY VULKAN_INCLUDE_DIR) 
+  -- Using Win32 for window creation
+  -- Configuring done
+  -- Generating done
+  -- Build files have been written to: C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build

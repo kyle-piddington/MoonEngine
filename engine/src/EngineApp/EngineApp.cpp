@@ -76,9 +76,6 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
         
         
         ImGui_ImplGlfwGL3_NewFrame(imguiOn);            
-        
-
-
         glfwPollEvents();
         GLFWHandler::update();
         Input::Update(dt);
@@ -88,6 +85,8 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
         newT = (float) glfwGetTime();
         if(imguiOn)
         {
+        	//Render materials
+        	
             ImGui::Render();            
         }
 

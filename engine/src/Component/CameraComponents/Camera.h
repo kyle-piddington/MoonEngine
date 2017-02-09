@@ -5,6 +5,7 @@
 
 namespace MoonEngine
 {
+
     class Camera: public Component
     {
     public:
@@ -26,6 +27,12 @@ namespace MoonEngine
          * @return the view matrix
          */
         const glm::mat4 & getView();
+
+        void getPlanes(glm::vec4 planes[6]);
+
+		float getFar() const;
+
+		float getNear() const;
 
         /**
          * Set the field of view of this camera

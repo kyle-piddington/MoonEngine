@@ -2,6 +2,7 @@
 
 using namespace MoonEngine;
 
+
 InstanceMesh::InstanceMesh(std::string mesh, std::string instancedata, bool smooth):
         Mesh()
 {
@@ -21,7 +22,23 @@ const MeshInfo * InstanceMesh::getMesh()
     return _meshInfo;
 }
 
+const BoundingBox & InstanceMesh::getBoundingBox()
+{
+	return _meshInfo->boundingBox;
+}
+
+
+
 std::shared_ptr<Component> InstanceMesh::clone() const
 {
-    return std::make_shared<InstanceMesh>(*this);
+	return std::make_shared<InstanceMesh>(*this);
+}
+
+void InstanceMesh::draw() const
+{
+    glDrawElementsInstanced(GL_TRIANGLES,
+        _meshInfo->numTris,
+        GL_UNSIGNED_SHORT,
+        _meshInfo->indexDataOffset,
+        _numOfInstances);   
 }

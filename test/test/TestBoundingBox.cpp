@@ -18,3 +18,12 @@ TEST_CASE("Test BBox Transformation", "[Bounding Box]")
 
 
 }
+
+TEST_CASE("Test BBox Zero Height INtersect", "[Bounding Box]")
+{
+	Transform t;
+	BoundingBox box(-1,1,-1,1,-1,1);
+	REQUIRE(box.intersectsRay(glm::vec3(2,0,0), glm::vec3(-1,0,0), nullptr) > 0);
+	REQUIRE(box.intersectsRay(glm::vec3(0,2,0), glm::vec3(0,-1,0), nullptr) > 0);
+
+}

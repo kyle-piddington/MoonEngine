@@ -21,12 +21,14 @@ void GLFWHandler::key_callback(GLFWwindow * window, int key, int scancode, int a
     /**
     * Allow Imgui to consume the event
     */
-    if (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow())
+    if ((Keyboard::isKeyToggled(GLFW_KEY_LEFT_CONTROL)) && (ImGui::IsWindowFocused() || ImGui::IsMouseHoveringAnyWindow()))
     {
+               
         ImGui_ImplGlfwGL3_KeyCallback(window, key, scancode, action, mode);
     }
     else
     {
+
         Keyboard::setKeyStatus(key, action);
     }
 }
