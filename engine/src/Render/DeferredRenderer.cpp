@@ -99,6 +99,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			if (activeProgram->hasUniform("iGlobalTime")) {
 				glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
 			}
+            
 		}
 
 		//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
@@ -174,27 +175,7 @@ void DeferredRenderer::pointLightingPass(Scene* scene, vector<std::shared_ptr<Ga
     GLuint halfWidth = (GLuint) _width / 2.0f;
     GLuint halfHeight = (GLuint) _height / 2.0f;
 
-    _gBuffer.setReadBuffer("position");
-    glBlitFramebuffer(0, 0, _width, _height,
-        0, 0, halfWidth, halfHeight,
-        GL_COLOR_BUFFER_BIT, GL_LINEAR);
 
-    _gBuffer.setReadBuffer("color");
-    glBlitFramebuffer(0, 0, _width, _height,
-        0, halfHeight, halfWidth, _height,
-        GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-    _gBuffer.setReadBuffer("normal");
-    glBlitFramebuffer(0, 0, _width, _height,
-        halfWidth, halfHeight, _width, _height,
-        GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-    _gBuffer.setReadBuffer("texture");
-    glBlitFramebuffer(0, 0, _width, _height,
-        halfWidth, 0, _width, halfHeight,
-        GL_COLOR_BUFFER_BIT, GL_LINEAR);
-
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 }
 
 void MoonEngine::DeferredRenderer::directionalLightingPass(Scene * scene)

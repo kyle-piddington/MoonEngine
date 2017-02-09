@@ -11,3 +11,5 @@
 #include "CharacterComponents/ThirdPersonCharacterController.h"
 #include "CameraComponents/ThirdPersonOrbitalController.h"
 #include "LightComponents/PointLight.h"
+#include "LightComponents/Light.h"
+#include "LightComponents/DirLight.h"

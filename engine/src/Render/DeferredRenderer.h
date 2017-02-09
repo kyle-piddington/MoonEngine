@@ -56,6 +56,7 @@ namespace MoonEngine
         void lightingSetup();
         void pointLightingPass(Scene* scene, vector<std::shared_ptr<GameObject>> &lights);
         void directionalLightingPass(Scene* scene);
+        void generatePointLightUniforms(vector<shared_ptr<GameObject>> &lights);
         Camera* _mainCamera;
         MeshInfo* renderQuad;
 		GLuint _width, _height;
