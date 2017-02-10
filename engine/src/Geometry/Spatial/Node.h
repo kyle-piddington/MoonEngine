@@ -3,8 +3,8 @@
 #include <vector>
 #include <memory>
 #include <unordered_set>
-#include "GameObject\GameObject.h"
-#include "Collision\BoundingBox.h"
+#include "GameObject/GameObject.h"
+#include "Collision/BoundingBox.h"
 namespace MoonEngine
 {
 	class Node
@@ -19,7 +19,7 @@ namespace MoonEngine
 		void setRightChild(std::shared_ptr<Node> n);
 		void sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject>> gameObjects);
 	private:
-		void median();
+		void median(const std::vector<std::shared_ptr<GameObject>>  &gameObjects);
 		std::vector<std::shared_ptr<GameObject>> gameObjects;
 		glm::vec4 plane;
 		std::shared_ptr<Node> leftChild;

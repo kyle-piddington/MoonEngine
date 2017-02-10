@@ -1,8 +1,8 @@
 #include "Node.h"
 #include <algorithm>
-#include "Collision\BoundingBox.h"
-#include "Component\MeshComponents\Mesh.h"
-#include "Component\CollisionComponents\BoxCollider.h"
+#include "Collision/BoundingBox.h"
+#include "Component/MeshComponents/Mesh.h"
+#include "Component/CollisionComponents/BoxCollider.h"
 using namespace MoonEngine;
 
 Node::Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis, BoundingBox ourBoundary) :
@@ -89,11 +89,11 @@ void Node::setRightChild(std::shared_ptr<Node> n)
 	rightChild = n;
 }
 
-void Node::median()
+void Node::median(const std::vector<std::shared_ptr<GameObject>> & gameObjects)
 {
 	int which = axis % 3;
 	int size = gameObjects.size();
-	if (axis == 0)
+	if (which == 0)
 	{
 		std::vector<float> xList;
 		for (int i = 0; i < size; i++)
@@ -104,7 +104,7 @@ void Node::median()
 		plane = glm::vec4(1.0f, 0.0f, 0.0f, -xList.at(size / 2));
 		
 	}
-	else if (axis == 1)
+	else if (which == 1)
 	{
 		std::vector<float> yList;
 		for (int i = 0; i < size; i++)
@@ -134,15 +134,16 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > 
 		float distanceMax, distanceMin;
 		glm::vec3 currBox[2];
 		int size = gameObjects.size();
-		median();
+		median(gameObjects);
 		glm::vec3 boxMin, newMin = ourBoundary.min();
 		glm::vec3 boxMax, newMax = ourBoundary.max();
-		if (axis == 0)
+		int which = axis % 3;
+		if (which == 0)
 		{
 			newMin.x += plane.w;
 			newMax.x -= plane.w;
 		}
-		else if (axis == 1)
+		else if (which == 1)
 		{
 			newMin.y += plane.w;
 			newMax.y -= plane.w;
