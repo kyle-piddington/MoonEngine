@@ -164,6 +164,21 @@ namespace MoonEngine
             return ptr.get();
         }
 
+        template<class T>
+        T * cloneComponent(T * component)
+        {
+        	std::shared_ptr<T> ptr = static_cast<std::shared_ptr<T>>(component->clone());
+        	_components.push_back(component->clone());
+        	return ptr.get();
+        }
+        template<class T>
+        T * cloneComponent(std::shared_ptr<T> component)
+        {
+        	std::shared_ptr<T> ptr = static_cast<std::shared_ptr<T>>(component->clone());
+        	_components.push_back(component->clone());
+        	return ptr.get();
+        }
+
         /**
          * Create a new gameObject at a location
          */
