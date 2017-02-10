@@ -1,6 +1,9 @@
 #pragma once
 
-class LevelBuilder
+namespace MoonEngine
 {
+    class LevelBuilder
+    {
 
-};
+    };
+}

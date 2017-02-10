@@ -34,6 +34,10 @@ void ThirdPersonCharacterController::start()
     {
         worldTerrain = worldTerrainGO->getComponent<Terrain>();
     }
+    else
+    {
+        worldTerrain = nullptr;
+    }
 
 }
 
