@@ -46,9 +46,9 @@ namespace MoonEngine
 
         const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjects() const;
 
-        const std::vector<std::shared_ptr<GameObject>> getLightObjects() const;
+        const std::vector<std::shared_ptr<GameObject>> getPointLightObjects() const;
 
-        const std::vector<std::shared_ptr<GameObject>> getDirLights() const;
+        const std::vector<std::shared_ptr<GameObject>> getDirLightObjects() const;
 
         std::shared_ptr<GameObject> createGameObject()
         {
@@ -126,6 +126,8 @@ namespace MoonEngine
 
         std::vector<std::shared_ptr<GameObject>> _gameObjects;
         std::vector<std::shared_ptr<GameObject>> _renderableGameObjects;
+        std::vector<std::shared_ptr<GameObject>> _pointLightObjects;
+        std::vector<std::shared_ptr<GameObject>> _dirLightObjects;
 
         //List of collision components
         ////For performing box-box collisions

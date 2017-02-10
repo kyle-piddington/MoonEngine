@@ -14,6 +14,8 @@ Scene::Scene()
     _allGameObjects.clear();
     _gameObjects.clear();
     _renderableGameObjects.clear();
+    _pointLightObjects.clear();
+    _dirLightObjects.clear();
     _boxCollisionComponents.clear();
     _components.clear();
 }
@@ -30,6 +32,16 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
     {
         LOG(INFO, "Adding renderable game object");
         _renderableGameObjects.push_back(obj);
+    }
+    if (obj->getComponent<PointLight>() != nullptr)
+    {
+        LOG(INFO, "Adding point light game object");
+        _pointLightObjects.push_back(obj);
+    }
+    if (obj->getComponent<DirLight>() != nullptr)
+    {
+        LOG(INFO, "Adding dir light game object");
+        _dirLightObjects.push_back(obj);
     }
     BoxCollider * col = obj->getComponent<BoxCollider>();
     if (col != nullptr)
@@ -85,14 +97,14 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjects()
     return _renderableGameObjects;
 }
 
-const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getLightObjects() const
+const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getPointLightObjects() const
 {
-    return std::vector<std::shared_ptr<GameObject>>();
+    return _pointLightObjects;
 }
 
-const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getDirLights() const
+const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getDirLightObjects() const
 {
-    return std::vector<std::shared_ptr<GameObject>>();
+    return _dirLightObjects;
 }
 
 void Scene::runCollisionUpdate()

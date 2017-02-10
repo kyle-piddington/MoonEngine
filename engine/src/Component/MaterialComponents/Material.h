@@ -26,12 +26,6 @@ namespace MoonEngine
 			bool forward = false
 		);
 
-        Material(glm::vec3 tint = glm::vec3(0, 0, 0),
-            std::vector<string> programNames = {"default.program"},
-            unordered_map<string, string> textures = unordered_map<string, string>(),
-            bool forward = false
-        );
-
         /**
          * retrieve a base tint material used by all
          * material program.s
@@ -71,9 +65,7 @@ namespace MoonEngine
         };
 
         GLSampler * _sampler;
-
-        int _activeProgram;
-        vector<GLProgram *> _programs;
+        GLProgram * _program;
 
         glm::vec3 _tint;
         unordered_map<string, texture_unit> _textures;

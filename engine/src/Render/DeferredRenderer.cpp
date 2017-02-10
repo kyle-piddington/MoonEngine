@@ -4,7 +4,7 @@
 using namespace MoonEngine;
 
 
-DeferredRenderer::DeferredRenderer(int width, int height):
+DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgramName, string dirLightProgramName):
     _mainCamera(nullptr),
     _gBuffer(width, height),
     _width(width),
@@ -29,11 +29,14 @@ DeferredRenderer::DeferredRenderer(int width, int height):
     _gBuffer.addTexture("texture", _textureTex, GL_COLOR_ATTACHMENT3);
     _gBuffer.addTexture("depth", _depthTex, GL_DEPTH_ATTACHMENT);
     _gBuffer.drawColorAttachments(4);
+
+    _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
+    _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
 }
 
 void DeferredRenderer::setup(Scene * scene)
 {
-    _mainCamera = scene->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
+	_mainCamera = scene->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
     if (_mainCamera == nullptr)
     {
         LOG(ERROR, "No Camera in scene!");
@@ -81,7 +84,6 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 		glm::mat4 M = obj->getTransform().getMatrix();
 		
 		//sets the materials geometry shader as active
-		mat->setActiveProgram(0);
 		mat->bind();
 		mesh->bind();
 		if (activeProgram != mat->getProgram()) {
@@ -171,36 +173,25 @@ void DeferredRenderer::pointLightingPass(Scene* scene)
     GLuint halfHeight = (GLuint) _height / 2.0f;
 
 
-    GLProgram* activeProgram = nullptr;
 	const MeshInfo* lightSphere = nullptr;
-	Material* mat = nullptr;
 	glm::mat4 V = _mainCamera->getView();
 	glm::mat4 P = _mainCamera->getProjection();
 
-	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
+	GLProgram * activeProgram = _pointLightProgram;
+	activeProgram->enable();
+
+	//Place Uniforms that do not change per Light
+	glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+	glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+
+	for (std::shared_ptr<GameObject> obj : scene->getPointLightObjects())
 	{
-		mat = obj->getComponent<Material>();
 		lightSphere = obj->getComponent<PointLight>()->getSphere();
-
 		glm::mat4 M = obj->getTransform().getMatrix();
-		
+
 		//sets the point light shader as active
-		mat->setActiveProgram(1);
-		mat->bind();
 		lightSphere->bind();
-		if (activeProgram != mat->getProgram()) {
-			activeProgram = mat->getProgram();
-			activeProgram->enable();
 
-			//Place Uniforms that do not change per Light
-			glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-			glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-            glUniform1f(activeProgram->getUniformLocation("pointLight.ambient"), obj->getComponent<PointLight>()->getAmbient());
-            glUniform1f(activeProgram->getUniformLocation("pointLight.intensity"), obj->getComponent<PointLight>()->getIntensity());
-		}
-
-		//Assumptions about the light points are: P, V, M Matrices 
-        //and the point light values
 
         //These values update for every light
 		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
@@ -209,7 +200,10 @@ void DeferredRenderer::pointLightingPass(Scene* scene)
         glUniform3fv(activeProgram->getUniformLocation("pointLight.position"), 3,
             glm::value_ptr(obj->getComponent<PointLight>()->getPosition()));
 
-        glUniform1f(activeProgram->getUniformLocation("atten.constant"), obj->getComponent<PointLight>()->getAttenuation().x);
+		glUniform1f(activeProgram->getUniformLocation("pointLight.ambient"), obj->getComponent<PointLight>()->getAmbient());
+		glUniform1f(activeProgram->getUniformLocation("pointLight.intensity"), obj->getComponent<PointLight>()->getIntensity());
+
+		glUniform1f(activeProgram->getUniformLocation("atten.constant"), obj->getComponent<PointLight>()->getAttenuation().x);
         glUniform1f(activeProgram->getUniformLocation("atten.linear"), obj->getComponent<PointLight>()->getAttenuation().y);
         glUniform1f(activeProgram->getUniformLocation("atten.exp"), obj->getComponent<PointLight>()->getAttenuation().z);
 
@@ -221,13 +215,11 @@ void DeferredRenderer::pointLightingPass(Scene* scene)
             lightSphere->indexDataOffset,
             lightSphere->baseVertex
 		);
-		mat->unbind();
+
 	}
-
-
 }
 
-void DeferredRenderer::directionalLightingPass(Scene* scene)
+void DeferredRenderer::dirLightingPass(Scene* scene)
 {
 
 }

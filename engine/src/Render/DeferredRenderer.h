@@ -27,7 +27,7 @@ namespace MoonEngine
     class DeferredRenderer: public I_Renderer
     {
     public:
-        DeferredRenderer(int width, int height);
+        DeferredRenderer(int width, int height, string pointLightProgramName, string dirLightProgramName);
 
         virtual ~DeferredRenderer()
         {}
@@ -55,13 +55,16 @@ namespace MoonEngine
 		vector<std::shared_ptr<GameObject>> geometryPass(Scene* scene);
         void lightingSetup();
         void pointLightingPass(Scene* scene);
-        void directionalLightingPass(Scene* scene);
+        void dirLightingPass(Scene* scene);
         Camera* _mainCamera;
         MeshInfo* renderQuad;
 		GLuint _width, _height;
         GLFramebuffer _gBuffer;
 		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;
         GLTexture _depthTex;
+
+        GLProgram * _pointLightProgram;
+        GLProgram * _dirLightProgram;
     };
 
     void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr);

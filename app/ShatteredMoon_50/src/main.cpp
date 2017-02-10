@@ -154,7 +154,7 @@ int main(int argc, char ** argv)
 
     });
 
-	DeferredRenderer * renderer = new DeferredRenderer(width, height);
+	DeferredRenderer * renderer = new DeferredRenderer(width, height, "phong_point_deferred.program", "phong_directional_deferred.program");
     app->run(scene, renderer);
 
     delete scene;
