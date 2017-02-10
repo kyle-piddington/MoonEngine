@@ -50,14 +50,23 @@ void ProgramRenderer::render(Scene * scene)
 
     GLProgram * activeProgram = nullptr;
 	int all = scene->getRenderableGameObjects().size();
-	int drawn;
+	std::vector<std::shared_ptr<GameObject>> frustObjects = scene->getRenderableGameObjectsInFrustrum(P*V);
+    int drawn = frustObjects.size();
+
+    ImGui::Begin("Renderer stats");
+    {
+        ImGui::Value("All Renderable objects", all);
+        ImGui::Value("Actual drawn Objects", drawn);
+        ImGui::Value("Culled objects: ", all - drawn);
+    }
+    ImGui::End();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
+    for (std::shared_ptr<GameObject> obj : frustObjects)
     {
         glm::mat4 M = obj->getTransform().getMatrix();
         glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
         Material * mat = obj->getComponent<Material>();
-		drawn++;
+		
         if (activeProgram != mat->getProgram())
         {
             activeProgram = mat->getProgram();
@@ -91,9 +100,7 @@ void ProgramRenderer::render(Scene * scene)
         meshComp->draw();
         mat->unbind();
     }
-	std::cout << "All: " << all << " Rendered: " << drawn << std::endl;
-	drawn = 0;
-    GLVertexArrayObject::Unbind();
+	GLVertexArrayObject::Unbind();
 
 }
 

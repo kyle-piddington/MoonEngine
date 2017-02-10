@@ -3,13 +3,16 @@
 #include "Collision/BoundingBox.h"
 #include "Component/MeshComponents/Mesh.h"
 #include "Component/CollisionComponents/BoxCollider.h"
+#include "Util/Logger.h"
 using namespace MoonEngine;
 
-Node::Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis, BoundingBox ourBoundary) :
+Node::Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis, BoundingBox ourBoundary, int depth) :
 	maxObjects(maxObjects),
 	axis(axis),
 	isLeaf(false),
+	depth(depth),
 	ourBoundary(ourBoundary)
+
 {
 	sortObjectsAndMakeChildren(gameObjects);
 };
@@ -128,6 +131,7 @@ void Node::median(const std::vector<std::shared_ptr<GameObject>> & gameObjects)
 
 void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > gameObjects)
 {
+
 	std::vector<std::shared_ptr<GameObject>> containedObjects = getFullyContainedObjects(gameObjects);
 	if (maxObjects < containedObjects.size())
 	{
@@ -136,26 +140,26 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > 
 		glm::vec3 currBox[2];
 		int size = gameObjects.size();
 		median(containedObjects);
-		glm::vec3 boxMin, newMin = ourBoundary.min();
-		glm::vec3 boxMax, newMax = ourBoundary.max();
+		glm::vec3 boxMin, newMin; boxMin = newMin = ourBoundary.min();
+		glm::vec3 boxMax, newMax; boxMax = newMax = ourBoundary.max();
 		int which = axis % 3;
 		if (which == 0)
 		{
-			newMin.x += plane.w;
-			newMax.x -= plane.w;
+			newMin.x = -plane.w;
+			newMax.x = -plane.w;
 		}
 		else if (which == 1)
 		{
-			newMin.y += plane.w;
-			newMax.y -= plane.w;
+			newMin.y = -plane.w;
+			newMax.y = -plane.w;
 		}
 		else
 		{
-			newMin.z += plane.w;
-			newMax.z -= plane.w;
+			newMin.z = -plane.w;
+			newMax.z = -plane.w;
 		}
-		BoundingBox leftBox(newMin.x, boxMax.x, newMin.y, boxMax.y, newMin.z, boxMax.z);
-		BoundingBox rightBox(boxMin.x, newMax.x, boxMin.y, newMax.y, boxMin.z, newMax.z);
+		BoundingBox rightBox(newMin.x, boxMax.x, newMin.y, boxMax.y, newMin.z, boxMax.z);
+		BoundingBox leftBox(boxMin.x, newMax.x, boxMin.y, newMax.y, boxMin.z, newMax.z);
 		int ix = static_cast<int>(plane.x > 0.0f);
 		int iy = static_cast<int>(plane.y > 0.0f);
 		int iz = static_cast<int>(plane.z > 0.0f);
@@ -172,23 +176,28 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > 
 
 			distanceMax = (plane.x * currBox[ix].x +
 				plane.y * currBox[iy].y +
-				plane.z * currBox[iz].z);
+				plane.z * currBox[iz].z) + plane.w;
 			distanceMin = (plane.x * currBox[mx].x +
 				plane.y * currBox[my].y +
-				plane.z * currBox[mz].z);
-			if (distanceMax >= -plane.w)
-				left.push_back(gameObjects.at(i));
-			if (distanceMin < -plane.w)
+				plane.z * currBox[mz].z) + plane.w;
+			if (distanceMax >= 0)
+			{
 				right.push_back(gameObjects.at(i));
+			}
+			if (distanceMin < 0)
+			{
+				left.push_back(gameObjects.at(i));
+			}
 		}
 		axis++;
-		leftChild = std::make_shared<Node>(left, maxObjects, axis, leftBox);
-		rightChild = std::make_shared<Node>(right, maxObjects, axis, rightBox);
+		leftChild = std::make_shared<Node>(left, maxObjects, axis, leftBox,depth + 1);
+		rightChild = std::make_shared<Node>(right, maxObjects, axis, rightBox, depth + 1);
 	}
 	else
 	{
 		isLeaf = true;
 		this->gameObjects = gameObjects;
+		LOG(INFO, "Objects in child : " + std::to_string(gameObjects.size()));
 	}
 }
 
@@ -203,4 +212,16 @@ std::vector<std::shared_ptr<GameObject>> Node::getFullyContainedObjects(const st
 		}
 	}
 	return subObjects;
+}
+
+int Node::getMaximumDepth() const
+{
+	if(isLeaf)
+	{
+		return depth;
+	}
+	else
+	{
+		return std::max(leftChild->getMaximumDepth(), rightChild->getMaximumDepth());
+	}
 }

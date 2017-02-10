@@ -85,37 +85,42 @@ int main(int argc, char ** argv)
 
     stringmap cube_texture({{"diffuse", "cube"}});
 
-    for(int i = -30; i < 30; i++)
+    for(int k = 0; k < 1000; k++ )
     {
-        for(int j = -30; j < 30; j++)
-        {
-            Transform levelTransform;
-            levelTransform.setScale(glm::vec3(0.5, 0.5, 0.5));
-            levelTransform.setPosition(glm::vec3(i, 0, j));
-            std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(levelTransform);
-            boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
-            boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program", cube_texture));
-            //boxObject->addComponent(scene->createComponent<BoxCollider>());
-            scene->addGameObject(boxObject);
-        }
+        
+                Transform levelTransform;
+                levelTransform.setScale(glm::vec3((float)rand()/RAND_MAX * 2 - 1, (float)rand()/RAND_MAX * 2 - 1, (float)rand()/RAND_MAX * 2 - 1));
+                levelTransform.setPosition(glm::vec3(
+                    (float)rand()/RAND_MAX * 10 - 5, 
+                    (float)rand()/RAND_MAX * 10 - 5, 
+                    (float)rand()/RAND_MAX * 10 - 5));
+                std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(levelTransform);
+                boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
+                boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program", cube_texture));
+                    //boxObject->addComponent(scene->createComponent<BoxCollider>());
+                scene->addGameObject(boxObject);
+            
+        
     }
-    //Upper Platforms
-    
 
-    
+
+        //Upper Platforms
+
+
+
 
     float accumTime;
     int lastUpdateTime;
     scene->addCustomUpdate([&](float dt) {
-        //ImGui::ShowTestWindow();
-        // accumTime += dt;
-        // if((int)accumTime > lastUpdateTime)
-        // {
-        // 	LOG(GAME, "FPS: " + std::to_string(1.0/dt));
-        // 	LOG(GAME, "Active Objects: " + std::to_string(scene->getGameObjects().size()));
+            //ImGui::ShowTestWindow();
+            // accumTime += dt;
+            // if((int)accumTime > lastUpdateTime)
+            // {
+            // 	LOG(GAME, "FPS: " + std::to_string(1.0/dt));
+            // 	LOG(GAME, "Active Objects: " + std::to_string(scene->getGameObjects().size()));
 
-        // 	lastUpdateTime = (int)accumTime;
-        // }
+            // 	lastUpdateTime = (int)accumTime;
+            // }
 
     });
 
