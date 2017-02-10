@@ -188,7 +188,6 @@ int main(int argc, char ** argv)
     delete scene;
     delete renderer;
 
-
     return 0;
 
 }

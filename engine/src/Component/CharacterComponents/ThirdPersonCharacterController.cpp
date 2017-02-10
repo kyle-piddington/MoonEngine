@@ -29,7 +29,12 @@ void ThirdPersonCharacterController::start()
     mainCamera = GetWorld()->findGameObjectWithComponent<Camera>();
     transform = &gameObject->getTransform();
     bbox = gameObject->getComponent<BoxCollider>();
-    worldTerrain = GetWorld()->findGameObjectWithComponent<Terrain>()->getComponent<Terrain>();
+    GameObject * worldTerrainGO = GetWorld()->findGameObjectWithComponent<Terrain>();
+    if(worldTerrainGO != nullptr)
+    {
+        worldTerrain = worldTerrainGO->getComponent<Terrain>();
+    }
+
 }
 
 void ThirdPersonCharacterController::update(float dt)
