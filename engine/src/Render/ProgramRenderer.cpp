@@ -51,7 +51,7 @@ void ProgramRenderer::render(Scene * scene)
     GLProgram * activeProgram = nullptr;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
+    for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
     {
         glm::mat4 M = obj->getTransform().getMatrix();
         glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));

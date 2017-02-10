@@ -1,0 +1,51 @@
+{
+"defaults": {
+    "terrain": {
+        "name": "terrain",
+        "size": [1000.0, 200.0, 1000.0]
+    },
+    "player": {
+        "material": "penguin",
+        "start": {
+            "position": [0.0, 0.0, 0.0],
+            "rotation": [0.0, 0.0, 0.0]
+        }
+    }
+},
+"materials": [
+    {
+        "name": "cube",
+        "mesh": "cube.obj",
+        "program": "phong.program",
+        "tint": [0.9, 0.5, 0.5],
+        "textures": {
+            "diffuse": "cube"
+        },
+        "collider": true
+    },
+    {
+        "name": "skydome",
+        "mesh": "sphere.obj",
+        "program": "skydome.program",
+        "textures": {
+            "skycolor": "skycolor"
+        },
+        "collider": false
+    }
+],
+
+"map": [
+    {
+        "material": "cube",
+        "position": [1.5, 0.5, 1.5],
+        "rotation": [0.0, 0.0, 0.0],
+        "scale": [1.0, 1.0, 1.0]
+    },
+    {
+        "material": "skydome",
+        "position": [0.0, 0.0, 0.0],
+        "rotation": [0.0, 0.0, 0.0],
+        "scale": [50.0, 50.0, 50.0]
+    }
+]
+}

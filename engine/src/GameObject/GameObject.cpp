@@ -6,14 +6,18 @@ using namespace MoonEngine;
 
 GameObject::GameObject():
     deleted(false),
-    defaultBox(glm::vec3(0,0,0),0.5f,0.5f,0.5f)
+    defaultBox(glm::vec3(0,0,0),0.5f,0.5f,0.5f),
+    useMeshBounds(false),
+    useBoxColliderBounds(false)
 {
 
 }
 
 GameObject::GameObject(const Transform & t):
     transform(t),
-    deleted(false)
+    deleted(false),
+    useMeshBounds(false),
+    useBoxColliderBounds(false)
 {
 
 }
