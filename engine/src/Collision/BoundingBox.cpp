@@ -292,3 +292,22 @@ glm::vec3 BoundingBox::normalFor(BoundingBox::Plane plane){
             return glm::vec3(0, 0, 1);
     }
 }
+
+glm::vec3 vecMin(const glm::vec3 a, const glm::vec3 b)
+{
+    return glm::vec3(std::min(a.x,b.x), std::min(a.y,b.y), std::min(a.z,b.z));
+}
+
+glm::vec3 vecMax(const glm::vec3 a, const glm::vec3 b)
+{
+    return glm::vec3(std::max(a.x,b.x), std::max(a.y,b.y), std::max(a.z,b.z));
+}
+
+
+BoundingBox BoundingBox::merge(const BoundingBox & other) const
+{
+
+    glm::vec3 minPoints = vecMin(this->min(),other.min());
+    glm::vec3 maxPoints = vecMax(this->max(), other.max());
+    return BoundingBox(minPoints.x,maxPoints.x,minPoints.y,maxPoints.y,minPoints.z,maxPoints.z);   
+}

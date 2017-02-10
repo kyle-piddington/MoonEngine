@@ -17,7 +17,7 @@ include_directories(HEADERS)
 add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL} src/LevelEditor/LevelLoader.cpp src/LevelEditor/LevelLoader.h src/LevelEditor/LevelBuilder.cpp src/LevelEditor/LevelBuilder.h)
 
 
-target_link_libraries(MoonEngine glfw ${GLFW_LIBRARIES})
+target_link_libraries(MoonEngine glfw assimp ${GLFW_LIBRARIES})
 
 
 set(GLM_DIR "$ENV{GLM_INCLUDE_DIR}")
