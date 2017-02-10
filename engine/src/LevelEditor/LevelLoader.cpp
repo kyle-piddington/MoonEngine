@@ -138,9 +138,9 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
         string rawMaterial = mapObject["material"].GetString();
         LevelMaterial levelMaterial = _levelMaterials[rawMaterial];
 
-        object = std::make_shared<GameObject>(transform);
+        object = scene->createGameObject(transform);
         object->addComponent(scene->createComponent<StaticMesh>(levelMaterial.mesh, false));
-        object->addComponent(scene->cloneComponent(levelMaterial.material));
+        object->addComponent(scene->cloneComponent<Material>(levelMaterial.material));
 
         if (levelMaterial.collider)
         {

@@ -154,6 +154,12 @@ namespace MoonEngine
             _allGameObjects.push_back(object);
             return object;
         }
+        std::shared_ptr<GameObject> createGameObject(const Transform & t)
+        {
+            std::shared_ptr<GameObject> object = std::make_shared<GameObject>(t);
+            _allGameObjects.push_back(object);
+            return object;
+        }
 
 
         template<class T, class... Args>
@@ -167,15 +173,15 @@ namespace MoonEngine
         template<class T>
         T * cloneComponent(T * component)
         {
-        	std::shared_ptr<T> ptr = static_cast<std::shared_ptr<T>>(component->clone());
-        	_components.push_back(component->clone());
+        	std::shared_ptr<T> ptr = std::static_pointer_cast<T>(component->clone());
+        	_components.push_back(ptr);
         	return ptr.get();
         }
         template<class T>
         T * cloneComponent(std::shared_ptr<T> component)
         {
-        	std::shared_ptr<T> ptr = static_cast<std::shared_ptr<T>>(component->clone());
-        	_components.push_back(component->clone());
+        	std::shared_ptr<T> ptr = std::static_pointer_cast<T>(component->clone());
+        	_components.push_back(ptr);
         	return ptr.get();
         }
 

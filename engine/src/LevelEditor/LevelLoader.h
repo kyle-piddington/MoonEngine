@@ -17,7 +17,7 @@ namespace MoonEngine
         struct LevelMaterial
         {
             std::string mesh;
-            Component * material;
+            Material * material;
             bool collider;
         };
 
