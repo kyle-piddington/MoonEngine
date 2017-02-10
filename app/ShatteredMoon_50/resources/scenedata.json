@@ -42,6 +42,11 @@
         "scale": [1.0, 1.0, 1.0]
     },
     {
+        "material": "cube",
+        "position": [-1.5, 0.5, -1.5],
+        "tint": [0.3, 0.6, 0.3]
+    },
+    {
         "material": "skydome",
         "position": [0.0, 0.0, 0.0],
         "rotation": [0.0, 0.0, 0.0],

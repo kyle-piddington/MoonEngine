@@ -37,7 +37,6 @@ std::string LevelLoader::LoadLevelFromFile(std::string levelName)
 {
     std::string fileContents = TextLoader::LoadFullFile(levelName);
     return fileContents;
-
 }
 
 void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
@@ -56,57 +55,41 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
     verifyLevelFile(document);
 
     const rapidjson::Value & materials = document["materials"];
-    const rapidjson::Value & map = document["map"];
 
-    /* Transform transform;
-     std::shared_ptr<GameObject> object;
-
-     transform.setScale(glm::vec3(1, 0.5, 1));
-     transform.setPosition(glm::vec3(-1, 2, 2));
-
-     stringmap textures({{"Texture", "penguin"}});
-
-     object = std::make_shared<GameObject>(transform);
-     object->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
-     object->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program", textures));
-     object->addComponent(scene->createComponent<BoxCollider>());
-     scene->addGameObject(object);*/
-
+    /* Load all the level materials */
     for (auto & material : materials.GetArray())
     {
-        LevelMaterial levelMaterial;
-        levelMaterial.mesh = material["mesh"].GetString();
-        std::cout << "Mesh: " << levelMaterial.mesh << endl;
-
         glm::vec3 tint = glm::vec3(1.0, 1.0, 1.0);
 
         if (material.HasMember("tint"))
         {
             const rapidjson::Value & tintArray = material["tint"];
             tint = glm::vec3(tintArray[0].GetFloat(), tintArray[1].GetFloat(), tintArray[2].GetFloat());
-            std::cout << "Tint: " << tint.x << " " << tint.y << " " << tint.z << endl;
         }
 
         string program = material["program"].GetString();
-        std::cout << "Program: " << program << endl;
 
         stringmap textures;
         for (auto & rawTexture : material["textures"].GetObject())
         {
-            std::cout << "Texture: " << rawTexture.name.GetString() << " " << rawTexture.value.GetString() << endl;
             textures[rawTexture.name.GetString()] = rawTexture.value.GetString();
         }
 
+        LevelMaterial levelMaterial;
+        levelMaterial.mesh = material["mesh"].GetString();
         levelMaterial.material = scene->createComponent<Material>(tint, program, textures);
+        levelMaterial.collider = material["collider"].GetBool();
 
         string name = material["name"].GetString();
-        std::cout << "Created material object: " << name << endl;
-
         _levelMaterials[name] = levelMaterial;
+
+        LOG(INFO, "Created material object: " + name);
     }
 
     Transform transform;
     std::shared_ptr<GameObject> object;
+
+    const rapidjson::Value & map = document["map"];
 
     for (auto & mapObject : map.GetArray())
     {
@@ -116,31 +99,38 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
 
         const rapidjson::Value & rawPosition = mapObject["position"];
         position = glm::vec3(rawPosition[0].GetFloat(), rawPosition[1].GetFloat(), rawPosition[2].GetFloat());
-        std::cout << "Position: " << position.x << " " << position.y << " " << position.z << endl;
 
         if (mapObject.HasMember("rotation"))
         {
             const rapidjson::Value & rawRotation = mapObject["rotation"];
             rotation = glm::vec3(rawRotation[0].GetFloat(), rawRotation[1].GetFloat(), rawRotation[2].GetFloat());
-            std::cout << "Rotation: " << rotation.x << " " << rotation.y << " " << rotation.z << endl;
         }
         if (mapObject.HasMember("scale"))
         {
             const rapidjson::Value & rawScale = mapObject["scale"];
             scale = glm::vec3(rawScale[0].GetFloat(), rawScale[1].GetFloat(), rawScale[2].GetFloat());
-            std::cout << "Scale: " << scale.x << " " << scale.y << " " << scale.z << endl;
         }
 
         transform.setPosition(position);
         transform.setRotation(rotation);
         transform.setScale(scale);
 
+
         string rawMaterial = mapObject["material"].GetString();
         LevelMaterial levelMaterial = _levelMaterials[rawMaterial];
 
         object = scene->createGameObject(transform);
         object->addComponent(scene->createComponent<StaticMesh>(levelMaterial.mesh, false));
-        object->addComponent(scene->cloneComponent<Material>(levelMaterial.material));
+
+        Material * material = scene->cloneComponent<Material>(levelMaterial.material);
+
+        if (mapObject.HasMember("tint"))
+        {
+            const rapidjson::Value & tintArray = mapObject["tint"];
+            material->setTint(glm::vec3(tintArray[0].GetFloat(), tintArray[1].GetFloat(), tintArray[2].GetFloat()));
+        }
+
+        object->addComponent(material);
 
         if (levelMaterial.collider)
         {

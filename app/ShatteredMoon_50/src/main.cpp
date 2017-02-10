@@ -83,17 +83,6 @@ int main(int argc, char ** argv)
     groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "default.program"));
     scene->addGameObject(groundObject);
 
-    Transform skydomeTransform;
-    skydomeTransform.setPosition(glm::vec3(0, 0, 0));
-    skydomeTransform.setScale(glm::vec3(50, 50, 50));
-    std::shared_ptr<GameObject> sphereObject = std::make_shared<GameObject>(skydomeTransform);
-    sphereObject = std::make_shared<GameObject>(skydomeTransform);
-    sphereObject->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
-    stringmap sky_textures({{"skycolor", "skycolor"}});
-    sphereObject->addComponent(
-            scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures));
-    scene->addGameObject(sphereObject);
-
     LevelLoader levelLoader;
     levelLoader.LoadLevel("resources/scenedata.json", scene);
 
