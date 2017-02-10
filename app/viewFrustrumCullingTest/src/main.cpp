@@ -67,7 +67,7 @@ int main(int argc, char ** argv)
     scene->addGameObject(playerObj);
 
     //Camera setup
-    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 50);
+    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 100);
     cameraObj->addComponent(cam);
     cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
@@ -85,15 +85,15 @@ int main(int argc, char ** argv)
 
     stringmap cube_texture({{"diffuse", "cube"}});
 
-    for(int k = 0; k < 1000; k++ )
+    for(int k = 0; k < 10000; k++ )
     {
         
                 Transform levelTransform;
-                levelTransform.setScale(glm::vec3((float)rand()/RAND_MAX * 2 - 1, (float)rand()/RAND_MAX * 2 - 1, (float)rand()/RAND_MAX * 2 - 1));
+                levelTransform.setScale(glm::vec3((float)rand()/RAND_MAX  + 0.1, (float)rand()/RAND_MAX  + 0.1, (float)rand()/RAND_MAX + 0.1));
                 levelTransform.setPosition(glm::vec3(
-                    (float)rand()/RAND_MAX * 10 - 5, 
-                    (float)rand()/RAND_MAX * 10 - 5, 
-                    (float)rand()/RAND_MAX * 10 - 5));
+                    (float)rand()/RAND_MAX * 100 - 50, 
+                    (float)rand()/RAND_MAX * 100 - 50, 
+                    (float)rand()/RAND_MAX * 100 - 50));
                 std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(levelTransform);
                 boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
                 boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program", cube_texture));

@@ -22,9 +22,9 @@ BoundingBox::BoundingBox(
 {
 
     
-    // assert(minX <= maxX);
-    // assert(minY <= maxY);
-    // assert(minZ <= maxZ);
+    assert(minX <= maxX);
+    assert(minY <= maxY);
+    assert(minZ <= maxZ);
 
     xHalfWidth = (maxX - minX) / 2;
     yHalfWidth = (maxY - minY) / 2;
