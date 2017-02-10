@@ -151,7 +151,7 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjectsIn
 	for (int i = 0; i < _renderableGameObjects.size(); i++)
 	{
 		const BoundingBox & box = 
-			_renderableGameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
+			_renderableGameObjects.at(i)->getBounds();
 
 		currBox[0] = (box.min());
 		currBox[1] = (box.max());
