@@ -140,7 +140,7 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
 
         object = std::make_shared<GameObject>(transform);
         object->addComponent(scene->createComponent<StaticMesh>(levelMaterial.mesh, false));
-        object->addComponent(levelMaterial.material->clone().get());
+        object->addComponent(scene->cloneComponent(levelMaterial.material));
 
         if (levelMaterial.collider)
         {
