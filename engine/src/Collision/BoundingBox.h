@@ -84,6 +84,7 @@ namespace MoonEngine
             return maxDistFromPointSq(sphereCenter) <= rSq;
         }
 
+        bool contains(const BoundingBox & other) const;
         glm::vec3 max() const;
         glm::vec3 min() const;
 

@@ -40,7 +40,7 @@ std::unordered_set<std::shared_ptr<GameObject>> Node::getObjectsInFrustrum(glm::
 			for (int i = 0; i < gameObjects.size(); i++)
 			{
 				const BoundingBox & box =
-					gameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
+					gameObjects.at(i)->getBounds();
 
 				currBox[0] = (box.min());
 				currBox[1] = (box.max());
@@ -98,7 +98,7 @@ void Node::median(const std::vector<std::shared_ptr<GameObject>> & gameObjects)
 		std::vector<float> xList;
 		for (int i = 0; i < size; i++)
 		{
-			xList.push_back(gameObjects.at(i)->getComponent<BoxCollider>()->getBoundingBox().centerPoint.x);
+			xList.push_back(gameObjects.at(i)->getBounds().centerPoint.x);
 		}
 		std::sort(xList.begin(), xList.end());
 		plane = glm::vec4(1.0f, 0.0f, 0.0f, -xList.at(size / 2));
@@ -109,7 +109,7 @@ void Node::median(const std::vector<std::shared_ptr<GameObject>> & gameObjects)
 		std::vector<float> yList;
 		for (int i = 0; i < size; i++)
 		{
-			yList.push_back(gameObjects.at(i)->getComponent<BoxCollider>()->getBoundingBox().centerPoint.y);
+			yList.push_back(gameObjects.at(i)->getBounds().centerPoint.y);
 		}
 		std::sort(yList.begin(), yList.end());
 		plane = glm::vec4(0.0f, 1.0f, 0.0f, -yList.at(size / 2));
@@ -119,7 +119,7 @@ void Node::median(const std::vector<std::shared_ptr<GameObject>> & gameObjects)
 		std::vector<float> zList;
 		for (int i = 0; i < size; i++)
 		{
-			zList.push_back(gameObjects.at(i)->getComponent<BoxCollider>()->getBoundingBox().centerPoint.z);
+			zList.push_back(gameObjects.at(i)->getBounds().centerPoint.z);
 		}
 		std::sort(zList.begin(), zList.end());
 		plane = glm::vec4(0.0f, 0.0f, 1.0f, -zList.at(size / 2));
@@ -128,13 +128,14 @@ void Node::median(const std::vector<std::shared_ptr<GameObject>> & gameObjects)
 
 void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > gameObjects)
 {
-	if (maxObjects < gameObjects.size())
+	std::vector<std::shared_ptr<GameObject>> containedObjects = getFullyContainedObjects(gameObjects);
+	if (maxObjects < containedObjects.size())
 	{
 		std::vector<std::shared_ptr<GameObject> > left, right;
 		float distanceMax, distanceMin;
 		glm::vec3 currBox[2];
 		int size = gameObjects.size();
-		median(gameObjects);
+		median(containedObjects);
 		glm::vec3 boxMin, newMin = ourBoundary.min();
 		glm::vec3 boxMax, newMax = ourBoundary.max();
 		int which = axis % 3;
@@ -164,7 +165,7 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > 
 		for (int i = 0; i < size; i++)
 		{
 			const BoundingBox & box =
-				gameObjects.at(i)->getComponent<BoxCollider>()->getBoundingBox();
+				gameObjects.at(i)->getBounds();
 
 			currBox[0] = (box.min());
 			currBox[1] = (box.max());
@@ -172,9 +173,9 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > 
 			distanceMax = (plane.x * currBox[ix].x +
 				plane.y * currBox[iy].y +
 				plane.z * currBox[iz].z);
-			distanceMin = (plane.x * currBox[ix].x +
-				plane.y * currBox[iy].y +
-				plane.z * currBox[iz].z);
+			distanceMin = (plane.x * currBox[mx].x +
+				plane.y * currBox[my].y +
+				plane.z * currBox[mz].z);
 			if (distanceMax >= -plane.w)
 				left.push_back(gameObjects.at(i));
 			if (distanceMin < -plane.w)
@@ -189,4 +190,17 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > 
 		isLeaf = true;
 		this->gameObjects = gameObjects;
 	}
+}
+
+std::vector<std::shared_ptr<GameObject>> Node::getFullyContainedObjects(const std::vector<std::shared_ptr<GameObject>> & allObjects)
+{
+	std::vector<std::shared_ptr<GameObject>> subObjects;
+	for(auto go : allObjects)
+	{
+		if(ourBoundary.contains(go->getBounds()))
+		{
+			subObjects.push_back(go);
+		}
+	}
+	return subObjects;
 }

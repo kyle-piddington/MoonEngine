@@ -18,3 +18,15 @@ TEST_CASE("Test BBox Transformation", "[Bounding Box]")
 
 
 }
+
+TEST_CASE ("Test BBox contains", "[Bounding box]")
+{
+	BoundingBox box1(-1,1,-1,1,-1,1);
+	BoundingBox box2(-0.5f,0.5f,-0.5f,0.5f,-0.5f,0.5f);
+	BoundingBox box3(-1 + 0.5,1 + 0.5,-1 + 0.5,1 + 0.5,-1 + 0.5,1 + 0.5);
+	
+	REQUIRE(box1.contains(box2));
+	REQUIRE(!box2.contains(box1));
+	REQUIRE(!box1.contains(box3));
+
+}

@@ -1,10 +1,12 @@
 #include "GameObject.h"
 #include "Util/Logger.h"
+#include "Component/Components.h"
 
 using namespace MoonEngine;
 
 GameObject::GameObject():
-    deleted(false)
+    deleted(false),
+    defaultBox(glm::vec3(0,0,0),0.5f,0.5f,0.5f)
 {
 
 }
@@ -33,6 +35,14 @@ void GameObject::start()
 void GameObject::addComponent(Component * component)
 {
     component->provideGameObject(this);
+    if(dynamic_cast<Mesh *>(component) != nullptr)
+    {
+        useMeshBounds = true;
+    }
+    else if(dynamic_cast<BoxCollider *>(component) != nullptr)
+    {
+        useBoxColliderBounds = true;
+    }
     components.push_back(component);
 }
 
@@ -49,6 +59,7 @@ std::vector<Component *> GameObject::getComponents()
 
 void GameObject::update(float dt)
 {
+    defaultTransformedBox = defaultBox.transform(transform.getMatrix());
     for (Component * c : components)
     {
         c->update(dt);
@@ -82,4 +93,20 @@ bool GameObject::isDeleted()
 void GameObject::setDeleted()
 {
     deleted = true;
+}
+
+const BoundingBox & GameObject::getBounds()
+{
+    if(useBoxColliderBounds)
+    {
+        return (getComponent<BoxCollider>()->getBoundingBox());
+    }
+    else if(useMeshBounds)
+    {
+        return (getComponent<Mesh>()->getBoundingBox());
+    }
+    else
+    {
+        return defaultTransformedBox;
+    }
 }

@@ -32,5 +32,5 @@ TEST_CASE("KDTree builds and separates itself", "[Node]")
 	Node n(objects, 1, 0, BoundingBox(-10, 10, -10, 10, -10, 10));
 	REQUIRE(n.getLeftChild() != nullptr);
 	REQUIRE(n.getRightChild() != nullptr);
-	REQUIRE(n.getLeftChild()->getGameObjects().size() == 1);
+	REQUIRE(n.getLeftChild()->getGameObjects().size() == 2);
 }

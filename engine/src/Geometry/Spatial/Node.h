@@ -19,6 +19,7 @@ namespace MoonEngine
 		void setRightChild(std::shared_ptr<Node> n);
 		void sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject>> gameObjects);
 	private:
+		std::vector<std::shared_ptr<GameObject>> getFullyContainedObjects(const std::vector<std::shared_ptr<GameObject>> & allObjects);
 		void median(const std::vector<std::shared_ptr<GameObject>>  &gameObjects);
 		std::vector<std::shared_ptr<GameObject>> gameObjects;
 		glm::vec4 plane;

@@ -280,3 +280,18 @@ glm::vec3 BoundingBox::normalFor(BoundingBox::Plane plane){
             return glm::vec3(0, 0, 1);
     }
 }
+
+
+bool vecLess(const glm::vec3 & a, const glm::vec3 & b)
+{
+    return a.x < b.x && a.y < b.y && a.z < b.z;
+}
+bool vecGreater(const glm::vec3 & a, const glm::vec3 & b)
+{
+    return a.x > b.x && a.y > b.y && a.z > b.z;
+}
+
+bool BoundingBox::contains(const BoundingBox & other) const
+{
+    return vecLess(min(),other.min()) && vecGreater(max(), other.max());
+}
