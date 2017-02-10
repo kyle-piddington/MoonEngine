@@ -144,37 +144,38 @@ float Scene::distanceFromFrutrum(glm::vec4 frustPlane, glm::vec3 point)
 const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjectsInFrustrum(glm::mat4 VP, Tag t) const
 {
 	std::vector<glm::vec4> planes = getFrustrumPlanes(VP);
-	std::vector<std::shared_ptr<GameObject>> objectsInFrustrum;
-	float distance;
-	glm::vec3 currBox[2];
-	bool inside;
-	for (int i = 0; i < _renderableGameObjects.size(); i++)
-	{
-		const BoundingBox & box = 
-			_renderableGameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
+	//std::vector<std::shared_ptr<GameObject>> objectsInFrustrum;
+	//float distance;
+	//glm::vec3 currBox[2];
+	//bool inside;
+	//for (int i = 0; i < _renderableGameObjects.size(); i++)
+	//{
+		//const BoundingBox & box = 
+			//_renderableGameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
 
-		currBox[0] = (box.min());
-		currBox[1] = (box.max());
-		inside = true;
-		for (int j = 0; j < planes.size(); j++)
-		{
-			int ix = static_cast<int>(planes.at(j).x > 0.0f);
-			int iy = static_cast<int>(planes.at(j).y > 0.0f);
-			int iz = static_cast<int>(planes.at(j).z > 0.0f);
+		//currBox[0] = (box.min());
+		//currBox[1] = (box.max());
+		//inside = true;
+		//for (int j = 0; j < planes.size(); j++)
+		//{
+			//int ix = static_cast<int>(planes.at(j).x > 0.0f);
+			//int iy = static_cast<int>(planes.at(j).y > 0.0f);
+			//int iz = static_cast<int>(planes.at(j).z > 0.0f);
 
-			distance = (planes.at(j).x * currBox[ix].x + 
-						planes.at(j).y * currBox[iy].y + 
-						planes.at(j).z * currBox[iz].z);
-			if (distance < -planes.at(j).w)
-			{
-				inside = false;
-				break;
-			}
-		}
-		if (inside)
-			objectsInFrustrum.push_back(_renderableGameObjects.at(i));
-	}
-	return objectsInFrustrum;
+		//	distance = (planes.at(j).x * currBox[ix].x + 
+			//			planes.at(j).y * currBox[iy].y + 
+				//		planes.at(j).z * currBox[iz].z);
+			//if (distance < -planes.at(j).w)
+			//{
+				//inside = false;
+				//break;
+			//}
+		//}
+		//if (inside)
+			//objectsInFrustrum.push_back(_renderableGameObjects.at(i));
+	//}
+	//return objectsInFrustrum;
+	return _renderTree->getObjectsInFrustrum(planes);
 }
 
 void Scene::runCollisionUpdate()
@@ -361,4 +362,5 @@ void Scene::start()
     // {
     // //	g->start();
     // }
+	_renderTree = std::make_shared<KDTree>(_renderableGameObjects);
 }

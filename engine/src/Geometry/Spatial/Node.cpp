@@ -19,10 +19,10 @@ std::vector<std::shared_ptr<GameObject>> Node::getGameObjects()
 	return gameObjects;
 }
 
-std::unordered_set<std::shared_ptr<GameObject>> Node::getObjectsInFrustrum(glm::vec4 frust[6])
+std::unordered_set<std::shared_ptr<GameObject>> Node::getObjectsInFrustrum(std::vector<glm::vec4> frust)
 {
 	std::unordered_set< std::shared_ptr<GameObject> > objectsInFrust;
-	if (ourBoundary.inFrustrum(frust))
+	if (ourBoundary.inFrustrum(&frust.at(0)))
 	{
 		if (!isLeaf)
 		{
@@ -47,14 +47,14 @@ std::unordered_set<std::shared_ptr<GameObject>> Node::getObjectsInFrustrum(glm::
 				inside = true;
 				for (int j = 0; j < 6; j++)
 				{
-					int ix = static_cast<int>(frust[j].x > 0.0f);
-					int iy = static_cast<int>(frust[j].y > 0.0f);
-					int iz = static_cast<int>(frust[j].z > 0.0f);
+					int ix = static_cast<int>(frust.at(j).x > 0.0f);
+					int iy = static_cast<int>(frust.at(j).y > 0.0f);
+					int iz = static_cast<int>(frust.at(j).z > 0.0f);
 
-					distance = (frust[j].x * currBox[ix].x +
-						frust[j].y * currBox[iy].y +
-						frust[j].z * currBox[iz].z);
-					if (distance < -frust[j].w)
+					distance = (frust.at(j).x * currBox[ix].x +
+						frust.at(j).y * currBox[iy].y +
+						frust.at(j).z * currBox[iz].z);
+					if (distance < -frust.at(j).w)
 					{
 						inside = false;
 						break;

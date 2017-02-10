@@ -12,7 +12,7 @@ namespace MoonEngine
 	public:
 		Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis, BoundingBox ourBoundary);
 		std::vector<std::shared_ptr<GameObject>> getGameObjects();
-		std::unordered_set<std::shared_ptr<GameObject>> getObjectsInFrustrum(glm::vec4 frust[6]);
+		std::unordered_set<std::shared_ptr<GameObject>> getObjectsInFrustrum(std::vector<glm::vec4> frust);
 		std::shared_ptr<Node> getLeftChild();
 		std::shared_ptr<Node> getRightChild();
 		void setLeftChild(std::shared_ptr<Node> n);
