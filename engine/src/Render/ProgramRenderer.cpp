@@ -49,14 +49,15 @@ void ProgramRenderer::render(Scene * scene)
     //No binning
 
     GLProgram * activeProgram = nullptr;
-
+	int all = scene->getRenderableGameObjects().size();
+	int drawn;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
     {
         glm::mat4 M = obj->getTransform().getMatrix();
         glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
         Material * mat = obj->getComponent<Material>();
-
+		drawn++;
         if (activeProgram != mat->getProgram())
         {
             activeProgram = mat->getProgram();
@@ -73,6 +74,7 @@ void ProgramRenderer::render(Scene * scene)
                 glUniform3f(activeProgram->getUniformLocation("iGlobalLightDir"), lightDir.x, lightDir.y, lightDir.z);
             }
         }
+		
         Mesh * meshComp = obj->getComponent<Mesh>();
         const MeshInfo * mesh = obj->getComponent<Mesh>()->getMesh();
         mesh->bind();
@@ -89,7 +91,8 @@ void ProgramRenderer::render(Scene * scene)
         meshComp->draw();
         mat->unbind();
     }
-  
+	std::cout << "All: " << all << " Rendered: " << drawn << std::endl;
+	drawn = 0;
     GLVertexArrayObject::Unbind();
 
 }
