@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "MoonEngine.h"
+#include "LevelEditor/LevelLoader.h"
 
 
 using namespace MoonEngine;
@@ -165,6 +166,9 @@ int main(int argc, char ** argv)
     sphereObject->addComponent(
             scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures));
     scene->addGameObject(sphereObject);
+
+    LevelLoader levelLoader;
+    levelLoader.LoadLevel("scenedata.json", scene);
 
     float accumTime;
     int lastUpdateTime;
