@@ -13,7 +13,7 @@ void DirLight::update(glm::vec3 direction)
     _direction = direction;
 }
 
-glm::vec3 DirLight::getDirection()
+const glm::vec3& DirLight::getDirection()
 {
     return _direction;
 }

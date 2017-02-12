@@ -29,7 +29,7 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     _gBuffer.addTexture("depth", _depthTex, GL_DEPTH_ATTACHMENT);
     _gBuffer.drawColorAttachments(3);
     LOG_GL(__FILE__, __LINE__);
-    _renderQuad = MeshCreator::CreateQuad(glm::vec2(0, 0), glm::vec2(_width, _height));
+    _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
     _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
 }
@@ -171,7 +171,9 @@ void DeferredRenderer::pointLightPass(Scene* scene)
 	for (std::shared_ptr<GameObject> obj : scene->getPointLightObjects())
 	{
 		lightSphere = obj->getComponent<PointLight>()->getSphere();
-		glm::mat4 M = obj->getTransform().getMatrix();
+        Transform & t = obj->getComponent<PointLight>()->getLightTransform();
+      
+        glm::mat4 M = t.getMatrix();
 
 		//sets the point light shader as active
 		lightSphere->bind();
@@ -206,7 +208,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
 {
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
-
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     _dirLightProgram->enable();
     setupLightUniforms(_dirLightProgram);
     LOG_GL(__FILE__, __LINE__);
@@ -216,7 +218,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     
     for (std::shared_ptr<GameObject> obj : scene->getDirLightObjects()) {
         
-
+        DirLight* light = obj->getComponent<DirLight>();
         //For every directional light, pass new direction and color
         glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1, 
             glm::value_ptr(obj->getComponent<DirLight>()->getDirection()));
@@ -233,6 +235,8 @@ void DeferredRenderer::dirLightPass(Scene* scene)
             _renderQuad->baseVertex
         );
     }
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 
@@ -247,11 +251,9 @@ void DeferredRenderer::setupLightUniforms(GLProgram * prog)
 
     //Texture Uniforms
     GLuint id = _gBuffer.getTexture("position");
-    glUniform1i(prog->getUniformLocation("positionTex"), id);
-    id = _gBuffer.getTexture("color");
-    glUniform1i(prog->getUniformLocation("colorTex"), id);
-    id = _gBuffer.getTexture("normal");
-    glUniform1i(prog->getUniformLocation("normalTex"), id);
+    glUniform1i(prog->getUniformLocation("positionTex"), 0);
+    glUniform1i(prog->getUniformLocation("colorTex"), 1);
+    glUniform1i(prog->getUniformLocation("normalTex"), 2);
 
     //Other global Uniforms
     glUniform2f(prog->getUniformLocation("screenSize"), (float)_width, (float)_height);

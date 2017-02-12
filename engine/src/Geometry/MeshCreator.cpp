@@ -75,7 +75,7 @@ MeshInfo * MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRight)
     //Create meshInfo
     MeshInfo * info = new MeshInfo();
     info->numVerts = 4;
-    info->numTris = 2;
+    info->numTris = 6;
     info->indexDataOffset = (GLvoid *) 0;
     info->baseVertex = 0;
     info->setVertexArrayObject(vertexArrayObject.get());
