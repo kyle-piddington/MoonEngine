@@ -83,6 +83,7 @@ MeshInfo * MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRight)
     vertexArrayObject->bindElementBuffer(*indexBuffer);
     //Create meshInfo
     MeshInfo * info = new MeshInfo();
+
     info->numVerts = dataBuffer.size() / 5;
     info->numTris = indices.size();
     info->indexDataOffset = (GLvoid *) 0;

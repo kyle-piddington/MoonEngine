@@ -52,7 +52,7 @@ void DeferredRenderer::render(Scene * scene)
 	vector<std::shared_ptr<GameObject>>forwardObjects;
 	forwardObjects = geometryPass(scene);
     lightingSetup();
-	//pointLightPass(scene);
+	pointLightPass(scene);
     dirLightPass(scene);
     GLVertexArrayObject::Unbind();
 }
@@ -171,7 +171,9 @@ void DeferredRenderer::pointLightPass(Scene* scene)
 	for (std::shared_ptr<GameObject> obj : scene->getPointLightObjects())
 	{
 		lightSphere = obj->getComponent<PointLight>()->getSphere();
-		glm::mat4 M = obj->getTransform().getMatrix();
+        Transform & t = obj->getComponent<PointLight>()->getLightTransform();
+      
+        glm::mat4 M = t.getMatrix();
 
 		//sets the point light shader as active
 		lightSphere->bind();
@@ -206,7 +208,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
 {
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
-
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     _dirLightProgram->enable();
     setupLightUniforms(_dirLightProgram);
     LOG_GL(__FILE__, __LINE__);
@@ -216,7 +218,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     
     for (std::shared_ptr<GameObject> obj : scene->getDirLightObjects()) {
         
-
+        DirLight* light = obj->getComponent<DirLight>();
         //For every directional light, pass new direction and color
         glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1, 
             glm::value_ptr(obj->getComponent<DirLight>()->getDirection()));
@@ -233,6 +235,8 @@ void DeferredRenderer::dirLightPass(Scene* scene)
             _renderQuad->baseVertex
         );
     }
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 

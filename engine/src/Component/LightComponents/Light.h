@@ -11,7 +11,7 @@ namespace MoonEngine
         Light(glm::vec3 color);
         virtual std::shared_ptr<Component> clone() const = 0;
 
-        glm::vec3 getColor();
+       const  glm::vec3& getColor();
 
         float getAmbient();
 
@@ -24,7 +24,7 @@ namespace MoonEngine
 
     }
 
-    inline glm::vec3 Light::getColor()
+    inline const glm::vec3& Light::getColor()
     {
         return this->_color;
     }

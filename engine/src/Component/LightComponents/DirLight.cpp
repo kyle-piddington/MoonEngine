@@ -8,12 +8,12 @@ DirLight::DirLight(glm::vec3 color, glm::vec3 direction) :
 {
 }
 
-void DirLight::update(glm::vec3 direction)
+void DirLight::update(float dt)
 {
-    _direction = direction;
+    //_direction = direction;
 }
 
-glm::vec3 DirLight::getDirection()
+const glm::vec3& DirLight::getDirection()
 {
     return _direction;
 }

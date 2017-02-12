@@ -142,10 +142,15 @@ int main(int argc, char ** argv)
 
     //Lights
     Transform lightTransform;
-    lightTransform.setPosition(glm::vec3(1, 4, 1));
+    lightTransform.setPosition(glm::vec3(1, 1, 1));
     std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_PURPLE));
     scene->addGameObject(pointLight);
+
+   /* lightTransform.setPosition(glm::vec3(0, 0.1, 0));
+    pointLight = make_shared<GameObject>(lightTransform);
+    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_GREEN));
+    scene->addGameObject(pointLight);*/
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE));
