@@ -197,6 +197,7 @@ namespace MoonEngine
          */
         void deleteGameObject(GameObject * object);
 
+        void deleteGameObject(std::shared_ptr<GameObject> object);
         /**
          * Delete GameObjects from the scene post-update.
          */

@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Level.h"
 
 using namespace MoonEngine;
@@ -16,4 +17,15 @@ void Level::addLevelMaterial(std::string materialName, std::string mesh, Materia
 Level::LevelMaterial * MoonEngine::Level::getLevelMaterial(std::string materialName)
 {
     return &_levelMaterials[materialName];
+}
+
+std::vector<string> Level::getAllLevelMaterials() {
+    std::vector<std::string> allLevelMaterials;
+    allLevelMaterials.reserve(_levelMaterials.size());
+    for (auto levelMaterial : _levelMaterials) {
+        std::cout << levelMaterial.first << endl;
+        allLevelMaterials.push_back(levelMaterial.first);
+    }
+
+    return allLevelMaterials;
 }

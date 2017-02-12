@@ -24,6 +24,12 @@
         "collider": true
     },
     {
+        "name": "bunny",
+        "mesh": "bunny.obj",
+        "program": "phong.program",
+        "collider": false
+    },
+    {
         "name": "skydome",
         "mesh": "sphere.obj",
         "program": "skydome.program",

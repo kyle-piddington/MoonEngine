@@ -2,7 +2,9 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #include <Component/MaterialComponents/Material.h>
+#include <map>
 
 namespace MoonEngine
 {
@@ -19,9 +21,10 @@ namespace MoonEngine
         void addLevelMaterial(std::string materialName, std::string mesh, Material * material, bool collider);
         void addLevelMaterial(std::string materialName, LevelMaterial levelMaterial);
         LevelMaterial * getLevelMaterial(std::string materialName);
+        std::vector<std::string> getAllLevelMaterials();
 
     private:
-        unordered_map <std::string, LevelMaterial> _levelMaterials;
+        map <std::string, LevelMaterial> _levelMaterials;
 
     };
 }

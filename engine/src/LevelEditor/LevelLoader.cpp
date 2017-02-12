@@ -69,9 +69,12 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
         string program = material["program"].GetString();
 
         stringmap textures;
-        for (auto & rawTexture : material["textures"].GetObject())
+        if (material.HasMember("textures"))
         {
-            textures[rawTexture.name.GetString()] = rawTexture.value.GetString();
+            for (auto & rawTexture : material["textures"].GetObject())
+            {
+                textures[rawTexture.name.GetString()] = rawTexture.value.GetString();
+            }
         }
 
         Level::LevelMaterial levelMaterial;

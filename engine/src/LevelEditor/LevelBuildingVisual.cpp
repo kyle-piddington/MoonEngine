@@ -7,12 +7,9 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "GlobalFuncs/GlobalFuncs.h"
 #include "thirdparty/imgui/imgui.h"
+#include "Libraries/Library.h"
 #include "Geometry/Transform.h"
 
-
-#ifndef M_PI
-#define M_PI 3.141592653589793
-#endif
 using namespace MoonEngine;
 
 LevelBuildingVisual::LevelBuildingVisual(Scene * scene) :
@@ -26,19 +23,24 @@ _moveWithCamera(true)
 
 void LevelBuildingVisual::handleMove(float dt)
 {
-    if (_mainCamera == nullptr) {
+    if (_mainCamera == nullptr)
+    {
         _mainCamera = GetWorld()->findGameObjectWithComponent<Camera>();
 
-        std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>();
-        boxObject->addComponent(_scene->createComponent<StaticMesh>("cube.obj", false));
-        boxObject->addComponent(_scene->createComponent<Material>(glm::vec3(0.8, 0.8, 0.8), "phong.program"));
-        boxObject->addComponent(_scene->createComponent<BoxCollider>());
+        levelMaterials = Library::LevelLib->getAllLevelMaterials();
+        currentLevelMaterial = previousLevelMaterial = 1;
 
-        _currentObject = boxObject;
+        Level::LevelMaterial * levelMaterial =
+                Library::LevelLib->getLevelMaterial(levelMaterials[currentLevelMaterial]);
+
+        std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
+        object->addComponent(_scene->createComponent<StaticMesh>(levelMaterial->mesh, false));
+        object->addComponent(_scene->cloneComponent<Material>(levelMaterial->material));
+
+        _currentObject = object;
         _scene->addGameObject(_currentObject);
     }
 
-    //_currentObject->
     Transform * transform = &_currentObject->getTransform();
 
     glm::vec3 position = transform->getPosition();
@@ -57,6 +59,32 @@ void LevelBuildingVisual::handleMove(float dt)
     ImGui::InputFloat3("Position", glm::value_ptr(position));
     ImGui::InputFloat3("Rotation", glm::value_ptr(rotation));
     ImGui::InputFloat3("Scale", glm::value_ptr(scale));
+
+
+    std::vector<const char *> levelMats{};
+
+    for (const auto & levelMat : levelMaterials)
+    {
+        levelMats.push_back(levelMat.c_str());
+    }
+
+    ImGui::ListBox("Level Material", &currentLevelMaterial, levelMats.data(), levelMats.size());
+
+    if (currentLevelMaterial != previousLevelMaterial)
+    {
+        previousLevelMaterial = currentLevelMaterial;
+        _scene->deleteGameObject(_currentObject);
+
+        Level::LevelMaterial * levelMaterial =
+                Library::LevelLib->getLevelMaterial(levelMaterials[currentLevelMaterial]);
+
+        std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
+        object->addComponent(_scene->createComponent<StaticMesh>(levelMaterial->mesh, false));
+        object->addComponent(_scene->cloneComponent<Material>(levelMaterial->material));
+
+        _currentObject = object;
+        _scene->addGameObject(_currentObject);
+    }
 
     if (!_moveWithCamera) {
         ImGui::Text("Not moving with camera");

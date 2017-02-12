@@ -220,6 +220,19 @@ std::shared_ptr<GameObject> Scene::instantiate(GameObject * object, const Transf
 
 }
 
+void Scene::deleteGameObject(shared_ptr<GameObject> object)
+{
+    //Add object to queue for deletion
+    //On frame end, these objects should be deleted.
+    object->setDeleted();
+    std::vector<Component *> components = object->getComponents();
+    int size = components.size();
+    for (int i = 0; i < size; i++)
+    {
+        components.at(i)->setDeleted();
+    }
+}
+
 void Scene::deleteGameObject(GameObject * object)
 {
     //Add object to queue for deletion

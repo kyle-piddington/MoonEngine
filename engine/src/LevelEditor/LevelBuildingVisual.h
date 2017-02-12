@@ -26,5 +26,11 @@ namespace MoonEngine
 
         bool _moveWithCamera;
 
+        std::vector<std::string> levelMaterials;
+
+        int currentLevelMaterial;
+
+        int previousLevelMaterial;
+
     };
 }
