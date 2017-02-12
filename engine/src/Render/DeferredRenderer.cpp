@@ -29,7 +29,7 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     _gBuffer.addTexture("depth", _depthTex, GL_DEPTH_ATTACHMENT);
     _gBuffer.drawColorAttachments(3);
     LOG_GL(__FILE__, __LINE__);
-    _renderQuad = MeshCreator::CreateQuad(glm::vec2(0, 0), glm::vec2(_width, _height));
+    _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
     _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
 }
@@ -43,7 +43,7 @@ void DeferredRenderer::setup(Scene * scene)
         LOG(ERROR, "No Camera in scene!");
     }
     //Swing through all rendering components and load their programs.
-    glClearColor(0.2f, 0.2f, 0.6f, 1.0f);
+    glClearColor(0, 0, 0, 1.0f);
 }
 
 
@@ -52,7 +52,7 @@ void DeferredRenderer::render(Scene * scene)
 	vector<std::shared_ptr<GameObject>>forwardObjects;
 	forwardObjects = geometryPass(scene);
     lightingSetup();
-	pointLightPass(scene);
+	//pointLightPass(scene);
     dirLightPass(scene);
     GLVertexArrayObject::Unbind();
 }
@@ -246,12 +246,12 @@ void DeferredRenderer::setupLightUniforms(GLProgram * prog)
     glUniformMatrix4fv(prog->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 
     //Texture Uniforms
-    GLuint id = _gBuffer.getTexture("position");
-    glUniform1i(prog->getUniformLocation("positionTex"), id);
+    GLFramebuffer::texture_unit id = _gBuffer.getTexture("position");
+    glUniform1i(prog->getUniformLocation("positionTex"), id.unit);
     id = _gBuffer.getTexture("color");
-    glUniform1i(prog->getUniformLocation("colorTex"), id);
+    glUniform1i(prog->getUniformLocation("colorTex"), id.unit);
     id = _gBuffer.getTexture("normal");
-    glUniform1i(prog->getUniformLocation("normalTex"), id);
+    glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
 
     //Other global Uniforms
     glUniform2f(prog->getUniformLocation("screenSize"), (float)_width, (float)_height);
@@ -269,7 +269,7 @@ void MoonEngine::drawBufferToImgui(std::string guiName, const GLFramebuffer* bfr
     ImGui::Begin(guiName.c_str());
     for (auto texHandlePair : texHandles)
     {
-        ImGui::Image((void *)texHandlePair.second, ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::Image((void *)texHandlePair.second.gl_texture->getTextureId(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
     }
     ImGui::End();
 }

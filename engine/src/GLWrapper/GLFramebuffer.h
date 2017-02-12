@@ -22,6 +22,10 @@ namespace MoonEngine
 	class GLFramebuffer
     {
     public:
+        struct texture_unit {
+            GLTexture * gl_texture;
+            GLuint unit;
+        };
 
         GLFramebuffer(int width, int height);
 
@@ -64,7 +68,7 @@ namespace MoonEngine
 
         GLuint getObject() const;
 
-        GLuint getTexture(std::string name) const;
+        texture_unit getTexture(std::string name) const;
 		/**
 		* Specify what part to of the
 		* buffer to read from
@@ -74,7 +78,7 @@ namespace MoonEngine
 		void drawColorAttachments(int size);
 		GLuint getAttachmentMode(std::string name) const;
 
-		const std::unordered_map<std::string, GLuint> & getTextureHandles() const;
+		const std::unordered_map<std::string, texture_unit> & getTextureHandles() const;
 
         static void Unbind();
 
@@ -84,12 +88,12 @@ namespace MoonEngine
         GLuint reset(GLuint newObject = 0);
 
 		void bindWithoutComplete(GLuint mode = GL_FRAMEBUFFER) const;
-
+        int _unitCount;
         int _width;
         int _height;
         GLuint _handle;
         GLenum _framebufferStatus;
-        std::unordered_map<std::string, GLuint> _textureHandles;
+        std::unordered_map<std::string, texture_unit> _textureHandles;
 		std::unordered_map<std::string, GLuint> _textureAttachmentMode;
 
         //void addRenderbuffer(const GLRenderBuffer & buffer);

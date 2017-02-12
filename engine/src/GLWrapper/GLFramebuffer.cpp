@@ -1,4 +1,5 @@
 #include "GLFramebuffer.h"
+#include <cassert>
 using namespace MoonEngine;
 
 
@@ -6,7 +7,8 @@ GLFramebuffer::GLFramebuffer(int width, int height):
     _width(width),
     _height(height),
     _framebufferStatus(GL_FRAMEBUFFER_UNDEFINED),
-    _textureHandles(std::unordered_map<std::string, GLuint>())
+    _unitCount(0),
+    _textureHandles(std::unordered_map<std::string, texture_unit>())
 {
     glGenFramebuffers(1, &_handle);
 }
@@ -61,10 +63,9 @@ void GLFramebuffer::bind(GLint mode) const
 
 void GLFramebuffer::bindForOutput() const {
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    int i = 0;
     for (auto &tex : _textureHandles) {
-        glActiveTexture(GL_TEXTURE0 + i++);
-        glBindTexture(GL_TEXTURE_2D, tex.second);
+        glActiveTexture(GL_TEXTURE0 + tex.second.unit);
+        glBindTexture(GL_TEXTURE_2D, tex.second.gl_texture->getTextureId());
     }
 }
 
@@ -88,7 +89,11 @@ void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & text
     }
     LOG_GL(__FILE__, __LINE__);
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentInfo, GL_TEXTURE_2D, texture.getTextureId(), 0);
-    _textureHandles[textureName] = texture.getTextureId();
+    texture_unit txUnit;
+    
+    txUnit.gl_texture = &texture;
+    txUnit.unit = _unitCount++;
+    _textureHandles[textureName] = txUnit;
 	_textureAttachmentMode[textureName] = (GLuint) attachmentInfo;
     _framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (_framebufferStatus != GL_FRAMEBUFFER_COMPLETE)
@@ -138,7 +143,7 @@ void GLFramebuffer::Unbind()
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 }
 
-GLuint GLFramebuffer::getTexture(std::string name) const
+GLFramebuffer::texture_unit GLFramebuffer::getTexture(std::string name) const
 {
     auto it = _textureHandles.find(name);
     if (it == _textureHandles.end())
@@ -171,7 +176,7 @@ GLuint GLFramebuffer::getAttachmentMode(std::string name) const
 	return it->second;
 }
 
-const std::unordered_map<std::string, GLuint> & GLFramebuffer::getTextureHandles() const
+const std::unordered_map<std::string, GLFramebuffer::texture_unit> & GLFramebuffer::getTextureHandles() const
 {
 	return _textureHandles;
 }

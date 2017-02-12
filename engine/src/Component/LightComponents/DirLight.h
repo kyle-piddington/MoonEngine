@@ -11,7 +11,7 @@ namespace MoonEngine {
         DirLight(glm::vec3 color, glm::vec3 direction);
         void update(glm::vec3 direction);
         glm::vec3 getDirection();
-        std::shared_ptr<Component> DirLight::clone() const;
+        std::shared_ptr<Component> clone() const;
     private:
         glm::vec3 _direction;
 
