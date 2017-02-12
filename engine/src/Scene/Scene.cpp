@@ -10,7 +10,7 @@ Scene::Scene()
 {
     _globalLightDir = glm::vec3(1, 1, 1);
     _globalTime = 0;
-
+    _cameraFlag = 0;
     _allGameObjects.clear();
     _gameObjects.clear();
     _renderableGameObjects.clear();
@@ -27,6 +27,11 @@ Scene::Scene()
 void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 {
     _gameObjects.push_back(obj);
+    if (obj->getComponent<Camera>() != nullptr && _cameraFlag == 0) {
+        _cameraFlag = 1;
+        _mainCamera = obj;
+        LOG(INFO, "Adding main camera object");
+    }
     if (obj->getComponent<Material>() != nullptr &&
         obj->getComponent<Mesh>() != nullptr)
     {
@@ -220,6 +225,11 @@ void Scene::runDeleteGameObjects()
             size--;
         }
     }
+}
+
+std::shared_ptr<GameObject> MoonEngine::Scene::getMainCamera()
+{
+    return _mainCamera;
 }
 
 void Scene::instantiateNewObjects()

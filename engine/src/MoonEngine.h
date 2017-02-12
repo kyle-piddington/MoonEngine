@@ -11,7 +11,7 @@
 #include "GLWrapper/GLProgram.h"
 
 #include "GLUtil/GLProgramUtilities.h"
-
+#include "GLUtil/GL_LOG.h"
 
 #include "GameObject/GameObject.h"
 #include "Component/Component.h"
@@ -24,6 +24,7 @@
 
 #include "Loaders/BasicLoader.h"
 #include "Libraries/MeshLibrary.h"
+#include "Libraries/Colors.h"
 #include "Loaders/ProgramLoader.h"
 #include "Component/Components.h"
 

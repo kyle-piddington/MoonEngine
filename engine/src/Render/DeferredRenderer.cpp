@@ -16,27 +16,29 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     _depthTex()
 {
     // renderQuad = MeshCreator::CreateQuad(glm::vec2(-1,1), glm::vec2(1,1));
-    GLTextureConfiguration colorCFG(width, height, GL_RGB32F, GL_RGB, GL_FLOAT);
+    GLTextureConfiguration locationCFG(width, height, GL_RGB16F, GL_RGB, GL_FLOAT);
+    GLTextureConfiguration colorCFG(width, height, GL_RGBA, GL_RGBA, GL_FLOAT);
     GLTextureConfiguration depthCFG(width, height, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT);
-    assert(_positionTex.init(colorCFG));
+    assert(_positionTex.init(locationCFG));
     assert(_colorTex.init(colorCFG));
-    assert(_normalTex.init(colorCFG));
-    assert(_textureTex.init(colorCFG));
+    assert(_normalTex.init(locationCFG));
     assert(_depthTex.init(depthCFG));
     _gBuffer.addTexture("position", _positionTex, GL_COLOR_ATTACHMENT0);
+    
     _gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT1);
     _gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
-    _gBuffer.addTexture("texture", _textureTex, GL_COLOR_ATTACHMENT3);
     _gBuffer.addTexture("depth", _depthTex, GL_DEPTH_ATTACHMENT);
-    _gBuffer.drawColorAttachments(4);
-
+    _gBuffer.drawColorAttachments(3);
+    LOG_GL(__FILE__, __LINE__);
+    _renderQuad = MeshCreator::CreateQuad(glm::vec2(0, 0), glm::vec2(_width, _height));
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
     _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
 }
 
 void DeferredRenderer::setup(Scene * scene)
 {
-	_mainCamera = scene->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
+    _mainCamera = scene->getMainCamera()->getComponent<Camera>();
+    _mainCameraPosition = scene->getMainCamera()->getTransform().getPosition();
     if (_mainCamera == nullptr)
     {
         LOG(ERROR, "No Camera in scene!");
@@ -141,10 +143,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
 
-	//sets the framebuffer back to the default(0)
-	GLFramebuffer::Unbind();
 	//sets the mesh (VAO) back to 0
-	GLVertexArrayObject::Unbind();
 	return forwardObjects;
 }
 
@@ -154,35 +153,18 @@ void MoonEngine::DeferredRenderer::lightingSetup()
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
 
-    _gBuffer.bind(GL_READ_FRAMEBUFFER);
+    _gBuffer.bindForOutput();
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void DeferredRenderer::pointLightingPass(Scene* scene)
 {
-    glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_ONE, GL_ONE);
-
     drawBufferToImgui("GBuffer", &_gBuffer);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-    GLuint halfWidth = (GLuint) _width / 2.0f;
-    GLuint halfHeight = (GLuint) _height / 2.0f;
-
-
 	const MeshInfo* lightSphere = nullptr;
-	glm::mat4 V = _mainCamera->getView();
-	glm::mat4 P = _mainCamera->getProjection();
 
-	GLProgram * activeProgram = _pointLightProgram;
-	activeProgram->enable();
-
-	//Place Uniforms that do not change per Light
-	glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-	glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+	_pointLightProgram->enable();
+    setupLightUniforms(_pointLightProgram);
 
 	for (std::shared_ptr<GameObject> obj : scene->getPointLightObjects())
 	{
@@ -194,18 +176,17 @@ void DeferredRenderer::pointLightingPass(Scene* scene)
 
 
         //These values update for every light
-		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
-        glUniform3fv(activeProgram->getUniformLocation("pointLight.color"), 3, 
+		glUniformMatrix4fv(_pointLightProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+        glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.color"), 1, 
             glm::value_ptr(obj->getComponent<PointLight>()->getColor()));
-        glUniform3fv(activeProgram->getUniformLocation("pointLight.position"), 3,
+        glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.position"), 1,
             glm::value_ptr(obj->getComponent<PointLight>()->getPosition()));
 
-		glUniform1f(activeProgram->getUniformLocation("pointLight.ambient"), obj->getComponent<PointLight>()->getAmbient());
-		glUniform1f(activeProgram->getUniformLocation("pointLight.intensity"), obj->getComponent<PointLight>()->getIntensity());
+		glUniform1f(_pointLightProgram->getUniformLocation("pointLight.ambient"), obj->getComponent<PointLight>()->getAmbient());
 
-		glUniform1f(activeProgram->getUniformLocation("atten.constant"), obj->getComponent<PointLight>()->getAttenuation().x);
-        glUniform1f(activeProgram->getUniformLocation("atten.linear"), obj->getComponent<PointLight>()->getAttenuation().y);
-        glUniform1f(activeProgram->getUniformLocation("atten.exp"), obj->getComponent<PointLight>()->getAttenuation().z);
+		glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.constant"), obj->getComponent<PointLight>()->getAttenuation().x);
+        glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.linear"), obj->getComponent<PointLight>()->getAttenuation().y);
+        glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.exp"), obj->getComponent<PointLight>()->getAttenuation().z);
 
 
 		glDrawElementsBaseVertex(
@@ -221,7 +202,58 @@ void DeferredRenderer::pointLightingPass(Scene* scene)
 
 void DeferredRenderer::dirLightingPass(Scene* scene)
 {
+    glm::mat4 V = _mainCamera->getView();
+    glm::mat4 P = _mainCamera->getProjection();
 
+    _dirLightProgram->enable();
+    setupLightUniforms(_dirLightProgram);
+
+
+    _renderQuad->bind();
+    
+    
+    for (std::shared_ptr<GameObject> obj : scene->getDirLightObjects()) {
+        
+
+        //For every directional light, pass new direction and color
+        glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1, 
+            glm::value_ptr(obj->getComponent<DirLight>()->getDirection()));
+        glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1,
+            glm::value_ptr(obj->getComponent<DirLight>()->getDirection()));
+        glUniform1f(_dirLightProgram->getUniformLocation("dirLight.ambient"), obj->getComponent<DirLight>()->getAmbient());
+
+        
+        glDrawElementsBaseVertex(
+            GL_TRIANGLES,
+            _renderQuad->numTris,
+            GL_UNSIGNED_SHORT,
+            _renderQuad->indexDataOffset,
+            _renderQuad->baseVertex
+        );
+    }
+}
+
+
+void DeferredRenderer::setupLightUniforms(GLProgram * prog)
+{
+    glm::mat4 V = _mainCamera->getView();
+    glm::mat4 P = _mainCamera->getProjection();
+
+    //Place Uniforms that do not change per dirLight
+    glUniformMatrix4fv(prog->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+    glUniformMatrix4fv(prog->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+
+    //Texture Uniforms
+    GLuint id = _gBuffer.getTexture("position");
+    glUniform1i(prog->getUniformLocation("positionTex"), id);
+    id = _gBuffer.getTexture("color");
+    glUniform1i(prog->getUniformLocation("colorTex"), id);
+    id = _gBuffer.getTexture("normal");
+    glUniform1i(prog->getUniformLocation("normalTex"), id);
+
+    //Other global Uniforms
+    glUniform2f(prog->getUniformLocation("screenSize"), (float)_width, (float)_height);
+    glUniform3fv(prog->getUniformLocation("cameraPosition"), 1, glm::value_ptr(_mainCameraPosition));
 }
 
 void DeferredRenderer::shutdown()

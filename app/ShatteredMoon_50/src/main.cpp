@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "MoonEngine.h"
-#include "Libraries/Colors.h"
 
 using namespace MoonEngine;
 
@@ -39,9 +38,10 @@ int main(int argc, char ** argv)
     }
 
     Logger::SetLogLevel(GAME);
-
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
+
+
 
     //Game Objects
     std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>();
@@ -139,6 +139,14 @@ int main(int argc, char ** argv)
             scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures));
     scene->addGameObject(sphereObject);*/
 
+
+    //Lights
+    Transform lightTransform;
+    lightTransform.setPosition(glm::vec3(1, 4, 1));
+    std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
+    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_PURPLE));
+
+
     float accumTime;
     int lastUpdateTime;
     scene->addCustomUpdate([&](float dt) {
@@ -154,7 +162,7 @@ int main(int argc, char ** argv)
 
     });
 
-	DeferredRenderer * renderer = new DeferredRenderer(width, height, "phong_point_deferred.program", "phong_directional_deferred.program");
+	DeferredRenderer * renderer = new DeferredRenderer(width, height, "phong_point_deferred.program", "phong_dir_deferred.program");
     app->run(scene, renderer);
 
     delete scene;

@@ -56,8 +56,12 @@ namespace MoonEngine
         void lightingSetup();
         void pointLightingPass(Scene* scene);
         void dirLightingPass(Scene* scene);
+
+        //Setup Uniforms shared across both light passes
+        void setupLightUniforms(GLProgram* prog);
         Camera* _mainCamera;
-        MeshInfo* renderQuad;
+        glm::vec3 _mainCameraPosition;
+        MeshInfo* _renderQuad;
 		GLuint _width, _height;
         GLFramebuffer _gBuffer;
 		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;

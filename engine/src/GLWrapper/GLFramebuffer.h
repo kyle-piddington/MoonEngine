@@ -6,6 +6,7 @@
 #include <cassert>
 #include "util/Logger.h"
 #include "GLConstants.h"
+#include "GLProgram.h"
 #include <vector>
 /**
  * GLFramebuffer holds on to framebuffer
@@ -55,6 +56,11 @@ namespace MoonEngine
 		 * GL_FRAMEBUFFER: bind for both
 		 */
         void bind(GLint mode) const;
+        
+        /**
+        * Bind the framebuffer and all textures for output to the screen
+        */
+        void bindForOutput() const;
 
         GLuint getObject() const;
 

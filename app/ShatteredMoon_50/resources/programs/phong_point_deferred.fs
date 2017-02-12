@@ -1,38 +1,77 @@
-#version 400 core
-in vec2 fragTex;
+#version 410
 
-out vec4 color;
+struct Attenuation
+{
+    float constant;
+    float linear;
+    float exp;
+};
 
-uniform vec3 tint;
-uniform vec3 iGlobalLightDir;
+struct PointLight
+{
+    vec3 color;
+    vec3 position;
+    float ambient;
+    Attenuation atten;
+};
 
-uniform sampler2D positionIn;
-uniform sampler2D diffuseIn;
-uniform sampler2D textureIn;
-uniform sampler2D normalIn;
+uniform sampler2D positionTex;
+uniform sampler2D colorTex;
+uniform sampler2D normalTex;
+uniform PointLight pointLight;
 
-uniform mat4 V;
+uniform vec3 cameraPosition;
+uniform vec2 screenSize;
+
+vec4 calcLightffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
+{
+    //Ambient
+    vec4 AmbientColor = vec4(pointLight.color * pointLight.ambient, 1.0);
+
+    // Diffuse
+    vec3 lightDir = normalize(pointLight.position - WorldPos);
+    vec4 DiffuseColor = vec4(max(dot(Normal, lightDir), 0.0) * Diffuse * pointLight.color, 1.0);
+
+    // Specular
+    vec3 halfDir = normalize(lightDir + cameraPosition);  
+    float specPercent = pow(max(dot(Normal, halfDir), 0.0), 16.0);
+    vec4 SpecularColor = vec4(pointLight.color * specPercent * Specular, 1.0);
+    
+    return (AmbientColor + DiffuseColor + SpecularColor);
+}
+
+
+vec4 calcPointLight(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
+{
+    float distance = length(WorldPos - pointLight.position);
+
+    vec4 baseColor = calcLightEffect(WorldPos, Diffuse, Normal, Specular);
+    
+    float attenTotal  =  pointLight.atten.constant +
+                         pointLight.atten.linear * distance +
+                         pointLight.atten.exp * distance * distance;
+
+    attenTotal = max(1.0, attenTotal);
+
+    return baseColor / attenTotal;
+}
+
+
+vec2 locTexCoord()
+{
+    return gl_FragCoord.xy / screenSize;
+}
+
+out vec4 finalColor;
 
 void main()
 {
-    //TODO multiple lights
-    // https://learnopengl.com/code_viewer.php?code=advanced-lighting/deferred&type=fragment
-	vec3 position = texture(positionIn, fragTex).rgb;
-	vec3 diffuse = texture(diffuseIn, fragTex).rgb;
-	vec3 normal = texture(normalIn, fragTex).rgb;
+    vec2 TexCoord = locTexCoord();
+	vec3 WorldPos = texture(positionTex, TexCoord).xyz;
+	vec3 Diffuse = texture(colorTex, TexCoord).rgb;
+	vec3 Normal = texture(normalTex, TexCoord).xyz;
+    Normal = normalize(Normal);
+    float Specular = texture(colorTex, TexCoord).a;
 
-	vec3 lightDir = normalize(vec3(V * vec4(iGlobalLightDir, 0.0)));
-	vec3 ambient = 0.3 * tint;
-	vec3 nor = normalize(normal);
-
-	vec3 texColor = vec3(texture(diffuse, vec2(fragTex)));
-
-	float diff = max(dot(nor, lightDir), 0.0f);
-	vec3 diffuse_color = diff * diffuse * tint;
-	vec3 reflectDir = reflect(-lightDir, nor);
-	vec3 viewDir = normalize(vec3(0,0,1) - position);
-	float spec = pow(max(dot(reflectDir, viewDir),0.0),32);
-	vec3 specular = spec * vec3(1,1,1);
-	vec3 result = (diffuse_color + ambient + specular);
-	color = vec4(result,1.0);
+    finalColor = calcPointLight(WorldPos, Diffuse, Normal, Specular);
 }

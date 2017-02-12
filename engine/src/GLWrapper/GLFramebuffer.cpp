@@ -53,11 +53,21 @@ void GLFramebuffer::bind(GLint mode) const
 			break;
 		default:
 			LOG(ERROR, "FrameBuffer not complete... " + std::to_string(_framebufferStatus));
-
 		}
 	}
 	assert(_framebufferStatus == GL_FRAMEBUFFER_COMPLETE);
 	bindWithoutComplete(mode);
+}
+
+void GLFramebuffer::bindForOutput() const {
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    int i = 0;
+    for (auto &tex : _textureHandles) {
+        glActiveTexture(GL_TEXTURE0 + i++);
+        glBindTexture(GL_TEXTURE_2D, tex.second);
+        LOG_GL(__FILE__, __LINE__);
+    }
+    LOG_GL(__FILE__, __LINE__);
 }
 
 
@@ -73,6 +83,12 @@ void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & text
     bindWithoutComplete(GL_DRAW_FRAMEBUFFER);
 	texture.bindRaw();
 	LOG_GL(__FILE__, __LINE__);
+
+    if (attachmentInfo >= GL_COLOR_ATTACHMENT0 && attachmentInfo != GL_DEPTH_ATTACHMENT) {
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
+    LOG_GL(__FILE__, __LINE__);
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentInfo, GL_TEXTURE_2D, texture.getTextureId(), 0);
     _textureHandles[textureName] = texture.getTextureId();
 	_textureAttachmentMode[textureName] = (GLuint) attachmentInfo;
@@ -138,8 +154,6 @@ void GLFramebuffer::setReadBuffer(std::string name)
 {
 	GLuint buf = getAttachmentMode(name);
 	glReadBuffer(buf);
-	//if(glGetError() != GL_INVALID_OPERATION)
-		//LOG(ERROR, "Could not set " + name +" buffer", __FILE__, __LINE__);
 }
 
 void GLFramebuffer::drawColorAttachments(int size) {
