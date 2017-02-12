@@ -159,7 +159,7 @@ void GLFramebuffer::drawColorAttachments(int size) {
 	for (int i = 0; i < size; i++)
 		colors.push_back(GL_COLOR_ATTACHMENT0 + i);
 	bindWithoutComplete(GL_DRAW_FRAMEBUFFER);
-	glDrawBuffers(4, &colors[0]);
+	glDrawBuffers(size, &colors[0]);
 }
 GLuint GLFramebuffer::getAttachmentMode(std::string name) const
 {

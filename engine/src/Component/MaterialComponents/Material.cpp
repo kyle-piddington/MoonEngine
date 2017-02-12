@@ -59,9 +59,9 @@ void Material::bind()
     {
         texture_unit texture = _texture.second;
 
-        texture.gl_texture->bind(texture.unit);
-        glBindSampler(texture.unit, _sampler->getId());
-        glUniform1i(_program->getUniformLocation(_texture.first), texture.unit);
+        texture.gl_texture->bind(GL_TEXTURE0  + texture.unit);
+        glBindSampler(GL_TEXTURE0 + texture.unit, _sampler->getId());
+        glUniform1i(_program->getUniformLocation(_texture.first),texture.unit);
     }
 }
 
@@ -72,7 +72,7 @@ void Material::unbind()
     {
         texture_unit texture = _texture.second;
 
-        texture.gl_texture->unbind(texture.unit);
+        texture.gl_texture->unbind(GL_TEXTURE0 + texture.unit);
         glBindSampler(texture.unit, 0);
     }
 }
