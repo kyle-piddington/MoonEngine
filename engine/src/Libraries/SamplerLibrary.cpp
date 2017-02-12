@@ -22,6 +22,7 @@ GLSampler * SamplerLibrary::getSampler(string samplerName,
     {
         std::shared_ptr<GLSampler> glSampler = std::make_shared<GLSampler>();
         glSampler->init(paramsi, paramsf);
+        _samplerVector.push_back(glSampler);
         _samplers[samplerName] = glSampler.get();
     }
     return _samplers[samplerName];

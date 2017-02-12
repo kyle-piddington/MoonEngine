@@ -85,8 +85,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 		glm::mat4 M = obj->getTransform().getMatrix();
 		
 		//sets the materials geometry shader as active
-        mat->bind();
-		mesh->bind();
+        
 		if (activeProgram != mat->getProgram()) {
 			activeProgram = mat->getProgram();
 			activeProgram->enable();
@@ -99,6 +98,8 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			}
             
 		}
+		mat->bind();
+		mesh->bind();
 
 		//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
 		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
