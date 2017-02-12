@@ -54,8 +54,8 @@ namespace MoonEngine
 
 		vector<std::shared_ptr<GameObject>> geometryPass(Scene* scene);
         void lightingSetup();
-        void pointLightingPass(Scene* scene);
-        void dirLightingPass(Scene* scene);
+        void pointLightPass(Scene* scene);
+        void dirLightPass(Scene* scene);
 
         //Setup Uniforms shared across both light passes
         void setupLightUniforms(GLProgram* prog);

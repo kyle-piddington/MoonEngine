@@ -52,7 +52,8 @@ void DeferredRenderer::render(Scene * scene)
 	vector<std::shared_ptr<GameObject>>forwardObjects;
 	forwardObjects = geometryPass(scene);
     lightingSetup();
-	pointLightingPass(scene);
+	pointLightPass(scene);
+    dirLightPass(scene);
     GLVertexArrayObject::Unbind();
 }
 
@@ -100,7 +101,6 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 		}
 		mat->bind();
 		mesh->bind();
-
 		//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
 		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
@@ -115,7 +115,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
 		}
 		
-
+        LOG_GL(__FILE__, __LINE__);
 		if (obj->getComponent<InstanceMesh>() != nullptr)
 		{
 			glDrawElementsInstanced(
@@ -137,6 +137,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			);
 		}
 		mat->unbind();
+        LOG_GL(__FILE__, __LINE__);
 	}
 
     //Disable the filled depth buffer
@@ -155,9 +156,10 @@ void MoonEngine::DeferredRenderer::lightingSetup()
 
     _gBuffer.bindForOutput();
     glClear(GL_COLOR_BUFFER_BIT);
+    LOG_GL(__FILE__, __LINE__);
 }
 
-void DeferredRenderer::pointLightingPass(Scene* scene)
+void DeferredRenderer::pointLightPass(Scene* scene)
 {
     drawBufferToImgui("GBuffer", &_gBuffer);
 
@@ -165,7 +167,7 @@ void DeferredRenderer::pointLightingPass(Scene* scene)
 
 	_pointLightProgram->enable();
     setupLightUniforms(_pointLightProgram);
-
+    LOG_GL(__FILE__, __LINE__);
 	for (std::shared_ptr<GameObject> obj : scene->getPointLightObjects())
 	{
 		lightSphere = obj->getComponent<PointLight>()->getSphere();
@@ -174,7 +176,7 @@ void DeferredRenderer::pointLightingPass(Scene* scene)
 		//sets the point light shader as active
 		lightSphere->bind();
 
-
+        LOG_GL(__FILE__, __LINE__);
         //These values update for every light
 		glUniformMatrix4fv(_pointLightProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
         glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.color"), 1, 
@@ -188,7 +190,7 @@ void DeferredRenderer::pointLightingPass(Scene* scene)
         glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.linear"), obj->getComponent<PointLight>()->getAttenuation().y);
         glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.exp"), obj->getComponent<PointLight>()->getAttenuation().z);
 
-
+        LOG_GL(__FILE__, __LINE__);
 		glDrawElementsBaseVertex(
 			GL_TRIANGLES,
 			lightSphere->numTris,
@@ -200,14 +202,14 @@ void DeferredRenderer::pointLightingPass(Scene* scene)
 	}
 }
 
-void DeferredRenderer::dirLightingPass(Scene* scene)
+void DeferredRenderer::dirLightPass(Scene* scene)
 {
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
 
     _dirLightProgram->enable();
     setupLightUniforms(_dirLightProgram);
-
+    LOG_GL(__FILE__, __LINE__);
 
     _renderQuad->bind();
     

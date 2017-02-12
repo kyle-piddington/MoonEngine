@@ -3,10 +3,9 @@
 
 using namespace MoonEngine;
 
-DirLight::DirLight(glm::vec3 color, glm::vec3 direction, std::string program) :
+DirLight::DirLight(glm::vec3 color, glm::vec3 direction) :
     Light(color), _direction(direction)
 {
-    _program = Library::ProgramLib->getProgramForName(program);
 }
 
 void DirLight::update(glm::vec3 direction)
@@ -19,7 +18,7 @@ glm::vec3 DirLight::getDirection()
     return _direction;
 }
 
-GLProgram* DirLight::getProgram()
+std::shared_ptr<Component> DirLight::clone() const
 {
-    return _program;
+    return std::make_shared<DirLight>(*this);
 }

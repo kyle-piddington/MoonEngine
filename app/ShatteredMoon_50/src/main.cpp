@@ -145,7 +145,11 @@ int main(int argc, char ** argv)
     lightTransform.setPosition(glm::vec3(1, 4, 1));
     std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_PURPLE));
+    scene->addGameObject(pointLight);
 
+    std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
+    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE));
+    scene->addGameObject(dirLight);
 
     float accumTime;
     int lastUpdateTime;
