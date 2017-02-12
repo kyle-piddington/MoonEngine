@@ -20,13 +20,15 @@ namespace MoonEngine
         const glm::vec3& getPosition() { return _position; }
         MeshInfo* getSphere() { return _bSphere; }
         const glm::vec3& getAttenuation() {
-            return glm::vec3(_attenuation.constant, _attenuation.linear, _attenuation.exp);
+            _atten =glm::vec3(_attenuation.constant, _attenuation.linear, _attenuation.exp);
+            return _atten;
         }
 
         Transform& getLightTransform();
     private:
         MeshInfo* _bSphere;
         glm::vec3 _position;
+        glm::vec3 _atten;
         Transform _lightRange;
         struct Attenuation
         {
