@@ -4,11 +4,10 @@
 #include "LevelLoader.h"
 
 #include "thirdparty/rapidjson/document.h"
-#include "thirdparty/rapidjson/error/error.h"
 #include "thirdparty/rapidjson/error/en.h"
 #include "IO/TextLoader.h"
-#include "Util/Logger.h"
-#include "GLUtil/GLProgramUtilities.h"
+#include "Level.h"
+#include "Libraries/Library.h"
 
 using namespace MoonEngine;
 
@@ -75,13 +74,13 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
             textures[rawTexture.name.GetString()] = rawTexture.value.GetString();
         }
 
-        LevelMaterial levelMaterial;
+        Level::LevelMaterial levelMaterial;
         levelMaterial.mesh = material["mesh"].GetString();
         levelMaterial.material = scene->createComponent<Material>(tint, program, textures);
         levelMaterial.collider = material["collider"].GetBool();
 
         string name = material["name"].GetString();
-        _levelMaterials[name] = levelMaterial;
+        Library::LevelLib->addLevelMaterial(name, levelMaterial);
 
         LOG(INFO, "Created material object: " + name);
     }
@@ -117,12 +116,12 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
 
 
         string rawMaterial = mapObject["material"].GetString();
-        LevelMaterial levelMaterial = _levelMaterials[rawMaterial];
+        Level::LevelMaterial * levelMaterial = Library::LevelLib->getLevelMaterial(rawMaterial);
 
         object = scene->createGameObject(transform);
-        object->addComponent(scene->createComponent<StaticMesh>(levelMaterial.mesh, false));
+        object->addComponent(scene->createComponent<StaticMesh>(levelMaterial->mesh, false));
 
-        Material * material = scene->cloneComponent<Material>(levelMaterial.material);
+        Material * material = scene->cloneComponent<Material>(levelMaterial->material);
 
         if (mapObject.HasMember("tint"))
         {
@@ -132,7 +131,7 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
 
         object->addComponent(material);
 
-        if (levelMaterial.collider)
+        if (levelMaterial->collider)
         {
             object->addComponent(scene->createComponent<BoxCollider>());
         }

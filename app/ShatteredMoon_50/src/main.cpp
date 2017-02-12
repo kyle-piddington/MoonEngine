@@ -5,7 +5,7 @@
 #include <iostream>
 #include "MoonEngine.h"
 #include "LevelEditor/LevelLoader.h"
-
+#include "LevelEditor/LevelBuildingVisual.h"
 
 using namespace MoonEngine;
 
@@ -85,6 +85,8 @@ int main(int argc, char ** argv)
 
     LevelLoader levelLoader;
     levelLoader.LoadLevel("resources/scenedata.json", scene);
+
+    LevelBuildingVisual buildingVisual(scene);
 
     float accumTime;
     int lastUpdateTime;

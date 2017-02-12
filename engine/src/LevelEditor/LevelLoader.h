@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <string>
 #include "Scene/Scene.h"
 
@@ -14,13 +13,6 @@ namespace MoonEngine
 
         void LoadLevel(std::string levelName, Scene * scene);
     private:
-        struct LevelMaterial
-        {
-            std::string mesh;
-            Material * material;
-            bool collider;
-        };
 
-        unordered_map<std::string, LevelMaterial> _levelMaterials;
     };
 }
