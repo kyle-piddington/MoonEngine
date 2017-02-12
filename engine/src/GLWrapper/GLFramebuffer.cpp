@@ -65,9 +65,7 @@ void GLFramebuffer::bindForOutput() const {
     for (auto &tex : _textureHandles) {
         glActiveTexture(GL_TEXTURE0 + i++);
         glBindTexture(GL_TEXTURE_2D, tex.second);
-        LOG_GL(__FILE__, __LINE__);
     }
-    LOG_GL(__FILE__, __LINE__);
 }
 
 

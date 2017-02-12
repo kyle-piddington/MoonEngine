@@ -15,7 +15,6 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     _textureTex(),
     _depthTex()
 {
-    // renderQuad = MeshCreator::CreateQuad(glm::vec2(-1,1), glm::vec2(1,1));
     GLTextureConfiguration locationCFG(width, height, GL_RGB16F, GL_RGB, GL_FLOAT);
     GLTextureConfiguration colorCFG(width, height, GL_RGBA, GL_RGBA, GL_FLOAT);
     GLTextureConfiguration depthCFG(width, height, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT);
@@ -77,7 +76,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 	{
 		mat = obj->getComponent<Material>();
 		mesh = obj->getComponent<Mesh>()->getMesh();
-
+        
 		if (mat->isForward()) {
 			forwardObjects.push_back(obj);
 			continue;
@@ -86,7 +85,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 		glm::mat4 M = obj->getTransform().getMatrix();
 		
 		//sets the materials geometry shader as active
-		mat->bind();
+        mat->bind();
 		mesh->bind();
 		if (activeProgram != mat->getProgram()) {
 			activeProgram = mat->getProgram();

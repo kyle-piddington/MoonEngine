@@ -45,9 +45,6 @@ namespace MoonEngine
          */
         GLProgram * getProgram() const;
 
-        /* Set the currently active program for material */
-        void setActiveProgram(int program);
-
         virtual std::shared_ptr<Component> clone() const;
 
         void bind();

@@ -23,7 +23,7 @@ uniform PointLight pointLight;
 uniform vec3 cameraPosition;
 uniform vec2 screenSize;
 
-vec4 calcLightffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
+vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
 {
     //Ambient
     vec4 AmbientColor = vec4(pointLight.color * pointLight.ambient, 1.0);
