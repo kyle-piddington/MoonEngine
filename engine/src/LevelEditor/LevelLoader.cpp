@@ -3,8 +3,6 @@
 #include <iostream>
 #include "LevelLoader.h"
 
-#include "thirdparty/rapidjson/document.h"
-#include "thirdparty/rapidjson/error/en.h"
 #include "IO/TextLoader.h"
 #include "Level.h"
 #include "Libraries/Library.h"
@@ -32,27 +30,7 @@ bool verifyLevelFile(const rapidjson::Document & document)
     return levelOK;
 }
 
-std::string LevelLoader::LoadLevelFromFile(std::string levelName)
-{
-    std::string fileContents = TextLoader::LoadFullFile(levelName);
-    return fileContents;
-}
-
-void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
-{
-    std::string levelInfo = LoadLevelFromFile(levelName);
-    //Try and open the file first
-    //Parse JSON
-    rapidjson::Document document;
-    rapidjson::ParseResult pr = document.Parse(levelInfo.c_str());
-    if (!pr)
-    {
-        LOG(ERROR, "ERROR: Could not parse document json. ( " + std::string(rapidjson::GetParseError_En(pr.Code())) +
-                   " [" + std::to_string(pr.Offset()) + "] )");
-        return;
-    }
-    verifyLevelFile(document);
-
+void LevelLoader::LoadLevelMaterials(const rapidjson::Document & document, Scene * scene) {
     const rapidjson::Value & materials = document["materials"];
 
     /* Load all the level materials */
@@ -87,7 +65,9 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
 
         LOG(INFO, "Created material object: " + name);
     }
+}
 
+void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene * scene) {
     Transform transform;
     std::shared_ptr<GameObject> object;
 
@@ -141,5 +121,25 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
 
         scene->addGameObject(object);
     }
+}
+
+void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
+{
+    std::string levelInfo = TextLoader::LoadFullFile(levelName);
+
+    //Try and open the file first
+    //Parse JSON
+    rapidjson::Document document;
+    rapidjson::ParseResult pr = document.Parse(levelInfo.c_str());
+    if (!pr)
+    {
+        LOG(ERROR, "LEVEL: Could not parse document json. ( " + std::string(rapidjson::GetParseError_En(pr.Code())) +
+                   " [" + std::to_string(pr.Offset()) + "] )");
+        return;
+    }
+    verifyLevelFile(document);
+
+    LoadLevelMaterials(document, scene);
+    LoadLevelObjects(document, scene);
 }
 

@@ -12,25 +12,28 @@ namespace MoonEngine
     public:
         LevelBuildingVisual(Scene * scene);
 
-        void start();
-
-        void update(float dt);
-
     private:
+        void setCurrentLevelMaterial(bool);
+        void initBuildingVisual();
+        void updateGui();
+        void transformCurrentObject();
+
         GameObject * _mainCamera;
         std::shared_ptr<GameObject> _currentObject;
 
         Scene * _scene;
 
-        void handleMove(float dt);
+        std::vector<std::string> levelMaterials;
 
         bool _moveWithCamera;
-
-        std::vector<std::string> levelMaterials;
 
         int currentLevelMaterial;
 
         int previousLevelMaterial;
+
+        glm::vec3 _position;
+        glm::vec3 _rotation;
+        glm::vec3 _scale;
 
     };
 }
