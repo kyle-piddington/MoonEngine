@@ -3,7 +3,7 @@
 
 using namespace MoonEngine;
 
-void Level::addLevelMaterial(std::string materialName, MoonEngine::Level::LevelMaterial levelMaterial)
+void Level::addLevelMaterial(std::string materialName, LevelMaterial levelMaterial)
 {
     _levelMaterials[materialName] = levelMaterial;
 }
@@ -19,11 +19,18 @@ Level::LevelMaterial * MoonEngine::Level::getLevelMaterial(std::string materialN
     return &_levelMaterials[materialName];
 }
 
+void Level::addLevelObject(LevelObject levelObject) {
+    _levelObjects.push_back(levelObject);
+}
+
+void Level::removeLevelObject() {
+    _levelObjects.pop_back();
+}
+
 std::vector<string> Level::getAllLevelMaterials() {
     std::vector<std::string> allLevelMaterials;
     allLevelMaterials.reserve(_levelMaterials.size());
     for (auto levelMaterial : _levelMaterials) {
-        std::cout << levelMaterial.first << endl;
         allLevelMaterials.push_back(levelMaterial.first);
     }
 

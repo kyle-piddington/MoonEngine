@@ -27,28 +27,29 @@ _moveWithCamera(true)
     });
 }
 
-void LevelBuildingVisual::setCurrentLevelMaterial(bool resetTransform) {
-    previousLevelMaterial = currentLevelMaterial;
+shared_ptr<GameObject> LevelBuildingVisual::setCurrentLevelMaterial(bool resetTransform) {
+    _previousLevelMaterial = _currentLevelMaterial;
 
     Level::LevelMaterial * levelMaterial =
-            Library::LevelLib->getLevelMaterial(levelMaterials[currentLevelMaterial]);
+            Library::LevelLib->getLevelMaterial(_levelMaterials[_currentLevelMaterial]);
 
     std::shared_ptr<GameObject> object = _scene->createGameObject();
     object->addComponent(_scene->createComponent<StaticMesh>(levelMaterial->mesh, false));
     object->addComponent(_scene->cloneComponent<Material>(levelMaterial->material));
 
     _moveWithCamera = true;
-    _currentObject = object;
-    _scene->addGameObject(_currentObject);
+    _scene->addGameObject(object);
 
     if (resetTransform) {
         /* Load the current models transforms */
-        Transform * transform = &_currentObject->getTransform();
+        Transform * transform = &object->getTransform();
 
         _position = transform->getPosition();
         _rotation = glm::eulerAngles(transform->getRotation());
         _scale = transform->getScale();
     }
+
+    return object;
 }
 
 void LevelBuildingVisual::initBuildingVisual() {
@@ -57,10 +58,11 @@ void LevelBuildingVisual::initBuildingVisual() {
     {
         _mainCamera = GetWorld()->findGameObjectWithComponent<Camera>();
 
-        levelMaterials = Library::LevelLib->getAllLevelMaterials();
-        currentLevelMaterial = 1;
+        _levelMaterials = Library::LevelLib->getAllLevelMaterials();
+        _currentLevelMaterial = 1;
+        _currentObject = 0;
 
-        setCurrentLevelMaterial(true);
+        _objects.push_back(setCurrentLevelMaterial(true));
     }
 }
 
@@ -72,34 +74,57 @@ void LevelBuildingVisual::updateGui() {
 
     /* Allow selection of level material */
     std::vector<const char *> levelMats{};
-    for (const auto & levelMat : levelMaterials)
+    for (const auto & levelMat : _levelMaterials)
     {
         levelMats.push_back(levelMat.c_str());
     }
-    ImGui::ListBox("Level Material", &currentLevelMaterial, levelMats.data(), levelMats.size());
+    ImGui::ListBox("Level Material", &_currentLevelMaterial, levelMats.data(), levelMats.size());
 
-    /* We selected a material */
-    if (currentLevelMaterial != previousLevelMaterial)
+    /* We selected a different material */
+    if (_currentLevelMaterial != _previousLevelMaterial)
     {
-        _scene->deleteGameObject(_currentObject);
-        setCurrentLevelMaterial(true);
+        _scene->deleteGameObject(_objects[_currentObject]);
+        _objects[_currentObject] = setCurrentLevelMaterial(true);
     }
 
     string moving = _moveWithCamera ? "Moving" : "Stationary";
     moving += " object (toggle with right shift)";
     ImGui::Text("%s", moving.c_str());
+    ImGui::Text("Press 'U' to undo");
+    ImGui::Text("Click to place object");
     ImGui::End();
 
     /* Place in world and save */
-    if (Mouse::pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-        std::cout << "placing" << endl;
-        setCurrentLevelMaterial(false);
+    if (Mouse::clicked(GLFW_MOUSE_BUTTON_LEFT)) {
+        /* Save object in world */
+        Level::LevelObject levelObject;
+        levelObject.levelMaterial = _levelMaterials[_currentLevelMaterial];
+        levelObject.transform = &_objects[_currentObject]->getTransform();
+        Library::LevelLib->addLevelObject(levelObject);
+
+        /* Make a new object */
+        _objects.push_back(setCurrentLevelMaterial(false));
+        _currentObject++;
     }
 
     /* Keybindings */
     if (Keyboard::key(GLFW_KEY_RIGHT_SHIFT))
     {
         _moveWithCamera = !_moveWithCamera;
+    }
+
+    /* Undo */
+    if (Keyboard::key(GLFW_KEY_U))
+    {
+        if (_currentObject > 0)
+        {
+            Library::LevelLib->removeLevelObject();
+
+            _scene->deleteGameObject(_objects[_currentObject]);
+            _objects.pop_back();
+            _currentObject--;
+            _moveWithCamera = true;
+        }
     }
 }
 
@@ -115,7 +140,7 @@ void LevelBuildingVisual::transformCurrentObject()
     }
 
     /* Apply any changes */
-    Transform * transform = &_currentObject->getTransform();
+    Transform * transform = &_objects[_currentObject]->getTransform();
 
     transform->setPosition(_position);
     transform->setRotation(_rotation);
