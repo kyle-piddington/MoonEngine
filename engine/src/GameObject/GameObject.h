@@ -7,6 +7,7 @@
 #include "Tag.h"
 #include "Component/Component.h"
 #include "Geometry/Transform.h"
+#include "Geometry/Spatial/Node.h"
 #include "Collision/BoundingBox.h"
 /*
 	Core GameObject component. Contains 
@@ -15,7 +16,7 @@
 */
 namespace MoonEngine
 {
-
+	class Node;
     class GameObject
     {
     public:
@@ -90,6 +91,9 @@ namespace MoonEngine
         
         const BoundingBox & getBounds();
 
+		void addNode(Node *node);
+		std::vector<Node *> getNodes();
+
     private:
         /*
             Map of avaliable components
@@ -102,7 +106,7 @@ namespace MoonEngine
         Tag tag;
         GameObject * parent;
         bool deleted;
-
+		std::vector<Node *> region;
         //Bounding box abstractions for VFC / other stuff.
         BoundingBox defaultBox;
         BoundingBox defaultTransformedBox;

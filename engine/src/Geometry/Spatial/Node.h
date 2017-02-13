@@ -17,8 +17,12 @@ namespace MoonEngine
 		std::shared_ptr<Node> getRightChild();
 		void setLeftChild(std::shared_ptr<Node> n);
 		void setRightChild(std::shared_ptr<Node> n);
+		void add(std::shared_ptr<GameObject> gameObject);
+		void remove(std::shared_ptr<GameObject> gameObject);
 		void sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject>> gameObjects);
+		std::vector<std::shared_ptr<Node>> gatherChildren();
 		int getMaximumDepth() const;
+		BoundingBox getBoundary();
 	private:
 		std::vector<std::shared_ptr<GameObject>> getFullyContainedObjects(const std::vector<std::shared_ptr<GameObject>> & allObjects);
 		void median(const std::vector<std::shared_ptr<GameObject>>  &gameObjects);

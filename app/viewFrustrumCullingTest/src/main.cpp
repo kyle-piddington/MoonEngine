@@ -97,12 +97,13 @@ int main(int argc, char ** argv)
                 std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(levelTransform);
                 boxObject->addComponent(scene->createComponent<StaticMesh>("cube.obj", false));
                 boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "phong.program", cube_texture));
-                    //boxObject->addComponent(scene->createComponent<BoxCollider>());
+                    //boxObject->addTag(T_Dynamic);
                 scene->addGameObject(boxObject);
             
         
     }
 
+	
 
         //Upper Platforms
 

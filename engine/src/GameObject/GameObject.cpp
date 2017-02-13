@@ -68,6 +68,8 @@ void GameObject::update(float dt)
     {
         c->update(dt);
     }
+	//if (tag == T_Dynamic)
+		//getTransform().translate(dt * glm::vec3(1, 0, 0));
 }
 
 
@@ -113,4 +115,14 @@ const BoundingBox & GameObject::getBounds()
     {
         return defaultTransformedBox;
     }
+}
+
+void GameObject::addNode(Node *node)
+{
+	region.push_back(node);
+}
+
+std::vector<Node *> GameObject::getNodes()
+{
+	return region;
 }

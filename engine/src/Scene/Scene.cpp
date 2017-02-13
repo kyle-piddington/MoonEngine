@@ -65,7 +65,7 @@ void Scene::runUpdate(float dt)
 			fun(dt);
 		}
 	}
-
+	_renderTree->update();
 }
 
 float Scene::getGlobalTime()
@@ -276,7 +276,8 @@ void Scene::runDeleteGameObjects()
     {
         if (_renderableGameObjects.at(i) != nullptr && _renderableGameObjects.at(i)->isDeleted())
         {
-            _renderableGameObjects.erase(_renderableGameObjects.begin() + i);
+			_renderTree->removeObject(_renderableGameObjects.at(i));
+			_renderableGameObjects.erase(_renderableGameObjects.begin() + i);
             i--;
             size--;
         }
@@ -291,6 +292,7 @@ void Scene::runDeleteGameObjects()
             size--;
         }
     }
+	
 }
 
 void Scene::instantiateNewObjects()

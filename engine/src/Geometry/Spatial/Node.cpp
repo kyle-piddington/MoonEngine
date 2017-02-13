@@ -72,6 +72,24 @@ std::unordered_set<std::shared_ptr<GameObject>> Node::getObjectsInFrustrum(std::
 	return objectsInFrust;
 }
 
+std::vector<std::shared_ptr<Node>> Node::gatherChildren()
+{
+	std::vector<std::shared_ptr<Node>> children;
+	if (!leftChild->isLeaf)
+	{
+		std::vector<std::shared_ptr<Node>> left = leftChild->gatherChildren();
+		std::vector<std::shared_ptr<Node>> right = rightChild->gatherChildren();
+		children.insert(children.begin(), left.begin(), left.end());
+		children.insert(children.begin(), right.begin(), right.end());
+	}
+	else
+	{
+		children.push_back(leftChild);
+		children.push_back(rightChild);
+	}
+	return children;
+}
+
 std::shared_ptr<Node> Node::getLeftChild()
 {
 	return leftChild;
@@ -90,6 +108,89 @@ void Node::setLeftChild(std::shared_ptr<Node> n)
 void Node::setRightChild(std::shared_ptr<Node> n)
 {
 	rightChild = n;
+}
+
+void Node::add(std::shared_ptr<GameObject> gameObject)
+{
+	if (!isLeaf)
+	{
+		int ix = static_cast<int>(plane.x > 0.0f);
+		int iy = static_cast<int>(plane.y > 0.0f);
+		int iz = static_cast<int>(plane.z > 0.0f);
+		int mx = static_cast<int>(-plane.x > 0.0f);
+		int my = static_cast<int>(-plane.y > 0.0f);
+		int mz = static_cast<int>(-plane.z > 0.0f);
+		const BoundingBox & box =
+			gameObject->getBounds();
+		glm::vec3 currBox[2];
+		currBox[0] = (box.min());
+		currBox[1] = (box.max());
+
+		float distanceMax = (plane.x * currBox[ix].x +
+			plane.y * currBox[iy].y +
+			plane.z * currBox[iz].z) + plane.w;
+		float distanceMin = (plane.x * currBox[mx].x +
+			plane.y * currBox[my].y +
+			plane.z * currBox[mz].z) + plane.w;
+		if (distanceMax >= 0)
+		{
+			rightChild->add(gameObject);
+		}
+		if (distanceMin < 0)
+		{
+			leftChild->add(gameObject);
+		}
+	}
+	else
+	{
+		gameObjects.push_back(gameObject);
+		gameObject->addNode(this);
+	}
+}
+
+void Node::remove(std::shared_ptr<GameObject> gameObject)
+{
+	if (!isLeaf)
+	{
+		int ix = static_cast<int>(plane.x > 0.0f);
+		int iy = static_cast<int>(plane.y > 0.0f);
+		int iz = static_cast<int>(plane.z > 0.0f);
+		int mx = static_cast<int>(-plane.x > 0.0f);
+		int my = static_cast<int>(-plane.y > 0.0f);
+		int mz = static_cast<int>(-plane.z > 0.0f);
+		const BoundingBox & box =
+			gameObject->getBounds();
+		glm::vec3 currBox[2];
+		currBox[0] = (box.min());
+		currBox[1] = (box.max());
+
+		float distanceMax = (plane.x * currBox[ix].x +
+			plane.y * currBox[iy].y +
+			plane.z * currBox[iz].z) + plane.w;
+		float distanceMin = (plane.x * currBox[mx].x +
+			plane.y * currBox[my].y +
+			plane.z * currBox[mz].z) + plane.w;
+		if (distanceMax >= 0)
+		{
+			rightChild->remove(gameObject);
+		}
+		if (distanceMin < 0)
+		{
+			leftChild->remove(gameObject);
+		}
+	}
+	else
+	{
+		for (int i = 0; i < gameObjects.size(); i++)
+		{
+			if (gameObject == gameObjects.at(i))
+			{
+				gameObjects.erase(gameObjects.begin() + i);
+				i--;
+				//break;
+			}
+		}
+	}
 }
 
 void Node::median(const std::vector<std::shared_ptr<GameObject>> & gameObjects)
@@ -198,6 +299,10 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > 
 		isLeaf = true;
 		this->gameObjects = gameObjects;
 		LOG(INFO, "Objects in child : " + std::to_string(gameObjects.size()));
+		for (int i = 0; i < gameObjects.size(); i++)
+		{
+			gameObjects.at(i)->addNode(this);
+		}
 	}
 }
 
@@ -224,4 +329,9 @@ int Node::getMaximumDepth() const
 	{
 		return std::max(leftChild->getMaximumDepth(), rightChild->getMaximumDepth());
 	}
+}
+
+BoundingBox Node::getBoundary()
+{
+	return ourBoundary;
 }

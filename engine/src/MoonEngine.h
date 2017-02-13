@@ -21,6 +21,7 @@
 #include "Geometry/Transform.h"
 #include "Geometry/World.h" 
 
+
 #include "Util/Logger.h"
 #include "Util/GLMUtil.h"
 
@@ -47,6 +48,7 @@
 
 //Spatial Structure
 #include "Geometry/Spatial/Node.h"
+#include "Geometry/Spatial/KDTree.h"
 
 //Globals
 #include "GlobalFuncs/GlobalFuncs.h"
