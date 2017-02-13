@@ -1,4 +1,4 @@
-#include "LevelBuildingVisual.h"
+#include "LevelBuilder.h"
 #include "Component/CameraComponents/Camera.h"
 #include <Component/MaterialComponents/Material.h>
 #include <Component/MeshComponents/StaticMesh.h>
@@ -13,8 +13,6 @@
 #include "Geometry/Transform.h"
 
 using namespace MoonEngine;
-
-#define DISTANCE_AHEAD 2.0f
 
 LevelBuildingVisual::LevelBuildingVisual(Scene * scene) :
 _moveWithCamera(true)
@@ -61,6 +59,7 @@ void LevelBuildingVisual::initBuildingVisual() {
         _levelMaterials = Library::LevelLib->getAllLevelMaterials();
         _currentLevelMaterial = 1;
         _currentObject = 0;
+        _distanceAhead = 2.5;
 
         _objects.push_back(setCurrentLevelMaterial(true));
     }
@@ -68,9 +67,9 @@ void LevelBuildingVisual::initBuildingVisual() {
 
 void LevelBuildingVisual::updateGui() {
     ImGui::Begin("Level Editor");
-    ImGui::InputFloat3("Position", glm::value_ptr(_position));
-    ImGui::InputFloat3("Rotation", glm::value_ptr(_rotation));
-    ImGui::InputFloat3("Scale", glm::value_ptr(_scale));
+    ImGui::DragFloat3("Position", glm::value_ptr(_position));
+    ImGui::DragFloat3("Rotation", glm::value_ptr(_rotation));
+    ImGui::DragFloat3("Scale", glm::value_ptr(_scale));
 
     /* Allow selection of level material */
     std::vector<const char *> levelMats{};
@@ -87,12 +86,13 @@ void LevelBuildingVisual::updateGui() {
         _objects[_currentObject] = setCurrentLevelMaterial(true);
     }
 
-    string moving = _moveWithCamera ? "Moving" : "Stationary";
-    moving += " object (toggle with right shift)";
-    ImGui::Text("%s", moving.c_str());
-    ImGui::Text("Press 'U' to undo");
-    ImGui::Text("Click to place object");
-    ImGui::End();
+    if (ImGui::Button("Toggle Move With Camera"))
+    {
+        _moveWithCamera = !_moveWithCamera;
+    }
+    string moving = _moveWithCamera ? "Enabled" : "Disabled";
+    ImGui::SameLine();
+    ImGui::Text("%s\n", moving.c_str());
 
     /* Place in world and save */
     if (Mouse::clicked(GLFW_MOUSE_BUTTON_LEFT)) {
@@ -108,13 +108,8 @@ void LevelBuildingVisual::updateGui() {
     }
 
     /* Keybindings */
-    if (Keyboard::key(GLFW_KEY_RIGHT_SHIFT))
-    {
-        _moveWithCamera = !_moveWithCamera;
-    }
-
-    /* Undo */
-    if (Keyboard::key(GLFW_KEY_U))
+     /* Undo */
+    if (Keyboard::key(GLFW_KEY_U) || ImGui::Button("Undo"))
     {
         if (_currentObject > 0)
         {
@@ -126,6 +121,14 @@ void LevelBuildingVisual::updateGui() {
             _moveWithCamera = true;
         }
     }
+
+    ImGui::Text("\nClick to place object");
+    ImGui::SliderFloat("Object distance", &_distanceAhead, 0.5, 10, "%.5f");
+
+    if (ImGui::Button("Save")) {
+        Library::LevelLib->serializeLevelObjects();
+    }
+    ImGui::End();
 }
 
 void LevelBuildingVisual::transformCurrentObject()
@@ -136,7 +139,7 @@ void LevelBuildingVisual::transformCurrentObject()
         glm::vec3 camForward = normalize(_mainCamera->getTransform().forward());
         glm::vec3 camPos = _mainCamera->getTransform().getPosition();
 
-        _position = camPos + camForward * -DISTANCE_AHEAD;
+        _position = camPos + camForward * -_distanceAhead;
     }
 
     /* Apply any changes */

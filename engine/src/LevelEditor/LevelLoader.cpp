@@ -97,7 +97,6 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
         transform.setRotation(rotation);
         transform.setScale(scale);
 
-
         string rawMaterial = mapObject["material"].GetString();
         Level::LevelMaterial * levelMaterial = Library::LevelLib->getLevelMaterial(rawMaterial);
 
@@ -120,6 +119,9 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
         }
 
         scene->addGameObject(object);
+
+        Level::LevelObject levelObject = {rawMaterial, &object->getTransform()};
+        Library::LevelLib->addLevelObject(levelObject);
     }
 }
 

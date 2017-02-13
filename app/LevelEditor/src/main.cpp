@@ -4,7 +4,7 @@
 #include <iostream>
 #include "MoonEngine.h"
 #include "LevelEditor/LevelLoader.h"
-#include "LevelEditor/LevelBuildingVisual.h"
+#include "LevelEditor/LevelBuilder.h"
 
 using namespace MoonEngine;
 

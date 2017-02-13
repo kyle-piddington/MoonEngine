@@ -33,6 +33,8 @@ namespace MoonEngine
         void addLevelObject(LevelObject levelObject);
         void removeLevelObject();
 
+        void serializeLevelObjects();
+
     private:
         map<std::string, LevelMaterial> _levelMaterials;
         vector<LevelObject> _levelObjects;

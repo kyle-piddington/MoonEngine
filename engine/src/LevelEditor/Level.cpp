@@ -36,3 +36,8 @@ std::vector<string> Level::getAllLevelMaterials() {
 
     return allLevelMaterials;
 }
+
+void Level::serializeLevelObjects()
+{
+    //TODO Save Level Objects to JSON file.
+}
