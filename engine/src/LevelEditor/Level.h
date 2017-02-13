@@ -12,6 +12,10 @@ namespace MoonEngine
     class Level
     {
     public:
+        Level(std::string resourcePath);
+
+        ~Level();
+
         struct LevelMaterial
         {
             std::string mesh;
@@ -35,8 +39,12 @@ namespace MoonEngine
 
         void serializeLevelObjects();
 
+        std::string getRecPath();
+
     private:
         map<std::string, LevelMaterial> _levelMaterials;
         vector<LevelObject> _levelObjects;
+
+        std::string _recPath;
     };
 }

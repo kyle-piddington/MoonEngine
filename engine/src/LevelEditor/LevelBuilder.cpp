@@ -67,9 +67,10 @@ void LevelBuildingVisual::initBuildingVisual() {
 
 void LevelBuildingVisual::updateGui() {
     ImGui::Begin("Level Editor");
-    ImGui::DragFloat3("Position", glm::value_ptr(_position));
-    ImGui::DragFloat3("Rotation", glm::value_ptr(_rotation));
-    ImGui::DragFloat3("Scale", glm::value_ptr(_scale));
+    ImGui::DragFloat3("Position", glm::value_ptr(_position), 0.05f);
+    ImGui::DragFloat3("Rotation", glm::value_ptr(_rotation), 0.01f);
+    ImGui::DragFloat3("Scale", glm::value_ptr(_scale), 0.01f, 0.001f, 10.0f);
+    ImGui::Spacing();
 
     /* Allow selection of level material */
     std::vector<const char *> levelMats{};

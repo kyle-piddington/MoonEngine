@@ -127,7 +127,8 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
 
 void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
 {
-    std::string levelInfo = TextLoader::LoadFullFile(levelName);
+    std::string recPath = Library::LevelLib->getRecPath();
+    std::string levelInfo = TextLoader::LoadFullFile(recPath + levelName);
 
     //Try and open the file first
     //Parse JSON

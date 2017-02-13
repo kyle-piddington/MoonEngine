@@ -83,7 +83,7 @@ int main(int argc, char ** argv)
     scene->addGameObject(groundObject);
 
     LevelLoader levelLoader;
-    levelLoader.LoadLevel("resources/scenedata.json", scene);
+    levelLoader.LoadLevel("scenedata.json", scene);
 
     float accumTime;
     int lastUpdateTime;

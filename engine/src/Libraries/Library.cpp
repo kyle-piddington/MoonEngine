@@ -16,7 +16,7 @@ void Library::Init(std::string resourcePath)
     InstTransformLib = std::make_shared<InstTransformLibrary>(resourcePath);
     TextureLib = std::make_shared<TextureLibrary>(resourcePath);
     SamplerLib = std::make_shared<SamplerLibrary>();
-    LevelLib = std::make_shared<Level>();
+    LevelLib = std::make_shared<Level>(resourcePath);
 }
 
 void Library::Destroy()

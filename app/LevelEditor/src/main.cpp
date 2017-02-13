@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
 
 
 	LevelLoader levelLoader;
-	levelLoader.LoadLevel("resources/scenedata.json", scene);
+	levelLoader.LoadLevel("scenedata.json", scene);
 
 	LevelBuildingVisual buildingVisual(scene);
 	

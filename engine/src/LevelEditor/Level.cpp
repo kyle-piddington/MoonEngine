@@ -3,6 +3,16 @@
 
 using namespace MoonEngine;
 
+Level::Level(std::string resourcePath):
+    _recPath(resourcePath + "/")
+{
+}
+
+Level::~Level()
+{
+    _levelObjects.clear();
+}
+
 void Level::addLevelMaterial(std::string materialName, LevelMaterial levelMaterial)
 {
     _levelMaterials[materialName] = levelMaterial;
@@ -40,4 +50,12 @@ std::vector<string> Level::getAllLevelMaterials() {
 void Level::serializeLevelObjects()
 {
     //TODO Save Level Objects to JSON file.
+    for (auto levelObject : _levelObjects) {
+
+    }
+}
+
+std::string Level::getRecPath()
+{
+    return _recPath;
 }
