@@ -3,6 +3,7 @@
 using namespace MoonEngine;
 //Private global scene pointer (hacky workaround to call Instantiate from Game Objects)
 static Scene * __gActiveScene = nullptr;
+static bool imguiEnabled = false;
 
 /**
  * Create a copy of this game object at the game object's location
@@ -59,4 +60,12 @@ void MoonEngine::SetActiveScene(Scene * scene)
 Scene * MoonEngine::GetWorld()
 {
     return __gActiveScene;
+}
+
+bool MoonEngine::isImguiEnabled() {
+    return imguiEnabled;
+}
+
+void MoonEngine::toggleImgui() {
+    imguiEnabled = !imguiEnabled;
 }
