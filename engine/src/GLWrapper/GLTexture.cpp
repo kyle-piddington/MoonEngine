@@ -61,7 +61,7 @@ bool GLTexture::init(void * data, const GLTextureConfiguration & cfg)
     {
         glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
     }
-
+    
     /* Load the actual texture data */
     glTexImage2D(_textureType, 0, cfg.getInputFormat(), cfg.getWidth(), cfg.getHeight(),
         0, cfg.getOutputFormat(), cfg.getDataType(), data);

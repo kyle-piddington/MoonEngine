@@ -23,6 +23,6 @@ void main()
 	vec3 viewDir = normalize(vec3(0,0,1) - fragPos);
 	float spec = pow(max(dot(reflectDir,viewDir),0.0),8);
 	vec3 specular = spec * vec3(1,1,1);
-	vec3 result =  result;//(diff + ambient + specular);
+	vec3 result =  (diffuse + ambient + specular);
 	color = vec4(result,1.0);
 }
