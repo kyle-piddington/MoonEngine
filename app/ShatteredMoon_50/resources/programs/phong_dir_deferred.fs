@@ -15,15 +15,13 @@ uniform DirLight dirLight;
 uniform vec3 cameraPosition;
 uniform vec2 screenSize;
 
-in vec2 fragTex;
-
 vec4 calcDirLight(vec3 Diffuse, vec3 Normal, float Specular)
 {
     //Ambient
     vec4 AmbientColor = vec4(dirLight.color * dirLight.ambient, 1.0);
 
     // Diffuse
-    vec3 lightDir = dirLight.direction;
+    vec3 lightDir = normalize(-dirLight.direction);
     vec4 DiffuseColor = vec4(max(dot(Normal, lightDir), 0.0) * Diffuse * dirLight.color, 1.0);
 
     // Specular
@@ -35,11 +33,16 @@ vec4 calcDirLight(vec3 Diffuse, vec3 Normal, float Specular)
 }
 
 
+vec2 locTexCoord()
+{
+    return gl_FragCoord.xy / screenSize;
+}
+
 out vec4 finalColor;
 
 void main()
 {
-    vec2 TexCoord = fragTex;
+    vec2 TexCoord = locTexCoord();
 	vec3 WorldPos = texture(positionTex, TexCoord).xyz;
 	vec3 Diffuse = texture(colorTex, TexCoord).rgb;
 	vec3 Normal = texture(normalTex, TexCoord).xyz;

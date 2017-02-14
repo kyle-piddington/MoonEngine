@@ -28,6 +28,7 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     _gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
     _gBuffer.addTexture("depth", _depthTex, GL_DEPTH_ATTACHMENT);
     _gBuffer.drawColorAttachments(3);
+    _gBuffer.addDepthBuffer();
     LOG_GL(__FILE__, __LINE__);
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
@@ -54,6 +55,7 @@ void DeferredRenderer::render(Scene * scene)
     lightingSetup();
 	pointLightPass(scene);
     dirLightPass(scene);
+    forwardPass(scene, forwardObjects);
     GLVertexArrayObject::Unbind();
 }
 
@@ -164,7 +166,7 @@ void DeferredRenderer::pointLightPass(Scene* scene)
     drawBufferToImgui("GBuffer", &_gBuffer);
 
 	const MeshInfo* lightSphere = nullptr;
-
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	_pointLightProgram->enable();
     setupLightUniforms(_pointLightProgram);
     LOG_GL(__FILE__, __LINE__);
@@ -202,16 +204,15 @@ void DeferredRenderer::pointLightPass(Scene* scene)
 		);
 
 	}
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void DeferredRenderer::dirLightPass(Scene* scene)
 {
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     _dirLightProgram->enable();
     setupLightUniforms(_dirLightProgram);
-    LOG_GL(__FILE__, __LINE__);
 
     _renderQuad->bind();
     
@@ -220,8 +221,8 @@ void DeferredRenderer::dirLightPass(Scene* scene)
         
         DirLight* light = obj->getComponent<DirLight>();
         //For every directional light, pass new direction and color
-        glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1, 
-            glm::value_ptr(obj->getComponent<DirLight>()->getDirection()));
+        glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.color"), 1, 
+            glm::value_ptr(obj->getComponent<DirLight>()->getColor()));
         glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1,
             glm::value_ptr(obj->getComponent<DirLight>()->getDirection()));
         glUniform1f(_dirLightProgram->getUniformLocation("dirLight.ambient"), obj->getComponent<DirLight>()->getAmbient());
@@ -236,9 +237,94 @@ void DeferredRenderer::dirLightPass(Scene* scene)
         );
     }
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+
+void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObject>> forwardObjects) {
+
+    GLProgram* activeProgram = nullptr;
+    const MeshInfo* mesh = nullptr;
+    Material* mat = nullptr;
+    glm::mat4 V = _mainCamera->getView();
+    glm::mat4 P = _mainCamera->getProjection();
+    LOG_GL(__FILE__, __LINE__);
+    // Only the geometry pass writes to the depth buffer
+    glDepthMask(GL_TRUE);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+    LOG_GL(__FILE__, __LINE__);
+    _gBuffer.bind(GL_READ_FRAMEBUFFER);
+    LOG_GL(__FILE__, __LINE__);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Write to default framebuffer
+    LOG_GL(__FILE__, __LINE__);
+    glBlitFramebuffer( 0, 0, _width, _height, 0, 0, _width, _height, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
+    LOG_GL(__FILE__, __LINE__);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    LOG_GL(__FILE__, __LINE__);
+    for (std::shared_ptr<GameObject> obj : forwardObjects)
+    {
+        mat = obj->getComponent<Material>();
+        mesh = obj->getComponent<Mesh>()->getMesh();
+
+        glm::mat4 M = obj->getTransform().getMatrix();
+
+        if (activeProgram != mat->getProgram()) {
+            activeProgram = mat->getProgram();
+            activeProgram->enable();
+
+            //Place Uniforms that do not change per GameObject
+            glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+            glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+
+        }
+        mat->bind();
+        mesh->bind();
+        //No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
+        glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+
+
+        //Optional Uniforms are checked here, and bound if found
+        if (activeProgram->hasUniform("tint")) {
+            glm::vec3 tint = mat->getTint();
+            glUniform3f(activeProgram->getUniformLocation("tint"), tint.x, tint.y, tint.z);
+        }
+        if (activeProgram->hasUniform("N")) {
+            glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
+            glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
+        }
+        if (activeProgram->hasUniform("iGlobalTime")) {
+            glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
+        }
+
+        if (obj->getComponent<InstanceMesh>() != nullptr)
+        {
+            glDrawElementsInstanced(
+                GL_TRIANGLES,
+                mesh->numTris,
+                GL_UNSIGNED_SHORT,
+                mesh->indexDataOffset,
+                obj->getComponent<InstanceMesh>()->_numOfInstances
+            );
+        }
+        else
+        {
+            glDrawElementsBaseVertex(
+                GL_TRIANGLES,
+                mesh->numTris,
+                GL_UNSIGNED_SHORT,
+                mesh->indexDataOffset,
+                mesh->baseVertex
+            );
+        }
+        mat->unbind();
+    }
+    LOG_GL(__FILE__, __LINE__);
+    //Disable the filled depth buffer
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
+
+}
 
 void DeferredRenderer::setupLightUniforms(GLProgram * prog)
 {
@@ -258,8 +344,8 @@ void DeferredRenderer::setupLightUniforms(GLProgram * prog)
     glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
 
     //Other global Uniforms
-    glUniform2f(prog->getUniformLocation("screenSize"), (float)_width, (float)_height);
     glUniform3fv(prog->getUniformLocation("cameraPosition"), 1, glm::value_ptr(_mainCameraPosition));
+    glUniform2f(prog->getUniformLocation("screenSize"), (float) _width,(float) _height);
 }
 
 void DeferredRenderer::shutdown()

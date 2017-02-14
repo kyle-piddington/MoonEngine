@@ -117,6 +117,16 @@ void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & text
     Unbind();
 }
 
+void MoonEngine::GLFramebuffer::addDepthBuffer()
+{
+    bindWithoutComplete(GL_FRAMEBUFFER);
+    GLuint depthRBO;
+    glGenRenderbuffers(1, &depthRBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, _width, _height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
+}
+
 
 GLuint GLFramebuffer::release()
 {

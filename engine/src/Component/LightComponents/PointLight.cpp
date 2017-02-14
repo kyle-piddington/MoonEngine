@@ -2,9 +2,8 @@
 
 using namespace MoonEngine;
 
-PointLight::PointLight(glm::vec3 position, glm::vec3 color): Light(color){
-    
-
+PointLight::PointLight(glm::vec3 position, glm::vec3 color, float ambient, float intensity)
+    : Light(color, ambient, intensity){
     _lightRange.setScale(glm::vec3(32, 32, 32));
     _bSphere = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed("sphere.obj", false);
     _attenuation.constant = 1.0f;
@@ -25,13 +24,39 @@ std::shared_ptr<Component> PointLight::clone() const
 
 void PointLight::setRange(float range)
 {
-    _lightRange.setScale(glm::vec3(range, range, range));
-    _attenuation.linear = 4.5f / range;
-    _attenuation.exp = 75.0f / (range*range);
+    if (range <= 10) {
+        _attenuation.linear = 0.7f;
+        _attenuation.exp = 1.8f;
+    }
+    else if (range <= 16) {
+        _attenuation.linear = 0.35f;
+        _attenuation.exp = 0.20f;
+    }
+    else if (range <= 26) {
+        _attenuation.linear = 0.22f;
+        _attenuation.exp = 0.20f;
+    }
+    else if (range <= 41) {
+        _attenuation.linear = 0.14f;
+        _attenuation.exp = 0.07f;
+    }
+    else if (range <= 57) {
+        _attenuation.linear = 0.09f;
+        _attenuation.exp = 0.032f;
+    }
+    else {
+        _attenuation.linear = 0.07f;
+        _attenuation.exp = 0.017f;
+    }
 }
 
 Transform & MoonEngine::PointLight::getLightTransform()
 {
+    float maxChannel = fmax(fmax(this->_color.x, this->_color.y), this->_color.z);
+
+    float range = (-_attenuation.linear + sqrtf(_attenuation.linear * _attenuation.linear - 4 * _attenuation.exp 
+        * (_attenuation.exp - 256 * maxChannel * _intensity)))  / (2 * _attenuation.exp);
+    _lightRange.setScale(range);
     return _lightRange;
     // TODO: insert return statement here
 }

@@ -8,7 +8,11 @@ namespace MoonEngine {
 
     class DirLight : public Light {
     public:
-        DirLight(glm::vec3 color, glm::vec3 direction);
+        /*
+        * @param direction
+        * @param color
+        */
+        DirLight(glm::vec3 direction, glm::vec3 color, float ambient = 0.2f, float intensity = 0.8f);
         void update(float dt);
         const glm::vec3& getDirection();
         std::shared_ptr<Component> clone() const;

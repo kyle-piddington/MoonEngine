@@ -47,6 +47,7 @@ namespace MoonEngine
          */
         void addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo);
 
+        void addDepthBuffer();
         /**
          * Todo:
          * Implement a render buffer class
