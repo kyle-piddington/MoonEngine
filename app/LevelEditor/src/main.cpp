@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 	cameraObj->addComponent(ctrl);
 	cameraObj->addComponent(cam);
 
-	cameraObj->getTransform().translate(glm::vec3(0,1,-5));
+	cameraObj->getTransform().translate(glm::vec3(0,10,-5));
 	scene->addGameObject(cameraObj);
 
 

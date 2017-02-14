@@ -90,6 +90,14 @@ namespace MoonEngine
         */
         glm::quat getRotation() const;
 
+
+        /**
+        * Get the current rotation expressed as a vec3
+        * @return [description]
+        */
+        glm::vec3 getRotationVec3() const;
+
+
         /**
         * Get the scale of the transform
         */
