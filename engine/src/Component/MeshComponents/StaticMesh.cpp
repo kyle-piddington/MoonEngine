@@ -23,6 +23,8 @@ void StaticMesh::start()
 
 const BoundingBox & StaticMesh::getBoundingBox()
 {
+	bBox =
+		 _meshInfo->boundingBox.transform(gameObject->getTransform().getMatrix());
 	return bBox;
 }
 

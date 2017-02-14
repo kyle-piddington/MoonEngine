@@ -6,7 +6,7 @@
 #include "Util/Logger.h"
 using namespace MoonEngine;
 
-Node::Node(std::vector<std::shared_ptr<GameObject>> gameObjects, int maxObjects, int axis, BoundingBox ourBoundary, int depth) :
+Node::Node(const std::vector<std::shared_ptr<GameObject>> & gameObjects, int maxObjects, int axis, BoundingBox ourBoundary, int depth) :
 	maxObjects(maxObjects),
 	axis(axis),
 	isLeaf(false),
@@ -144,7 +144,16 @@ void Node::add(std::shared_ptr<GameObject> gameObject)
 	else
 	{
 		gameObjects.push_back(gameObject);
-		gameObject->addNode(this);
+		std::vector<std::shared_ptr<GameObject>> containedObjects = getFullyContainedObjects(gameObjects);
+		if (maxObjects < containedObjects.size())
+		
+		{
+			sortObjectsAndMakeChildren(gameObjects);
+		}
+		else
+		{
+			gameObject->addNode(this);
+		}
 	}
 }
 
@@ -231,12 +240,14 @@ void Node::median(const std::vector<std::shared_ptr<GameObject>> & gameObjects)
 	}
 }
 
-void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > gameObjects)
+void Node::sortObjectsAndMakeChildren(const std::vector<std::shared_ptr<GameObject> > & gameObjects)
 {
 
 	std::vector<std::shared_ptr<GameObject>> containedObjects = getFullyContainedObjects(gameObjects);
 	if (maxObjects < containedObjects.size())
 	{
+
+		//this->gameObjects.clear();
 		std::vector<std::shared_ptr<GameObject> > left, right;
 		float distanceMax, distanceMin;
 		glm::vec3 currBox[2];
@@ -294,6 +305,7 @@ void Node::sortObjectsAndMakeChildren(std::vector<std::shared_ptr<GameObject> > 
 		axis++;
 		leftChild = std::make_shared<Node>(left, maxObjects, axis, leftBox,depth + 1);
 		rightChild = std::make_shared<Node>(right, maxObjects, axis, rightBox, depth + 1);
+		isLeaf = false;
 	}
 	else
 	{

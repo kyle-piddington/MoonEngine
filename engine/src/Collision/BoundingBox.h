@@ -89,6 +89,8 @@ namespace MoonEngine
         glm::vec3 max() const;
         glm::vec3 min() const;
 
+        BoundingBox merge(const BoundingBox & other) const;
+
         glm::vec3 centerPoint;
         float xHalfWidth;
         float yHalfWidth;

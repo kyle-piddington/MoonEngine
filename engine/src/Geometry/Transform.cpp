@@ -130,7 +130,6 @@ const glm::mat4 & Transform::getMatrix()
     if (isDirty)
     {
 
-
         glm::mat4 s = glm::mat4(
             this->scale.x, 0, 0, 0,
             0, this->scale.y, 0, 0,

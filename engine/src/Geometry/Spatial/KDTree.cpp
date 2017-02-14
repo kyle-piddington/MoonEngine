@@ -24,7 +24,15 @@ std::vector<std::shared_ptr<GameObject>> KDTree::getObjectsInFrustrum(std::vecto
 
 void KDTree::addObject(std::shared_ptr<GameObject> gameObject)
 {
-	head->add(gameObject);
+	if((T_Player | T_Dynamic) & gameObject->getTag())
+	{
+		addDynamicObject(gameObject);
+	}
+	else
+	{
+		head->add(gameObject);		
+	}
+
 }
 
 void KDTree::removeObject(std::shared_ptr<GameObject> gameObject)
@@ -40,7 +48,7 @@ void KDTree::setDynamicObjects(std::vector<std::shared_ptr<GameObject>> dynamicO
 void KDTree::addDynamicObject(std::shared_ptr<GameObject> dynamicObject)
 {
 	dynamicObjects.push_back(dynamicObject);
-	addObject(dynamicObject);
+	head->add(dynamicObject);		
 }
 
 void KDTree::update()

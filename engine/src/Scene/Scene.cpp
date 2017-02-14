@@ -17,6 +17,7 @@ Scene::Scene()
     _renderableGameObjects.clear();
     _boxCollisionComponents.clear();
     _components.clear();
+    _renderTree = nullptr;
 }
 
 /**
@@ -31,6 +32,11 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
     {
         LOG(INFO, "Adding renderable game object");
         _renderableGameObjects.push_back(obj);
+        if(_renderTree != nullptr)
+        {
+            _renderTree->addObject(obj);            
+        }
+
     }
     BoxCollider * col = obj->getComponent<BoxCollider>();
     if (col != nullptr)
@@ -190,6 +196,19 @@ std::shared_ptr<GameObject> Scene::instantiate(GameObject * object, const Transf
     _instantiateQueue.push_back(newObject);
     return newObject;
 
+}
+
+void Scene::deleteGameObject(shared_ptr<GameObject> object)
+{
+    //Add object to queue for deletion
+    //On frame end, these objects should be deleted.
+    object->setDeleted();
+    std::vector<Component *> components = object->getComponents();
+    int size = components.size();
+    for (int i = 0; i < size; i++)
+    {
+        components.at(i)->setDeleted();
+    }
 }
 
 void Scene::deleteGameObject(GameObject * object)

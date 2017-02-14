@@ -15,11 +15,12 @@ namespace MoonEngine
 		std::vector<std::shared_ptr<GameObject>> getObjectsInFrustrum(std::vector<glm::vec4> frust);
 		void addObject(std::shared_ptr<GameObject> gameObject);
 		void removeObject(std::shared_ptr<GameObject> gameObject);
-		void setDynamicObjects(std::vector<std::shared_ptr<GameObject>> dynamicObjects);
-		void addDynamicObject(std::shared_ptr<GameObject> dynamicObject);
 		void update();
 		//void runCollisions(std::shared_ptr<GameObject> gameObject);
 	private:
+		void setDynamicObjects(std::vector<std::shared_ptr<GameObject>> dynamicObjects);
+		void addDynamicObject(std::shared_ptr<GameObject> dynamicObject);
+	
 		std::shared_ptr<Node> head;
 		std::vector<std::shared_ptr<Node>> regions;
 		std::vector<std::shared_ptr<GameObject>> dynamicObjects;

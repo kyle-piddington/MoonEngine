@@ -11,3 +11,4 @@
 #include "CharacterComponents/ThirdPersonCharacterController.h"
 #include "CameraComponents/ThirdPersonOrbitalController.h"
 #include "MeshComponents/Terrain.h"
+#include "LevelEditor/LevelBuilder.h"

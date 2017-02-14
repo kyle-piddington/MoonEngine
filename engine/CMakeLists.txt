@@ -14,10 +14,9 @@ file(GLOB_RECURSE GLSL "resources/*.glsl")
 include_directories(HEADERS)
 
 # Set the executable.
-add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL})
+add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL} src/LevelEditor/Level.cpp src/LevelEditor/Level.h)
 
-
-target_link_libraries(MoonEngine glfw ${GLFW_LIBRARIES})
+target_link_libraries(MoonEngine glfw assimp ${GLFW_LIBRARIES})
 
 
 set(GLM_DIR "$ENV{GLM_INCLUDE_DIR}")
