@@ -92,6 +92,7 @@ namespace MoonEngine
         const BoundingBox & getBounds();
 
 		void addNode(Node *node);
+		void removeNode(Node * node);
 		std::vector<Node *> getNodes();
 
     private:

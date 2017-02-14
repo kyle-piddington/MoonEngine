@@ -122,6 +122,18 @@ void GameObject::addNode(Node *node)
 	region.push_back(node);
 }
 
+void GameObject::removeNode(Node *node)
+{
+	for (int i = 0; i < region.size(); i++)
+	{
+		if (node = region.at(i))
+		{
+			region.erase(region.begin() + i);
+			i--;
+		}
+	}
+}
+
 std::vector<Node *> GameObject::getNodes()
 {
 	return region;

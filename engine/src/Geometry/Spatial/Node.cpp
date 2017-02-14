@@ -185,6 +185,7 @@ void Node::remove(std::shared_ptr<GameObject> gameObject)
 		{
 			if (gameObject == gameObjects.at(i))
 			{
+				gameObject->removeNode(this);
 				gameObjects.erase(gameObjects.begin() + i);
 				i--;
 				//break;
