@@ -4,7 +4,7 @@
 #include "Util/Logger.h"
 #include "Component/CollisionComponents/BoxCollider.h"
 #include <glm/glm.hpp>
-
+#include "Geometry/Spatial/KDTree.h"
 #include <functional>
 
 namespace MoonEngine
@@ -225,6 +225,7 @@ namespace MoonEngine
 
         std::vector<std::shared_ptr<GameObject>> _gameObjects;
         std::vector<std::shared_ptr<GameObject>> _renderableGameObjects;
+		std::shared_ptr<KDTree> _renderTree;
 
         //List of collision components
         ////For performing box-box collisions

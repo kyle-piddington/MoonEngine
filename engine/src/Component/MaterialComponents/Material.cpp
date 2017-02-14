@@ -60,7 +60,7 @@ void Material::bind()
         _texture.second->bind();
         _texture.second->bindSampler(_samplerPtr);
         glUniform1i(_programPtr->getUniformLocation(_texture.first), _texture.second->getUnit());
-        LOG(GAME, "Binding texture" + _texture.first);
+        
     }
 }
 

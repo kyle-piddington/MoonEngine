@@ -4,6 +4,7 @@
 #include <vector>
 #include "IntersectionType.h"
 #include <algorithm>
+#include <string>
 namespace MoonEngine
 {
 
@@ -84,6 +85,7 @@ namespace MoonEngine
             return maxDistFromPointSq(sphereCenter) <= rSq;
         }
 
+        bool contains(const BoundingBox & other) const;
         glm::vec3 max() const;
         glm::vec3 min() const;
 
@@ -91,6 +93,20 @@ namespace MoonEngine
         float xHalfWidth;
         float yHalfWidth;
         float zHalfWidth;
+
+        std::string toString() const
+        {
+          glm::vec3 min = this->min();
+          glm::vec3 max = this->max();
+          return "[" + 
+          std::to_string(min.x ) + "," +
+          std::to_string(min.y ) + "," +
+          std::to_string(min.z ) + "," + 
+          std::to_string(max.x ) + "," + 
+          std::to_string(max.y ) + "," + 
+          std::to_string(max.z ) + "]";
+
+        }
     private:
         enum Plane
         {

@@ -11,6 +11,7 @@ namespace MoonEngine
 		T_Terrain = 0x04,
 		T_Detail = 0x08,
 		T_FX = 0x10,
+		T_Dynamic = 0x12,
 		T_ALL = 0xFF
 	};
 }

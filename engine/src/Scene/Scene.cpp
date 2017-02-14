@@ -51,18 +51,19 @@ void Scene::runUpdate(float dt)
 	_globalLightDir = glm::vec3(sin(_globalTime), 1, cos(_globalTime));
     instantiateNewObjects();
 
-    for (std::shared_ptr<GameObject> go : _gameObjects)
-    {
-      go->update(dt);
-  }
-  runCollisionUpdate();
-  if (updateFunctors.size() > 0)
-  {
-      for (auto & fun : updateFunctors)
-      {
-         fun(dt);
-     }
- }
+	for (std::shared_ptr<GameObject> go : _gameObjects)
+	{
+		go->update(dt);
+	}
+	runCollisionUpdate();
+	if (updateFunctors.size() > 0)
+	{
+		for (auto & fun : updateFunctors)
+		{
+			fun(dt);
+		}
+	}
+	_renderTree->update();
 
 }
 
@@ -142,38 +143,9 @@ float Scene::distanceFromFrutrum(glm::vec4 frustPlane, glm::vec3 point)
 const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjectsInFrustrum(glm::mat4 VP, Tag t) const
 {
 	std::vector<glm::vec4> planes = getFrustrumPlanes(VP);
-	std::vector<std::shared_ptr<GameObject>> objectsInFrustrum;
-	float distance;
-	glm::vec3 currBox[2];
-	bool inside;
-	for (int i = 0; i < _renderableGameObjects.size(); i++)
-	{
-		const BoundingBox & box = 
-     _renderableGameObjects.at(i)->getComponent<Mesh>()->getBoundingBox();
-
-     currBox[0] = (box.min());
-     currBox[1] = (box.max());
-     inside = true;
-     for (int j = 0; j < planes.size(); j++)
-     {
-         int ix = static_cast<int>(planes.at(j).x > 0.0f);
-         int iy = static_cast<int>(planes.at(j).y > 0.0f);
-         int iz = static_cast<int>(planes.at(j).z > 0.0f);
-
-         distance = (planes.at(j).x * currBox[ix].x + 
-          planes.at(j).y * currBox[iy].y + 
-          planes.at(j).z * currBox[iz].z);
-         if (distance < -planes.at(j).w)
-         {
-            inside = false;
-            break;
-        }
-    }
-    if (inside)
-     objectsInFrustrum.push_back(_renderableGameObjects.at(i));
+	return _renderTree->getObjectsInFrustrum(planes);
 }
-return objectsInFrustrum;
-}
+
 
 void Scene::runCollisionUpdate()
 {
@@ -273,7 +245,8 @@ void Scene::runDeleteGameObjects()
     {
         if (_renderableGameObjects.at(i) != nullptr && _renderableGameObjects.at(i)->isDeleted())
         {
-            _renderableGameObjects.erase(_renderableGameObjects.begin() + i);
+			_renderTree->removeObject(_renderableGameObjects.at(i));
+			_renderableGameObjects.erase(_renderableGameObjects.begin() + i);
             i--;
             size--;
         }
@@ -288,6 +261,7 @@ void Scene::runDeleteGameObjects()
             size--;
         }
     }
+	
 }
 
 void Scene::instantiateNewObjects()
@@ -367,4 +341,5 @@ void Scene::start()
     // {
     // //	g->start();
     // }
+	_renderTree = std::make_shared<KDTree>(_renderableGameObjects);
 }
