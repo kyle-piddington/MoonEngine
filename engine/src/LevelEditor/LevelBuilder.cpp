@@ -43,7 +43,7 @@ shared_ptr<GameObject> LevelBuildingVisual::setCurrentLevelMaterial(bool resetTr
         Transform * transform = &object->getTransform();
 
         _position = transform->getPosition();
-        _rotation = glm::eulerAngles(transform->getRotation());
+        _rotation = transform->getRotationVec3();
         _scale = transform->getScale();
     }
 

@@ -39,16 +39,9 @@
             "skycolor": "skycolor"
         },
         "collider": true
-    },
-    {
-        "name": "cube",
-        "mesh": "cube.obj",
-        "program": "phong.program",
-        "textures": {
-            "diffuse": "cube"
-        },
-        "collider": true
+
     }
+    
 ],
 
 "map": [
