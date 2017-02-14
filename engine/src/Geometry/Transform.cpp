@@ -125,6 +125,11 @@ glm::quat Transform::getRotation() const
     return rotation;
 }
 
+glm::vec3 Transform::getRotationVec3() const
+{
+    return glm::eulerAngles(rotation);
+}
+
 const glm::mat4 & Transform::getMatrix()
 {
     if (isDirty)

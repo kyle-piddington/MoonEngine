@@ -46,6 +46,7 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, std::string exte
         }
         else
         {
+            
             _textures[textureName] = _textures["default"];
         }
     }

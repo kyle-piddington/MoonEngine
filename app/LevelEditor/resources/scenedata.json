@@ -14,19 +14,21 @@
 },
 "materials": [
     {
-        "name": "cube",
-        "mesh": "cube.obj",
+        "name": "rock",
+        "mesh": "Rock.obj",
         "program": "phong.program",
-        "tint": [0.9, 0.5, 0.5],
         "textures": {
-            "diffuse": "cube"
+            "diffuse": "Rock.tga"
         },
-        "collider": true
+        "collider": false
     },
     {
-        "name": "bunny",
-        "mesh": "bunny.obj",
+        "name": "penguin",
+        "mesh": "penguin.obj",
         "program": "phong.program",
+        "textures": {
+            "diffuse": "penguin"
+        },
         "collider": false
     },
     {
@@ -36,27 +38,36 @@
         "textures": {
             "skycolor": "skycolor"
         },
-        "collider": false
+        "collider": true
+    },
+    {
+        "name": "cube",
+        "mesh": "cube.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "cube"
+        },
+        "collider": true
     }
 ],
 
 "map": [
     {
-        "material": "cube",
-        "position": [2.5, 0.5, 2.5],
+        "material": "rock",
+        "position": [2.5, 10.5, 2.5],
         "rotation": [0.0, 0.0, 0.0],
         "scale": [1.0, 1.0, 1.0]
     },
     {
-        "material": "cube",
-        "position": [-2.5, 0.5, -2.5],
+        "material": "rock",
+        "position": [-2.5, 10.5, -2.5],
         "tint": [0.3, 0.6, 0.3]
     },
     {
         "material": "skydome",
         "position": [0.0, 0.0, 0.0],
         "rotation": [0.0, 0.0, 0.0],
-        "scale": [50.0, 50.0, 50.0]
+        "scale": [70.0, 70.0, 70.0]
     }
 ]
 }

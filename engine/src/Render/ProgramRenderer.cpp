@@ -90,7 +90,7 @@ void ProgramRenderer::render(Scene * scene)
         glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
         glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
         meshComp->draw();
-        mat->unbind();
+        //mat->unbind();
     }
 	GLVertexArrayObject::Unbind();
 }

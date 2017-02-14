@@ -3,9 +3,13 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <Component/MaterialComponents/Material.h>
 #include <map>
+#include <Component/MaterialComponents/Material.h>
 #include <Geometry/Transform.h>
+#include "thirdparty/rapidjson/document.h"
+#include "thirdparty/rapidjson/stringbuffer.h"
+#include <thirdparty/rapidjson/writer.h>
+#include "thirdparty/rapidjson/error/en.h"
 
 namespace MoonEngine
 {
@@ -46,5 +50,9 @@ namespace MoonEngine
         vector<LevelObject> _levelObjects;
 
         std::string _recPath;
+
+        void writeJsonFile(rapidjson::Document & document);
+
+        rapidjson::Value serializeVec3(glm::vec3 obj, rapidjson::Document::AllocatorType& allocator);
     };
 }
