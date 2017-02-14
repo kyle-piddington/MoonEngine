@@ -17,7 +17,7 @@ void Logger::SetLogLevel(LogLevel level)
     _logLevel = level;
 }
 
-void Logger::Log(LogLevel lv, std::string log)
+void Logger::Log(LogLevel lv, std::string log, std::string file, int line)
 {
     if (lv <= _logLevel)
     {
@@ -47,8 +47,15 @@ void Logger::Log(LogLevel lv, std::string log)
                 (*stream) << "[Log]: ";
                 break;
         }
-
-        (*stream) << log << std::endl;
+		if (file != "") {
+			file = file.substr(file.find_last_of("\\/") + 1, file.length());
+			file = " @" + file;
+			
+		}
+		if(line == -1)
+			(*stream) << log << file << std::endl;
+		else
+			(*stream) << log << file << "[" << line << "]" << std::endl;
 
     }
 }

@@ -2,16 +2,14 @@
 
 using namespace MoonEngine;
 
-GLTexture::GLTexture(GLuint unit)
+GLTexture::GLTexture()
 {
-    _unit = unit;
     _textureType = GL_TEXTURE_2D;
     _textureWidth = _textureHeight = -1;
 }
 
-GLTexture::GLTexture(GLuint unit, GLenum textureType)
+GLTexture::GLTexture(GLenum textureType)
 {
-    _unit = unit;
     _textureType = textureType;
     _textureWidth = _textureHeight = -1;
 }
@@ -22,7 +20,7 @@ GLTexture::~GLTexture()
 
 bool GLTexture::init(const GLTextureConfiguration & cfg)
 {
-    init(nullptr, cfg);
+    
     _textureWidth = cfg.getWidth();
     _textureHeight = cfg.getHeight();
 
@@ -34,9 +32,8 @@ bool GLTexture::init(const GLTextureConfiguration & cfg)
     // How do we support both RGB & RGBA?
     glTexImage2D(_textureType, 0, cfg.getInputFormat(), cfg.getWidth(), cfg.getHeight(),
         0, cfg.getOutputFormat(), cfg.getDataType(), NULL);
-
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(_textureType, 0);
     return glGetError() == GL_NO_ERROR;
 
@@ -76,11 +73,6 @@ bool GLTexture::init(void * data, const GLTextureConfiguration & cfg)
     return glGetError() == GL_NO_ERROR;
 }
 
-GLuint GLTexture::getUnit() const
-{
-    return _unit;
-}
-
 GLint GLTexture::getTextureId() const
 {
     return _textureId;
@@ -101,25 +93,25 @@ int GLTexture::getHeight() const
     return _textureHeight;
 }
 
-void GLTexture::bind()
+void GLTexture::bind(GLuint unit)
 {
-    glActiveTexture(GL_TEXTURE0 + _unit);
+
+    glActiveTexture(GL_TEXTURE0 + unit);
     glBindTexture(_textureType, _textureId);
 }
 
-void GLTexture::unbind()
+void GLTexture::bindSampler(GLuint unit, GLSampler * sampler){
+    glActiveTexture(GL_TEXTURE0 + unit);
+    glBindTexture(_textureType, _textureId);
+}
+
+void GLTexture::bindRaw()
 {
-    glActiveTexture(GL_TEXTURE0 + _unit);
+	glBindTexture(_textureType, _textureId);
+}
+
+void GLTexture::unbind(GLuint unit)
+{
+    glActiveTexture(GL_TEXTURE0 + unit);
     glBindTexture(_textureType, 0);
-}
-
-void GLTexture::bindSampler(GLSampler * sampler)
-{
-    glBindSampler(_unit, sampler->getId());
-}
-
-void GLTexture::unbindSampler()
-{
-    glBindSampler(_unit, 0);
-
 }

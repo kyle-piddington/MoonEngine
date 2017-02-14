@@ -149,9 +149,13 @@ const glm::mat4 & Transform::getMatrix()
     }
     if (parent != nullptr)
     {
-        currentMatrix = parent->getMatrix() * currentMatrix;
+        finalMatrix = parent->getMatrix() * currentMatrix;
     }
-    return currentMatrix;
+    else
+    {
+        finalMatrix = currentMatrix;
+    }
+    return finalMatrix;
 }
 
 void Transform::lookAt(glm::vec3 target, glm::vec3 upVec)

@@ -1,6 +1,8 @@
 #pragma once
 
+
 #include <LevelEditor/Level.h>
+#include <EngineApp/MoonEngineCfg.h>
 #include "MeshLibrary.h"
 #include "ProgramLibrary.h"
 #include "InstTransformLib.h"
@@ -11,7 +13,7 @@ namespace MoonEngine
 {
     struct Library
     {
-        static void Init(std::string resourcePath);
+        static void Init(MoonEngineCfg config);
 
         static void Destroy();
 

@@ -11,10 +11,12 @@ Scene::Scene()
 {
     _globalLightDir = glm::vec3(1, 1, 1);
     _globalTime = 0;
-
+    _cameraFlag = 0;
     _allGameObjects.clear();
     _gameObjects.clear();
     _renderableGameObjects.clear();
+    _pointLightObjects.clear();
+    _dirLightObjects.clear();
     _boxCollisionComponents.clear();
     _components.clear();
     _renderTree = nullptr;
@@ -27,6 +29,11 @@ Scene::Scene()
 void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 {
     _gameObjects.push_back(obj);
+    if (obj->getComponent<Camera>() != nullptr && _cameraFlag == 0) {
+        _cameraFlag = 1;
+        _mainCamera = obj;
+        LOG(INFO, "Adding main camera object");
+    }
     if (obj->getComponent<Material>() != nullptr &&
         obj->getComponent<Mesh>() != nullptr)
     {
@@ -37,6 +44,16 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
             _renderTree->addObject(obj);            
         }
 
+    }
+    if (obj->getComponent<PointLight>() != nullptr)
+    {
+        LOG(INFO, "Adding point light game object");
+        _pointLightObjects.push_back(obj);
+    }
+    if (obj->getComponent<DirLight>() != nullptr)
+    {
+        LOG(INFO, "Adding dir light game object");
+        _dirLightObjects.push_back(obj);
     }
     BoxCollider * col = obj->getComponent<BoxCollider>();
     if (col != nullptr)
@@ -91,6 +108,7 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjects()
 {
     return _renderableGameObjects;
 }
+
 
 std::vector<glm::vec4> getFrustrumPlanes(glm::mat4 comp)
 {
@@ -152,6 +170,15 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjectsIn
 	return _renderTree->getObjectsInFrustrum(planes);
 }
 
+const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getPointLightObjects() const
+{
+    return _pointLightObjects;
+}
+
+const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getDirLightObjects() const
+{
+    return _dirLightObjects;
+}
 
 void Scene::runCollisionUpdate()
 {
@@ -281,6 +308,11 @@ void Scene::runDeleteGameObjects()
         }
     }
 	
+}
+
+std::shared_ptr<GameObject> MoonEngine::Scene::getMainCamera()
+{
+    return _mainCamera;
 }
 
 void Scene::instantiateNewObjects()

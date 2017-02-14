@@ -10,8 +10,7 @@
 
 using namespace MoonEngine;
 
-
-std::shared_ptr<GLTexture> TextureLoader::LoadTextureFromFile16f(GLuint unit, const std::string & textureName)
+std::shared_ptr<GLTexture> TextureLoader::LoadTextureFromFile16f(const std::string & textureName)
 {
     int width = 0, height = 0, ncomps = 0;
 
@@ -45,7 +44,7 @@ std::shared_ptr<GLTexture> TextureLoader::LoadTextureFromFile16f(GLuint unit, co
         break;
     }
     GLTextureConfiguration cfg(width, height, texType, texType, GL_UNSIGNED_SHORT);
-    auto tex = std::make_shared<GLTexture>(unit);
+    auto tex = std::make_shared<GLTexture>();
     //If texture fails to initialize...
     if (!tex->init(data, cfg))
     {
@@ -55,7 +54,7 @@ std::shared_ptr<GLTexture> TextureLoader::LoadTextureFromFile16f(GLuint unit, co
     return tex;
 }
 
-std::shared_ptr<GLTexture> TextureLoader::LoadTextureFromFile(GLuint unit, const std::string & textureName)
+std::shared_ptr<GLTexture> TextureLoader::LoadTextureFromFile(const std::string & textureName)
 {
     int width = 0, height = 0, ncomps = 0;
 
@@ -89,7 +88,7 @@ std::shared_ptr<GLTexture> TextureLoader::LoadTextureFromFile(GLuint unit, const
     }
 
     GLTextureConfiguration cfg(width, height, texType, texType, GL_UNSIGNED_BYTE);
-    auto tex = std::make_shared<GLTexture>(unit);
+    auto tex = std::make_shared<GLTexture>();
     //If texture fails to initialize...
     if (!tex->init(data, cfg))
     {

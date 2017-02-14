@@ -42,10 +42,8 @@ int main(int argc, char ** argv)
     Logger::SetLogLevel(GAME);
 
 
-    MoonEngineCfg cfg;
-    cfg.assetPath = "resources";
 
-    std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window, cfg);
+    std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window, "moonengine.cfg");
     Scene * scene = new Scene();
 
     //Game Objects

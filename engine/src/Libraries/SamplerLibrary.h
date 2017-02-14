@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include "GLWrapper/GLTexture.h"
 #include <vector>
+#include <memory>
 
 namespace MoonEngine
 {
@@ -27,5 +28,6 @@ namespace MoonEngine
 
     private:
         std::unordered_map<std::string, GLSampler *> _samplers;
+        std::vector<std::shared_ptr<GLSampler>> _samplerVector;
     };
 }

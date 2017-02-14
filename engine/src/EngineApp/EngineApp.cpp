@@ -6,7 +6,7 @@
 #include "GlobalFuncs/GlobalFuncs.h"
 #include "thirdparty/imgui/imgui.h"
 #include "thirdparty/imgui/imgui_impl_glfw_gl3.h"
-
+#include <cassert>
 using namespace MoonEngine;
 //Static library
 //(Refactor later)
@@ -14,10 +14,11 @@ Library EngineApp::AssetLibrary;
 Scene * EngineApp::_activeScene = nullptr;
 bool EngineApp::assetsLoaded = false;
 
-EngineApp::EngineApp(GLFWwindow * window, MoonEngineCfg config):
-        _window(window)
+EngineApp::EngineApp(GLFWwindow * window, string config):
+    _window(window)
 {
-    AssetLibrary.Init(config.assetPath);
+    MoonEngineCfg cfg(config);
+    AssetLibrary.Init(cfg);
     assetsLoaded = true;
     glfwSetKeyCallback(window, GLFWHandler::key_callback);
     glfwSetCursorPosCallback(window, GLFWHandler::mousePositionCallback);
@@ -25,9 +26,14 @@ EngineApp::EngineApp(GLFWwindow * window, MoonEngineCfg config):
     glfwSetJoystickCallback(GLFWHandler::joystick_callback);
     glfwSetScrollCallback(window, GLFWHandler::scrollWheelCallback);
     glfwSetCharCallback(window, GLFWHandler::characterCallback);
-
     GLFWHandler::Start();
     //Other app setup code, install callbacks etc.
+}
+
+EngineApp::EngineApp(GLFWwindow * window):
+    _window(window)
+{
+    EngineApp(window, "moonengine.cfg");
 }
 
 EngineApp::~EngineApp()
@@ -48,7 +54,7 @@ void MoonEngine::EngineApp::setMouseMode(int mode)
 void handleImguiLock(GLFWwindow * window)
 {
     if (Keyboard::key(GLFW_KEY_LEFT_CONTROL) || Mouse::clicked(GLFW_MOUSE_BUTTON_RIGHT))
-        {
+    {
         toggleImgui();
         if (!isImguiEnabled())
         {
@@ -56,26 +62,26 @@ void handleImguiLock(GLFWwindow * window)
         }
 
     }
+    ImGui_ImplGlfwGL3_NewFrame(isImguiEnabled());
+    
 }
 
 void EngineApp::run(Scene * scene, I_Renderer * renderer)
 {
     //Set the global active scene to this one.
+    assert(ImGui_ImplGlfwGL3_Init(_window, false)); //Initialize ImGui
     SetActiveScene(scene);
     initializeComponents(scene);
     float newT, t = (float) glfwGetTime();
     float dt = 0;
     renderer->setup(scene);
     scene->start();
-    ImGui_ImplGlfwGL3_Init(_window, false); //Initialize ImGui
+
     /* Game loop */
     while (!glfwWindowShouldClose(_window))
     {
         //ImGui implementation
         handleImguiLock(_window);
-        
-        
-        ImGui_ImplGlfwGL3_NewFrame(isImguiEnabled());
         glfwPollEvents();
         GLFWHandler::update();
         Input::Update(dt);

@@ -133,7 +133,7 @@ namespace MoonEngine
         glm::vec4 localRight;
         glm::vec4 localForward;
         glm::mat4 currentMatrix;
-
+        glm::mat4 finalMatrix;
         bool isDirty;
         Transform * parent;
 

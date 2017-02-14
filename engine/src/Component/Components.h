@@ -12,3 +12,6 @@
 #include "CameraComponents/ThirdPersonOrbitalController.h"
 #include "MeshComponents/Terrain.h"
 #include "LevelEditor/LevelBuilder.h"
+#include "LightComponents/PointLight.h"
+#include "LightComponents/Light.h"
+#include "LightComponents/DirLight.h"

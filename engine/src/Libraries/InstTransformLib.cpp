@@ -3,7 +3,7 @@
 using namespace MoonEngine;
 
 InstTransformLibrary::InstTransformLibrary(std::string resourcePath):
-    _recPath(resourcePath + "/instances/")
+    _recPath(resourcePath)
 {
 }
 

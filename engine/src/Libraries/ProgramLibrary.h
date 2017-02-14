@@ -7,7 +7,6 @@
 #include <unordered_map>
 #include <vector>
 #include "GLWrapper/GLProgram.h"
-#include "Loaders/ProgramInfo.h"
 #include <memory>
 
 namespace MoonEngine

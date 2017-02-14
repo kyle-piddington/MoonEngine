@@ -4,6 +4,7 @@
 #include "GLSampler.h"
 #include "OpenGL.h"
 #include "GLUtil/GLTextureConfiguration.h"
+#include "GLUtil/GL_LOG.h"
 
 namespace MoonEngine
 {
@@ -14,12 +15,12 @@ namespace MoonEngine
         /**
          * Create a texture object
          */
-        GLTexture(GLuint handle);
+        GLTexture();
 
         /**
          * Create a texture object
          */
-        GLTexture(GLuint handle, GLenum textureType);
+        GLTexture(GLenum textureType);
 
         /**
          * Delete a program object.
@@ -50,8 +51,6 @@ namespace MoonEngine
 
         bool init(const GLTextureConfiguration & cfg);
 
-        GLuint getUnit() const;
-
         GLint getTextureId() const;
 
         GLenum getTextureType() const;
@@ -59,16 +58,16 @@ namespace MoonEngine
         /**
          * Bind the texture
          */
-        void bind();
+        void bind(GLuint unit);
+
+		void bindRaw();
+
+        void bindSampler(GLuint unit, GLSampler * sampler);
 
         /**
          * Bind the texture
          */
-        void unbind();
-
-        void bindSampler(GLSampler * sampler);
-
-        void unbindSampler();
+        void unbind(GLuint unit);
 
         int getWidth() const;
 
@@ -81,6 +80,5 @@ namespace MoonEngine
 
         int _textureWidth;
         int _textureHeight;
-        GLuint _unit;
     };
 }

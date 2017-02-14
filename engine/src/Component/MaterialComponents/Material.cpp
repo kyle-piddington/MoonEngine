@@ -1,20 +1,20 @@
 #include "Material.h"
 #include "Libraries/Library.h"
-#include "thirdparty/imgui/imgui.h"
-#include <string>
+#include <iostream>
 
 using namespace MoonEngine;
 
-Material::Material(glm::vec3 tint, std::string program, stringmap textures):
+Material::Material(glm::vec3 tint, string programName, unordered_map<string, string> textures, bool forward) :
     Component(),
-    _textures(std::unordered_map<string, GLTexture *>()),
     _tint(tint),
-    _texture_unit(0)
+    _textures(std::unordered_map<string, texture_unit>()),
+    _texture_unit(0),
+	_forward(forward)
 {
-    _programPtr = Library::ProgramLib->getProgramForName(program);
-    if (_programPtr == nullptr)
+    _program = Library::ProgramLib->getProgramForName(programName);
+    if (_program == nullptr)
     {
-        _programPtr = Library::ProgramLib->getProgramForName("default.program");
+        _program = Library::ProgramLib->getProgramForName("default.program");
     }
 
     for (auto & texture: textures)
@@ -26,10 +26,11 @@ Material::Material(glm::vec3 tint, std::string program, stringmap textures):
             ext = "";
         }
         // uniform name <=> texture
-        _textures[texture.first] = Library::TextureLib->getTexture(texture.second, _texture_unit++, ext);
+        texture_unit textureUnit = {Library::TextureLib->getTexture(texture.second, ext), _texture_unit++};
+        _textures[texture.first] = textureUnit;
     }
 
-    _samplerPtr = Library::SamplerLib->getSampler("default");
+    _sampler = Library::SamplerLib->getSampler("default");
 }
 
 const glm::vec3 & Material::getTint() const
@@ -44,9 +45,8 @@ void Material::setTint(glm::vec3 newTint)
 
 GLProgram * Material::getProgram() const
 {
-    return _programPtr;
+    return _program;
 }
-
 
 std::shared_ptr<Component> Material::clone() const
 {
@@ -57,24 +57,28 @@ void Material::bind()
 {
     for (auto & _texture: _textures)
     {
-        _texture.second->bind();
-        _texture.second->bindSampler(_samplerPtr);
-        glUniform1i(_programPtr->getUniformLocation(_texture.first), _texture.second->getUnit());
+        texture_unit texture = _texture.second;
+        texture.gl_texture->bind(texture.unit);
+        glBindSampler(texture.unit, _sampler->getId());
+        glUniform1i(_program->getUniformLocation(_texture.first),texture.unit);
     }
 }
 
 void Material::unbind()
 {
     //todo unbind uniforms
-    for (auto & texture: _textures)
+    for (auto & _texture: _textures)
     {
-        texture.second->unbind();
-        texture.second->unbindSampler();
+        texture_unit texture = _texture.second;
+
+        texture.gl_texture->unbind(texture.unit);
+        glBindSampler(texture.unit, 0);
     }
+
 }
 
 
 void Material::addTexture(std::string uniformName, GLTexture * texture)
 {
-    _textures[uniformName] = texture;
+    _textures[uniformName] = {texture, _texture_unit++};
 }

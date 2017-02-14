@@ -46,16 +46,23 @@ namespace MoonEngine
 
         const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjects() const;
 
+
         const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjectsInFrustrum(glm::mat4 VP, Tag withTag = T_ALL) const;
 
         float distanceFromFrutrum(glm::vec4 frustPlane, glm::vec3 point);
         
+
+        const std::vector<std::shared_ptr<GameObject>> getPointLightObjects() const;
+
+        const std::vector<std::shared_ptr<GameObject>> getDirLightObjects() const;
+
         std::shared_ptr<GameObject> createGameObject()
         {
             std::shared_ptr<GameObject> object = std::make_shared<GameObject>();
             _allGameObjects.push_back(object);
             return object;
         }
+
         std::shared_ptr<GameObject> createGameObject(const Transform & t)
         {
             std::shared_ptr<GameObject> object = std::make_shared<GameObject>(t);
@@ -105,6 +112,7 @@ namespace MoonEngine
          */
         void runDeleteGameObjects();
 
+        std::shared_ptr<GameObject> getMainCamera();
 
         /**
          * Call the update() method of every game object
@@ -149,8 +157,15 @@ namespace MoonEngine
 
         std::vector<std::shared_ptr<GameObject>> _gameObjects;
         std::vector<std::shared_ptr<GameObject>> _renderableGameObjects;
+
 		std::shared_ptr<KDTree> _renderTree;
 
+        std::vector<std::shared_ptr<GameObject>> _pointLightObjects;
+        std::vector<std::shared_ptr<GameObject>> _dirLightObjects;
+
+        //Main Camera Object
+        std::shared_ptr<GameObject> _mainCamera;
+        int _cameraFlag;
         //List of collision components
         ////For performing box-box collisions
         ///warning - exceedingly terrible design.

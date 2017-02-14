@@ -21,6 +21,7 @@ ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed
     jumpTime = 0.15f; //Half a second of 'up' time
     radius = 0;
     state = GROUND;
+    _lastGround = 0;
 
 }
 
@@ -62,6 +63,16 @@ void ThirdPersonCharacterController::findMinGround()
         glm::vec3 pos = gameObject->getTransform().getPosition();
         _lastGround = worldTerrain->heightAt(pos.x,pos.z);
     }
+    else
+    {
+        _lastGround = 0;
+    }
+    Hit h;
+    if(GetWorld()->castRay(transform->getPosition(), glm::vec3(0,-1,0),FLT_MAX,&h))
+    {
+        _lastGround = std::max(_lastGround, h.intersectionPoint.y);
+    }
+
     
 
 }
@@ -148,20 +159,25 @@ void ThirdPersonCharacterController::handleJump(float dt)
     {
         jumpSpeed = 0;
     }
-    Hit h;
-    if (state == FALLING && GetWorld()->castRay(transform->getPosition(), glm::vec3(0, -1, 0),
-        bbox->getHalfWidths().y + jumpSpeed * dt, &h))
+    if(state != GROUND)
     {
-        //Translate to hit position
-        transform->translate(h.intersectionPoint - transform->getPosition() +
-             glm::vec3(0, bbox->getHalfWidths().y, 0));
-        state = GROUND;
-        jumpSpeed = 0;
+        transform->translate(glm::vec3(0.f, jumpSpeed * dt, 0.f));        
     }
-    else
-    {
-        transform->translate(glm::vec3(0.f, jumpSpeed * dt, 0.f));
-    }
+
+
+    // if (state == FALLING && GetWorld()->castRay(transform->getPosition(), glm::vec3(0, -1, 0),
+    //     bbox->getHalfWidths().y + jumpSpeed * dt, &h))
+    // {
+    //     //Translate to hit position
+    //     transform->translate(h.intersectionPoint - transform->getPosition() +
+    //          glm::vec3(0, bbox->getHalfWidths().y, 0));
+    //     state = GROUND;
+    //     jumpSpeed = 0;
+    // }
+    // else
+    // {
+    //     transform->translate(glm::vec3(0.f, jumpSpeed * dt, 0.f));
+    // }
 
     //Check if on ground plane
     if (transform->getPosition().y - bbox->getHalfWidths().y <= _lastGround && state == FALLING)

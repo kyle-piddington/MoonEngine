@@ -4,7 +4,7 @@
 using namespace MoonEngine;
 
 ProgramLibrary::ProgramLibrary(std::string resourcePath):
-    _recPath(resourcePath + "/")
+    _recPath(resourcePath)
 {
     //Add a fallback program to the library.
     loadDefaultProgram();

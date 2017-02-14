@@ -8,7 +8,7 @@
 using namespace MoonEngine;
 
 TextureLibrary::TextureLibrary(std::string resourcePath):
-        _recPath(resourcePath + "/")
+        _recPath(resourcePath)
 {
     //Add a fallback texture to the library.
     _textures.clear();
@@ -21,7 +21,8 @@ TextureLibrary::~TextureLibrary()
 }
 
 /* Get or load a texture */
-GLTexture * TextureLibrary::getTexture(std::string textureName, int unit, std::string extension, bool is16f)
+
+GLTexture * TextureLibrary::getTexture(std::string textureName, std::string extension, bool is16f)
 {
     if (_textures.find(textureName) == _textures.end())
     {
@@ -29,14 +30,15 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, int unit, std::s
         std::shared_ptr<GLTexture> glTexture;
         if(is16f)
         { 
-            glTexture = TextureLoader::LoadTextureFromFile16f(unit,
+            glTexture = TextureLoader::LoadTextureFromFile16f(
             _recPath + textureName + extension);
 
         } 
         else{
-            glTexture = TextureLoader::LoadTextureFromFile(unit,
+            glTexture = TextureLoader::LoadTextureFromFile(
             _recPath + textureName + extension);
         }
+
         _texturePtrs.push_back(glTexture);
         if (glTexture != nullptr)
         {
@@ -52,7 +54,7 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, int unit, std::s
 
 void TextureLibrary::loadDefaultTexture()
 {
-    std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(0, _recPath + "default.png");
+    std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(_recPath + "default.png");
 
     _textures["default"] = glTexture.get();
 }

@@ -40,10 +40,10 @@ int main(int argc, char **argv) {
 	Logger::SetLogLevel(INFO);
 
 
-	MoonEngineCfg cfg;
-	cfg.assetPath = "resources";
+	MoonEngineCfg cfg("moonengine.cfg");
 	
-	std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window, cfg);
+	
+	std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
 	Scene * scene = new Scene();
 
 	//Game Objects
@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
 
 
 	//Preload canyon 32f texture
-	EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",0,".png",true);
+	EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
 	
 	stringmap canyon_texture(
             {{"heightmap", "grandCanyon"}});

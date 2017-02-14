@@ -41,10 +41,7 @@ int main(int argc, char **argv) {
 	Logger::SetLogLevel(INFO);
 
 
-	MoonEngineCfg cfg;
-	cfg.assetPath = "resources";
-	
-	std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window, cfg);
+	std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window, "moonengine.cfg");
 	Scene * scene = new Scene();
 
     std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>();
@@ -76,7 +73,7 @@ int main(int argc, char **argv) {
 
 
 	//Preload canyon 32f texture
-	EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",0,".png",true);
+	EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
 	
 	stringmap canyon_texture(
             {{"heightmap", "grandCanyon"}});
