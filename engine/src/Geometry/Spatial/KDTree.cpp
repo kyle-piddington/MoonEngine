@@ -10,7 +10,7 @@ KDTree::KDTree(std::vector<std::shared_ptr<GameObject>> gameObjects)
 	LOG(GAME, "Maximum depth of KD tree: "  + std::to_string(head->getMaximumDepth()));
 	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		if (T_Dynamic == gameObjects.at(i)->getTag())
+		if (((T_Player | T_Dynamic) & gameObjects.at(i)->getTag()) > 0)
 			dynamicObjects.push_back(gameObjects.at(i));
 	}
 	//regions = head->gatherChildren();
