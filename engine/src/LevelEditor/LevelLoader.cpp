@@ -52,6 +52,7 @@ void LevelLoader::LoadLevelMaterials(const rapidjson::Document & document, Scene
             for (auto & rawTexture : material["textures"].GetObject())
             {
                 textures[rawTexture.name.GetString()] = rawTexture.value.GetString();
+                LOG(GAME, "Loading " + std::string(rawTexture.name.GetString()) + " as " + std::string(rawTexture.value.GetString()));
             }
         }
 

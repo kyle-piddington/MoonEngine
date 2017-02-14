@@ -188,6 +188,12 @@ void Transform::setScale(glm::vec3 scale)
     isDirty = true;
 }
 
+void MoonEngine::Transform::setScale(float scale)
+{
+    this->scale = glm::vec3(scale, scale, scale);
+    isDirty = true;
+}
+
 glm::vec3 Transform::up() const
 {
     return glm::vec3(localUp);

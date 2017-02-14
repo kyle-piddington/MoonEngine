@@ -80,6 +80,11 @@ namespace MoonEngine
         void setScale(glm::vec3 scale);
 
         /**
+        * Scale the transform uniformly
+        */
+        void setScale(float scale);
+
+        /**
         * Get the current position expressed as a 3d vector
         */
         glm::vec3 getPosition(Space::spaceType type = Space::WORLD) const;

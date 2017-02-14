@@ -22,7 +22,7 @@ float sampleAO(IHeightmapSource * heightmap,  glm::vec2 sampleCenter,const MapDi
 	float center = heightmap->getHeightAtFloat(sampleCenter.x, sampleCenter.y);
 	float occlusion = 0.0f;
 	float radius = 0.5f;
-	int numSamples = 4;
+	int numSamples = 64;
 	//For each pixel in the heightmap, create 16 samples
 	for (GLuint i = 0; i < numSamples; ++i)
 	{
@@ -93,7 +93,7 @@ std::shared_ptr<GLTexture> GLNormalMapCreator::GenerateNormalMap(IHeightmapSourc
 	}
 
 	/*@TODO: FIX THIS WHEN MERGING WITH RENDER*/
-	std::shared_ptr<GLTexture> normalTexture = std::make_shared<GLTexture>(1);
+	std::shared_ptr<GLTexture> normalTexture = std::make_shared<GLTexture>();
 	normalTexture->init(dataBuffer, newTextureConf);
 	return normalTexture;
 

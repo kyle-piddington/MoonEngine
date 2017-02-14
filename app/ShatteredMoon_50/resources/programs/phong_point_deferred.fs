@@ -20,8 +20,9 @@ uniform sampler2D colorTex;
 uniform sampler2D normalTex;
 uniform PointLight pointLight;
 
-uniform vec3 cameraPosition;
 uniform vec2 screenSize;
+uniform vec3 cameraPosition;
+
 
 vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
 {

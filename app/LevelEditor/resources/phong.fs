@@ -7,7 +7,7 @@ uniform vec3 tint;
 uniform vec3 iGlobalLightDir;
 uniform mat4 V;
 
-uniform sampler2D Texture;
+uniform sampler2D diffuse;
 
 void main()
 {
@@ -15,14 +15,14 @@ void main()
 	vec3 ambient = 0.3 * tint;
 	vec3 nor=normalize(fragNor);
 
-	vec3 texColor = vec3(texture(Texture, vec2(fragTex)));
+	vec3 texColor = texture(diffuse, vec2(fragTex)).rgb;
 
 	float diff = max(dot(nor,lightDir),0.0f);
-	vec3 diffuse = diff * texColor;
+	vec3 diffuseColor = diff * texColor;
 	vec3 reflectDir = reflect(-lightDir, nor);
 	vec3 viewDir = normalize(vec3(0,0,1) - fragPos);
 	float spec = pow(max(dot(reflectDir,viewDir),0.0),32);
 	vec3 specular = spec * vec3(1,1,1);
-	vec3 result = (diffuse + ambient + specular);
+	vec3 result = (diff + ambient + specular);
 	color = vec4(result,1.0);
 }

@@ -57,6 +57,7 @@ void Material::bind()
 {
     for (auto & _texture: _textures)
     {
+
         texture_unit texture = _texture.second;
         texture.gl_texture->bind(texture.unit);
         glBindSampler(texture.unit, _sampler->getId());

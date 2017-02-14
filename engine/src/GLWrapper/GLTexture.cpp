@@ -101,8 +101,7 @@ void GLTexture::bind(GLuint unit)
 }
 
 void GLTexture::bindSampler(GLuint unit, GLSampler * sampler){
-    glActiveTexture(GL_TEXTURE0 + unit);
-    glBindTexture(_textureType, _textureId);
+    glBindSampler(unit, sampler->getId());
 }
 
 void GLTexture::bindRaw()

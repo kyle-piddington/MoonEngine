@@ -3,8 +3,8 @@
 
 using namespace MoonEngine;
 
-DirLight::DirLight(glm::vec3 color, glm::vec3 direction) :
-    Light(color), _direction(direction)
+DirLight::DirLight(glm::vec3 direction, glm::vec3 color, float ambient, float intensity) :
+    Light(color, ambient, intensity), _direction(direction)
 {
 }
 

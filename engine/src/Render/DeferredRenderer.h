@@ -56,6 +56,7 @@ namespace MoonEngine
         void lightingSetup();
         void pointLightPass(Scene* scene);
         void dirLightPass(Scene* scene);
+        void forwardPass(Scene* scene, vector<std::shared_ptr<GameObject>> forwardObjects);
 
         //Setup Uniforms shared across both light passes
         void setupLightUniforms(GLProgram* prog);
