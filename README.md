@@ -15,10 +15,10 @@ Graphics 476 amazing OpenGL Graphics Engine and Shattered Moon
 
 
 ### Build
-clone https://github.com/kyle-piddington/MoonEngine
-mkdir build; cd build
-cmake ..
-make
+- clone https://github.com/kyle-piddington/MoonEngine
+- mkdir build; cd build
+- cmake ..
+- make
 
 Then choose an app and run the executable
 
