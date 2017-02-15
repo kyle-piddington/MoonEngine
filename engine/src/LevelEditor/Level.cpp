@@ -55,6 +55,7 @@ void Level::writeJsonFile(rapidjson::Document & document)
 {
     rapidjson::StringBuffer buffer;
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+    writer.SetFormatOptions(rapidjson::kFormatSingleLineArray);
     document.Accept(writer);
 
     std::ofstream file("scenedata.json");
