@@ -55,7 +55,7 @@ void DeferredRenderer::render(Scene * scene)
     lightingSetup();
 	pointLightPass(scene);
     dirLightPass(scene);
-    forwardPass(scene, forwardObjects);
+    //forwardPass(scene, forwardObjects);
     GLVertexArrayObject::Unbind();
 }
 
@@ -195,18 +195,20 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     glm::mat4 P = _mainCamera->getProjection();
     _dirLightProgram->enable();
     setupLightUniforms(_dirLightProgram);
-
     _renderQuad->bind();
     
     
     for (std::shared_ptr<GameObject> obj : scene->getDirLightObjects()) {
         
+        glm::vec3 viewLight = 
+            glm::vec3(V * glm::vec4(obj->getComponent<DirLight>()->getDirection(),0));
+
         DirLight* light = obj->getComponent<DirLight>();
         //For every directional light, pass new direction and color
         glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.color"), 1, 
             glm::value_ptr(obj->getComponent<DirLight>()->getColor()));
         glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1,
-            glm::value_ptr(obj->getComponent<DirLight>()->getDirection()));
+            glm::value_ptr(viewLight));
         glUniform1f(_dirLightProgram->getUniformLocation("dirLight.ambient"), obj->getComponent<DirLight>()->getAmbient());
 
         

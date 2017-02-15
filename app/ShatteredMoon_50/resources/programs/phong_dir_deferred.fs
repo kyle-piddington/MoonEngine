@@ -10,22 +10,26 @@ struct DirLight
 uniform sampler2D positionTex;
 uniform sampler2D colorTex;
 uniform sampler2D normalTex;
+
 uniform DirLight dirLight;
 
 uniform vec3 cameraPosition;
 uniform vec2 screenSize;
+in vec2 fragTexCoord;
 
-vec4 calcDirLight(vec3 Diffuse, vec3 Normal, float Specular)
+vec4 calcDirLight(vec3 Diffuse, vec3 Normal, vec3 worldPos, float Specular)
 {
     //Ambient
     vec4 AmbientColor = vec4(dirLight.color * dirLight.ambient, 1.0);
 
     // Diffuse
+    
     vec3 lightDir = normalize(-dirLight.direction);
+    vec3 cameraDir = normalize(-worldPos);
     vec4 DiffuseColor = vec4(max(dot(Normal, lightDir), 0.0) * Diffuse * dirLight.color, 1.0);
 
     // Specular
-    vec3 halfDir = normalize(lightDir + cameraPosition);  
+    vec3 halfDir = normalize(lightDir + cameraDir);  
     float specPercent = pow(max(dot(Normal, halfDir), 0.0), 16.0);
     vec4 SpecularColor = vec4(dirLight.color * specPercent * Specular, 1.0);
     
@@ -35,7 +39,7 @@ vec4 calcDirLight(vec3 Diffuse, vec3 Normal, float Specular)
 
 vec2 locTexCoord()
 {
-    return gl_FragCoord.xy / screenSize;
+    return fragTexCoord;
 }
 
 out vec4 finalColor;
@@ -50,5 +54,5 @@ void main()
     float Specular = texture(colorTex, TexCoord).a;
     
 
-	finalColor = calcDirLight(Diffuse, Normal, Specular);
+	finalColor = calcDirLight(Diffuse, Normal, WorldPos, Specular);
 }

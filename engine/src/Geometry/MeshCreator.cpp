@@ -26,8 +26,8 @@ MeshInfo *  MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRight, i
 			pos.z = lowerLeft.y + (upperRight.x - lowerLeft.y) * v;
 			
 			dataBuffer.push_back(pos.x);
-			dataBuffer.push_back(0);
 			dataBuffer.push_back(pos.z);
+			dataBuffer.push_back(0);
             dataBuffer.push_back(u);
             dataBuffer.push_back(v);
             
