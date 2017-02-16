@@ -1,3 +1,4 @@
+#include <IO/Keyboard.h>
 #include "FirstPersonController.h"
 #include "IO/Mouse.h"
 #include "IO/Input.h"
@@ -20,14 +21,19 @@ FirstPersonController::FirstPersonController(float Cam_Move_Speed, float CamSens
 
 void FirstPersonController::update(float dt)
 {
+    float speed = _CamMoveSpeed;
+    if (Keyboard::isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
+        speed *= 15;
+    }
+
     if (!isImguiEnabled())
     {
         glm::vec3 rotate(0.0);
 
         rotate.y = (Mouse::getLastY() - Mouse::getY()) * _CamSensitivity;
         rotate.x = (Mouse::getLastX() - Mouse::getX()) * _CamSensitivity;
-        rotate.y += Input::GetAxis(AXIS_VERTICAL_1) * _CamMoveSpeed * dt;
-        rotate.x += Input::GetAxis(AXIS_HORIZONTAL_1) * _CamMoveSpeed * dt;
+        rotate.y += Input::GetAxis(AXIS_VERTICAL_1) * speed * dt;
+        rotate.x += Input::GetAxis(AXIS_HORIZONTAL_1) * speed * dt;
 
         _phi += rotate.y;
         _theta += rotate.x;
@@ -38,7 +44,7 @@ void FirstPersonController::update(float dt)
     glm::vec2 translateVec;
     translateVec.x = -Input::GetAxis(AXIS_HORIZONTAL_0);
     translateVec.y = Input::GetAxis(AXIS_VERTICAL_0);
-    translateVec *= _CamMoveSpeed * dt;
+    translateVec *= speed * dt;
 
 
     Transform & transform = gameObject->getTransform();
