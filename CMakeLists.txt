@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.7)
 project (ShatteredMoon)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3  ")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if(NOT WIN32)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  ")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -03")
 endif()
 # Get the GLEW environment variable.
 set(GLEW_DIR "$ENV{GLEW_DIR}")
