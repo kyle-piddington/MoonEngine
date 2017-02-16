@@ -63,7 +63,7 @@ int main(int argc, char ** argv)
     scene->addGameObject(playerObj);
 
     //Camera setup
-    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 50);
+    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1000);
     cameraObj->addComponent(cam);
     cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
@@ -185,6 +185,31 @@ int main(int argc, char ** argv)
     scene->addGameObject(dirLight);
 
 
+    //Terrain
+    //Preload canyon 32f texture
+    EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
+    
+    stringmap canyon_texture(
+            {{"heightmap", "grandCanyon"}});
+  
+    CDLODQuadtree::CreateInfo createInfo;
+    //ImplicitHeightmapSource heightSource(256,256,[](int, int){return 0;});
+    TextureHeightmapSource texSource("resources/textures","grandCanyon",".png");
+    createInfo.source = &texSource;
+    createInfo.leafNodeSize = 1;
+    createInfo.LODLevelCount = 5;
+    MapDimensions mapDims;
+    
+    mapDims.size = glm::vec3(1000,200,1000);
+    mapDims.minCoords = glm::vec3(0,0,0);   
+    mapDims.minCoords = -mapDims.size/2.0f;
+    mapDims.minCoords.y = -5.0f;
+    createInfo.dimensions = mapDims;
+    std::shared_ptr<GameObject> terrainObject = std::make_shared<GameObject>(Transform());
+    terrainObject->addComponent(scene->createComponent<Terrain>(createInfo));
+    terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain_geom_deferred.program",canyon_texture));
+    scene->addGameObject(terrainObject);
+    
     float accumTime;
     int lastUpdateTime;
     scene->addCustomUpdate([&](float dt) {
