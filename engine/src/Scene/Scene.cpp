@@ -55,12 +55,14 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
         LOG(INFO, "Adding dir light game object");
         _dirLightObjects.push_back(obj);
     }
-    BoxCollider * col = obj->getComponent<BoxCollider>();
-    if (col != nullptr)
-    {
-        LOG(INFO, "Adding collidable game object");
-        _boxCollisionComponents.push_back(col);
-    }
+	BoxCollider * col = obj->getComponent<BoxCollider>();
+	if (col != nullptr)
+	{
+			LOG(INFO, "Adding collidable game object");
+			_boxCollisionComponents.push_back(col);
+	}
+	
+	
 }
 
 /**
@@ -365,16 +367,20 @@ bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * 
 				continue;
 			}
             Hit thisHit;
-            if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &thisHit))
-            {
-                LOG(GAME, std::to_string(tmpHit.distance));
-                if ((maxDist == -1 || thisHit.distance < maxDist) && 
-                    thisHit.distance  < closestDist)
-                {   
-                    tmpHit = thisHit;
-                    closestDist = thisHit.distance;
-                }
-            }
+			if (_boxCollisionComponents[i]->isTrigger)
+			{
+				if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &thisHit))
+				{
+					LOG(GAME, std::to_string(tmpHit.distance));
+					if ((maxDist == -1 || thisHit.distance < maxDist) &&
+						thisHit.distance  < closestDist)
+					{
+						tmpHit = thisHit;
+						closestDist = thisHit.distance;
+					}
+				}
+			}
+            
         }
         if (closestDist != FLT_MAX)
         {

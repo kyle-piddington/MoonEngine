@@ -5,12 +5,14 @@
 using namespace MoonEngine;
 
 BoxCollider::BoxCollider():
-    _givenBox(false)
+    _givenBox(false),
+	isTrigger(false)
 {
 }
 
-BoxCollider::BoxCollider(glm::vec3 minCoords, glm::vec3 maxCoords):
-    _givenBox(true)
+BoxCollider::BoxCollider(glm::vec3 minCoords, glm::vec3 maxCoords) :
+	_givenBox(true),
+	isTrigger(false)
 {
     _originalBox = BoundingBox(minCoords.x, maxCoords.x, minCoords.y, maxCoords.y, minCoords.z, maxCoords.z);
 }

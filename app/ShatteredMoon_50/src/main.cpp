@@ -129,6 +129,30 @@ int main(int argc, char ** argv)
     boxObject->addComponent(scene->createComponent<BoxCollider>());
     scene->addGameObject(boxObject);
 
+	levelTransform.setScale(glm::vec3(0.2, 0.2, 0.2));
+	levelTransform.setPosition(glm::vec3(-1, 3, -4));
+	std::shared_ptr<GameObject> collectable = std::make_shared<GameObject>(levelTransform);
+	collectable->addComponent(scene->createComponent<StaticMesh>("penguin.obj", false));
+	collectable->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
+	collectable->addComponent(scene->createComponent<BoxCollider>());
+	collectable->addComponent(scene->createComponent<CollectableComponent>());
+	scene->addGameObject(collectable);
+
+	levelTransform.setPosition(glm::vec3(-1, 3, -1));
+	collectable = std::make_shared<GameObject>(levelTransform);
+	collectable->addComponent(scene->createComponent<StaticMesh>("penguin.obj", false));
+	collectable->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
+	collectable->addComponent(scene->createComponent<BoxCollider>());
+	collectable->addComponent(scene->createComponent<CollectableComponent>());
+	scene->addGameObject(collectable);
+
+	levelTransform.setPosition(glm::vec3(-1, 3, -3));
+	collectable = std::make_shared<GameObject>(levelTransform);
+	collectable->addComponent(scene->createComponent<StaticMesh>("penguin.obj", false));
+	collectable->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
+	collectable->addComponent(scene->createComponent<BoxCollider>());
+	collectable->addComponent(scene->createComponent<CollectableComponent>());
+	scene->addGameObject(collectable);
     //Instance Boxes
     /*std::shared_ptr<GameObject> boxObjects = std::make_shared<GameObject>();
     boxObjects->addComponent(scene->createComponent<InstanceMesh>("cube.obj", "cube.dat", false));
@@ -144,6 +168,8 @@ int main(int argc, char ** argv)
     boxObject->addComponent(scene->createComponent<BoxCollider>());
     //boxObject->addComponent(scene->createComponent<CollectableComponent>()); Twas a test
     scene->addGameObject(boxObject);
+
+
 
 
     //Skybox
