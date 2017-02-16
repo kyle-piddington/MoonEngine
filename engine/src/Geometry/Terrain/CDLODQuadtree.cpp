@@ -193,6 +193,7 @@ CDLODQuadtree::Node::LODSelectResult CDLODQuadtree::Node::LODSelect(LODSelectInf
 {
 	BoundingBox box;
 	getAABB(box, selInfo.rasterSizeX, selInfo.rasterSizeZ, selInfo.mapDims);
+
 	const glm::vec4 * planes = selInfo.selectionObj->m_frustrumPlanes;
 	const glm::vec3 & observerPos = selInfo.selectionObj->m_observerPos;
 	const int maxSelectionCount = selInfo.selectionObj->m_maxSelectionCount;

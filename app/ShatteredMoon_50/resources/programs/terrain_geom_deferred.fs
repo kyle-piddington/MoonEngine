@@ -39,12 +39,12 @@ void main()
 	vec3 diffuse = vec3(0.8,0.3,0.3);
 	//float spec = pow(max(dot(reflectDir,viewDir),0.0),32);
 	//vec3 specular = spec * vec3(1,1,1);
+	
+	vec3 result = (diffuse + ambient);
 	if(showAO)
 	{
-		ambient *= min(1, (0.5 + AO));
+		result *= min(1, (0.5 + AO));
 	}
-	vec3 result = (diffuse + ambient);
-	
 	
 	posOut = fragPos;
 	colorOut = vec4(result,0.1);

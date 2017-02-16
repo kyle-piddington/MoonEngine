@@ -26,8 +26,8 @@ currentSelection(CDLODQuadtree::LODSelection(selectionBuffer,maxRenderedTiles,gl
 	fullBoundingBox = BoundingBox(worldCenter,worldSize.x,worldSize.y,worldSize.z);
 	debugMesh = Library::MeshLib->getInfoForMeshNamed("cube.obj",false);
 	lastHitInfo.hit = false;
-	rasterSizeX = creationInfo.source->getSizeX();
-	rasterSizeZ = creationInfo.source->getSizeZ();
+	rasterSizeX = (float)creationInfo.source->getSizeX();
+	rasterSizeZ = (float)creationInfo.source->getSizeZ();
 
 }
 
