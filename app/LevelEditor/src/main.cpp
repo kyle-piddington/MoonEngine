@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	float windowWidth = 800.0f, windowHeight = 600.0f;
-	GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "LearnOpenGL", nullptr, nullptr);
+	GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "LevelEditor", nullptr, nullptr);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -51,13 +51,13 @@ int main(int argc, char **argv) {
 	cameraObj->addComponent(ctrl);
 	cameraObj->addComponent(cam);
 
-	cameraObj->getTransform().translate(glm::vec3(0,10,-5));
+	cameraObj->getTransform().translate(glm::vec3(0,150,-5));
 	scene->addGameObject(cameraObj);
 
 
 	CDLODQuadtree::CreateInfo createInfo;
 	//ImplicitHeightmapSource heightSource(256,256,[](int, int){return 0;});
-	TextureHeightmapSource texSource("resources","grandCanyon",".png");
+	TextureHeightmapSource texSource("resources/textures","grandCanyon",".png");
 	createInfo.source = &texSource;
 	createInfo.leafNodeSize = 1;
 	createInfo.LODLevelCount = 5;
