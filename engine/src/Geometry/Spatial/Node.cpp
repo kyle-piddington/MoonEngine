@@ -146,10 +146,9 @@ void Node::add(std::shared_ptr<GameObject> gameObject)
 		gameObjects.push_back(gameObject);
 		std::vector<std::shared_ptr<GameObject>> containedObjects = getFullyContainedObjects(gameObjects);
 		if (maxObjects < containedObjects.size())
-
+			
 		{
 			sortObjectsAndMakeChildren(gameObjects);
-			gameObjects.clear();
 		}
 		else
 		{
@@ -162,20 +161,24 @@ void Node::remove(std::shared_ptr<GameObject> gameObject)
 {
 	if (!isLeaf)
 	{
-		assert(gameObjects.size() == 0);
-		rightChild->remove(gameObject);
 		
+		rightChild->remove(gameObject);
 		leftChild->remove(gameObject);
 		
 	}
-	else
+	
+	
+	for (int i = 0; i < gameObjects.size(); i++)
 	{
-		auto itr = std::find(gameObjects.begin(), gameObjects.end(), gameObject);
-		if(itr != gameObjects.end())
+		if (gameObject == gameObjects.at(i))
 		{
-			gameObjects.erase(itr);
+			gameObject->removeNode(this);
+			gameObjects.erase(gameObjects.begin() + i);
+			i--;
+				//break;
 		}
 	}
+	
 }
 
 void Node::median(const std::vector<std::shared_ptr<GameObject>> & gameObjects)

@@ -105,6 +105,10 @@ void GameObject::setDeleted()
 
 const BoundingBox & GameObject::getBounds()
 {
+    if(isDeleted())
+    {
+        return defaultTransformedBox;
+    }
     if(useBoxColliderBounds)
     {
         return (getComponent<BoxCollider>()->getBoundingBox());

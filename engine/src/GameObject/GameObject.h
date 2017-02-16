@@ -41,7 +41,7 @@ namespace MoonEngine
             T * comp;
             for (Component * c : components)
             {
-                   if ((comp = dynamic_cast<T *>(c)))
+                if ((comp = dynamic_cast<T *>(c)))
                 {
                     return comp;
                 }
