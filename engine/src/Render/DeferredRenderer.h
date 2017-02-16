@@ -36,7 +36,7 @@ namespace MoonEngine
          * Pre-setup for renderer. Gather variables
          * @param scene Scene to render.
          */
-        virtual void setup(Scene * scene);
+        virtual void setup(Scene * scene, GLFWwindow * window);
 
         /**
          * Render the current state of the scene
@@ -64,6 +64,7 @@ namespace MoonEngine
         glm::vec3 _mainCameraPosition;
         MeshInfo* _renderQuad;
 		GLuint _width, _height;
+        int _deferredWidth, _deferredHeight;
         GLFramebuffer _gBuffer;
 		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;
         GLTexture _depthTex;

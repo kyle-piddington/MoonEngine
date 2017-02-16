@@ -66,7 +66,7 @@ DefaultRenderer::DefaultRenderer():
 
 }
 
-void DefaultRenderer::setup(Scene * scene)
+void DefaultRenderer::setup(Scene * scene, GLFWwindow * window)
 {
     mainCamera = scene->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
     if (mainCamera == nullptr)

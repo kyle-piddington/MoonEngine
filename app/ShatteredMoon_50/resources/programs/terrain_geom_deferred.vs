@@ -109,7 +109,7 @@ void main()
 	processCDLODVertex(position, outUnmorphedWorldPos, worldPos, globalUV, morphK, eyeDist);
 	vec4 camVert = V * worldPos;
 	fragPos = camVert.xyz;
-	fragNor = getNormal(globalUV); 
+	fragNor = getNormal (globalUV); 
 	fragTex.xy = globalUV.xy;
 	fragTex.z = morphK;
 	gl_Position = P * camVert;

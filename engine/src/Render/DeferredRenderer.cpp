@@ -33,9 +33,12 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
     _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
+
+    
+    
 }
 
-void DeferredRenderer::setup(Scene * scene)
+void DeferredRenderer::setup(Scene * scene, GLFWwindow * window)
 {
     _mainCamera = scene->getMainCamera()->getComponent<Camera>();
     _mainCameraPosition = scene->getMainCamera()->getTransform().getPosition();
@@ -43,6 +46,7 @@ void DeferredRenderer::setup(Scene * scene)
     {
         LOG(ERROR, "No Camera in scene!");
     }
+    glfwGetFramebufferSize(window, &_deferredWidth, &_deferredHeight);
     //Swing through all rendering components and load their programs.
     glClearColor(0, 0, 0, 1.0f);
 }
@@ -158,7 +162,9 @@ void DeferredRenderer::pointLightPass(Scene* scene)
         Transform & t = obj->getComponent<PointLight>()->getLightTransform();
       
         glm::mat4 M = t.getMatrix();
-
+        glm::vec3 lightPosition = obj->getComponent<PointLight>()->getPosition();
+        glm::vec3 viewLightPosition = 
+            glm::vec3(M * glm::vec4(lightPosition,1.0));
 		//sets the point light shader as active
 		lightSphere->bind();
 
@@ -168,7 +174,7 @@ void DeferredRenderer::pointLightPass(Scene* scene)
         glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.color"), 1, 
             glm::value_ptr(obj->getComponent<PointLight>()->getColor()));
         glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.position"), 1,
-            glm::value_ptr(obj->getComponent<PointLight>()->getPosition()));
+            glm::value_ptr(viewLightPosition));
 
 		glUniform1f(_pointLightProgram->getUniformLocation("pointLight.ambient"), obj->getComponent<PointLight>()->getAmbient());
 
@@ -313,7 +319,7 @@ void DeferredRenderer::setupLightUniforms(GLProgram * prog)
 
     //Other global Uniforms
     glUniform3fv(prog->getUniformLocation("cameraPosition"), 1, glm::value_ptr(_mainCameraPosition));
-    glUniform2f(prog->getUniformLocation("screenSize"), (float) _width,(float) _height);
+    glUniform2f(prog->getUniformLocation("screenSize"), (float) _deferredWidth,(float) _deferredHeight);
 }
 
 void DeferredRenderer::shutdown()

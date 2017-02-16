@@ -74,7 +74,7 @@ void EngineApp::run(Scene * scene, I_Renderer * renderer)
     initializeComponents(scene);
     float newT, t = (float) glfwGetTime();
     float dt = 0;
-    renderer->setup(scene);
+    renderer->setup(scene, _window);
     scene->start();
 
     /* Game loop */

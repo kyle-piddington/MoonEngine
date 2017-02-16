@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene/Scene.h"
+#include <GLFW/glfw3.h>
 /**
  * The renderer interface is implemented by any renderer
  * who needs to render a scene. The current (naieve) renderer
@@ -13,7 +14,7 @@ namespace MoonEngine
     class I_Renderer
     {
     public:
-        virtual void setup(Scene * scene) = 0; //Initial setup for scene. Collect any info neccesary.
+        virtual void setup(Scene * scene, GLFWwindow * window) = 0; //Initial setup for scene. Collect any info neccesary.
         virtual void render(Scene * scene) = 0; //Perform the full render loop for this scene
         virtual void shutdown() = 0; // Any Shutdown tasks neccesary
     };

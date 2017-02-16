@@ -17,7 +17,7 @@ ProgramRenderer::ProgramRenderer():
 
 }
 
-void ProgramRenderer::setup(Scene * scene)
+void ProgramRenderer::setup(Scene * scene, GLFWwindow * window)
 {
     mainCamera = scene->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
     if (mainCamera == nullptr)

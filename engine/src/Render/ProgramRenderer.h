@@ -26,7 +26,7 @@ namespace MoonEngine
          * Pre-setup for renderer. Gather variables
          * @param scene Scene to render.
          */
-        virtual void setup(Scene * scene);
+        virtual void setup(Scene * scene, GLFWwindow * window);
 
         /**
          * Render the current state of the scene
