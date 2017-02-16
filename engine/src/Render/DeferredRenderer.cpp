@@ -59,7 +59,7 @@ void DeferredRenderer::render(Scene * scene)
     lightingSetup();
 	pointLightPass(scene);
     dirLightPass(scene);
-    //forwardPass(scene, forwardObjects);
+    forwardPass(scene, forwardObjects);
     GLVertexArrayObject::Unbind();
 }
 

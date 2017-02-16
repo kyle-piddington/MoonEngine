@@ -1,5 +1,8 @@
 #include <Component/MaterialComponents/Material.h>
 #include <Component/MeshComponents/StaticMesh.h>
+#include <Component/CharacterComponents/CollectableComponent.h>
+#include <Component/CharacterComponents/ShardMovement.h>
+
 #include <iostream>
 #include "LevelLoader.h"
 
@@ -103,7 +106,14 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
 
         object = scene->createGameObject(transform);
         object->addComponent(scene->createComponent<StaticMesh>(levelMaterial->mesh, false));
-        object->addTag(T_Dynamic);
+        if (rawMaterial == "shard")
+        {
+            object->addComponent(scene->createComponent<CollectableComponent>());   
+            object->addComponent(scene->createComponent<ShardMovement>());
+            object->addTag(T_Dynamic);
+           
+        }
+         
 
         Material * material = scene->cloneComponent<Material>(levelMaterial->material);
 
@@ -119,7 +129,7 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
         {
             object->addComponent(scene->createComponent<BoxCollider>());
         }
-
+        LOG(INFO, "Adding game object");
         scene->addGameObject(object);
 
         Level::LevelObject levelObject = {rawMaterial, &object->getTransform()};
@@ -143,8 +153,9 @@ void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
         return;
     }
     verifyLevelFile(document);
-
+    LOG(INFO, "Loading materials");
     LoadLevelMaterials(document, scene);
+    LOG(INFO, "Loading Objects");
     LoadLevelObjects(document, scene);
 }
 

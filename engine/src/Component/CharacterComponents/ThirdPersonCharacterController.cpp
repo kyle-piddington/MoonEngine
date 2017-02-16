@@ -163,7 +163,7 @@ void ThirdPersonCharacterController::handleJump(float dt)
     {
         transform->translate(glm::vec3(0.f, jumpSpeed * dt, 0.f));        
     }
-
+    LOG(GAME, std::to_string(transform->getPosition().x) + "," + std::to_string(transform->getPosition().z));
 
     // if (state == FALLING && GetWorld()->castRay(transform->getPosition(), glm::vec3(0, -1, 0),
     //     bbox->getHalfWidths().y + jumpSpeed * dt, &h))

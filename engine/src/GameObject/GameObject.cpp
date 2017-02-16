@@ -45,10 +45,10 @@ void GameObject::addComponent(Component * component)
     {
         useMeshBounds = true;
     }
-    else if(dynamic_cast<BoxCollider *>(component) != nullptr)
-    {
-        useBoxColliderBounds = true;
-    }
+    // else if(dynamic_cast<BoxCollider *>(component) != nullptr)
+    // {
+    //     useBoxColliderBounds = true;
+    // }
     components.push_back(component);
 }
 
