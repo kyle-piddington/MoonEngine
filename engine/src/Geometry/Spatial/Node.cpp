@@ -7,11 +7,11 @@
 using namespace MoonEngine;
 
 Node::Node(const std::vector<std::shared_ptr<GameObject>> & gameObjects, int maxObjects, int axis, BoundingBox ourBoundary, int depth) :
-	maxObjects(maxObjects),
-	axis(axis),
-	isLeaf(false),
-	depth(depth),
-	ourBoundary(ourBoundary)
+maxObjects(maxObjects),
+axis(axis),
+isLeaf(false),
+depth(depth),
+ourBoundary(ourBoundary)
 
 {
 	sortObjectsAndMakeChildren(gameObjects);
@@ -43,7 +43,7 @@ std::unordered_set<std::shared_ptr<GameObject>> Node::getObjectsInFrustrum(std::
 			for (int i = 0; i < gameObjects.size(); i++)
 			{
 				const BoundingBox & box =
-					gameObjects.at(i)->getBounds();
+				gameObjects.at(i)->getBounds();
 
 				currBox[0] = (box.min());
 				currBox[1] = (box.max());
@@ -121,7 +121,7 @@ void Node::add(std::shared_ptr<GameObject> gameObject)
 		int my = static_cast<int>(-plane.y > 0.0f);
 		int mz = static_cast<int>(-plane.z > 0.0f);
 		const BoundingBox & box =
-			gameObject->getBounds();
+		gameObject->getBounds();
 		glm::vec3 currBox[2];
 		currBox[0] = (box.min());
 		currBox[1] = (box.max());
@@ -146,9 +146,10 @@ void Node::add(std::shared_ptr<GameObject> gameObject)
 		gameObjects.push_back(gameObject);
 		std::vector<std::shared_ptr<GameObject>> containedObjects = getFullyContainedObjects(gameObjects);
 		if (maxObjects < containedObjects.size())
-		
+
 		{
 			sortObjectsAndMakeChildren(gameObjects);
+			gameObjects.clear();
 		}
 		else
 		{
@@ -161,44 +162,18 @@ void Node::remove(std::shared_ptr<GameObject> gameObject)
 {
 	if (!isLeaf)
 	{
-		int ix = static_cast<int>(plane.x > 0.0f);
-		int iy = static_cast<int>(plane.y > 0.0f);
-		int iz = static_cast<int>(plane.z > 0.0f);
-		int mx = static_cast<int>(-plane.x > 0.0f);
-		int my = static_cast<int>(-plane.y > 0.0f);
-		int mz = static_cast<int>(-plane.z > 0.0f);
-		const BoundingBox & box =
-			gameObject->getBounds();
-		glm::vec3 currBox[2];
-		currBox[0] = (box.min());
-		currBox[1] = (box.max());
-
-		float distanceMax = (plane.x * currBox[ix].x +
-			plane.y * currBox[iy].y +
-			plane.z * currBox[iz].z) + plane.w;
-		float distanceMin = (plane.x * currBox[mx].x +
-			plane.y * currBox[my].y +
-			plane.z * currBox[mz].z) + plane.w;
-		if (distanceMax >= 0)
-		{
-			rightChild->remove(gameObject);
-		}
-		if (distanceMin < 0)
-		{
-			leftChild->remove(gameObject);
-		}
+		assert(gameObjects.size() == 0);
+		rightChild->remove(gameObject);
+		
+		leftChild->remove(gameObject);
+		
 	}
 	else
 	{
-		for (int i = 0; i < gameObjects.size(); i++)
+		auto itr = std::find(gameObjects.begin(), gameObjects.end(), gameObject);
+		if(itr != gameObjects.end())
 		{
-			if (gameObject == gameObjects.at(i))
-			{
-				gameObject->removeNode(this);
-				gameObjects.erase(gameObjects.begin() + i);
-				i--;
-				//break;
-			}
+			gameObjects.erase(itr);
 		}
 	}
 }
@@ -282,7 +257,7 @@ void Node::sortObjectsAndMakeChildren(const std::vector<std::shared_ptr<GameObje
 		for (int i = 0; i < size; i++)
 		{
 			const BoundingBox & box =
-				gameObjects.at(i)->getBounds();
+			gameObjects.at(i)->getBounds();
 
 			currBox[0] = (box.min());
 			currBox[1] = (box.max());
