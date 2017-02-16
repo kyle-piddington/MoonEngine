@@ -136,6 +136,7 @@ int main(int argc, char ** argv)
 	collectable->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
 	collectable->addComponent(scene->createComponent<BoxCollider>());
 	collectable->addComponent(scene->createComponent<CollectableComponent>());
+	collectable->addComponent(scene->createComponent<ShardMovement>());
 	scene->addGameObject(collectable);
 
 	levelTransform.setPosition(glm::vec3(-1, 3, -1));
@@ -144,6 +145,7 @@ int main(int argc, char ** argv)
 	collectable->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
 	collectable->addComponent(scene->createComponent<BoxCollider>());
 	collectable->addComponent(scene->createComponent<CollectableComponent>());
+	collectable->addComponent(scene->createComponent<ShardMovement>());
 	scene->addGameObject(collectable);
 
 	levelTransform.setPosition(glm::vec3(-1, 3, -3));
@@ -152,6 +154,7 @@ int main(int argc, char ** argv)
 	collectable->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
 	collectable->addComponent(scene->createComponent<BoxCollider>());
 	collectable->addComponent(scene->createComponent<CollectableComponent>());
+	collectable->addComponent(scene->createComponent<ShardMovement>());
 	scene->addGameObject(collectable);
     //Instance Boxes
     /*std::shared_ptr<GameObject> boxObjects = std::make_shared<GameObject>();
