@@ -103,6 +103,7 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
 
         object = scene->createGameObject(transform);
         object->addComponent(scene->createComponent<StaticMesh>(levelMaterial->mesh, false));
+        object->addTag(T_Dynamic);
 
         Material * material = scene->cloneComponent<Material>(levelMaterial->material);
 
