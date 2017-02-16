@@ -366,7 +366,7 @@ namespace MoonEngine
         getWorldMinMaxZ(minZ,maxZ,rasterSizeZ,mapDims);
         box = BoundingBox(minX,maxX,minY,maxY,minZ,maxZ);
 		box.xHalfWidth *= 1.2f;
-		box.yHalfWidth = 10;
+		box.yHalfWidth = std::max(10.0f,box.yHalfWidth*2);
 		box.zHalfWidth *= 1.2f;
            
     }

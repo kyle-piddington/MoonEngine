@@ -41,9 +41,11 @@ shared_ptr<GameObject> LevelBuildingVisual::setCurrentLevelMaterial(bool resetTr
     if (resetTransform) {
         /* Load the current models transforms */
         Transform * transform = &object->getTransform();
-
+        BoundingBox meshBox = object->getBounds();
+        float scale = std::max(std::max(meshBox.xHalfWidth,meshBox.yHalfWidth),meshBox.zHalfWidth);
+        transform->setScale(glm::vec3(1/scale,1/scale,1/scale));
         _position = transform->getPosition();
-        _rotation = transform->getRotationVec3();
+        _rotation = glm::eulerAngles(transform->getRotation());
         _scale = transform->getScale();
     }
 
