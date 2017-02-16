@@ -1,3 +1,4 @@
+/*
 #pragma once
 #include "AssimpModelInfo.h"
 #include "assimp/Importer.hpp"
@@ -18,7 +19,7 @@ namespace MoonEngine
 	 * @param  outInfo      Info returned by the file
 	 * @param  pFlags       Assimp postprocessing flag loading options
 	 * @return             true if succesful.
-	 */
+	 * /
 		static bool LoadIntoBuffer(
 			std::string fileName,
 			GLBuffer * vertexBuffer,
@@ -29,3 +30,4 @@ namespace MoonEngine
 			bool smooth = false);
 	};	
 }
+*/
