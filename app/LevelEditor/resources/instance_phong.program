@@ -1,5 +1,0 @@
-{
-	"name" : "phong",
-	"vertex" : "resources/instance_phong.vs",
-	"fragment" : "resources/instance_phong.fs"
-}

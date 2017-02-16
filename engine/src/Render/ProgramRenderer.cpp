@@ -1,12 +1,5 @@
 #include "ProgramRenderer.h"
-#include "Util/Logger.h"
-#include "GLWrapper/OpenGL.h"
-#include <glm/gtc/type_ptr.hpp>
-#include "Component/Components.h"
-#include "GameObject/GameObject.h"
-#include "Geometry/MeshCreator.h"
-#include "thirdparty/imgui/imgui.h"
-#include <iostream>
+
 
 using namespace MoonEngine;
 
@@ -68,7 +61,7 @@ void ProgramRenderer::render(Scene * scene)
             glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
 
             glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-
+            
             if (activeProgram->hasUniform("iGlobalLightDir"))
             {
                 glm::vec3 lightDir = scene->getGlobalLightDir();

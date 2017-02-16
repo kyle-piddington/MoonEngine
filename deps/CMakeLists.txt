@@ -28,6 +28,7 @@ else ()
 endif ()
 include_directories(${GLFW_DIR}/include)
 
-add_subdirectory(assimp)
-include_directories(assimp/include)
-
+if(NOT WIN32)
+  add_subdirectory(assimp)
+  include_directories(assimp/include)
+endif()

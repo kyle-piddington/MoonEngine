@@ -1,6 +1,10 @@
 #pragma once
 #include "AssimpModelInfo.h"
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
 #include "assimp/postprocess.h"
+#include "Util/Logger.h"
+#include <algorithm>
 namespace MoonEngine
 {
 	struct AssimpLoader
