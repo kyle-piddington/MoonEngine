@@ -351,7 +351,7 @@ GameObject * Scene::findGameObjectWithTag(Tag t)
 }
 
 //Naive implementation
-bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * hit)
+bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * hit, Tag excludeTag)
 {
     //Spatial data structure would go here.
     Hit tmpHit;
@@ -360,6 +360,10 @@ bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * 
     {
         for (size_t i = 0; i < _boxCollisionComponents.size(); i++)
         {
+			if (excludeTag & (_boxCollisionComponents[i]->getGameObject()->getTag()))
+			{
+				continue;
+			}
             Hit thisHit;
             if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &thisHit))
             {

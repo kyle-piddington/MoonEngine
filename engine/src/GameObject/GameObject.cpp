@@ -8,7 +8,8 @@ GameObject::GameObject():
     deleted(false),
     defaultBox(glm::vec3(0,0,0),0.5f,0.5f,0.5f),
     useMeshBounds(false),
-    useBoxColliderBounds(false)
+    useBoxColliderBounds(false),
+	tag(T_NONE)
 {
 
 }
@@ -17,7 +18,8 @@ GameObject::GameObject(const Transform & t):
     transform(t),
     deleted(false),
     useMeshBounds(false),
-    useBoxColliderBounds(false)
+    useBoxColliderBounds(false),
+	tag(T_NONE)
 {
 
 }

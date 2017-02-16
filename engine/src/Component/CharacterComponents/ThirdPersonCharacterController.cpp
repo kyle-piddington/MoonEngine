@@ -68,7 +68,7 @@ void ThirdPersonCharacterController::findMinGround()
         _lastGround = 0;
     }
     Hit h;
-    if(GetWorld()->castRay(transform->getPosition(), glm::vec3(0,-1,0),FLT_MAX,&h))
+    if(GetWorld()->castRay(transform->getPosition(), glm::vec3(0,-1,0),FLT_MAX,&h, T_Player))
     {
         _lastGround = std::max(_lastGround, h.intersectionPoint.y);
     }
@@ -97,7 +97,7 @@ void ThirdPersonCharacterController::handleMove(float dt)
     //LOG(GAME, "playerDirection: " + std::to_string(playerDirection.x) +"," + std::to_string(playerDirection.y));
     //LOG(GAME, "transform: " + std::to_string(transform->forward().x) +"," + std::to_string(transform->forward().y)+"," + std::to_string(transform->forward().z));
     //Check and remove movement along colliding axis.
-    if (GetWorld()->castRay(transform->getPosition(), transform->forward(), radius + 0.1f, &moveHit))
+    if (GetWorld()->castRay(transform->getPosition(), transform->forward(), radius + 0.1f, &moveHit, T_Player))
     {
         //LOG(GAME, "RayHit");
         if (glm::dot(moveHit.intersectionNormal, playerDirection) < 0)
@@ -214,7 +214,7 @@ void ThirdPersonCharacterController::checkIfShouldFall()
         return;
     }
     if (state != JUMPING && !GetWorld()->castRay(transform->getPosition(),
-        glm::vec3(0, -1, 0), bbox->getHalfWidths().y + 0.1))
+        glm::vec3(0, -1, 0), bbox->getHalfWidths().y + 0.1,nullptr,T_Player))
     {
         state = FALLING;
     }

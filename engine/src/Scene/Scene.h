@@ -139,7 +139,7 @@ namespace MoonEngine
          * @param  hit       information from a hit
          * @return           true if hit.
          */
-        bool castRay(glm::vec3 origin, glm::vec3 direction, float maxLen = -1, Hit * hit = nullptr);
+        bool castRay(glm::vec3 origin, glm::vec3 direction, float maxLen = -1, Hit * hit = nullptr, Tag excludeTags = T_NONE);
 
         float getGlobalTime();
 

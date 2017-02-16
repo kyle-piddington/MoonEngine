@@ -27,7 +27,7 @@ currentSelection(CDLODQuadtree::LODSelection(selectionBuffer,maxRenderedTiles,gl
 	debugMesh = Library::MeshLib->getInfoForMeshNamed("cube.obj",false);
 	lastHitInfo.hit = false;
 	rasterSizeX = (float)creationInfo.source->getSizeX();
-	rasterSizeZ = (float)creationInfo.source->getSizeZ();
+	rasterSizeZ = creationInfo.source->getSizeZ();
 
 }
 
