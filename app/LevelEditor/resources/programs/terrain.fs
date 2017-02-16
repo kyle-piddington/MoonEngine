@@ -33,7 +33,7 @@ void main()
 	vec4 norAO = getNormal();
 	
 	float diff = max(dot(norAO.xyz * 2 - 1,lightDir),0.0f);
-	vec3 diffuse = vec3(0.8,0.3,0.3) * diff;
+	vec3 diffuse = vec3(0.5, 0.2, 0.06) * diff;
 	//float spec = pow(max(dot(reflectDir,viewDir),0.0),32);
 	//vec3 specular = spec * vec3(1,1,1);
 	vec3 result = (diffuse + ambient);

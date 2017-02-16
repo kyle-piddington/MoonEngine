@@ -36,7 +36,7 @@ void main()
 	vec3 ambient = vec3(0.05) *texture(heightmap,fragTex.xy).r ;
 	float AO = getAO();
 	
-	vec3 diffuse = vec3(0.8,0.3,0.3);
+	vec3 diffuse = vec3(0.5, 0.2, 0.06);
 	//float spec = pow(max(dot(reflectDir,viewDir),0.0),32);
 	//vec3 specular = spec * vec3(1,1,1);
 	
