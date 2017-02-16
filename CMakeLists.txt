@@ -27,5 +27,5 @@ add_subdirectory(engine)
 add_subdirectory(app)
 add_subdirectory(test)
 
-add_subdirectory(deps/assimp)
-include_directories(deps/assimp/include)
+#add_subdirectory(deps/assimp)
+#include_directories(deps/assimp/include)

@@ -17,7 +17,7 @@ float sampleAO(IHeightmapSource * heightmap,  glm::vec2 sampleCenter,const MapDi
 	float center = heightmap->getHeightAtFloat(sampleCenter.x, sampleCenter.y);
 	float occlusion = 0.0f;
 	float radius = 0.5f;
-	int numSamples = 64;
+	int numSamples = 16;
 	//For each pixel in the heightmap, create 16 samples
 	for (GLuint i = 0; i < numSamples; ++i)
 	{
