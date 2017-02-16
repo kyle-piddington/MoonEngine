@@ -5,6 +5,8 @@
 #include "IntersectionType.h"
 #include <algorithm>
 #include <string>
+#include <algorithm>
+#include "Util/Logger.h"
 namespace MoonEngine
 {
 

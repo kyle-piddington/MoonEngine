@@ -1,10 +1,5 @@
 #include "GLNormalMapCreator.h"
-#include <glm/glm.hpp>
-#include <GL/glew.h>
-#include <random>
-#include <algorithm>
-#include "Util/MathUtil.h"
-#include "Util/Logger.h"
+
 using namespace MoonEngine;
 //http://www.flipcode.com/archives/Calculating_Vertex_Normals_for_Height_Maps.shtml
 GLNormalMapCreator::GLNormalMapCreator()

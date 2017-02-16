@@ -1,6 +1,5 @@
 #include "BoundingBox.h"
-#include <algorithm>
-#include "Util/Logger.h"
+
 using namespace MoonEngine;
 
 

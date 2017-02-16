@@ -3,6 +3,13 @@
 #include "GLUtil/GLTextureConfiguration.h"
 #include "Geometry/Terrain/IHeightmapSource.h"
 #include "Geometry/Terrain/MapDimensions.h"
+#include <memory>
+#include <glm/glm.hpp>
+#include <GL/glew.h>
+#include <random>
+#include <algorithm>
+#include "Util/MathUtil.h"
+#include "Util/Logger.h"
 namespace MoonEngine
 {
 	/**
