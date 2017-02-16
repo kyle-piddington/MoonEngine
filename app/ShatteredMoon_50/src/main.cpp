@@ -50,9 +50,9 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>();
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(2.1));
 
-    stringmap textures({{"diffuse", "penguin"}});
+    stringmap textures({{"diffuse", "wolf.tga"}});
 
-    playerObj->addComponent(scene->createComponent<StaticMesh>("penguin.obj", false));
+    playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
     playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
     playerObj->addComponent(scene->createComponent<BoxCollider>());
 

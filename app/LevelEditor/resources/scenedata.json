@@ -32,6 +32,15 @@
         "collider": false
     },
     {
+        "name": "wolf",
+        "mesh": "wolf.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "wolf.tga"
+        },
+        "collider": false
+    },
+    {
         "name": "skydome",
         "mesh": "sphere.obj",
         "program": "skydome.program",
