@@ -17,7 +17,7 @@ float sampleAO(IHeightmapSource * heightmap,  glm::vec2 sampleCenter,const MapDi
 	float center = heightmap->getHeightAtFloat(sampleCenter.x, sampleCenter.y);
 	float occlusion = 0.0f;
 	float radius = 0.5f;
-	int numSamples = 16;
+	int numSamples = 0;
 	//For each pixel in the heightmap, create 16 samples
 	for (GLuint i = 0; i < numSamples; ++i)
 	{
@@ -47,7 +47,7 @@ float sampleAO(IHeightmapSource * heightmap,  glm::vec2 sampleCenter,const MapDi
    		
 	}
 	//Return AO sample amount.
-	return std::max(0.0f,1 - occlusion/numSamples);
+	return 1; // std::max(0.0f, 1 - occlusion / numSamples);
 }
 
 std::shared_ptr<GLTexture> GLNormalMapCreator::GenerateNormalMap(IHeightmapSource * heightmap, const GLTextureConfiguration  & newTextureConf, const MapDimensions & mDims)

@@ -59,7 +59,7 @@ void DeferredRenderer::render(Scene * scene)
     lightingSetup();
 	pointLightPass(scene);
     dirLightPass(scene);
-    //forwardPass(scene, forwardObjects);
+    forwardPass(scene, forwardObjects);
     GLVertexArrayObject::Unbind();
 }
 
@@ -241,7 +241,7 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
     LOG_GL(__FILE__, __LINE__);
     // Only the geometry pass writes to the depth buffer
     glDepthMask(GL_TRUE);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     LOG_GL(__FILE__, __LINE__);

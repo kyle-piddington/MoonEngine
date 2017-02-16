@@ -366,21 +366,22 @@ bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * 
 			{
 				continue;
 			}
-            Hit thisHit;
 			if (_boxCollisionComponents[i]->isTrigger)
 			{
-				if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &thisHit))
+				continue;
+			}
+			Hit thisHit;
+			
+			if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &thisHit))
+			{
+				LOG(GAME, std::to_string(tmpHit.distance));
+				if ((maxDist == -1 || thisHit.distance < maxDist) &&
+					thisHit.distance  < closestDist)
 				{
-					LOG(GAME, std::to_string(tmpHit.distance));
-					if ((maxDist == -1 || thisHit.distance < maxDist) &&
-						thisHit.distance  < closestDist)
-					{
-						tmpHit = thisHit;
-						closestDist = thisHit.distance;
-					}
+					tmpHit = thisHit;
+					closestDist = thisHit.distance;
 				}
 			}
-            
         }
         if (closestDist != FLT_MAX)
         {

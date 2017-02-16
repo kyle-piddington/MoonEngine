@@ -63,7 +63,7 @@ int main(int argc, char ** argv)
     scene->addGameObject(playerObj);
 
     //Camera setup
-    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1000);
+    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
     cameraObj->addComponent(cam);
     cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
@@ -175,7 +175,7 @@ int main(int argc, char ** argv)
     //Skybox
     Transform skydomeTransform;
     skydomeTransform.setPosition(glm::vec3(0, 0, 0));
-    skydomeTransform.setScale(glm::vec3(50, 50, 50));
+    skydomeTransform.setScale(glm::vec3(1000, 1000, 1000));
     std::shared_ptr<GameObject> sphereObject = std::make_shared<GameObject>(boxTransform);
     sphereObject = std::make_shared<GameObject>(skydomeTransform);
     sphereObject->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
@@ -191,19 +191,19 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_PURPLE, 0.2f, 0.2f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    scene->addGameObject(pointLight);
+    //scene->addGameObject(pointLight);
 
     lightTransform.setPosition(glm::vec3(-5, 3, 1));
     pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_WHITE, 0.2f, 0.2f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    scene->addGameObject(pointLight);
+    //scene->addGameObject(pointLight);
 
     lightTransform.setPosition(glm::vec3(4, 3, -5));
     pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_CYAN, 0.2f, 0.2f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    scene->addGameObject(pointLight);
+    //scene->addGameObject(pointLight);
 
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
