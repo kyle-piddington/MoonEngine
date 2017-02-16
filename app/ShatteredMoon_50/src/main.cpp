@@ -180,7 +180,16 @@ int main(int argc, char ** argv)
 
 
 //     //Skybox
-    
+    Transform skydomeTransform;
+    skydomeTransform.setPosition(glm::vec3(0, 0, 0));
+    skydomeTransform.setScale(glm::vec3(1000, 1000, 1000));
+    std::shared_ptr<GameObject> sphereObject = std::make_shared<GameObject>(skydomeTransform);
+    sphereObject = std::make_shared<GameObject>(skydomeTransform);
+    sphereObject->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
+    stringmap sky_textures({{"skycolor", "skycolor"}});
+    sphereObject->addComponent(
+            scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures, true));
+    scene->addGameObject(sphereObject);
 
 
 // =======

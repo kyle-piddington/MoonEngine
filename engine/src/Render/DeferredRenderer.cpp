@@ -75,7 +75,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 
 	// Only the geometry pass writes to the depth buffer
 	glDepthMask(GL_TRUE);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
 
@@ -231,7 +231,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
 
 
 void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObject>> forwardObjects) {
-
+    
     GLProgram* activeProgram = nullptr;
     Mesh* mesh = nullptr;
     const MeshInfo* meshInfo = nullptr;
@@ -249,7 +249,7 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
     LOG_GL(__FILE__, __LINE__);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Write to default framebuffer
     LOG_GL(__FILE__, __LINE__);
-    glBlitFramebuffer( 0, 0, _width, _height, 0, 0, _width, _height, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
+    glBlitFramebuffer( 0, 0, _width, _height, 0, 0, _deferredWidth, _deferredHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
     LOG_GL(__FILE__, __LINE__);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     LOG_GL(__FILE__, __LINE__);
