@@ -15,6 +15,11 @@ namespace MoonEngine
 		std::unordered_map<std::string, std::string> textures;
 		MeshInfo meshInfo;
 		BoundingBox box;
+
+		void bind() const
+		{
+			meshInfo.bind();
+		}
 	};
 
 	/**
@@ -31,14 +36,20 @@ namespace MoonEngine
 
 		bool hasTangentBitangent() const;
 
+		bool hasTextureCoordinates() const;
+
 		bool hasBones() const;
 
-		std::vector<MeshInfo> getMeshInfo() const;
+		const std::vector<AssimpMeshInfo> & getMeshInfo() const;
 
-		MeshInfo getFullMeshInfo() const;
+		int stride() const;
+
+		const MeshInfo & getFullMeshInfo() const;
 
 		std::vector<std::string> getAllTextures() const;
 
+		void addMeshInfo(AssimpMeshInfo & meshInfo);
+		
 		void setVertexArrayObject(GLVertexArrayObject * vao)
 		{
 			vertexObjectPtr = vao;
@@ -55,11 +66,14 @@ namespace MoonEngine
 	private:
         //Pointer to the vertex array object that contains the mesh.
         //Most meshes are saved  in MeshLibrary, but not all.
-		std::vector<MeshInfo> _meshInfo;
+		std::vector<AssimpMeshInfo> _meshInfo;
 		MeshInfo fullMeshInfo;
 		GLVertexArrayObject * vertexObjectPtr;
-
-		int components
+		bool _hasNormals;
+		bool _hasTangentBitangent;
+		bool _hasBones;
+		bool _hasTextureCoordinates;
+		
 
 	};
 	
