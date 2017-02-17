@@ -83,6 +83,8 @@ namespace MoonEngine
 
         static void Unbind();
 
+        void setDepthStencil(bool depthVal, bool stencilVal);
+
     private:
         GLuint release();
 

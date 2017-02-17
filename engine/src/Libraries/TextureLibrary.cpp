@@ -3,6 +3,7 @@
 #include "Loaders/TextureLoader.h"
 #include <memory>
 #include "thirdparty/imgui/imgui.h"
+#include "Util/Logger.h"
 
 using namespace MoonEngine;
 
@@ -20,11 +21,24 @@ TextureLibrary::~TextureLibrary()
 }
 
 /* Get or load a texture */
-GLTexture * TextureLibrary::getTexture(std::string textureName, std::string extension)
+
+GLTexture * TextureLibrary::getTexture(std::string textureName, std::string extension, bool is16f)
 {
     if (_textures.find(textureName) == _textures.end())
     {
-        std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(_recPath + textureName + extension);
+        LOG(GAME, "Loading texture " + textureName);
+        std::shared_ptr<GLTexture> glTexture;
+        if(is16f)
+        { 
+            glTexture = TextureLoader::LoadTextureFromFile16f(
+            _recPath + textureName + extension);
+
+        } 
+        else{
+            glTexture = TextureLoader::LoadTextureFromFile(
+            _recPath + textureName + extension);
+        }
+
         _texturePtrs.push_back(glTexture);
         if (glTexture != nullptr)
         {
@@ -32,6 +46,7 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, std::string exte
         }
         else
         {
+            
             _textures[textureName] = _textures["default"];
         }
     }
@@ -44,6 +59,12 @@ void TextureLibrary::loadDefaultTexture()
 
     _textures["default"] = glTexture.get();
 }
+
+void TextureLibrary::addTexture(std::string textureName, std::shared_ptr<GLTexture> ptr){
+    _texturePtrs.push_back(ptr);
+    _textures[textureName] = ptr.get();
+}
+
 
 void TextureLibrary::Debug_ShowAllTextures()
 {

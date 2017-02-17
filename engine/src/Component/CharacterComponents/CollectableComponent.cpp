@@ -11,7 +11,10 @@ CollectableComponent::CollectableComponent()
 
 void CollectableComponent::start()
 {
-
+	if (gameObject->getComponent<BoxCollider>() != nullptr)
+	{
+		gameObject->getComponent<BoxCollider>()->isTrigger = true;
+	}
 }
 
 void CollectableComponent::update(float dt)

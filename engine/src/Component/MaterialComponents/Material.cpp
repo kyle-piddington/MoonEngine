@@ -59,8 +59,8 @@ void Material::bind()
     {
         texture_unit texture = _texture.second;
         texture.gl_texture->bind(texture.unit);
-        glBindSampler(texture.unit, _sampler->getId());
         glUniform1i(_program->getUniformLocation(_texture.first),texture.unit);
+        LOG_GL(__FILE__, __LINE__);
     }
 }
 
@@ -70,8 +70,14 @@ void Material::unbind()
     for (auto & _texture: _textures)
     {
         texture_unit texture = _texture.second;
-
         texture.gl_texture->unbind(texture.unit);
         glBindSampler(texture.unit, 0);
     }
+
+}
+
+
+void Material::addTexture(std::string uniformName, GLTexture * texture)
+{
+    _textures[uniformName] = {texture, _texture_unit++};
 }

@@ -55,6 +55,8 @@ namespace MoonEngine
 
         void unbind();
 
+        void addTexture(std::string uniformName, GLTexture * texture);
+
     private:
         struct texture_unit {
             GLTexture * gl_texture;

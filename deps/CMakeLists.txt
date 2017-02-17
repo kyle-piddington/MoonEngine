@@ -27,3 +27,8 @@ else ()
     add_subdirectory(${GLFW_DIR} ${GLFW_DIR}/debug)
 endif ()
 include_directories(${GLFW_DIR}/include)
+
+if(NOT WIN32)
+  #add_subdirectory(assimp)
+  #include_directories(assimp/include)
+endif()

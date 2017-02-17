@@ -18,8 +18,10 @@ namespace MoonEngine
 
         ~TextureLibrary();
 
-        GLTexture * getTexture(std::string textureName, std::string extension = ".png");
-
+        GLTexture * getTexture(std::string textureName, std::string extension = ".png", bool f16 = false);
+        //Track a texture in the library.
+        void addTexture(std::string textureName, std::shared_ptr<GLTexture> ptr);
+   
         void Debug_ShowAllTextures();
 
     private:

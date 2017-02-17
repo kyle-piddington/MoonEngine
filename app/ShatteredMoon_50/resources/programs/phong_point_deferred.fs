@@ -15,13 +15,15 @@ struct PointLight
     Attenuation atten;
 };
 
+in vec2 fragTexCoords;
+
 uniform sampler2D positionTex;
 uniform sampler2D colorTex;
 uniform sampler2D normalTex;
 uniform PointLight pointLight;
 
 uniform vec2 screenSize;
-uniform vec3 cameraPosition;
+
 
 
 vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
@@ -32,9 +34,9 @@ vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
     // Diffuse
     vec3 lightDir = normalize(pointLight.position - WorldPos);
     vec4 DiffuseColor = vec4(max(dot(Normal, lightDir), 0.0) * Diffuse * pointLight.color, 1.0);
-
+    vec3 cameraDir = normalize(-WorldPos);
     // Specular
-    vec3 halfDir = normalize(lightDir + cameraPosition);  
+    vec3 halfDir = normalize(lightDir + cameraDir);  
     float specPercent = pow(max(dot(Normal, halfDir), 0.0), 16.0);
     vec4 SpecularColor = vec4(pointLight.color * specPercent * Specular, 1.0);
     
@@ -44,13 +46,13 @@ vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
 
 vec4 calcPointLight(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
 {
-    float distance = length(WorldPos - pointLight.position);
+    float dist = length(WorldPos - pointLight.position);
 
     vec4 baseColor = calcLightEffect(WorldPos, Diffuse, Normal, Specular);
     
     float attenTotal  =  pointLight.atten.constant +
-                         pointLight.atten.linear * distance +
-                         pointLight.atten.exp * distance * distance;
+                         pointLight.atten.linear * dist +
+                         pointLight.atten.exp * dist * dist;
 
     attenTotal = max(1.0, attenTotal);
 
@@ -60,7 +62,7 @@ vec4 calcPointLight(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
 
 vec2 locTexCoord()
 {
-    return gl_FragCoord.xy / screenSize;
+    return gl_FragCoord.xy/screenSize;
 }
 
 out vec4 finalColor;

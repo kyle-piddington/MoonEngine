@@ -4,6 +4,14 @@
 #include "I_Renderer.h"
 #include "Component/Components.h"
 #include "GLWrapper/GLFramebuffer.h"
+#include "Util/Logger.h"
+#include "GLWrapper/OpenGL.h"
+#include <glm/gtc/type_ptr.hpp>
+#include "Component/Components.h"
+#include "GameObject/GameObject.h"
+#include "Geometry/MeshCreator.h"
+#include "thirdparty/imgui/imgui.h"
+#include <iostream>
 /**
  * The Default renderer performs a phong rendering
  * of the entire scene, using MaterialInstance.tint's 
@@ -26,7 +34,7 @@ namespace MoonEngine
          * Pre-setup for renderer. Gather variables
          * @param scene Scene to render.
          */
-        virtual void setup(Scene * scene);
+        virtual void setup(Scene * scene, GLFWwindow * window);
 
         /**
          * Render the current state of the scene

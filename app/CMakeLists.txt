@@ -4,3 +4,7 @@ add_subdirectory(glBaseClassTest)
 add_subdirectory(ShatteredMoon_25)
 add_subdirectory(ShatteredMoon_50)
 add_subdirectory(TextureTest)
+add_subdirectory(terrainTest)
+add_subdirectory(viewFrustrumCullingTest)
+add_subdirectory(LevelEditor)
+

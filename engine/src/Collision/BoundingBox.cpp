@@ -1,5 +1,4 @@
 #include "BoundingBox.h"
-#include <algorithm>
 
 using namespace MoonEngine;
 
@@ -20,6 +19,8 @@ BoundingBox::BoundingBox(
     float minZ,
     float maxZ)
 {
+
+    
     assert(minX <= maxX);
     assert(minY <= maxY);
     assert(minZ <= maxZ);
@@ -47,14 +48,15 @@ float BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec
 
     float tmin = -INT_MAX;
     float tmax = INT_MAX;
-    glm::vec3 minCoords = centerPoint + glm::vec3(-xHalfWidth, -yHalfWidth, -zHalfWidth);
-    glm::vec3 maxCoords = centerPoint + glm::vec3(xHalfWidth, yHalfWidth, zHalfWidth);
+    glm::vec3 minCoords = min();//centerPoint + glm::vec3(-xHalfWidth, -yHalfWidth, -zHalfWidth);
+    glm::vec3 maxCoords = max();//centerPoint + glm::vec3(xHalfWidth, yHalfWidth, zHalfWidth);
 
 
     for (int i = 0; i < 3; ++i)
     {
 
-        if (fabs(direction[i]) > 0)
+
+        if (fabsf(direction[i]) > 0)
         {
             float t1 = (minCoords[i] - origin[i]) / direction[i];
             float t2 = (maxCoords[i] - origin[i]) / direction[i];
@@ -74,8 +76,8 @@ float BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec
             {
                 maxPlane = (BoundingBox::Plane) (2 * i + 1 - swp);
             }
-            tmin = fmax(tmin, t1);
-            tmax = fmin(tmax, t2);
+            tmin = fmaxf(tmin, t1);
+            tmax = fminf(tmax, t2);
 
         }
         else if (origin[i] < minCoords[i] || origin[i] > maxCoords[i])
@@ -83,8 +85,10 @@ float BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec
             return -1;
         }
     }
+ 
+    
     //Tmax must be greater than zero, and tMin.
-    if (tmax > fmax(tmin, 0.0))
+    if (tmax >= fmaxf(tmin, 0.0))
     {
         //Return lowest non-negative
         BoundingBox::Plane intersectPlane = minPlane;
@@ -92,13 +96,15 @@ float BoundingBox::intersectsRay(glm::vec3 origin, glm::vec3 direction, glm::vec
         if (t < 0)
         {
             //Internal intersection
-            return -1;
+            t = tmax;
+            intersectPlane = maxPlane;
         }
         //Create normal by determining which plane the point is on
         if (colnormal != nullptr)
         {
             *colnormal = normalFor(intersectPlane);
         }
+
         return t;
     }
     else
@@ -130,8 +136,15 @@ BoundingBox BoundingBox::BoundPoints(const std::vector<glm::vec3> & points)
     return BoundingBox(minX, maxX, minY, maxY, minZ, maxZ);
 }
 
+bool BoundingBox::contains(const glm::vec3 & point) const
+{
+    bool xInRange = fabsf(point.x - centerPoint.x) < xHalfWidth;
+    bool yInRange = fabsf(point.y - centerPoint.y) < yHalfWidth;
+    bool zInRange = fabsf(point.z - centerPoint.z) < zHalfWidth;
+    return xInRange && yInRange && zInRange;      
+}
 
-BoundingBox BoundingBox::transform(const glm::mat4 & transformation)
+BoundingBox BoundingBox::transform(const glm::mat4 & transformation) const
 {
     std::vector<glm::vec3> boundingPoints = cornerPoints();
     for (glm::vec3 & point : boundingPoints)
@@ -142,7 +155,17 @@ BoundingBox BoundingBox::transform(const glm::mat4 & transformation)
     return BoundingBox::BoundPoints(boundingPoints);
 }
 
-std::vector<glm::vec3> BoundingBox::cornerPoints()
+glm::vec3 BoundingBox::max() const
+{
+	return glm::vec3(centerPoint.x + xHalfWidth, centerPoint.y + yHalfWidth, centerPoint.z + zHalfWidth);
+}
+
+glm::vec3 BoundingBox::min() const
+{
+	return glm::vec3(centerPoint.x - xHalfWidth, centerPoint.y - yHalfWidth, centerPoint.z - zHalfWidth);
+}
+
+std::vector<glm::vec3> BoundingBox::cornerPoints() const
 {
     std::vector<glm::vec3> boundPoints;
     for (int i = 0; i < 2; i++)
@@ -194,8 +217,65 @@ bool BoundingBox::intersects(const BoundingBox & other, glm::vec3 * colnormal)
     return x && y && z;
 }
 
-glm::vec3 BoundingBox::normalFor(BoundingBox::Plane plane)
+
+bool BoundingBox::inFrustrum(const glm::vec4 frustrum[6]) const
 {
+    glm::vec3 box[2];
+    box[0] = min();
+    box[1] = max();
+    float distance;
+    
+
+    for (int j = 0; j < 6; j++)
+    {
+        int ix = static_cast<int>(frustrum[j].x > 0.0f);
+        int iy = static_cast<int>(frustrum[j].y > 0.0f);
+        int iz = static_cast<int>(frustrum[j].z > 0.0f);
+
+        distance = (frustrum[j].x * box[ix].x + 
+            frustrum[j].y * box[iy].y + 
+            frustrum[j].z * box[iz].z);
+        if (distance < -frustrum[j].w)
+        {
+            return false;
+            break;
+        }
+    }
+    return true;
+}
+IntersectType BoundingBox::testFrustrum(const glm::vec4 frustrum[6]) const
+{
+    if(!inFrustrum(frustrum))
+    {
+        return IT_Outside;
+    }
+    else
+    {
+        
+        float distance;
+        auto pts = cornerPoints();
+        for(int i = 0; i < pts.size(); i++)
+        {
+            for(int j = 0; j < 6; j++)
+            {
+                distance = (
+                    frustrum[j].x * pts[i].x + 
+                    frustrum[j].y * pts[i].y + 
+                    frustrum[j].z * pts[i].z);
+                if (distance < -frustrum[j].w)
+                {
+                    return IT_Intersect;
+                    
+
+                }
+            }
+        }
+ 
+        return IT_Inside;     
+    }
+}
+
+glm::vec3 BoundingBox::normalFor(BoundingBox::Plane plane){
     switch (plane)
     {
         case X_NEAR:
@@ -212,3 +292,38 @@ glm::vec3 BoundingBox::normalFor(BoundingBox::Plane plane)
             return glm::vec3(0, 0, 1);
     }
 }
+
+
+
+bool vecLess(const glm::vec3 & a, const glm::vec3 & b)
+{
+    return a.x < b.x && a.y < b.y && a.z < b.z;
+}
+bool vecGreater(const glm::vec3 & a, const glm::vec3 & b)
+{
+    return a.x > b.x && a.y > b.y && a.z > b.z;
+}
+
+bool BoundingBox::contains(const BoundingBox & other) const
+{
+    return vecLess(min(),other.min()) && vecGreater(max(), other.max());
+}
+
+glm::vec3 vecMin(const glm::vec3 a, const glm::vec3 b)
+{
+    return glm::vec3(std::min(a.x,b.x), std::min(a.y,b.y), std::min(a.z,b.z));
+}
+
+glm::vec3 vecMax(const glm::vec3 a, const glm::vec3 b)
+{
+    return glm::vec3(std::max(a.x,b.x), std::max(a.y,b.y), std::max(a.z,b.z));
+}
+
+BoundingBox BoundingBox::merge(const BoundingBox & other) const
+{
+
+    glm::vec3 minPoints = vecMin(this->min(),other.min());
+    glm::vec3 maxPoints = vecMax(this->max(), other.max());
+    return BoundingBox(minPoints.x,maxPoints.x,minPoints.y,maxPoints.y,minPoints.z,maxPoints.z);   
+}
+

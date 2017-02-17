@@ -110,7 +110,7 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
             vertexArrayObject->bindVertexBuffer(
                 GL_VERTEX_TEXTURE_ATTRIBUTE,
                 *vertexBuffer,
-                3,
+                2,
                 GL_FLOAT,
                 false,
                 dataSize,

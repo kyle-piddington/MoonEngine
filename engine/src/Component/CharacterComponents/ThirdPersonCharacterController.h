@@ -2,6 +2,7 @@
 
 #include "Component/Component.h"
 #include "Component/CollisionComponents/BoxCollider.h"
+#include "Component/MeshComponents/Terrain.h"
 #include "Geometry/Transform.h"
 /**
  * Controls a character in a first-person matter
@@ -34,18 +35,21 @@ namespace MoonEngine
         void handleJump(float dt);
 
         void checkIfShouldFall();
-
+        void findMinGround();
         Transform * transform;
         float playerSpeed;
         float jumpSpeed;
         float jumpForce;
         float jumpTime;
         float _curJumpForce;
+        
         float _jumpTime;
         float gravity;
+        float _lastGround;
         PlayerState state;
         float radius;
         GameObject * mainCamera;
+        Terrain * worldTerrain;
         BoxCollider * bbox;
 
     };

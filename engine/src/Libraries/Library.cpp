@@ -10,6 +10,7 @@ std::shared_ptr<ProgramLibrary> Library::ProgramLib;
 std::shared_ptr<InstTransformLibrary> Library::InstTransformLib;
 std::shared_ptr<TextureLibrary> Library::TextureLib;
 std::shared_ptr<SamplerLibrary> Library::SamplerLib;
+std::shared_ptr<Level> Library::LevelLib;
 
 void Library::Init(MoonEngineCfg config)
 {
@@ -21,6 +22,7 @@ void Library::Init(MoonEngineCfg config)
     InstTransformLib = std::make_shared<InstTransformLibrary>(resourcePath + dirs["instances"]);
     TextureLib = std::make_shared<TextureLibrary>(resourcePath + dirs["textures"]);
     SamplerLib = std::make_shared<SamplerLibrary>();
+    LevelLib = std::make_shared<Level>(resourcePath);
 }
 
 void Library::Destroy()

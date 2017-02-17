@@ -7,6 +7,8 @@
 #include "Tag.h"
 #include "Component/Component.h"
 #include "Geometry/Transform.h"
+#include "Geometry/Spatial/Node.h"
+#include "Collision/BoundingBox.h"
 /*
 	Core GameObject component. Contains 
 	a list of pointers to components, a tag,
@@ -14,7 +16,7 @@
 */
 namespace MoonEngine
 {
-
+	class Node;
     class GameObject
     {
     public:
@@ -85,6 +87,13 @@ namespace MoonEngine
         bool isDeleted();
 
         void setDeleted();
+        //Find the first appropriate component to return a bounding
+        
+        const BoundingBox & getBounds();
+
+		void addNode(Node *node);
+		void removeNode(Node * node);
+		std::vector<Node *> getNodes();
 
     private:
         /*
@@ -92,10 +101,19 @@ namespace MoonEngine
             If a component is de-allocated (Shouldn't happen often),
         */
         Transform transform;
+
+        
         std::vector<Component *> components;
         Tag tag;
         GameObject * parent;
         bool deleted;
+		std::vector<Node *> region;
+        //Bounding box abstractions for VFC / other stuff.
+        BoundingBox defaultBox;
+        BoundingBox defaultTransformedBox;
+        bool useMeshBounds;
+        bool useBoxColliderBounds;
+
     };
 
 };

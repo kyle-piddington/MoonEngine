@@ -26,6 +26,7 @@ namespace MoonEngine
         glm::vec3 _trac;
         glm::vec3 _targ;
         glm::vec3 _tracInterp;
+        float _camHeight;
 
         float _phi;
         float _theta;

@@ -15,7 +15,10 @@ namespace MoonEngine
 
         virtual const MeshInfo * getMesh() = 0;
 
-        virtual std::shared_ptr<Component> clone() const = 0;
 
+		virtual const BoundingBox & getBoundingBox() = 0;
+
+		//Submits an OpenGL call (Don't handle binding/unbinding);
+		virtual void draw() const = 0;
     };
 }

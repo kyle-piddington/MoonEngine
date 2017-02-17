@@ -4,7 +4,7 @@
 #include "Util/Logger.h"
 #include "Component/CollisionComponents/BoxCollider.h"
 #include <glm/glm.hpp>
-
+#include "Geometry/Spatial/KDTree.h"
 #include <functional>
 
 namespace MoonEngine
@@ -46,6 +46,12 @@ namespace MoonEngine
 
         const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjects() const;
 
+
+        const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjectsInFrustrum(glm::mat4 VP, Tag withTag = T_ALL) const;
+
+        float distanceFromFrutrum(glm::vec4 frustPlane, glm::vec3 point);
+        
+
         const std::vector<std::shared_ptr<GameObject>> getPointLightObjects() const;
 
         const std::vector<std::shared_ptr<GameObject>> getDirLightObjects() const;
@@ -57,6 +63,13 @@ namespace MoonEngine
             return object;
         }
 
+        std::shared_ptr<GameObject> createGameObject(const Transform & t)
+        {
+            std::shared_ptr<GameObject> object = std::make_shared<GameObject>(t);
+            _allGameObjects.push_back(object);
+            return object;
+        }
+
 
         template<class T, class... Args>
         T * createComponent(Args && ... args)
@@ -64,6 +77,21 @@ namespace MoonEngine
             std::shared_ptr<T> ptr = std::make_shared<T>(args...);
             _components.push_back(ptr);
             return ptr.get();
+        }
+
+        template<class T>
+        T * cloneComponent(T * component)
+        {
+        	std::shared_ptr<T> ptr = std::static_pointer_cast<T>(component->clone());
+        	_components.push_back(ptr);
+        	return ptr.get();
+        }
+        template<class T>
+        T * cloneComponent(std::shared_ptr<T> component)
+        {
+        	std::shared_ptr<T> ptr = std::static_pointer_cast<T>(component->clone());
+        	_components.push_back(ptr);
+        	return ptr.get();
         }
 
         /**
@@ -78,6 +106,7 @@ namespace MoonEngine
          */
         void deleteGameObject(GameObject * object);
 
+        void deleteGameObject(std::shared_ptr<GameObject> object);
         /**
          * Delete GameObjects from the scene post-update.
          */
@@ -110,9 +139,10 @@ namespace MoonEngine
          * @param  hit       information from a hit
          * @return           true if hit.
          */
-        bool castRay(glm::vec3 origin, glm::vec3 direction, float maxLen = -1, Hit * hit = nullptr);
+        bool castRay(glm::vec3 origin, glm::vec3 direction, float maxLen = -1, Hit * hit = nullptr, Tag excludeTags = T_NONE);
 
         float getGlobalTime();
+
 
         glm::vec3 getGlobalLightDir();
 
@@ -127,6 +157,9 @@ namespace MoonEngine
 
         std::vector<std::shared_ptr<GameObject>> _gameObjects;
         std::vector<std::shared_ptr<GameObject>> _renderableGameObjects;
+
+		std::shared_ptr<KDTree> _renderTree;
+
         std::vector<std::shared_ptr<GameObject>> _pointLightObjects;
         std::vector<std::shared_ptr<GameObject>> _dirLightObjects;
 

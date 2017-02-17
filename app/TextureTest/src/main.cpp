@@ -107,6 +107,7 @@ int main(int argc, char ** argv)
     Transform skydomeTransform;
     skydomeTransform.setPosition(glm::vec3(0, 0, 0));
     skydomeTransform.setScale(glm::vec3(50, 50, 50));
+
     std::shared_ptr<GameObject> sphereObject = std::make_shared<GameObject>(boxTransform);
     sphereObject = std::make_shared<GameObject>(skydomeTransform);
     sphereObject->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
@@ -140,5 +141,6 @@ int main(int argc, char ** argv)
 
 
     return 0;
+
 
 }

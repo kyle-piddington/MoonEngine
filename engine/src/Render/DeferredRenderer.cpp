@@ -33,9 +33,12 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
     _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
+
+    
+    
 }
 
-void DeferredRenderer::setup(Scene * scene)
+void DeferredRenderer::setup(Scene * scene, GLFWwindow * window)
 {
     _mainCamera = scene->getMainCamera()->getComponent<Camera>();
     _mainCameraPosition = scene->getMainCamera()->getTransform().getPosition();
@@ -43,6 +46,7 @@ void DeferredRenderer::setup(Scene * scene)
     {
         LOG(ERROR, "No Camera in scene!");
     }
+    glfwGetFramebufferSize(window, &_deferredWidth, &_deferredHeight);
     //Swing through all rendering components and load their programs.
     glClearColor(0, 0, 0, 1.0f);
 }
@@ -62,7 +66,7 @@ void DeferredRenderer::render(Scene * scene)
 vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene)
 {
 	GLProgram* activeProgram = nullptr;
-	const MeshInfo* mesh = nullptr;
+	Mesh* mesh = nullptr;
 	Material* mat = nullptr;
 	vector<std::shared_ptr<GameObject>> forwardObjects;
 	_gBuffer.bind(GL_DRAW_FRAMEBUFFER);
@@ -71,14 +75,15 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 
 	// Only the geometry pass writes to the depth buffer
 	glDepthMask(GL_TRUE);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
 
-	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
+	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
 	{
 		mat = obj->getComponent<Material>();
-		mesh = obj->getComponent<Mesh>()->getMesh();
+		mesh = obj->getComponent<Mesh>();
+        const MeshInfo * meshInfo = mesh->getMesh();
         
 		if (mat->isForward()) {
 			forwardObjects.push_back(obj);
@@ -102,7 +107,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
             
 		}
 		mat->bind();
-		mesh->bind();
+		meshInfo->bind();
 		//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
 		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
@@ -118,26 +123,7 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 		}
 		
         LOG_GL(__FILE__, __LINE__);
-		if (obj->getComponent<InstanceMesh>() != nullptr)
-		{
-			glDrawElementsInstanced(
-				GL_TRIANGLES,
-				mesh->numTris,
-				GL_UNSIGNED_SHORT,
-				mesh->indexDataOffset,
-				obj->getComponent<InstanceMesh>()->_numOfInstances
-			);
-		}
-		else
-		{
-			glDrawElementsBaseVertex(
-				GL_TRIANGLES,
-				mesh->numTris,
-				GL_UNSIGNED_SHORT,
-				mesh->indexDataOffset,
-				mesh->baseVertex
-			);
-		}
+		mesh->draw();
 		mat->unbind();
         LOG_GL(__FILE__, __LINE__);
 	}
@@ -176,7 +162,9 @@ void DeferredRenderer::pointLightPass(Scene* scene)
         Transform & t = obj->getComponent<PointLight>()->getLightTransform();
       
         glm::mat4 M = t.getMatrix();
-
+        glm::vec3 lightPosition = obj->getComponent<PointLight>()->getPosition();
+        glm::vec3 viewLightPosition = 
+            glm::vec3(M * glm::vec4(lightPosition,1.0));
 		//sets the point light shader as active
 		lightSphere->bind();
 
@@ -186,7 +174,7 @@ void DeferredRenderer::pointLightPass(Scene* scene)
         glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.color"), 1, 
             glm::value_ptr(obj->getComponent<PointLight>()->getColor()));
         glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.position"), 1,
-            glm::value_ptr(obj->getComponent<PointLight>()->getPosition()));
+            glm::value_ptr(viewLightPosition));
 
 		glUniform1f(_pointLightProgram->getUniformLocation("pointLight.ambient"), obj->getComponent<PointLight>()->getAmbient());
 
@@ -213,18 +201,20 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     glm::mat4 P = _mainCamera->getProjection();
     _dirLightProgram->enable();
     setupLightUniforms(_dirLightProgram);
-
     _renderQuad->bind();
     
     
     for (std::shared_ptr<GameObject> obj : scene->getDirLightObjects()) {
         
+        glm::vec3 viewLight = 
+            glm::vec3(V * glm::vec4(obj->getComponent<DirLight>()->getDirection(),0));
+
         DirLight* light = obj->getComponent<DirLight>();
         //For every directional light, pass new direction and color
         glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.color"), 1, 
             glm::value_ptr(obj->getComponent<DirLight>()->getColor()));
         glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1,
-            glm::value_ptr(obj->getComponent<DirLight>()->getDirection()));
+            glm::value_ptr(viewLight));
         glUniform1f(_dirLightProgram->getUniformLocation("dirLight.ambient"), obj->getComponent<DirLight>()->getAmbient());
 
         
@@ -241,16 +231,17 @@ void DeferredRenderer::dirLightPass(Scene* scene)
 
 
 void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObject>> forwardObjects) {
-
+    
     GLProgram* activeProgram = nullptr;
-    const MeshInfo* mesh = nullptr;
+    Mesh* mesh = nullptr;
+    const MeshInfo* meshInfo = nullptr;
     Material* mat = nullptr;
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
     LOG_GL(__FILE__, __LINE__);
     // Only the geometry pass writes to the depth buffer
     glDepthMask(GL_TRUE);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
     LOG_GL(__FILE__, __LINE__);
@@ -258,14 +249,15 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
     LOG_GL(__FILE__, __LINE__);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Write to default framebuffer
     LOG_GL(__FILE__, __LINE__);
-    glBlitFramebuffer( 0, 0, _width, _height, 0, 0, _width, _height, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
+    glBlitFramebuffer( 0, 0, _width, _height, 0, 0, _deferredWidth, _deferredHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
     LOG_GL(__FILE__, __LINE__);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     LOG_GL(__FILE__, __LINE__);
     for (std::shared_ptr<GameObject> obj : forwardObjects)
     {
         mat = obj->getComponent<Material>();
-        mesh = obj->getComponent<Mesh>()->getMesh();
+        mesh = obj->getComponent<Mesh>();
+        meshInfo = mesh->getMesh();
 
         glm::mat4 M = obj->getTransform().getMatrix();
 
@@ -279,7 +271,7 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
 
         }
         mat->bind();
-        mesh->bind();
+        meshInfo->bind();
         //No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
         glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
@@ -296,27 +288,9 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
         if (activeProgram->hasUniform("iGlobalTime")) {
             glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
         }
+        mesh->draw();
 
-        if (obj->getComponent<InstanceMesh>() != nullptr)
-        {
-            glDrawElementsInstanced(
-                GL_TRIANGLES,
-                mesh->numTris,
-                GL_UNSIGNED_SHORT,
-                mesh->indexDataOffset,
-                obj->getComponent<InstanceMesh>()->_numOfInstances
-            );
-        }
-        else
-        {
-            glDrawElementsBaseVertex(
-                GL_TRIANGLES,
-                mesh->numTris,
-                GL_UNSIGNED_SHORT,
-                mesh->indexDataOffset,
-                mesh->baseVertex
-            );
-        }
+       
         mat->unbind();
     }
     LOG_GL(__FILE__, __LINE__);
@@ -345,7 +319,7 @@ void DeferredRenderer::setupLightUniforms(GLProgram * prog)
 
     //Other global Uniforms
     glUniform3fv(prog->getUniformLocation("cameraPosition"), 1, glm::value_ptr(_mainCameraPosition));
-    glUniform2f(prog->getUniformLocation("screenSize"), (float) _width,(float) _height);
+    glUniform2f(prog->getUniformLocation("screenSize"), (float) _deferredWidth,(float) _deferredHeight);
 }
 
 void DeferredRenderer::shutdown()

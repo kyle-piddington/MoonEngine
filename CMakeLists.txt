@@ -4,7 +4,7 @@ project (ShatteredMoon)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if(NOT WIN32)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  ")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -03")
 endif()
 # Get the GLEW environment variable.
 set(GLEW_DIR "$ENV{GLEW_DIR}")
@@ -26,3 +26,6 @@ add_subdirectory(deps)
 add_subdirectory(engine)
 add_subdirectory(app)
 add_subdirectory(test)
+
+#add_subdirectory(deps/assimp)
+#include_directories(deps/assimp/include)

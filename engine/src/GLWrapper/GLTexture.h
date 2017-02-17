@@ -62,6 +62,8 @@ namespace MoonEngine
 
 		void bindRaw();
 
+        void bindSampler(GLuint unit, GLSampler * sampler);
+
         /**
          * Bind the texture
          */

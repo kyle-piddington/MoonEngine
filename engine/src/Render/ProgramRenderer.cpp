@@ -1,12 +1,5 @@
 #include "ProgramRenderer.h"
-#include "Util/Logger.h"
-#include "GLWrapper/OpenGL.h"
-#include <glm/gtc/type_ptr.hpp>
-#include "Component/Components.h"
-#include "GameObject/GameObject.h"
-#include "Geometry/MeshCreator.h"
-#include "thirdparty/imgui/imgui.h"
-#include <iostream>
+
 
 using namespace MoonEngine;
 
@@ -17,7 +10,7 @@ ProgramRenderer::ProgramRenderer():
 
 }
 
-void ProgramRenderer::setup(Scene * scene)
+void ProgramRenderer::setup(Scene * scene, GLFWwindow * window)
 {
     mainCamera = scene->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
     if (mainCamera == nullptr)
@@ -32,6 +25,7 @@ void ProgramRenderer::setup(Scene * scene)
 
 void ProgramRenderer::render(Scene * scene)
 {
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 V = mainCamera->getView();
@@ -40,14 +34,24 @@ void ProgramRenderer::render(Scene * scene)
     //No binning
 
     GLProgram * activeProgram = nullptr;
+	int all = scene->getRenderableGameObjects().size();
+	std::vector<std::shared_ptr<GameObject>> frustObjects = scene->getRenderableGameObjectsInFrustrum(P*V);
+    int drawn = frustObjects.size();
 
+    ImGui::Begin("Renderer stats");
+    {
+        ImGui::Value("All Renderable objects", all);
+        ImGui::Value("Actual drawn Objects", drawn);
+        ImGui::Value("Culled objects: ", all - drawn);
+    }
+    ImGui::End();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjects())
+    for (std::shared_ptr<GameObject> obj : frustObjects)
     {
         glm::mat4 M = obj->getTransform().getMatrix();
         glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
         Material * mat = obj->getComponent<Material>();
-
+		
         if (activeProgram != mat->getProgram())
         {
             activeProgram = mat->getProgram();
@@ -57,14 +61,15 @@ void ProgramRenderer::render(Scene * scene)
             glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
 
             glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-
+            
             if (activeProgram->hasUniform("iGlobalLightDir"))
             {
                 glm::vec3 lightDir = scene->getGlobalLightDir();
                 glUniform3f(activeProgram->getUniformLocation("iGlobalLightDir"), lightDir.x, lightDir.y, lightDir.z);
             }
         }
-
+		
+        Mesh * meshComp = obj->getComponent<Mesh>();
         const MeshInfo * mesh = obj->getComponent<Mesh>()->getMesh();
         mesh->bind();
         mat->bind();
@@ -77,42 +82,10 @@ void ProgramRenderer::render(Scene * scene)
 
         glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
         glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
-
-        if (obj->getComponent<InstanceMesh>() != nullptr)
-        {
-            glDrawElementsInstanced(
-                GL_TRIANGLES,
-                mesh->numTris,
-                GL_UNSIGNED_SHORT,
-                mesh->indexDataOffset,
-                obj->getComponent<InstanceMesh>()->_numOfInstances
-            );
-        }
-        else
-        {
-            glDrawElementsBaseVertex(
-                GL_TRIANGLES,
-                mesh->numTris,
-                GL_UNSIGNED_SHORT,
-                mesh->indexDataOffset,
-                mesh->baseVertex
-            );
-        }
-        mat->unbind();
+        meshComp->draw();
+        //mat->unbind();
     }
-
-
-
-
-    // ImGui::Begin("Framebuffer");
-    // {
-    // 	ImGui::Image((void*)(framebufferColorTexture.getTextureId()),ImVec2(256,256));
-    // 	ImGui::Image((void*)(renderToFB.getTexture("depthStencil")),ImVec2(128,128));
-    // }
-    // ImGui::End();
-    //Debug show textures
-    //Library::TextureLib->Debug_ShowAllTextures();
-    GLVertexArrayObject::Unbind();
+	GLVertexArrayObject::Unbind();
 }
 
 void ProgramRenderer::shutdown()

@@ -1,0 +1,129 @@
+{
+"defaults": {
+    "terrain": {
+        "name": "terrain",
+        "size": [1000.0, 200.0, 1000.0]
+    },
+    "player": {
+        "material": "penguin",
+        "start": {
+            "position": [0.0, 0.0, 0.0],
+            "rotation": [0.0, 0.0, 0.0]
+        }
+    }
+},
+"materials": [
+    {
+        "name": "rock",
+        "mesh": "Rock.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "Rock.tga"
+        },
+        "collider": false
+    },
+    {
+        "name": "rock2",
+        "mesh": "rock2.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "rock2.tga"
+        },
+        "collider": false
+    },
+    {
+        "name": "penguin",
+        "mesh": "penguin.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "penguin"
+        },
+        "collider": false
+    },
+    {
+        "name": "wolf",
+        "mesh": "wolf.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "wolf.tga"
+        },
+        "collider": false
+    },
+    {
+        "name": "cactus",
+        "mesh": "cactus.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "cactus.jpg"
+        },
+        "collider": false
+    },
+    {
+        "name": "cactus2",
+        "mesh": "cactus2.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "cactus2.png"
+        },
+        "collider": false
+    },
+    {
+        "name": "stone",
+        "mesh": "stone.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "stone.jpg"
+        },
+        "collider": false
+    },
+    {
+        "name": "stone2",
+        "mesh": "stone2.obj",
+        "program": "phong.program",
+        "textures": {
+            "diffuse": "stone2.jpg"
+        },
+        "collider": false
+    },
+    {
+        "name": "skydome",
+        "mesh": "sphere.obj",
+        "program": "skydome.program",
+        "textures": {
+            "skycolor": "skycolor"
+        },
+        "collider": true
+
+    },
+    {
+        "name" : "shard",
+        "mesh" : "shard.obj",
+        "program" : "phong.program",
+        "textures": {
+            "diffuse": "solid_white.png"
+        },
+        "collider" : true
+    }
+    
+],
+
+"map": [
+    {
+        "material": "rock",
+        "position": [2.5, 10.5, 2.5],
+        "rotation": [0.0, 0.0, 0.0],
+        "scale": [1.0, 1.0, 1.0]
+    },
+    {
+        "material": "rock",
+        "position": [-2.5, 10.5, -2.5],
+        "tint": [0.3, 0.6, 0.3]
+    },
+    {
+        "material": "skydome",
+        "position": [0.0, 0.0, 0.0],
+        "rotation": [0.0, 0.0, 0.0],
+        "scale": [1000.0, 1000.0, 1000.0]
+    }
+]
+}

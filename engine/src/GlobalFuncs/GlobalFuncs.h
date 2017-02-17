@@ -31,5 +31,6 @@ namespace MoonEngine
      */
     void SetActiveScene(Scene * scene);
 
-
+    bool isImguiEnabled();
+    void toggleImgui();
 }

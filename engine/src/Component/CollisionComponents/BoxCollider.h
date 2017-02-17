@@ -65,6 +65,7 @@ namespace MoonEngine
 
         glm::vec3 getHalfWidths();
 
+		bool isTrigger;
     private:
 
         void createTransformedBox();
