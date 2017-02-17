@@ -1,5 +1,0 @@
-{
-	"name" : "terrain",
-	"vertex" : "resources/terrain.vs",
-	"fragment" : "resources/terrain.fs"
-}
