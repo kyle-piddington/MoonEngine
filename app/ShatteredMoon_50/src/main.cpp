@@ -45,9 +45,12 @@ int main(int argc, char ** argv)
 
 
     //Game Objects
-    std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>();
+Transform playerTransform = Transform();
+    playerTransform.setPosition(
+        glm::vec3(-32.623940, 20.913505554199219,-101.991371));
+    
+    std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
 
-    Transform playerTransform = Transform();
     playerTransform.setPosition(
         glm::vec3(-52.623940, 12.913505554199219,-101.991371));
     std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>(playerTransform);
@@ -226,7 +229,8 @@ int main(int argc, char ** argv)
     EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
     
     stringmap canyon_texture(
-            {{"heightmap", "grandCanyon"}});
+            {{"heightmap", "grandCanyon"},
+             {"diffuse"  , "cube"}});
   
     CDLODQuadtree::CreateInfo createInfo;
     //ImplicitHeightmapSource heightSource(256,256,[](int, int){return 0;});
