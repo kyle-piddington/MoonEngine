@@ -77,14 +77,6 @@
             },
             "collider": true
         }, {
-            "name": "skydome",
-            "mesh": "sphere.obj",
-            "program": "skydome.program",
-            "textures": {
-                "skycolor": "skycolor"
-            },
-            "collider": false
-        }, {
             "name": "shard",
             "mesh": "shard.obj",
             "program": "geom.program",
@@ -92,23 +84,16 @@
                 "diffuse": "solid_white.png"
             },
             "collider": true
+        }, {
+            "name": "skydome",
+            "mesh": "sphere.obj",
+            "program": "skydome.program",
+            "textures": {
+                "skycolor": "skycolor"
+            },
+            "collider": false
         }],
     "map": [{
-            "material": "rock",
-            "position": [2.5, 10.5, 2.5],
-            "rotation": [0.0, -0.0, 0.0],
-            "scale": [1.0, 1.0, 1.0]
-        }, {
-            "material": "rock",
-            "position": [-2.5, 10.5, -2.5],
-            "rotation": [0.0, -0.0, 0.0],
-            "scale": [1.0, 1.0, 1.0]
-        }, {
-            "material": "skydome",
-            "position": [0.0, 0.0, 0.0],
-            "rotation": [0.0, -0.0, 0.0],
-            "scale": [50.0, 50.0, 50.0]
-        }, {
             "material": "cactus2",
             "position": [5.632808685302734, 12.022812843322754, -198.324951171875],
             "rotation": [0.1159999892115593, 0.10000001639127732, 9.359986119505948e-10],
