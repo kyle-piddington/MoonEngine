@@ -230,7 +230,8 @@ Transform playerTransform = Transform();
     
     stringmap canyon_texture(
             {{"heightmap", "grandCanyon"},
-             {"diffuse"  , "cube"}});
+             {"diffuse"  , "cube"},
+             {"canyonTint","canyonTint"}});
   
     CDLODQuadtree::CreateInfo createInfo;
     //ImplicitHeightmapSource heightSource(256,256,[](int, int){return 0;});
