@@ -59,9 +59,15 @@ void LevelLoader::LoadLevelMaterials(const rapidjson::Document & document, Scene
             }
         }
 
+        bool forward = false;
+        if (material.HasMember("forward"))
+        {
+            forward = material["forward"].GetBool();
+        }
+
         Level::LevelMaterial levelMaterial;
         levelMaterial.mesh = material["mesh"].GetString();
-        levelMaterial.material = scene->createComponent<Material>(tint, program, textures);
+        levelMaterial.material = scene->createComponent<Material>(tint, program, textures, forward);
         levelMaterial.collider = material["collider"].GetBool();
 
         string name = material["name"].GetString();
