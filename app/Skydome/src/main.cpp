@@ -43,43 +43,53 @@ int main(int argc, char ** argv)
     Scene * scene = new Scene();
 
 
+    std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>();
+
+    Camera * cam = scene->createComponent<Camera>( 3.1415/3, 800.0/600.0, 0.1, 1000);
+    FirstPersonController * ctrl = scene->createComponent<FirstPersonController>(5);
+    cameraObj->addComponent(ctrl);
+    cameraObj->addComponent(cam);
+
+    cameraObj->getTransform().translate(glm::vec3(0,150,-5));
+    scene->addGameObject(cameraObj);
+
 
     //Game Objects
-    Transform playerTransform = Transform();
-    playerTransform.setPosition(
-            glm::vec3(-32.623940, 20.913505554199219,-101.991371));
-
-    std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
-
-    playerTransform.setPosition(
-            glm::vec3(-52.623940, 12.913505554199219,-101.991371));
-    std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>(playerTransform);
-    playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
-
-    stringmap textures({{"diffuse", "wolf.tga"}});
-
-    playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
-    playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
-    playerObj->addComponent(scene->createComponent<BoxCollider>());
-
-    //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
-    playerObj->getTransform().setScale(glm::vec3(0.2, 0.2, 0.2));
-    playerObj->addTag(T_Player);
-
-    scene->addGameObject(playerObj);
-
-    //Camera setup
-    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
-    cameraObj->addComponent(cam);
-    cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
-    cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
-    //cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
-    scene->addGameObject(cameraObj);
+//    Transform playerTransform = Transform();
+//    playerTransform.setPosition(
+//            glm::vec3(-32.623940, 20.913505554199219,-101.991371));
+//
+//    std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
+//
+//    playerTransform.setPosition(
+//            glm::vec3(-52.623940, 12.913505554199219,-101.991371));
+//    std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>(playerTransform);
+//    playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
+//
+//    stringmap textures({{"diffuse", "wolf.tga"}});
+//
+//    playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
+//    playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
+//    playerObj->addComponent(scene->createComponent<BoxCollider>());
+//
+//    //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
+//    playerObj->getTransform().setScale(glm::vec3(0.2, 0.2, 0.2));
+//    playerObj->addTag(T_Player);
+//
+//    scene->addGameObject(playerObj);
+//
+//    //Camera setup
+//    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
+//    cameraObj->addComponent(cam);
+//    cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
+//    cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
+//    //cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
+//    scene->addGameObject(cameraObj);
 
 
     //Ground
     Transform groundTransform;
-    groundTransform.setScale(glm::vec3(5, 1, 5));
+    groundTransform.setScale(glm::vec3(5, 150, 5));
     std::shared_ptr<GameObject> groundObject = std::make_shared<GameObject>(groundTransform);
     groundObject->addComponent(scene->createComponent<StaticMesh>("quad.obj", true));
     groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
@@ -155,6 +165,7 @@ int main(int argc, char ** argv)
 
         // 	lastUpdateTime = (int)accumTime;
         // }
+        LOG(GAME, "SUN: " + std::to_string(scene->getGlobalLightDir().x) + " " + std::to_string(scene->getGlobalLightDir().y));
 
     });
 

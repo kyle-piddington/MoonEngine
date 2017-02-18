@@ -6,10 +6,15 @@ uniform mat4 M;
 uniform mat4 V;
 uniform mat4 P;
 
+uniform vec3 iGlobalLightDir;
+
 out vec3 fragPos;
+out vec3 sunPos;
 
 void main()
 {
 	gl_Position = P * V * M * position;
-	fragPos = vec3(V * M * position);
+	fragPos = vec3(M * position);
+
+	sunPos = normalize(M * vec4(iGlobalLightDir, 1.0)).xyz;
 }
