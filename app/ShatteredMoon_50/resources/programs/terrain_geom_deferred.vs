@@ -27,6 +27,8 @@ uniform vec4 g_terrainOffset;
 uniform vec2 g_quadWorldMax;
 
 out vec3 fragPos;
+out vec3 fragWorldPos;
+out vec3 fragWorldNor;
 out vec3 fragNor;
 out vec3 fragTex;
 uniform sampler2D heightmap;
@@ -97,7 +99,7 @@ void processCDLODVertex(
 
 vec3 getNormal(vec2 globalUV)
 {
-	return N*texture(heightmap_normal,globalUV).xyz;
+	return texture(heightmap_normal,globalUV).xyz;
 }
 void main()
 {
@@ -108,8 +110,10 @@ void main()
 	float eyeDist;
 	processCDLODVertex(position, outUnmorphedWorldPos, worldPos, globalUV, morphK, eyeDist);
 	vec4 camVert = V * worldPos;
+	fragWorldPos = worldPos.xyz;
 	fragPos = camVert.xyz;
-	fragNor = getNormal (globalUV); 
+	fragWorldNor = getNormal (globalUV); 
+	fragNor = N * fragWorldNor;
 	fragTex.xy = globalUV.xy;
 	fragTex.z = morphK;
 	gl_Position = P * camVert;

@@ -34,6 +34,7 @@ bool GLTexture::init(const GLTextureConfiguration & cfg)
         0, cfg.getOutputFormat(), cfg.getDataType(), NULL);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   
     glBindTexture(_textureType, 0);
     return glGetError() == GL_NO_ERROR;
 
@@ -67,6 +68,8 @@ bool GLTexture::init(void * data, const GLTextureConfiguration & cfg)
         0, cfg.getOutputFormat(), cfg.getDataType(), data);
     /* Generate mipmap */
     glGenerateMipmap(_textureType);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     /* Let the birds free */
     glBindTexture(_textureType, 0);
@@ -95,7 +98,7 @@ int GLTexture::getHeight() const
 
 void GLTexture::bind(GLuint unit)
 {
-    
+
     glActiveTexture(GL_TEXTURE0 + unit);
     glBindTexture(_textureType, _textureId);
 }
