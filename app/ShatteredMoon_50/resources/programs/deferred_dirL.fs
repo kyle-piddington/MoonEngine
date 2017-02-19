@@ -23,12 +23,11 @@ vec4 calcDirLight(vec3 Diffuse, vec3 Normal, vec3 worldPos, float Specular)
     vec4 AmbientColor = vec4(dirLight.color * dirLight.ambient, 1.0);
 
     // Diffuse
-    
     vec3 lightDir = normalize(-dirLight.direction);
-    vec3 cameraDir = normalize(-worldPos);
     vec4 DiffuseColor = vec4(max(dot(Normal, lightDir), 0.0) * Diffuse * dirLight.color, 1.0);
 
     // Specular
+    vec3 cameraDir = normalize(-worldPos);
     vec3 halfDir = normalize(lightDir + cameraDir);  
     float specPercent = pow(max(dot(Normal, halfDir), 0.0), 16.0);
     vec4 SpecularColor = vec4(dirLight.color * specPercent * Specular, 1.0);

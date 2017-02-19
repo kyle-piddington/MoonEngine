@@ -38,44 +38,40 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    Logger::SetLogLevel(GAME);
+    Logger::SetLogLevel(WARN);
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 
 
 
-    //Game Objects
+    //Player Setup
     Transform playerTransform = Transform();
-    playerTransform.setPosition(
-        glm::vec3(-32.623940, 20.913505554199219,-101.991371));
-    
-    std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
-
-    playerTransform.setPosition(
-        glm::vec3(-52.623940, 12.913505554199219,-101.991371));
     std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>(playerTransform);
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
 
-    stringmap textures({{"diffuse", "wolf.tga"}});
+    stringmap textures({ { "diffuse", "wolf.tga" } });
 
     playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
     playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
     playerObj->addComponent(scene->createComponent<BoxCollider>());
 
-    //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
     playerObj->getTransform().setScale(glm::vec3(0.2, 0.2, 0.2));
     playerObj->addTag(T_Player);
-
     scene->addGameObject(playerObj);
 
     //Camera setup
+    std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
     cameraObj->addComponent(cam);
-    cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
+    cameraObj->addComponent(scene->createComponent<FirstPersonController>(5));
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
-    //cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
     scene->addGameObject(cameraObj);
 
+
+    
+    stringmap boxTextures({ { "diffuse", "cube.png" } });
+    stringmap groundTextures({ { "diffuse", "stone2.png" } });
+    stringmap ligthIndicatorTextures({ { "diffuse", "cactus2.png" } });
 
     //Ground
     Transform groundTransform;
@@ -85,72 +81,122 @@ int main(int argc, char ** argv)
     groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
     scene->addGameObject(groundObject);
 
-    LevelLoader levelLoader;
-    levelLoader.LoadLevel("scenedata.json", scene);
-    stringmap cube_texture({{"diffuse", "cube"}});
+    //Upper Platforms
+    Transform levelTransform;
+    levelTransform.setScale(glm::vec3(1, 0.5, 1));
+    levelTransform.setPosition(glm::vec3(-1, 2, 2));
+    std::shared_ptr<GameObject> boxObject = std::make_shared<GameObject>(levelTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "geom.program", boxTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
 
-    //Skydome
-    Transform skydomeTransform;
-    skydomeTransform.setPosition(glm::vec3(0, 0, 0));
-    skydomeTransform.setScale(glm::vec3(1000, 1000, 1000));
-    std::shared_ptr<GameObject> sphereObject = std::make_shared<GameObject>(skydomeTransform);
-    sphereObject->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
-    stringmap sky_textures({{"skycolor", "skycolor"}});
-    sphereObject->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures, true));
-    scene->addGameObject(sphereObject);
+
+    levelTransform.setPosition(glm::vec3(-1, 2.5, 0.5));
+    boxObject = std::make_shared<GameObject>(levelTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.3, 0.5, 0.8), "geom.program", boxTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
+
+    levelTransform.setPosition(glm::vec3(-1, 3, -1));
+    boxObject = std::make_shared<GameObject>(levelTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "geom.program", boxTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
+
+    levelTransform.setPosition(glm::vec3(-1, 2.5, -3.5));
+    boxObject = std::make_shared<GameObject>(levelTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.9, 0.5), "geom.program", boxTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
+
+    //Boxes
+    Transform boxTransform;
+    boxTransform.setPosition(glm::vec3(1, 0, 0));
+    boxObject = std::make_shared<GameObject>(boxTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.8, 0.8), "geom.program", boxTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    //boxObject->addComponent(scene->createComponent<CollectableComponent>()); Twas a test
+    scene->addGameObject(boxObject);
+
+    boxTransform.setPosition(glm::vec3(2.5, 0.5, 0));
+    boxObject = std::make_shared<GameObject>(boxTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.8, 0.8), "geom.program", boxTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
+
+
+    boxTransform.setPosition(glm::vec3(3, 1, 1.5));
+    boxObject = std::make_shared<GameObject>(boxTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.4, 0.9, 0.8), "geom.program", boxTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
+
+    boxTransform.setPosition(glm::vec3(1.5, 1.5, 2));
+    boxObject = std::make_shared<GameObject>(boxTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.3, 0.8), "geom.program", boxTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
+
+
+    
+
+
+    ////Skydome
+    //Transform skydomeTransform;
+    //skydomeTransform.setPosition(glm::vec3(0, 0, 0));
+    //skydomeTransform.setScale(glm::vec3(1000, 1000, 1000));
+    //std::shared_ptr<GameObject> sphereObject = std::make_shared<GameObject>(skydomeTransform);
+    //sphereObject->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
+    //stringmap sky_textures({{"skycolor", "skycolor"}});
+    //sphereObject->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures, true));
+    //scene->addGameObject(sphereObject);
 
     //Lights
     Transform lightTransform;
-    lightTransform.setPosition(glm::vec3(6, 4, 1));
+    lightTransform.setPosition(glm::vec3(2, 3, 1));
     std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_PURPLE, 0.2f, 0.2f));
+    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_MAGENTA, 0.9f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
+    scene->addGameObject(pointLight);
 
-    lightTransform.setPosition(glm::vec3(-5, 3, 1));
+    boxTransform.setPosition(glm::vec3(2, 2.9, 1));
+    boxTransform.setScale(glm::vec3(.2,.2,.2));
+    boxObject = std::make_shared<GameObject>(boxTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.3, 0.8), "geom.program", ligthIndicatorTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
+
+
+
+    lightTransform.setPosition(glm::vec3(0, 3, -5));
     pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_WHITE, 0.2f, 0.2f));
+    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_RED, 0.9f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
+    scene->addGameObject(pointLight);
 
-    lightTransform.setPosition(glm::vec3(4, 3, -5));
-    pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_CYAN, 0.2f, 0.2f));
-    pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
-
+    boxTransform.setPosition(glm::vec3(0, 2.9, -5));
+    boxTransform.setScale(glm::vec3(.2, .2, .2));
+    boxObject = std::make_shared<GameObject>(boxTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.3, 0.8), "geom.program", ligthIndicatorTextures));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
-    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
+    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -2, -1), COLOR_WHITE, 0.1f));
     scene->addGameObject(dirLight);
 
 
-    //Terrain
-    //Preload canyon 32f texture
-    EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
     
-    stringmap canyon_texture(
-            {{"heightmap", "grandCanyon"},
-             {"diffuse"  , "cube"},
-             {"canyonTint","canyonTint"}});
-  
-    CDLODQuadtree::CreateInfo createInfo;
-    //ImplicitHeightmapSource heightSource(256,256,[](int, int){return 0;});
-    TextureHeightmapSource texSource("resources/textures","grandCanyon",".png");
-    createInfo.source = &texSource;
-    createInfo.leafNodeSize = 2;
-    createInfo.LODLevelCount = 5;
-    MapDimensions mapDims;
-    
-    mapDims.size = glm::vec3(1000,200,1000);
-    mapDims.minCoords = glm::vec3(0,0,0);   
-    mapDims.minCoords = -mapDims.size/2.0f;
-    mapDims.minCoords.y = 0;
-    createInfo.dimensions = mapDims;
-    std::shared_ptr<GameObject> terrainObject = std::make_shared<GameObject>(Transform());
-    terrainObject->addComponent(scene->createComponent<Terrain>(createInfo));
-    terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain_geom_deferred.program",canyon_texture));
-    scene->addGameObject(terrainObject);
     
     float accumTime;
     int lastUpdateTime;
@@ -167,7 +213,7 @@ int main(int argc, char ** argv)
 
     });
 
-	DeferredRenderer * renderer = new DeferredRenderer(width, height, "phong_point_deferred.program", "phong_dir_deferred.program");
+	DeferredRenderer * renderer = new DeferredRenderer(width, height, "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
     delete scene;

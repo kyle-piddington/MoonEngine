@@ -34,8 +34,9 @@ vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
     // Diffuse
     vec3 lightDir = normalize(pointLight.position - WorldPos);
     vec4 DiffuseColor = vec4(max(dot(Normal, lightDir), 0.0) * Diffuse * pointLight.color, 1.0);
-    vec3 cameraDir = normalize(-WorldPos);
+   
     // Specular
+    vec3 cameraDir = normalize(-WorldPos);
     vec3 halfDir = normalize(lightDir + cameraDir);  
     float specPercent = pow(max(dot(Normal, halfDir), 0.0), 16.0);
     vec4 SpecularColor = vec4(pointLight.color * specPercent * Specular, 1.0);
@@ -46,13 +47,13 @@ vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
 
 vec4 calcPointLight(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
 {
-    float dist = length(WorldPos - pointLight.position);
+    float dist = length(pointLight.position - WorldPos);
 
     vec4 baseColor = calcLightEffect(WorldPos, Diffuse, Normal, Specular);
     
     float attenTotal  =  pointLight.atten.constant +
                          pointLight.atten.linear * dist +
-                         pointLight.atten.exp * dist * dist;
+                         pointLight.atten.exp * (dist * dist);
 
     attenTotal = max(1.0, attenTotal);
 

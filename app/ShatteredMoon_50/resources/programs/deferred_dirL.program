@@ -1,0 +1,5 @@
+{
+	"name" : "phong_dir_deferred",
+	"vertex" : "resources/programs/deferred_dirL.vs",
+	"fragment" : "resources/programs/deferred_dirL.fs"
+}

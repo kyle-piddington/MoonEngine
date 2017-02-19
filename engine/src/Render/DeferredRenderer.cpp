@@ -28,7 +28,6 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     _gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
     _gBuffer.addTexture("depth", _depthTex, GL_DEPTH_ATTACHMENT);
     _gBuffer.drawColorAttachments(3);
-    _gBuffer.addDepthBuffer();
     LOG_GL(__FILE__, __LINE__);
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
@@ -59,7 +58,7 @@ void DeferredRenderer::render(Scene * scene)
     lightingSetup();
 	pointLightPass(scene);
     dirLightPass(scene);
-    forwardPass(scene, forwardObjects);
+    //forwardPass(scene, forwardObjects);
     GLVertexArrayObject::Unbind();
 }
 
@@ -152,7 +151,7 @@ void DeferredRenderer::pointLightPass(Scene* scene)
     drawBufferToImgui("GBuffer", &_gBuffer);
 
 	const MeshInfo* lightSphere = nullptr;
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	_pointLightProgram->enable();
     setupLightUniforms(_pointLightProgram);
     LOG_GL(__FILE__, __LINE__);
@@ -192,7 +191,7 @@ void DeferredRenderer::pointLightPass(Scene* scene)
 		);
 
 	}
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+   // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void DeferredRenderer::dirLightPass(Scene* scene)
@@ -244,15 +243,8 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
     glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
-    LOG_GL(__FILE__, __LINE__);
-    _gBuffer.bind(GL_READ_FRAMEBUFFER);
-    LOG_GL(__FILE__, __LINE__);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Write to default framebuffer
-    LOG_GL(__FILE__, __LINE__);
-    glBlitFramebuffer( 0, 0, _width, _height, 0, 0, _deferredWidth, _deferredHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
-    LOG_GL(__FILE__, __LINE__);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    LOG_GL(__FILE__, __LINE__);
+
+
     for (std::shared_ptr<GameObject> obj : forwardObjects)
     {
         mat = obj->getComponent<Material>();
