@@ -21,6 +21,7 @@ uniform sampler2D positionTex;
 uniform sampler2D colorTex;
 uniform sampler2D normalTex;
 uniform PointLight pointLight;
+uniform vec3 cameraPos;
 
 uniform vec2 screenSize;
 
@@ -36,7 +37,7 @@ vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
     vec4 DiffuseColor = vec4(max(dot(Normal, lightDir), 0.0) * Diffuse * pointLight.color, 1.0);
    
     // Specular
-    vec3 cameraDir = normalize(-WorldPos);
+    vec3 cameraDir = normalize(cameraPos - WorldPos);
     vec3 halfDir = normalize(lightDir + cameraDir);  
     float specPercent = pow(max(dot(Normal, halfDir), 0.0), 16.0);
     vec4 SpecularColor = vec4(pointLight.color * specPercent * Specular, 1.0);

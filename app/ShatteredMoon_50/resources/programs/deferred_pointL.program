@@ -1,5 +1,5 @@
 {
-	"name" : "phong_point_deferred",
+	"name" : "deferred_pointLight",
 	"vertex" : "resources/programs/deferred_pointL.vs",
 	"fragment" : "resources/programs/deferred_pointL.fs"
 }

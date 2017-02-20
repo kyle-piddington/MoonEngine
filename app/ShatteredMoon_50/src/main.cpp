@@ -213,7 +213,8 @@ int main(int argc, char ** argv)
 
     });
 
-	DeferredRenderer * renderer = new DeferredRenderer(width, height, "deferred_pointL.program", "deferred_dirL.program");
+	DeferredRenderer * renderer = new DeferredRenderer(width, height, 
+        "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
     delete scene;

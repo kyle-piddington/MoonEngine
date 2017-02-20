@@ -39,12 +39,20 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
     {
         LOG(INFO, "Adding renderable game object");
         _renderableGameObjects.push_back(obj);
+
+        if (obj->getComponent<Material>()->isForward())
+        {
+            LOG(INFO, "Adding forward game object");
+            _forwardGameObjects.push_back(obj);
+        }
+
         if(_renderTree != nullptr)
         {
             _renderTree->addObject(obj);            
         }
 
     }
+    
     if (obj->getComponent<PointLight>() != nullptr)
     {
         LOG(INFO, "Adding point light game object");
@@ -170,6 +178,11 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjectsIn
 {
 	std::vector<glm::vec4> planes = getFrustrumPlanes(VP);
 	return _renderTree->getObjectsInFrustrum(planes);
+}
+
+const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getForwardGameObjects() const
+{
+    return _forwardGameObjects;
 }
 
 const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getPointLightObjects() const
