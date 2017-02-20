@@ -23,7 +23,7 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
 	texSetupOk &=  _colorTex.init(colorCFG);
 	texSetupOk &= _normalTex.init(locationCFG);
 	texSetupOk &= _depthTex.init(depthCFG);
-	assert(texSetupOK);
+	assert(texSetupOk);
     _gBuffer.addTexture("position", _positionTex, GL_COLOR_ATTACHMENT0);
     
     _gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT1);
