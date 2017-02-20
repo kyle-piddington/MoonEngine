@@ -22,7 +22,7 @@ void main()
     //Sun
     float radius = length(normalPos - sunPos);
     if (radius < 0.05){
-        float time = clamp(sunPos.y, 0.01, 1);
+        float time = clamp(sunPos.y, 0.01, 1.0);
         radius = radius / 0.05;
         if (radius < 1.0 - 0.05) {//small bias to avoid flickering
             //We read the alpha value from a texture where x = radius and y = height in the sky

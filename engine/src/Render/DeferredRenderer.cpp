@@ -106,6 +106,11 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			if (activeProgram->hasUniform("iGlobalTime")) {
 				glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
 			}
+			if (activeProgram->hasUniform("iGlobalLightDir"))
+			{
+				glm::vec3 lightDir = scene->getGlobalLightDir();
+				glUniform3f(activeProgram->getUniformLocation("iGlobalLightDir"), lightDir.x, lightDir.y, lightDir.z);
+			}
             
 		}
 		mat->bind();
@@ -290,6 +295,11 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
         if (activeProgram->hasUniform("iGlobalTime")) {
             glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
         }
+		if (activeProgram->hasUniform("iGlobalLightDir"))
+		{
+			glm::vec3 lightDir = scene->getGlobalLightDir();
+			glUniform3f(activeProgram->getUniformLocation("iGlobalLightDir"), lightDir.x, lightDir.y, lightDir.z);
+		}
         mesh->draw();
 
        
