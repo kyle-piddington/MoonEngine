@@ -69,7 +69,7 @@ void handleImguiLock(GLFWwindow * window)
 void EngineApp::run(Scene * scene, I_Renderer * renderer)
 {
     //Set the global active scene to this one.
-    assert(ImGui_ImplGlfwGL3_Init(_window, false)); //Initialize ImGui
+    ImGui_ImplGlfwGL3_Init(_window, false); //Initialize ImGui
     SetActiveScene(scene);
     initializeComponents(scene);
     float newT, t = (float) glfwGetTime();

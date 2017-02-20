@@ -79,7 +79,8 @@ GLuint MoonEngine::GLFramebuffer::getObject() const
 void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo)
 {
     assert(texture.getWidth() == _width && texture.getHeight() == _height);
-    bindWithoutComplete(GL_DRAW_FRAMEBUFFER);
+    bindWithoutComplete(GL_FRAMEBUFFER);
+	LOG_GL(__FILE__, __LINE__);
 	texture.bindRaw();
 	LOG_GL(__FILE__, __LINE__);
 
@@ -96,24 +97,7 @@ void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & text
     _textureHandles[textureName] = txUnit;
 	_textureAttachmentMode[textureName] = (GLuint) attachmentInfo;
     _framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	if (_framebufferStatus != GL_FRAMEBUFFER_COMPLETE)
-	{
-		switch (_framebufferStatus)
-		{
-		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-			LOG(ERROR, "Framebuffer not complete, incomplete " + textureName +" attachment");
-			break;
-		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-			LOG(ERROR, "Framebuffer not complete, No textures attached");
-			break;
-		case GL_FRAMEBUFFER_UNSUPPORTED:
-			LOG(ERROR, "Framebuffer not complete, not supported by openGL version");
-			break;
-		default:
-			LOG(ERROR, "FrameBuffer not complete... " + std::to_string(_framebufferStatus));
-
-		}
-	}
+	
     Unbind();
 }
 

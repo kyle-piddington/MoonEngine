@@ -36,6 +36,8 @@ bool GLTexture::init(const GLTextureConfiguration & cfg)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
    
     glBindTexture(_textureType, 0);
+	LOG_GL(__FILE__, __LINE__);
+
     return glGetError() == GL_NO_ERROR;
 
 }

@@ -18,10 +18,12 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     GLTextureConfiguration locationCFG(width, height, GL_RGB16F, GL_RGB, GL_FLOAT);
     GLTextureConfiguration colorCFG(width, height, GL_RGBA, GL_RGBA, GL_FLOAT);
     GLTextureConfiguration depthCFG(width, height, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT);
-    assert(_positionTex.init(locationCFG));
-    assert(_colorTex.init(colorCFG));
-    assert(_normalTex.init(locationCFG));
-    assert(_depthTex.init(depthCFG));
+	bool texSetupOk = true;
+	texSetupOk &= _positionTex.init(locationCFG);
+	texSetupOk &=  _colorTex.init(colorCFG);
+	texSetupOk &= _normalTex.init(locationCFG);
+	texSetupOk &= _depthTex.init(depthCFG);
+	assert(texSetupOK);
     _gBuffer.addTexture("position", _positionTex, GL_COLOR_ATTACHMENT0);
     
     _gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT1);
