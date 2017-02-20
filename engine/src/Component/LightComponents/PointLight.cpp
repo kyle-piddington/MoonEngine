@@ -3,7 +3,7 @@
 using namespace MoonEngine;
 
 PointLight::PointLight(glm::vec3 position, glm::vec3 color, float range, float ambient)
-    : Light(color, ambient, 0.8f),  _lightRange(), _position(position)
+    : Light(color, ambient),  _lightRange(), _position(position)
 {
     _attenuation.constant = 1.0f;
     setRange(range);
@@ -12,7 +12,7 @@ PointLight::PointLight(glm::vec3 position, glm::vec3 color, float range, float a
 }
 
 PointLight::PointLight(glm::vec3 position, glm::vec3 color, float range) : 
-    Light(color, 0.2f, 0.8f), _lightRange(), _position(position)
+    Light(color, 0.1f), _lightRange(), _position(position)
 {
     _attenuation.constant = 1.0f;
     setRange(range);
@@ -20,7 +20,7 @@ PointLight::PointLight(glm::vec3 position, glm::vec3 color, float range) :
 }
 
 PointLight::PointLight(glm::vec3 color, float range) :
-Light(color, 0.2f, 0.8f), _lightRange(), _position(glm::vec3(0,0,0))
+Light(color, 0.1f), _lightRange(), _position(glm::vec3(0,0,0))
 {
     _attenuation.constant = 1.0f;
     setRange(range);
@@ -28,7 +28,7 @@ Light(color, 0.2f, 0.8f), _lightRange(), _position(glm::vec3(0,0,0))
 }
 
 PointLight::PointLight(glm::vec3 color) :
-    Light(color, 0.2f, 0.8f), _lightRange(), _position(glm::vec3(0,0,0))
+    Light(color, 0.1f), _lightRange(), _position(glm::vec3(0,0,0))
 {
     _attenuation.constant = 1.0f;
     setRange(32);
@@ -56,8 +56,7 @@ Transform & MoonEngine::PointLight::getLightTransform()
     float maxChannel = fmax(fmax(this->_color.x, this->_color.y), this->_color.z);
 
     float range = (-_attenuation.linear + sqrtf(_attenuation.linear * _attenuation.linear - 4 * _attenuation.exp 
-        * (_attenuation.constant - maxChannel * 256.0/5.0)))  / (2 * _attenuation.exp);
+        * (_attenuation.constant - maxChannel * 1024.0/5.0)))  / (2 * _attenuation.exp);
     _lightRange.setScale(range);
     return _lightRange;
-    // TODO: insert return statement here
 }
