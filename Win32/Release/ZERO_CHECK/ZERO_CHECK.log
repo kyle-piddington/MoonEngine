@@ -1,18 +1,1 @@
-﻿  Checking Build System
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/deps/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/OneDrive/School/Junior/Winter 2017/CPE476/Shattered Moon/3rd_Party/glfw-3.2.1/debug/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/OneDrive/School/Junior/Winter 2017/CPE476/Shattered Moon/3rd_Party/glfw-3.2.1/debug/src/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/engine/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/glBaseClassTest/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/ShatteredMoon_25/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/ShatteredMoon_50/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/ShatteredMoon_75/CMakeFiles/generate.stamp is up-to-date.
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/LevelEditor/CMakeFiles/generate.stamp is up-to-date.
-<<<<<<< HEAD
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/Skydome/CMakeFiles/generate.stamp is up-to-date.
-=======
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/TestScene/CMakeFiles/generate.stamp is up-to-date.
->>>>>>> renderer
-  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/test/CMakeFiles/generate.stamp is up-to-date.
+﻿

@@ -47,30 +47,8 @@ std::shared_ptr<Component> PointLight::clone() const
 
 void PointLight::setRange(float range)
 {
-    if (range <= 10) {
-        _attenuation.linear = 0.7f;
-        _attenuation.exp = 1.8f;
-    }
-    else if (range <= 16) {
-        _attenuation.linear = 0.35f;
-        _attenuation.exp = 0.20f;
-    }
-    else if (range <= 26) {
-        _attenuation.linear = 0.22f;
-        _attenuation.exp = 0.20f;
-    }
-    else if (range <= 41) {
-        _attenuation.linear = 0.14f;
-        _attenuation.exp = 0.07f;
-    }
-    else if (range <= 57) {
-        _attenuation.linear = 0.09f;
-        _attenuation.exp = 0.032f;
-    }
-    else {
-        _attenuation.linear = 0.07f;
-        _attenuation.exp = 0.017f;
-    }
+   _attenuation.exp = 82.445* pow(range, -2.019);
+   _attenuation.linear = 4.6905* pow(range, -1.01);
 }
 
 Transform & MoonEngine::PointLight::getLightTransform()
