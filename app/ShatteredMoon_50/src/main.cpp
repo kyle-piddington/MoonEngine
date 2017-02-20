@@ -160,42 +160,28 @@ int main(int argc, char ** argv)
     //sphereObject->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures, true));
     //scene->addGameObject(sphereObject);
 
-    //Lights
-    Transform lightTransform;
-    lightTransform.setPosition(glm::vec3(2, 3, 1));
-    std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_MAGENTA, 0.9f));
-    pointLight->getComponent<PointLight>()->setRange(10);
-    scene->addGameObject(pointLight);
-
-    boxTransform.setPosition(glm::vec3(2, 2.9, 1));
+    //Lights + boxes
+    boxTransform.setPosition(glm::vec3(2, 3, 1));
     boxTransform.setScale(glm::vec3(.2,.2,.2));
     boxObject = std::make_shared<GameObject>(boxTransform);
     boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
     boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.3, 0.8), "geom.program", ligthIndicatorTextures));
+    boxObject->addComponent(scene->createComponent<PointLight>(COLOR_MAGENTA, 10));
     boxObject->addComponent(scene->createComponent<BoxCollider>());
     scene->addGameObject(boxObject);
-
-
-
-    lightTransform.setPosition(glm::vec3(0, 3, -5));
-    pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_RED, 0.9f));
-    pointLight->getComponent<PointLight>()->setRange(10);
-    scene->addGameObject(pointLight);
 
     boxTransform.setPosition(glm::vec3(0, 2.9, -5));
     boxTransform.setScale(glm::vec3(.2, .2, .2));
     boxObject = std::make_shared<GameObject>(boxTransform);
     boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
     boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.3, 0.8), "geom.program", ligthIndicatorTextures));
+    boxObject->addComponent(scene->createComponent<PointLight>(COLOR_RED, 10));
     boxObject->addComponent(scene->createComponent<BoxCollider>());
     scene->addGameObject(boxObject);
 
-    /*std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
-    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -2, -1), COLOR_GREEN, 0.1f));
-    scene->addGameObject(dirLight);*/
-
+    std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
+    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE));
+    scene->addGameObject(dirLight);
 
     
     
