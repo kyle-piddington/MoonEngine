@@ -2,23 +2,44 @@
 
 using namespace MoonEngine;
 
-PointLight::PointLight(glm::vec3 position, glm::vec3 color, float ambient, float intensity)
-    : Light(color, ambient, intensity),
-    _lightRange(){
-
-    _lightRange.setScale(glm::vec3(32, 32, 32));
-    _bSphere = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed("sphere.obj", false);
-    _attenuation.constant = 1.0f;
-    _attenuation.linear = 0.14f;
-    _attenuation.exp = 0.07f;
-
-}
-
-void PointLight::start()
+PointLight::PointLight(glm::vec3 position, glm::vec3 color, float range, float ambient)
+    : Light(color, ambient, 0.8f),  _lightRange(), _position(position)
 {
-    _lightRange.setParent(&(gameObject->getTransform()));
+    _attenuation.constant = 1.0f;
+    setRange(range);
+    _bSphere = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed("sphere.obj", false);
+
 }
 
+PointLight::PointLight(glm::vec3 position, glm::vec3 color, float range) : 
+    Light(color, 0.2f, 0.8f), _lightRange(), _position(position)
+{
+    _attenuation.constant = 1.0f;
+    setRange(range);
+    _bSphere = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed("sphere.obj", false);
+}
+
+PointLight::PointLight(glm::vec3 color, float range) :
+Light(color, 0.2f, 0.8f), _lightRange(), _position(glm::vec3(0,0,0))
+{
+    _attenuation.constant = 1.0f;
+    setRange(range);
+    _bSphere = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed("sphere.obj", false);
+}
+
+PointLight::PointLight(glm::vec3 color) :
+    Light(color, 0.2f, 0.8f), _lightRange(), _position(glm::vec3(0,0,0))
+{
+    _attenuation.constant = 1.0f;
+    setRange(32);
+    _bSphere = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed("sphere.obj", false);
+}
+
+
+void PointLight::update(float dt) {
+    _lightRange.setPosition(gameObject->getTransform().getPosition());
+    _lightRange.setRotation(gameObject->getTransform().getRotation());
+}
 std::shared_ptr<Component> PointLight::clone() const
 {
     return std::make_shared<PointLight>(*this);

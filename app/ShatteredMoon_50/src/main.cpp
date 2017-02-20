@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
         glm::vec3(-52.623940, 12.913505554199219,-101.991371));
     std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>(playerTransform);
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
-
+    playerObj->addComponent(scene->createComponent<PointLight>(COLOR_BLUE, 10));
     stringmap textures({{"diffuse", "wolf.tga"}});
 
     playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
@@ -106,19 +106,19 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_PURPLE, 0.2f, 0.2f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    scene->addGameObject(pointLight);
+    //scene->addGameObject(pointLight);
 
     lightTransform.setPosition(glm::vec3(-5, 3, 1));
     pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_WHITE, 0.2f, 0.2f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    scene->addGameObject(pointLight);
+    //scene->addGameObject(pointLight);
 
     lightTransform.setPosition(glm::vec3(4, 3, -5));
     pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_CYAN, 0.2f, 0.2f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    scene->addGameObject(pointLight);
+    //scene->addGameObject(pointLight);
 
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();

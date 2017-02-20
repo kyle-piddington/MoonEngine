@@ -24,13 +24,16 @@ DeferredRenderer::DeferredRenderer(int width, int height, string stencilProgramN
     GLTextureConfiguration outputCFG(width, height, GL_RGBA, GL_RGB, GL_FLOAT);
 
     
-    if (_positionTex.init(locationCFG) == false) {
-        throw;
-    }
-    assert(_colorTex.init(colorCFG));
-    assert(_normalTex.init(locationCFG));
-    assert(_depthTex.init(depthCFG));
-    assert(_outputTex.init(outputCFG));
+    if (_positionTex.init(locationCFG) == false) 
+        exit(EXIT_FAILURE);
+    if (_colorTex.init(colorCFG) == false) 
+        exit(EXIT_FAILURE);
+    if (_normalTex.init(locationCFG) == false)
+        exit(EXIT_FAILURE);
+    if (_depthTex.init(depthCFG) == false)
+        exit(EXIT_FAILURE);
+    if (_outputTex.init(outputCFG) == false)
+        exit(EXIT_FAILURE);
 
     _gBuffer.addTexture("position", _positionTex, GL_COLOR_ATTACHMENT0);
     _gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT1);

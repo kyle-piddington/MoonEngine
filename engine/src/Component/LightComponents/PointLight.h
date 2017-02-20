@@ -9,11 +9,15 @@ namespace MoonEngine
     class PointLight : public Light
     {
     public:
-        PointLight(glm::vec3 position, glm::vec3 color, float ambient = 0.2f, float intensity = 0.8f);
+        PointLight(glm::vec3 position, glm::vec3 color, float range, float ambient);
+        PointLight(glm::vec3 position, glm::vec3 color, float range);
+        PointLight(glm::vec3 color, float range);
+        PointLight(glm::vec3 color);
+        
 
         virtual std::shared_ptr<Component> clone() const;
 
-        void start();
+        void update(float dt);
 
         void setRange(float distance);
 
