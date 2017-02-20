@@ -4,6 +4,7 @@
 namespace MoonEngine {
 
     //Basic Colors
+#ifdef COLORS_BASIC
     glm::vec3 COLOR_WHITE       (1.00f, 1.00f, 1.00f);
     glm::vec3 COLOR_RED         (1.00f, 0.00f, 0.00f);
     glm::vec3 COLOR_LIME        (0.00f, 1.00f, 0.00f);
@@ -19,10 +20,10 @@ namespace MoonEngine {
     glm::vec3 COLOR_PURPLE      (0.50f, 0.00f, 0.50f);
     glm::vec3 COLOR_TEAL        (0.00f, 0.50f, 0.50f);
     glm::vec3 COLOR_NAVY        (0.00f, 0.00f, 0.50f);
-
+#endif
 
     //Complex Colors
-#ifdef COLORS_MORE
+#ifdef COLORS_COMPLEX
     glm::vec3 COLOR_ALICEBLUE           ( 0.941f, 0.973f, 1.000f );
     glm::vec3 COLOR_ANTIQUEWHITE        ( 0.980f, 0.922f, 0.843f );
     glm::vec3 COLOR_AQUA                ( 0.000f, 1.000f, 1.000f );

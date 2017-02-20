@@ -7,8 +7,8 @@ PointLight::PointLight(glm::vec3 position, glm::vec3 color, float ambient, float
     _lightRange.setScale(glm::vec3(32, 32, 32));
     _bSphere = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed("sphere.obj", false);
     _attenuation.constant = 1.0f;
-    _attenuation.linear = 0.14;
-    _attenuation.exp = 0.07;
+    _attenuation.linear = 0.14f;
+    _attenuation.exp = 0.07f;
 
 }
 

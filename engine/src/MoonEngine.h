@@ -29,9 +29,11 @@
 //Math
 #include "Util/MathUtil.h"
 
-#include "Loaders/BasicLoader.h"
+//Libraries
 #include "Libraries/MeshLibrary.h"
 #include "Libraries/Colors.h"
+
+#include "Loaders/BasicLoader.h"
 #include "Loaders/ProgramLoader.h"
 #include "Component/Components.h"
 

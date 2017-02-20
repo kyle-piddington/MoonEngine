@@ -38,7 +38,7 @@ DeferredRenderer::DeferredRenderer(int width, int height, string stencilProgramN
     _gBuffer.status();
 
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
-    _stencilProgram = Library->getProgramForName(stencilProgramName);
+    _stencilProgram = Library::ProgramLib->getProgramForName(stencilProgramName);
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
     _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
 
@@ -62,8 +62,8 @@ void DeferredRenderer::setup(Scene * scene, GLFWwindow * window)
 void DeferredRenderer::render(Scene * scene)
 {
     _gBuffer.startFrame();
-
-    geometryPass(scene);
+    LOG_GL(__FILE__, __LINE__);
+   geometryPass(scene);
 
     glEnable(GL_STENCIL_TEST);
     for (std::shared_ptr<GameObject> light : scene->getPointLightObjects()) {
@@ -148,6 +148,8 @@ void DeferredRenderer::geometryPass(Scene * scene)
 void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light)
 {
     //setup NULL shaders
+
+    _stencilProgram->enable();
     _gBuffer.bindForStencilPass();
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
@@ -183,12 +185,12 @@ void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light
 
 void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
 {
-    drawBufferToImgui("GBuffer", &_gBuffer);
-
-	const MeshInfo* lightSphere = nullptr;
     _pointLightProgram->enable();
+    _gBuffer.bindForLightPass();
     setupPointLightUniforms(_pointLightProgram, light);
-	lightSphere = light->getComponent<PointLight>()->getSphere();
+	
+    const MeshInfo* lightSphere = nullptr;
+    lightSphere = light->getComponent<PointLight>()->getSphere();
 
     glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
     glDisable(GL_DEPTH_TEST);
@@ -254,6 +256,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
 }
 
 void DeferredRenderer::outputPass(Scene * scene){
+    drawBufferToImgui("GBuffer", &_gBuffer);
     _gBuffer.bindForOutput();
     glBlitFramebuffer(0, 0, _deferredWidth, _deferredHeight,
         0, 0, _deferredWidth, _deferredHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
@@ -374,7 +377,6 @@ void MoonEngine::DeferredRenderer::setupDirLightUniforms(GLProgram * prog)
 
     //Other global Uniforms
     glUniform3fv(prog->getUniformLocation("cameraPos"), 1, glm::value_ptr(_mainCameraPosition));
-    glUniform2f(prog->getUniformLocation("screenSize"), (float)_deferredWidth, (float)_deferredHeight);
 
 }
 

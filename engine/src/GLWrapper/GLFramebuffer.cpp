@@ -98,8 +98,10 @@ void GLFramebuffer::bindForStencilPass() {
 void GLFramebuffer::bindForLightPass() {
     glDrawBuffer(GL_COLOR_ATTACHMENT4);
     for (auto &tex : _textureHandles) {
-        glActiveTexture(GL_TEXTURE0 + tex.second.unit);
-        glBindTexture(GL_TEXTURE_2D, tex.second.gl_texture->getTextureId());
+        if (tex.first != "output" && tex.first != "depth") {
+            glActiveTexture(GL_TEXTURE0 + tex.second.unit);
+            glBindTexture(GL_TEXTURE_2D, tex.second.gl_texture->getTextureId());
+        }
     }
 }
 

@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#define COLORS_BASIC
 #include "MoonEngine.h"
 #include "LevelEditor/LevelLoader.h"
 
@@ -167,7 +168,8 @@ int main(int argc, char ** argv)
 
     });
 
-    DeferredRenderer * renderer = new DeferredRenderer(width, height, "phong_point_deferred.program", "phong_dir_deferred.program");
+    DeferredRenderer * renderer = new DeferredRenderer(width, height,
+        "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
     delete scene;
