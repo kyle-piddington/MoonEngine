@@ -8,6 +8,7 @@ GLFramebuffer::GLFramebuffer(int width, int height):
     _height(height),
     _framebufferStatus(GL_FRAMEBUFFER_UNDEFINED),
     _unitCount(0),
+    _colorCount(0),
     _textureHandles(std::unordered_map<std::string, texture_unit>())
 {
     glGenFramebuffers(1, &_handle);
@@ -38,55 +39,17 @@ GLFramebuffer & GLFramebuffer::operator=(GLFramebuffer && other)
 }
 
 
-void GLFramebuffer::bind(GLint mode) const
-{
-	if (_framebufferStatus != GL_FRAMEBUFFER_COMPLETE)
-	{
-		switch (_framebufferStatus)
-		{
-		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-			LOG(ERROR, "Framebuffer not complete, incomplete attachment");
-			break;
-		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-			LOG(ERROR, "Framebuffer not complete, No textures attached");
-			break;
-		case GL_FRAMEBUFFER_UNSUPPORTED:
-			LOG(ERROR, "Framebuffer not complete, not supported by openGL version");
-			break;
-		default:
-			LOG(ERROR, "FrameBuffer not complete... " + std::to_string(_framebufferStatus));
-		}
-	}
-	assert(_framebufferStatus == GL_FRAMEBUFFER_COMPLETE);
-	bindWithoutComplete(mode);
-}
-
-void GLFramebuffer::bindForOutput() const {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    for (auto &tex : _textureHandles) {
-        glActiveTexture(GL_TEXTURE0 + tex.second.unit);
-        glBindTexture(GL_TEXTURE_2D, tex.second.gl_texture->getTextureId());
-    }
-}
-
-
-GLuint MoonEngine::GLFramebuffer::getObject() const
-{
-    return _handle;
-}
-
-
 void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo)
 {
     assert(texture.getWidth() == _width && texture.getHeight() == _height);
-    bindWithoutComplete(GL_FRAMEBUFFER);
-	LOG_GL(__FILE__, __LINE__);
-	texture.bindRaw();
-	LOG_GL(__FILE__, __LINE__);
+    bind(GL_DRAW_FRAMEBUFFER);
+    texture.bindRaw();
+    LOG_GL(__FILE__, __LINE__);
 
-    if (attachmentInfo >= GL_COLOR_ATTACHMENT0 && attachmentInfo != GL_DEPTH_ATTACHMENT) {
+    if (attachmentInfo >= GL_COLOR_ATTACHMENT0 && attachmentInfo < GL_COLOR_ATTACHMENT10) {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        _colorCount += 1;
     }
     LOG_GL(__FILE__, __LINE__);
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentInfo, GL_TEXTURE_2D, texture.getTextureId(), 0);
@@ -101,40 +64,74 @@ void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & text
     Unbind();
 }
 
-void MoonEngine::GLFramebuffer::addDepthBuffer()
-{
-    bindWithoutComplete(GL_FRAMEBUFFER);
-    GLuint depthRBO;
-    glGenRenderbuffers(1, &depthRBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, depthRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, _width, _height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
+void GLFramebuffer::startFrame() {
+    bind(GL_DRAW_FRAMEBUFFER);
+    glDrawBuffer(GL_COLOR_ATTACHMENT4);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void GLFramebuffer::bindForGeomPass(){
+    drawColorAttachments(_colorCount);
+}
+
+void GLFramebuffer::bindForStencilPass() {
+    glDrawBuffer(GL_NONE);
+}
+
+void GLFramebuffer::bindForLightPass() {
+    glDrawBuffer(GL_COLOR_ATTACHMENT4);
+    for (auto &tex : _textureHandles) {
+        if (tex.first != "output" && tex.first != "depth") {
+            glActiveTexture(GL_TEXTURE0 + tex.second.unit);
+            glBindTexture(GL_TEXTURE_2D, tex.second.gl_texture->getTextureId());
+        }
+    }
+}
+
+void GLFramebuffer::bindForOutput() {
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    bind(GL_READ_FRAMEBUFFER);
+    glReadBuffer(GL_COLOR_ATTACHMENT4);
 }
 
 
-GLuint GLFramebuffer::release()
+void GLFramebuffer::status()
 {
-    GLuint tmp = _handle;
-    _handle = 0;
-    return tmp;
+    _framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (_framebufferStatus != GL_FRAMEBUFFER_COMPLETE)
+    {
+        switch (_framebufferStatus)
+        {
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            LOG(ERROR, "Framebuffer not complete, incomplete attachment");
+            break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            LOG(ERROR, "Framebuffer not complete, No textures attached");
+            break;
+        case GL_FRAMEBUFFER_UNSUPPORTED:
+            LOG(ERROR, "Framebuffer not complete, not supported by openGL version");
+            break;
+        default:
+            LOG(ERROR, "FrameBuffer not complete... " + std::to_string(_framebufferStatus));
+        }
+    }
+    assert(_framebufferStatus == GL_FRAMEBUFFER_COMPLETE);
 }
 
-GLuint GLFramebuffer::reset(GLuint newObject)
-{
-    glDeleteFramebuffers(1, &_handle);
-    _handle = newObject;
-    return _handle;
-}
-
-void GLFramebuffer::bindWithoutComplete(GLuint mode) const
-{
+void GLFramebuffer::bind(GLuint mode) {
 	glBindFramebuffer(mode, _handle);
 }
 
-void GLFramebuffer::Unbind()
-{
+void GLFramebuffer::Unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+
+GLuint MoonEngine::GLFramebuffer::getObject() const
+{
+    return _handle;
 }
 
 GLFramebuffer::texture_unit GLFramebuffer::getTexture(std::string name) const
@@ -157,9 +154,10 @@ void GLFramebuffer::drawColorAttachments(int size) {
 	vector<GLuint> colors;
 	for (int i = 0; i < size; i++)
 		colors.push_back(GL_COLOR_ATTACHMENT0 + i);
-	bindWithoutComplete(GL_DRAW_FRAMEBUFFER);
-	glDrawBuffers(size, &colors[0]);
+    bind(GL_DRAW_FRAMEBUFFER);
+    glDrawBuffers(size, &colors[0]);
 }
+
 GLuint GLFramebuffer::getAttachmentMode(std::string name) const
 {
 	auto it = _textureAttachmentMode.find(name);
@@ -174,3 +172,18 @@ const std::unordered_map<std::string, GLFramebuffer::texture_unit> & GLFramebuff
 {
 	return _textureHandles;
 }
+
+GLuint GLFramebuffer::release()
+{
+    GLuint tmp = _handle;
+    _handle = 0;
+    return tmp;
+}
+
+GLuint GLFramebuffer::reset(GLuint newObject)
+{
+    glDeleteFramebuffers(1, &_handle);
+    _handle = newObject;
+    return _handle;
+}
+

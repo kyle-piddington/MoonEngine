@@ -53,7 +53,6 @@ void KDTree::addDynamicObject(std::shared_ptr<GameObject> dynamicObject)
 
 void KDTree::update()
 {
-	bool has;
 	for (int i = 0; i < dynamicObjects.size(); i++)
 	{
 		std::vector<Node *> region = dynamicObjects.at(i)->getNodes();

@@ -49,6 +49,8 @@ namespace MoonEngine
 
         const std::vector<std::shared_ptr<GameObject>> getRenderableGameObjectsInFrustrum(glm::mat4 VP, Tag withTag = T_ALL) const;
 
+        const std::vector<std::shared_ptr<GameObject>> getForwardGameObjects() const;
+
         float distanceFromFrutrum(glm::vec4 frustPlane, glm::vec3 point);
         
 
@@ -157,6 +159,7 @@ namespace MoonEngine
 
         std::vector<std::shared_ptr<GameObject>> _gameObjects;
         std::vector<std::shared_ptr<GameObject>> _renderableGameObjects;
+        std::vector<std::shared_ptr<GameObject>> _forwardGameObjects;
 
 		std::shared_ptr<KDTree> _renderTree;
 

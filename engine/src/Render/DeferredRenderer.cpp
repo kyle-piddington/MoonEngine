@@ -4,7 +4,8 @@
 using namespace MoonEngine;
 
 
-DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgramName, string dirLightProgramName):
+DeferredRenderer::DeferredRenderer(int width, int height, string stencilProgramName, 
+    string pointLightProgramName, string dirLightProgramName):
     _mainCamera(nullptr),
     _gBuffer(width, height),
     _width(width),
@@ -13,26 +14,34 @@ DeferredRenderer::DeferredRenderer(int width, int height, string pointLightProgr
     _colorTex(),
     _normalTex(),
     _textureTex(),
-    _depthTex()
+    _depthTex(),
+    _outputTex()
 {
     GLTextureConfiguration locationCFG(width, height, GL_RGB16F, GL_RGB, GL_FLOAT);
     GLTextureConfiguration colorCFG(width, height, GL_RGBA, GL_RGBA, GL_FLOAT);
-    GLTextureConfiguration depthCFG(width, height, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_FLOAT);
-	bool texSetupOk = true;
-	texSetupOk &= _positionTex.init(locationCFG);
-	texSetupOk &=  _colorTex.init(colorCFG);
-	texSetupOk &= _normalTex.init(locationCFG);
-	texSetupOk &= _depthTex.init(depthCFG);
-	assert(texSetupOK);
-    _gBuffer.addTexture("position", _positionTex, GL_COLOR_ATTACHMENT0);
+    GLTextureConfiguration depthCFG(width, height, GL_DEPTH32F_STENCIL8, 
+        GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
+    GLTextureConfiguration outputCFG(width, height, GL_RGBA, GL_RGB, GL_FLOAT);
+
     
+    if (_positionTex.init(locationCFG) == false) {
+        throw;
+    }
+    assert(_colorTex.init(colorCFG));
+    assert(_normalTex.init(locationCFG));
+    assert(_depthTex.init(depthCFG));
+    assert(_outputTex.init(outputCFG));
+
+    _gBuffer.addTexture("position", _positionTex, GL_COLOR_ATTACHMENT0);
     _gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT1);
     _gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
+
     _gBuffer.addTexture("depth", _depthTex, GL_DEPTH_ATTACHMENT);
-    _gBuffer.drawColorAttachments(3);
-    _gBuffer.addDepthBuffer();
-    LOG_GL(__FILE__, __LINE__);
+    _gBuffer.addTexture("output", _outputTex, GL_COLOR_ATTACHMENT4);
+    _gBuffer.status();
+
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
+    _stencilProgram = Library::ProgramLib->getProgramForName(stencilProgramName);
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
     _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
 
@@ -49,38 +58,46 @@ void DeferredRenderer::setup(Scene * scene, GLFWwindow * window)
         LOG(ERROR, "No Camera in scene!");
     }
     glfwGetFramebufferSize(window, &_deferredWidth, &_deferredHeight);
-    //Swing through all rendering components and load their programs.
     glClearColor(0, 0, 0, 1.0f);
 }
 
 
 void DeferredRenderer::render(Scene * scene)
 {
-	vector<std::shared_ptr<GameObject>>forwardObjects;
-	forwardObjects = geometryPass(scene);
-    lightingSetup();
-	pointLightPass(scene);
+    _gBuffer.startFrame();
+    LOG_GL(__FILE__, __LINE__);
+   geometryPass(scene);
+
+    glEnable(GL_STENCIL_TEST);
+    for (std::shared_ptr<GameObject> light : scene->getPointLightObjects()) {
+        stencilPass(light);
+        pointLightPass(light);
+    }
+    glDisable(GL_STENCIL_TEST);
+    
     dirLightPass(scene);
-    forwardPass(scene, forwardObjects);
+    outputPass(scene);
+    //forwardPass(scene);
+
     GLVertexArrayObject::Unbind();
 }
 
-vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene)
+void DeferredRenderer::geometryPass(Scene * scene)
 {
 	GLProgram* activeProgram = nullptr;
 	Mesh* mesh = nullptr;
 	Material* mat = nullptr;
-	vector<std::shared_ptr<GameObject>> forwardObjects;
-	_gBuffer.bind(GL_DRAW_FRAMEBUFFER);
-	glm::mat4 V = _mainCamera->getView();
+
+    glm::mat4 V = _mainCamera->getView();
 	glm::mat4 P = _mainCamera->getProjection();
 
+    
 	// Only the geometry pass writes to the depth buffer
-	glDepthMask(GL_TRUE);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    _gBuffer.bindForGeomPass();
+    glDepthMask(GL_TRUE);
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
-
+    
 	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
 	{
 		mat = obj->getComponent<Material>();
@@ -88,7 +105,6 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
         const MeshInfo * meshInfo = mesh->getMesh();
         
 		if (mat->isForward()) {
-			forwardObjects.push_back(obj);
 			continue;
 		}
 
@@ -105,11 +121,6 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 			if (activeProgram->hasUniform("iGlobalTime")) {
 				glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
-			}
-			if (activeProgram->hasUniform("iGlobalLightDir"))
-			{
-				glm::vec3 lightDir = scene->getGlobalLightDir();
-				glUniform3f(activeProgram->getUniformLocation("iGlobalLightDir"), lightDir.x, lightDir.y, lightDir.z);
 			}
             
 		}
@@ -129,87 +140,96 @@ vector<std::shared_ptr<GameObject>> DeferredRenderer::geometryPass(Scene * scene
 			glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
 		}
 		
-        LOG_GL(__FILE__, __LINE__);
 		mesh->draw();
 		mat->unbind();
-        LOG_GL(__FILE__, __LINE__);
 	}
 
     //Disable the filled depth buffer
     glDepthMask(GL_FALSE);
-    glDisable(GL_DEPTH_TEST);
-
-	//sets the mesh (VAO) back to 0
-	return forwardObjects;
 }
 
-void MoonEngine::DeferredRenderer::lightingSetup()
+void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light)
 {
+    //setup NULL shaders
+
+    _stencilProgram->enable();
+    _gBuffer.bindForStencilPass();
+    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+    glClear(GL_STENCIL_BUFFER_BIT);
+
+    //enable stencil but set it to always pass
+    glStencilFunc(GL_ALWAYS, 0,0);
+    glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+    glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+
+    
+    
+    const MeshInfo* lightSphere = light->getComponent<PointLight>()->getSphere();;
+    glm::mat4 V = _mainCamera->getView();
+    glm::mat4 P = _mainCamera->getProjection();
+    glm::mat4 M = light->getComponent<PointLight>()->getLightTransform().getMatrix();
+
+    glUniformMatrix4fv(_stencilProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+    glUniformMatrix4fv(_stencilProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+    glUniformMatrix4fv(_stencilProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+
+    lightSphere->bind();
+
+    glDrawElementsBaseVertex(
+        GL_TRIANGLES,
+        lightSphere->numTris,
+        GL_UNSIGNED_SHORT,
+        lightSphere->indexDataOffset,
+        lightSphere->baseVertex
+    );
+
+}
+
+void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
+{
+    _pointLightProgram->enable();
+    _gBuffer.bindForLightPass();
+    setupPointLightUniforms(_pointLightProgram, light);
+	
+    const MeshInfo* lightSphere = nullptr;
+    lightSphere = light->getComponent<PointLight>()->getSphere();
+
+    glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+    glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
 
-    _gBuffer.bindForOutput();
-    glClear(GL_COLOR_BUFFER_BIT);
-    LOG_GL(__FILE__, __LINE__);
-}
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
 
-void DeferredRenderer::pointLightPass(Scene* scene)
-{
-    drawBufferToImgui("GBuffer", &_gBuffer);
+	lightSphere->bind();
 
-	const MeshInfo* lightSphere = nullptr;
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	_pointLightProgram->enable();
-    setupLightUniforms(_pointLightProgram);
-    LOG_GL(__FILE__, __LINE__);
-	for (std::shared_ptr<GameObject> obj : scene->getPointLightObjects())
-	{
-		lightSphere = obj->getComponent<PointLight>()->getSphere();
-        Transform & t = obj->getComponent<PointLight>()->getLightTransform();
-      
-        glm::mat4 M = t.getMatrix();
-        glm::vec3 lightPosition = obj->getComponent<PointLight>()->getPosition();
-        glm::vec3 viewLightPosition = 
-            glm::vec3(M * glm::vec4(lightPosition,1.0));
-		//sets the point light shader as active
-		lightSphere->bind();
+	glDrawElementsBaseVertex(
+		GL_TRIANGLES,
+		lightSphere->numTris,
+		GL_UNSIGNED_SHORT,
+        lightSphere->indexDataOffset,
+        lightSphere->baseVertex
+	);
 
-        LOG_GL(__FILE__, __LINE__);
-        //These values update for every light
-		glUniformMatrix4fv(_pointLightProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
-        glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.color"), 1, 
-            glm::value_ptr(obj->getComponent<PointLight>()->getColor()));
-        glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.position"), 1,
-            glm::value_ptr(viewLightPosition));
-
-		glUniform1f(_pointLightProgram->getUniformLocation("pointLight.ambient"), obj->getComponent<PointLight>()->getAmbient());
-
-		glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.constant"), obj->getComponent<PointLight>()->getAttenuation().x);
-        glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.linear"), obj->getComponent<PointLight>()->getAttenuation().y);
-        glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.exp"), obj->getComponent<PointLight>()->getAttenuation().z);
-
-        LOG_GL(__FILE__, __LINE__);
-		glDrawElementsBaseVertex(
-			GL_TRIANGLES,
-			lightSphere->numTris,
-			GL_UNSIGNED_SHORT,
-            lightSphere->indexDataOffset,
-            lightSphere->baseVertex
-		);
-
-	}
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glCullFace(GL_BACK);
+    glDisable(GL_BLEND);
 }
 
 void DeferredRenderer::dirLightPass(Scene* scene)
 {
     glm::mat4 V = _mainCamera->getView();
-    glm::mat4 P = _mainCamera->getProjection();
+
     _dirLightProgram->enable();
-    setupLightUniforms(_dirLightProgram);
+    setupDirLightUniforms(_dirLightProgram);
     _renderQuad->bind();
     
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_ONE, GL_ONE);
     
     for (std::shared_ptr<GameObject> obj : scene->getDirLightObjects()) {
         
@@ -234,10 +254,19 @@ void DeferredRenderer::dirLightPass(Scene* scene)
         );
     }
 
+    glDisable(GL_BLEND);
+
+}
+
+void DeferredRenderer::outputPass(Scene * scene){
+    drawBufferToImgui("GBuffer", &_gBuffer);
+    _gBuffer.bindForOutput();
+    glBlitFramebuffer(0, 0, _deferredWidth, _deferredHeight,
+        0, 0, _deferredWidth, _deferredHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }
 
 
-void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObject>> forwardObjects) {
+void DeferredRenderer::forwardPass(Scene* scene) {
     
     GLProgram* activeProgram = nullptr;
     Mesh* mesh = nullptr;
@@ -251,16 +280,9 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
     glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_BLEND);
-    LOG_GL(__FILE__, __LINE__);
-    _gBuffer.bind(GL_READ_FRAMEBUFFER);
-    LOG_GL(__FILE__, __LINE__);
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Write to default framebuffer
-    LOG_GL(__FILE__, __LINE__);
-    glBlitFramebuffer( 0, 0, _width, _height, 0, 0, _deferredWidth, _deferredHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
-    LOG_GL(__FILE__, __LINE__);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    LOG_GL(__FILE__, __LINE__);
-    for (std::shared_ptr<GameObject> obj : forwardObjects)
+
+
+    for (std::shared_ptr<GameObject> obj : scene->getForwardGameObjects())
     {
         mat = obj->getComponent<Material>();
         mesh = obj->getComponent<Mesh>();
@@ -295,11 +317,6 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
         if (activeProgram->hasUniform("iGlobalTime")) {
             glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
         }
-		if (activeProgram->hasUniform("iGlobalLightDir"))
-		{
-			glm::vec3 lightDir = scene->getGlobalLightDir();
-			glUniform3f(activeProgram->getUniformLocation("iGlobalLightDir"), lightDir.x, lightDir.y, lightDir.z);
-		}
         mesh->draw();
 
        
@@ -312,14 +329,18 @@ void DeferredRenderer::forwardPass(Scene* scene, vector<std::shared_ptr<GameObje
 
 }
 
-void DeferredRenderer::setupLightUniforms(GLProgram * prog)
+void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr<GameObject> light)
 {
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
+    glm::mat4 M = light->getComponent<PointLight>()->getLightTransform().getMatrix();
+    glm::vec3 lightPosition = light->getComponent<PointLight>()->getPosition();
+    glm::vec3 viewLightPosition = glm::vec3(V* M * glm::vec4(lightPosition, 1.0));
 
-    //Place Uniforms that do not change per dirLight
+    //Matrix Uniforms
     glUniformMatrix4fv(prog->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
     glUniformMatrix4fv(prog->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+    glUniformMatrix4fv(_pointLightProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
     //Texture Uniforms
     GLFramebuffer::texture_unit id = _gBuffer.getTexture("position");
@@ -330,8 +351,34 @@ void DeferredRenderer::setupLightUniforms(GLProgram * prog)
     glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
 
     //Other global Uniforms
-    glUniform3fv(prog->getUniformLocation("cameraPosition"), 1, glm::value_ptr(_mainCameraPosition));
     glUniform2f(prog->getUniformLocation("screenSize"), (float) _deferredWidth,(float) _deferredHeight);
+
+    //PointLight Specific Uniforms
+    glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.color"), 1,
+        glm::value_ptr(light->getComponent<PointLight>()->getColor()));
+    glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.position"), 1,
+        glm::value_ptr(viewLightPosition));
+
+    glUniform1f(_pointLightProgram->getUniformLocation("pointLight.ambient"), light->getComponent<PointLight>()->getAmbient());
+
+    glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.constant"), light->getComponent<PointLight>()->getAttenuation().x);
+    glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.linear"), light->getComponent<PointLight>()->getAttenuation().y);
+    glUniform1f(_pointLightProgram->getUniformLocation("pointLight.atten.exp"), light->getComponent<PointLight>()->getAttenuation().z);
+
+}
+
+void MoonEngine::DeferredRenderer::setupDirLightUniforms(GLProgram * prog)
+{
+    //Texture Uniforms
+    GLFramebuffer::texture_unit id = _gBuffer.getTexture("position");
+    glUniform1i(prog->getUniformLocation("positionTex"), id.unit);
+    id = _gBuffer.getTexture("color");
+    glUniform1i(prog->getUniformLocation("colorTex"), id.unit);
+    id = _gBuffer.getTexture("normal");
+    glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
+
+    //Other global Uniforms
+
 }
 
 void DeferredRenderer::shutdown()

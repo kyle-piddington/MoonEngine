@@ -1,0 +1,5 @@
+{
+	"name" : "deferred_pointLight",
+	"vertex" : "resources/programs/deferred_pointL.vs",
+	"fragment" : "resources/programs/deferred_pointL.fs"
+}

@@ -27,7 +27,7 @@ namespace MoonEngine
     class DeferredRenderer: public I_Renderer
     {
     public:
-        DeferredRenderer(int width, int height, string pointLightProgramName, string dirLightProgramName);
+        DeferredRenderer(int width, int height, string stencilProgramName, string pointLightProgramName, string dirLightProgramName);
 
         virtual ~DeferredRenderer()
         {}
@@ -52,14 +52,18 @@ namespace MoonEngine
 
     private:
 
-		vector<std::shared_ptr<GameObject>> geometryPass(Scene* scene);
-        void lightingSetup();
-        void pointLightPass(Scene* scene);
+		void geometryPass(Scene* scene);
+
+        void stencilPass(std::shared_ptr<GameObject> light);
+        void pointLightPass(std::shared_ptr<GameObject> light);
+
         void dirLightPass(Scene* scene);
-        void forwardPass(Scene* scene, vector<std::shared_ptr<GameObject>> forwardObjects);
+        void outputPass(Scene* scene);
+        void forwardPass(Scene* scene);
 
         //Setup Uniforms shared across both light passes
-        void setupLightUniforms(GLProgram* prog);
+        void setupPointLightUniforms(GLProgram* prog, std::shared_ptr<GameObject> light);
+        void setupDirLightUniforms(GLProgram* prog);
         Camera* _mainCamera;
         glm::vec3 _mainCameraPosition;
         MeshInfo* _renderQuad;
@@ -68,9 +72,11 @@ namespace MoonEngine
         GLFramebuffer _gBuffer;
 		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;
         GLTexture _depthTex;
+        GLTexture _outputTex;
 
-        GLProgram * _pointLightProgram;
-        GLProgram * _dirLightProgram;
+        GLProgram* _stencilProgram;
+        GLProgram* _pointLightProgram;
+        GLProgram* _dirLightProgram;
     };
 
     void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr);

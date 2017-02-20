@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#define COLORS_BASIC
 #include "MoonEngine.h"
 #include "LevelEditor/LevelLoader.h"
 
@@ -105,19 +106,19 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_PURPLE, 0.2f, 0.2f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
+    scene->addGameObject(pointLight);
 
     lightTransform.setPosition(glm::vec3(-5, 3, 1));
     pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_WHITE, 0.2f, 0.2f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
+    scene->addGameObject(pointLight);
 
     lightTransform.setPosition(glm::vec3(4, 3, -5));
     pointLight = make_shared<GameObject>(lightTransform);
     pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_CYAN, 0.2f, 0.2f));
     pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
+    scene->addGameObject(pointLight);
 
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
@@ -167,7 +168,8 @@ int main(int argc, char ** argv)
 
     });
 
-	DeferredRenderer * renderer = new DeferredRenderer(width, height, "phong_point_deferred.program", "phong_dir_deferred.program");
+	DeferredRenderer * renderer = new DeferredRenderer(width, height, 
+        "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
     delete scene;

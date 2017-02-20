@@ -47,25 +47,20 @@ namespace MoonEngine
          */
         void addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo);
 
-        void addDepthBuffer();
-        /**
-         * Todo:
-         * Implement a render buffer class
-         */
+        /*Prepare for frame by clear final color texture*/
+        void startFrame();
 
-		 /**
-		 * Bind the framebuffer
-		 * @param mode:
-		 * GL_READ_FRAMEBUFFER: bind for reading
-		 * GL_DRAW_FRAMEBUFFER: bind for writing
-		 * GL_FRAMEBUFFER: bind for both
-		 */
-        void bind(GLint mode) const;
+        void bindForGeomPass();
+        void bindForStencilPass();
+        void bindForLightPass();
+        void bindForOutput();
+
+        /*Check the status of the framebuffer*/
+        void status();
+        /*Bind in @param mode*/
+        void bind(GLuint mode);
         
-        /**
-        * Bind the framebuffer and all textures for output to the screen
-        */
-        void bindForOutput() const;
+        static void Unbind();
 
         GLuint getObject() const;
 
@@ -76,28 +71,29 @@ namespace MoonEngine
 		* @param name the name of the texture
 		*/
 		void setReadBuffer(std::string name);
+
 		void drawColorAttachments(int size);
+
 		GLuint getAttachmentMode(std::string name) const;
 
 		const std::unordered_map<std::string, texture_unit> & getTextureHandles() const;
 
-        static void Unbind();
-
-        void setDepthStencil(bool depthVal, bool stencilVal);
+        
 
     private:
         GLuint release();
 
         GLuint reset(GLuint newObject = 0);
 
-		void bindWithoutComplete(GLuint mode = GL_FRAMEBUFFER) const;
         int _unitCount;
+        int _colorCount;
         int _width;
         int _height;
         GLuint _handle;
         GLenum _framebufferStatus;
         std::unordered_map<std::string, texture_unit> _textureHandles;
 		std::unordered_map<std::string, GLuint> _textureAttachmentMode;
+
 
         //void addRenderbuffer(const GLRenderBuffer & buffer);
     };

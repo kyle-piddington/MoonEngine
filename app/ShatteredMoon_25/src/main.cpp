@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#define COLORS_BASIC
 #include "MoonEngine.h"
 
 
