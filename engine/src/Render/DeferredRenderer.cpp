@@ -23,7 +23,10 @@ DeferredRenderer::DeferredRenderer(int width, int height, string stencilProgramN
         GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
     GLTextureConfiguration outputCFG(width, height, GL_RGBA, GL_RGB, GL_FLOAT);
 
-    assert(_positionTex.init(locationCFG));
+    
+    if (_positionTex.init(locationCFG) == false) {
+        throw;
+    }
     assert(_colorTex.init(colorCFG));
     assert(_normalTex.init(locationCFG));
     assert(_depthTex.init(depthCFG));
@@ -332,7 +335,7 @@ void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr
     glm::mat4 P = _mainCamera->getProjection();
     glm::mat4 M = light->getComponent<PointLight>()->getLightTransform().getMatrix();
     glm::vec3 lightPosition = light->getComponent<PointLight>()->getPosition();
-    glm::vec3 viewLightPosition = glm::vec3(M * glm::vec4(lightPosition, 1.0));
+    glm::vec3 viewLightPosition = glm::vec3(V* M * glm::vec4(lightPosition, 1.0));
 
     //Matrix Uniforms
     glUniformMatrix4fv(prog->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
@@ -348,7 +351,6 @@ void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr
     glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
 
     //Other global Uniforms
-    glUniform3fv(prog->getUniformLocation("cameraPos"), 1, glm::value_ptr(_mainCameraPosition));
     glUniform2f(prog->getUniformLocation("screenSize"), (float) _deferredWidth,(float) _deferredHeight);
 
     //PointLight Specific Uniforms
@@ -376,7 +378,6 @@ void MoonEngine::DeferredRenderer::setupDirLightUniforms(GLProgram * prog)
     glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
 
     //Other global Uniforms
-    glUniform3fv(prog->getUniformLocation("cameraPos"), 1, glm::value_ptr(_mainCameraPosition));
 
 }
 

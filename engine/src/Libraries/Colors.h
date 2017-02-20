@@ -20,6 +20,7 @@ namespace MoonEngine {
     glm::vec3 COLOR_PURPLE      (0.50f, 0.00f, 0.50f);
     glm::vec3 COLOR_TEAL        (0.00f, 0.50f, 0.50f);
     glm::vec3 COLOR_NAVY        (0.00f, 0.00f, 0.50f);
+    glm::vec3 COLOR_BLACK       (0.00f, 0.00f, 0.00f);
 #endif
 
     //Complex Colors

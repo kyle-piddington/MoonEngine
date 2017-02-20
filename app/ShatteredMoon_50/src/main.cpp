@@ -192,9 +192,9 @@ int main(int argc, char ** argv)
     boxObject->addComponent(scene->createComponent<BoxCollider>());
     scene->addGameObject(boxObject);
 
-    std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
-    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -2, -1), COLOR_WHITE, 0.1f));
-    scene->addGameObject(dirLight);
+    /*std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
+    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -2, -1), COLOR_GREEN, 0.1f));
+    scene->addGameObject(dirLight);*/
 
 
     
