@@ -10,5 +10,9 @@
   CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/ShatteredMoon_50/CMakeFiles/generate.stamp is up-to-date.
   CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/ShatteredMoon_75/CMakeFiles/generate.stamp is up-to-date.
   CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/LevelEditor/CMakeFiles/generate.stamp is up-to-date.
+<<<<<<< HEAD
   CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/Skydome/CMakeFiles/generate.stamp is up-to-date.
+=======
+  CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/app/TestScene/CMakeFiles/generate.stamp is up-to-date.
+>>>>>>> renderer
   CMake does not need to re-run because C:/Users/Derek/Documents/GitHub/MoonEngine/_build/test/CMakeFiles/generate.stamp is up-to-date.
