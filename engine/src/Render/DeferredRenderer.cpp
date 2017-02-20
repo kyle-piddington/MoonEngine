@@ -163,12 +163,7 @@ void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light
     _gBuffer.bindForStencilPass();
     glEnable(GL_DEPTH_TEST);
 
-    Transform &t = light->getComponent<PointLight>()->getLightTransform();
-    glm::vec3 lightPos = t.getPosition();
-    //TODO: if onside light
-    if (glm::distance2(_mainCameraPosition, lightPos) <= t.getScale().x * t.getScale().x) {
-        glDisable(GL_DEPTH_TEST);
-    }
+    
     glDisable(GL_CULL_FACE);
     glStencilMask(0xFF);
     glClearStencil(0);
@@ -185,8 +180,7 @@ void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light
     const MeshInfo* lightSphere = light->getComponent<PointLight>()->getSphere();;
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
-    _mainCameraPosition;
-    glm::mat4 M = t.getMatrix();
+    glm::mat4 M = light->getComponent<PointLight>()->getLightTransform().getMatrix();
 
     glUniformMatrix4fv(_stencilProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
     glUniformMatrix4fv(_stencilProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
@@ -222,8 +216,10 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
 
-    //glDisable(GL_CULL_FACE);
+
+    glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
+  
 
 	lightSphere->bind();
 
@@ -234,7 +230,7 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
         lightSphere->indexDataOffset,
         lightSphere->baseVertex
 	);
-    glEnable(GL_CULL_FACE);
+
     glCullFace(GL_BACK);
     glDisable(GL_BLEND);
 }
