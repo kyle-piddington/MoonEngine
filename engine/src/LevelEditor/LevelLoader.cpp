@@ -2,7 +2,7 @@
 #include <Component/MeshComponents/StaticMesh.h>
 #include <Component/CharacterComponents/CollectableComponent.h>
 #include <Component/CharacterComponents/ShardMovement.h>
-
+#include <Component/LightComponents/PointLight.h>
 #include <iostream>
 #include "LevelLoader.h"
 
@@ -116,6 +116,7 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
         {
             object->addComponent(scene->createComponent<CollectableComponent>());   
             object->addComponent(scene->createComponent<ShardMovement>());
+            object->addComponent(scene->createComponent<PointLight>(glm::vec3(0),glm::vec3(1,1,1), 0.5, 1.0f));
             object->addTag(T_Dynamic);
            
         }

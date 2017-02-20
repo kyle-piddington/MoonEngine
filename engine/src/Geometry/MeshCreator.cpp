@@ -130,19 +130,22 @@ GridInfo MeshCreator::CreateGrid(glm::vec2 lowerLeft, glm::vec2 upperRight, int 
     {
         for(int col = 1; col < halfd; col++)
         {
-            indices.push_back(row * vertDim + col);
-            
-            indices.push_back((row-1) * vertDim + (col - 1));
-            
-
             indices.push_back(row * vertDim + (col-1));
             
-        
-            indices.push_back((row - 1) * vertDim + col);
-            
+
             indices.push_back((row-1) * vertDim + (col - 1));
             
             indices.push_back(row * vertDim + col);
+            
+
+            
+            indices.push_back(row * vertDim + col);
+            
+            indices.push_back((row-1) * vertDim + (col - 1));
+            
+            indices.push_back((row - 1) * vertDim + col);
+            
+            
         }
     }
     gridInfo.blIdx = indices.size();
@@ -150,19 +153,21 @@ GridInfo MeshCreator::CreateGrid(glm::vec2 lowerLeft, glm::vec2 upperRight, int 
     {
         for(int col = halfd; col < fulld; col++)
         {
-            indices.push_back(row * vertDim + col);
-            
-            indices.push_back((row-1) * vertDim + (col - 1));
-            
-
             indices.push_back(row * vertDim + (col-1));
             
-        
-            indices.push_back((row - 1) * vertDim + col);
-            
+
             indices.push_back((row-1) * vertDim + (col - 1));
             
             indices.push_back(row * vertDim + col);
+            
+            
+        
+            indices.push_back(row * vertDim + col);
+
+            indices.push_back((row-1) * vertDim + (col - 1));            
+            
+            indices.push_back((row - 1) * vertDim + col);
+            
         }
     }
     gridInfo.trIdx = indices.size();
@@ -170,19 +175,19 @@ GridInfo MeshCreator::CreateGrid(glm::vec2 lowerLeft, glm::vec2 upperRight, int 
     {
         for(int col = 1; col < halfd; col++)
         {
-            indices.push_back(row * vertDim + col);
-            
-            indices.push_back((row-1) * vertDim + (col - 1));
-            
-
             indices.push_back(row * vertDim + (col-1));
             
-        
-            indices.push_back((row - 1) * vertDim + col);
-            
             indices.push_back((row-1) * vertDim + (col - 1));
             
             indices.push_back(row * vertDim + col);
+            
+        
+            indices.push_back(row * vertDim + col);
+            
+            indices.push_back((row-1) * vertDim + (col - 1));
+            
+            indices.push_back((row - 1) * vertDim + col);
+
         }
     }
     gridInfo.brIdx = indices.size();
@@ -190,19 +195,19 @@ GridInfo MeshCreator::CreateGrid(glm::vec2 lowerLeft, glm::vec2 upperRight, int 
     {
         for(int col = halfd; col < fulld; col++)
         {
-            indices.push_back(row * vertDim + col);
-            
-            indices.push_back((row-1) * vertDim + (col - 1));
-            
-
             indices.push_back(row * vertDim + (col-1));
             
+            indices.push_back((row-1) * vertDim + (col - 1));
+
+            indices.push_back(row * vertDim + col);
+            
         
-            indices.push_back((row - 1) * vertDim + col);
+            
+            indices.push_back(row * vertDim + col);
             
             indices.push_back((row-1) * vertDim + (col - 1));
             
-            indices.push_back(row * vertDim + col);
+            indices.push_back((row - 1) * vertDim + col);
         }
     }
     vertexBuffer->setData(sizeof(float)*dataBuffer.size(), &(dataBuffer[0]), GL_STATIC_DRAW);

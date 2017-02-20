@@ -3,7 +3,9 @@
 using namespace MoonEngine;
 
 PointLight::PointLight(glm::vec3 position, glm::vec3 color, float ambient, float intensity)
-    : Light(color, ambient, intensity){
+    : Light(color, ambient, intensity),
+    _lightRange(){
+
     _lightRange.setScale(glm::vec3(32, 32, 32));
     _bSphere = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed("sphere.obj", false);
     _attenuation.constant = 1.0f;

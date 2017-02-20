@@ -335,7 +335,7 @@ void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr
     glm::mat4 P = _mainCamera->getProjection();
     glm::mat4 M = light->getComponent<PointLight>()->getLightTransform().getMatrix();
     glm::vec3 lightPosition = light->getComponent<PointLight>()->getPosition();
-    glm::vec3 viewLightPosition = glm::vec3(V* M * glm::vec4(lightPosition, 1.0));
+    glm::vec3 viewLightPosition = glm::vec3(V* M * glm::vec4(0,0,0, 1.0));
 
     //Matrix Uniforms
     glUniformMatrix4fv(prog->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
