@@ -100,6 +100,7 @@ int main(int argc, char ** argv)
     sphereObject->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures, true));
     scene->addGameObject(sphereObject);
 
+<<<<<<< HEAD
     //Lights
     Transform lightTransform;
     lightTransform.setPosition(glm::vec3(6, 4, 1));
@@ -125,6 +126,30 @@ int main(int argc, char ** argv)
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
     //scene->addGameObject(dirLight);
 
+=======
+    //Lights + boxes
+    boxTransform.setPosition(glm::vec3(2, 3, 1));
+    boxTransform.setScale(glm::vec3(.2,.2,.2));
+    boxObject = std::make_shared<GameObject>(boxTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.3, 0.8), "geom.program", ligthIndicatorTextures));
+    boxObject->addComponent(scene->createComponent<PointLight>(COLOR_MAGENTA, 10));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
+
+    boxTransform.setPosition(glm::vec3(0, 2.9, -5));
+    boxTransform.setScale(glm::vec3(.2, .2, .2));
+    boxObject = std::make_shared<GameObject>(boxTransform);
+    boxObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    boxObject->addComponent(scene->createComponent<Material>(glm::vec3(0.8, 0.3, 0.8), "geom.program", ligthIndicatorTextures));
+    boxObject->addComponent(scene->createComponent<PointLight>(COLOR_RED, 10));
+    boxObject->addComponent(scene->createComponent<BoxCollider>());
+    scene->addGameObject(boxObject);
+
+    std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
+    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE));
+    scene->addGameObject(dirLight);
+>>>>>>> renderer
 
     //Terrain
     //Preload canyon 32f texture
