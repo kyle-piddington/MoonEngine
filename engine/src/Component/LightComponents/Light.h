@@ -8,7 +8,7 @@ namespace MoonEngine
     class Light : public Component
     {
     public:
-        Light(glm::vec3 color, float ambient, float intensity);
+        Light(glm::vec3 color, float ambient);
         virtual std::shared_ptr<Component> clone() const = 0;
 
        const  glm::vec3& getColor();
@@ -17,11 +17,10 @@ namespace MoonEngine
 
         glm::vec3 _color;
         float _ambient;
-        float _intensity;
     };
 
-    inline Light::Light(glm::vec3 color, float ambient, float intensity) :
-        _color(color), _ambient(ambient), _intensity(intensity){
+    inline Light::Light(glm::vec3 color, float ambient) :
+        _color(color), _ambient(ambient){
 
     }
 

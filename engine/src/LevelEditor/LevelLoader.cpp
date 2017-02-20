@@ -116,7 +116,7 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
         {
             object->addComponent(scene->createComponent<CollectableComponent>());   
             object->addComponent(scene->createComponent<ShardMovement>());
-            object->addComponent(scene->createComponent<PointLight>(glm::vec3(1,1,1), 5));
+            object->addComponent(scene->createComponent<PointLight>(glm::vec3(1,1,1), 7));
             object->addTag(T_Dynamic);
            
         }

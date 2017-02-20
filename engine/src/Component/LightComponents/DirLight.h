@@ -18,6 +18,7 @@ namespace MoonEngine {
         std::shared_ptr<Component> clone() const;
     private:
         glm::vec3 _direction;
+        float _intensity;
 
     };
 }

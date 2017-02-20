@@ -7,6 +7,7 @@
 #include "Util/Logger.h"
 #include "GLWrapper/OpenGL.h"
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/norm.hpp>
 #include "Component/Components.h"
 #include "GameObject/GameObject.h"
 #include "Geometry/MeshCreator.h"
