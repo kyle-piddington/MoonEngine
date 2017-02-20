@@ -40,6 +40,8 @@ DeferredRenderer::DeferredRenderer(int width, int height, string stencilProgramN
     _gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
 
     _gBuffer.addTexture("depth", _depthTex, GL_DEPTH_ATTACHMENT);
+    _gBuffer.addTexture("stencil", _depthTex, GL_STENCIL_ATTACHMENT);
+
     _gBuffer.addTexture("output", _outputTex, GL_COLOR_ATTACHMENT4);
     _gBuffer.status();
 
@@ -204,7 +206,7 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
     const MeshInfo* lightSphere = nullptr;
     lightSphere = light->getComponent<PointLight>()->getSphere();
 
-    //glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+    glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 
 
     glDisable(GL_DEPTH_TEST);
