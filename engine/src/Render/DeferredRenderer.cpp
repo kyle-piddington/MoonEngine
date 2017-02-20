@@ -69,6 +69,7 @@ void DeferredRenderer::render(Scene * scene)
 {
     _gBuffer.startFrame();
     LOG_GL(__FILE__, __LINE__);
+    glViewport(0,0,_width,_height);
    geometryPass(scene);
 
     glEnable(GL_STENCIL_TEST);
@@ -79,6 +80,7 @@ void DeferredRenderer::render(Scene * scene)
     glDisable(GL_STENCIL_TEST);
     
     dirLightPass(scene);
+    glViewport(0,0,_deferredWidth,_deferredHeight);
     outputPass(scene);
     //forwardPass(scene);
 
@@ -159,10 +161,13 @@ void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light
     _gBuffer.bindForStencilPass();
     glEnable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
+    glStencilMask(0xFF);
+    glClearStencil(0);
     glClear(GL_STENCIL_BUFFER_BIT);
 
     //enable stencil but set it to always pass
-    glStencilFunc(GL_ALWAYS, 0,0);
+    glStencilFunc(GL_ALWAYS, 0,0xFF);
+
     glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
     glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
@@ -186,6 +191,7 @@ void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light
         lightSphere->indexDataOffset,
         lightSphere->baseVertex
     );
+    glStencilMask(0x00);
 
 }
 
@@ -198,13 +204,15 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
     const MeshInfo* lightSphere = nullptr;
     lightSphere = light->getComponent<PointLight>()->getSphere();
 
-    glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+    //glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+
+
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
 
-    glEnable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
 
 	lightSphere->bind();
@@ -216,7 +224,7 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
         lightSphere->indexDataOffset,
         lightSphere->baseVertex
 	);
-
+    glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glDisable(GL_BLEND);
 }
@@ -264,7 +272,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
 void DeferredRenderer::outputPass(Scene * scene){
     drawBufferToImgui("GBuffer", &_gBuffer);
     _gBuffer.bindForOutput();
-    glBlitFramebuffer(0, 0, _deferredWidth, _deferredHeight,
+    glBlitFramebuffer(0, 0, _width, _height,
         0, 0, _deferredWidth, _deferredHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 }
 
@@ -354,7 +362,7 @@ void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr
     glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
 
     //Other global Uniforms
-    glUniform2f(prog->getUniformLocation("screenSize"), (float) _deferredWidth,(float) _deferredHeight);
+    glUniform2f(prog->getUniformLocation("screenSize"), (float) _width,(float) _height);
 
     //PointLight Specific Uniforms
     glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.color"), 1,

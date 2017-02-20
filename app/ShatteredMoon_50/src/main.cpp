@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
         glm::vec3(-52.623940, 12.913505554199219,-101.991371));
     std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>(playerTransform);
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
-    playerObj->addComponent(scene->createComponent<PointLight>(COLOR_BLUE, 10));
+    //playerObj->addComponent(scene->createComponent<PointLight>(COLOR_BLUE, 10));
     stringmap textures({{"diffuse", "wolf.tga"}});
 
     playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
@@ -123,7 +123,7 @@ int main(int argc, char ** argv)
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
-    //scene->addGameObject(dirLight);
+    scene->addGameObject(dirLight);
 
 
     //Terrain
@@ -168,7 +168,7 @@ int main(int argc, char ** argv)
 
     });
 
-	DeferredRenderer * renderer = new DeferredRenderer(width, height, 
+	DeferredRenderer * renderer = new DeferredRenderer(windowWidth, windowHeight, 
         "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
