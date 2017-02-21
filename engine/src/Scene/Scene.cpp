@@ -312,6 +312,7 @@ void Scene::runDeleteGameObjects()
             size--;
         }
     }
+
     size = _gameObjects.size();
     for (int i = 0; i < size; i++)
     {
@@ -322,7 +323,20 @@ void Scene::runDeleteGameObjects()
             size--;
         }
     }
+    size = _pointLightObjects.size();
+    for (int i = 0; i < size; i++)
+    {
+        if (_pointLightObjects.at(i) != nullptr && _pointLightObjects.at(i)->isDeleted())
+        {
+            _pointLightObjects.erase(_pointLightObjects.begin() + i);
+            i--;
+            size--;
+        }
+    }
+    
+
 	
+
 }
 
 std::shared_ptr<GameObject> MoonEngine::Scene::getMainCamera()

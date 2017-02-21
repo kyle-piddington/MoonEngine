@@ -9,3 +9,10 @@
 
 #define GL_WRITE_BUFFER 0x0C03
 #define GL_READ_WRITE_BUFFER 0x0C04
+
+#define POSITION_TEXTURE "_gBufferPosition"
+#define NORMAL_TEXTURE "_gBufferNormal"
+#define DEPTH_STENCIL_TEXTURE "_gBufferDepth"
+#define COLOR_TEXTURE "_gBufferColor"
+#define COMPOSITE_TEXTURE "_gBufferCompositeTexture"
+
