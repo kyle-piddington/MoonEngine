@@ -7,6 +7,7 @@
 #include "MoonEngine.h"
 #include "LevelEditor/LevelLoader.h"
 
+
 using namespace MoonEngine;
 
 
@@ -43,6 +44,8 @@ int main(int argc, char ** argv)
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 
+    AudioService::GetAudio()->loadSound("bgMusic.mp3",true, true);
+    AudioService::GetAudio()->playSound("bgMusic.mp3");
 
 
     //Game Objects
@@ -167,11 +170,12 @@ int main(int argc, char ** argv)
         // }
 
     });
-
+  
     DeferredRenderer * renderer = new DeferredRenderer(width, height,
         "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
+    AudioService::GetAudio()->shutdown();
     delete scene;
     delete renderer;
 

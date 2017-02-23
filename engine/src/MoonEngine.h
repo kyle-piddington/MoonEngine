@@ -44,7 +44,8 @@
 #include "Render/ProgramRenderer.h"
 #include "Render/DeferredRenderer.h"
 
-
+//Sound
+#include "Sound/AudioService.h"
 
 //Terrain
 #include "Geometry/Terrain/CDLODQuadtree.h"

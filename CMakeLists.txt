@@ -22,6 +22,14 @@ include_directories(${GLM_DIR})
 
 include_directories(engine/src)
 
+
+set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/deps )
+message(${CMAKE_MODULE_PATH})
+#FMod Support
+find_package(FMOD)
+if(FMOD_FOUND)
+	include_directories(${FMOD_INCLUDE_DIRS})
+endif()
 add_subdirectory(deps)
 add_subdirectory(engine)
 add_subdirectory(app)
@@ -29,3 +37,5 @@ add_subdirectory(test)
 
 #add_subdirectory(deps/assimp)
 #include_directories(deps/assimp/include)
+
+
