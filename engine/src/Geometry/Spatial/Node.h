@@ -23,6 +23,7 @@ namespace MoonEngine
 		std::vector<std::shared_ptr<Node>> gatherChildren();
 		int getMaximumDepth() const;
 		BoundingBox getBoundary();
+		void runCollision(std::shared_ptr<GameObject> playerObject);
 	private:
 		std::vector<std::shared_ptr<GameObject>> getFullyContainedObjects(const std::vector<std::shared_ptr<GameObject>> & allObjects);
 		void median(const std::vector<std::shared_ptr<GameObject>>  &gameObjects);

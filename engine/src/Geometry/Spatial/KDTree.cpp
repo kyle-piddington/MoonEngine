@@ -79,3 +79,8 @@ void KDTree::update()
 		}
 	}
 }
+
+void KDTree::runCollisions(std::shared_ptr<GameObject> gameObject)
+{
+	head->runCollision(gameObject);
+}
