@@ -56,7 +56,7 @@ namespace MoonEngine
 
         const std::vector<std::shared_ptr<GameObject>> getPointLightObjects() const;
 
-        const std::vector<std::shared_ptr<GameObject>> getDirLightObjects() const;
+        std::shared_ptr<GameObject> getDirLightObject() const;
 
         std::shared_ptr<GameObject> createGameObject()
         {
@@ -164,7 +164,8 @@ namespace MoonEngine
 		std::shared_ptr<KDTree> _renderTree;
 
         std::vector<std::shared_ptr<GameObject>> _pointLightObjects;
-        std::vector<std::shared_ptr<GameObject>> _dirLightObjects;
+        std::shared_ptr<GameObject> _dirLightObject;
+        int _dirLightFlag;
 
         //Main Camera Object
         std::shared_ptr<GameObject> _mainCamera;
