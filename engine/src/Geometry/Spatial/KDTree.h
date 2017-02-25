@@ -16,7 +16,7 @@ namespace MoonEngine
 		void addObject(std::shared_ptr<GameObject> gameObject);
 		void removeObject(std::shared_ptr<GameObject> gameObject);
 		void update();
-		//void runCollisions(std::shared_ptr<GameObject> gameObject);
+		void runCollisions(std::shared_ptr<GameObject> gameObject);
 	private:
 		void setDynamicObjects(std::vector<std::shared_ptr<GameObject>> dynamicObjects);
 		void addDynamicObject(std::shared_ptr<GameObject> dynamicObject);

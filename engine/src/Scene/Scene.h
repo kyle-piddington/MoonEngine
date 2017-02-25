@@ -147,6 +147,8 @@ namespace MoonEngine
 
 
         glm::vec3 getGlobalLightDir();
+		
+		std::shared_ptr<GameObject> getPlayer();
 
     private:
 
@@ -162,6 +164,7 @@ namespace MoonEngine
         std::vector<std::shared_ptr<GameObject>> _forwardGameObjects;
 
 		std::shared_ptr<KDTree> _renderTree;
+		std::shared_ptr<GameObject> _playerObject;
 
         std::vector<std::shared_ptr<GameObject>> _pointLightObjects;
         std::shared_ptr<GameObject> _dirLightObject;

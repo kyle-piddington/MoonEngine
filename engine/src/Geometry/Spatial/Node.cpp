@@ -326,3 +326,56 @@ BoundingBox Node::getBoundary()
 {
 	return ourBoundary;
 }
+
+void Node::runCollision(std::shared_ptr<GameObject> playerObject)
+{
+	if (!isLeaf)
+	{
+		int ix = static_cast<int>(plane.x > 0.0f);
+		int iy = static_cast<int>(plane.y > 0.0f);
+		int iz = static_cast<int>(plane.z > 0.0f);
+		int mx = static_cast<int>(-plane.x > 0.0f);
+		int my = static_cast<int>(-plane.y > 0.0f);
+		int mz = static_cast<int>(-plane.z > 0.0f);
+		const BoundingBox & box =
+			playerObject->getBounds();
+		glm::vec3 currBox[2];
+		currBox[0] = (box.min());
+		currBox[1] = (box.max());
+
+		float distanceMax = (plane.x * currBox[ix].x +
+			plane.y * currBox[iy].y +
+			plane.z * currBox[iz].z) + plane.w;
+		float distanceMin = (plane.x * currBox[mx].x +
+			plane.y * currBox[my].y +
+			plane.z * currBox[mz].z) + plane.w;
+		if (distanceMax >= 0)
+		{
+			rightChild->runCollision(playerObject);
+		}
+		if (distanceMin < 0)
+		{
+			leftChild->runCollision(playerObject);
+		}
+	}
+	else
+	{
+		glm::vec3 colnormal;
+		BoundingBox pBox = playerObject->getBounds();
+		for (int i = 0; i < gameObjects.size(); i++)
+		{
+			
+			if (pBox.intersects(gameObjects.at(i)->getBounds(), &colnormal))
+			{
+				Collision c;
+				c.normal = colnormal;
+				c.other = gameObjects.at(i).get();
+				playerObject->onCollisionEnter(c);
+				c.normal = -colnormal;
+				c.other = playerObject.get();
+				gameObjects.at(i)->onCollisionEnter(c);
+
+			}
+		}
+	}
+}

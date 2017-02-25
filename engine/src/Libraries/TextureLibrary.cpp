@@ -65,6 +65,14 @@ void TextureLibrary::addTexture(std::string textureName, std::shared_ptr<GLTextu
     _textures[textureName] = ptr.get();
 }
 
+GLTexture * TextureLibrary::createTexture(std::string textureName, const GLTextureConfiguration & cfg)
+{
+	std::shared_ptr<GLTexture> texture = make_shared<GLTexture>();
+	texture->init(cfg);
+	addTexture(textureName, texture);
+	return texture.get();
+}
+
 
 void TextureLibrary::Debug_ShowAllTextures()
 {
