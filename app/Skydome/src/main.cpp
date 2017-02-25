@@ -162,7 +162,7 @@ int main(int argc, char ** argv)
 
     std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
     sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
-    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun));
+    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun,true));
     scene->addGameObject(sunBillboard);
 
 
