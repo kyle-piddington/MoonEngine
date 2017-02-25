@@ -248,6 +248,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
     
+    std::shared_ptr<GameObject> dirLight = scene->getDirLightObject();
     glm::vec3 viewLight = 
         glm::vec3(V * glm::vec4(dirLight->getComponent<DirLight>()->getDirection(),0));
 
