@@ -18,10 +18,15 @@ ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed
     this->playerSpeed = playerSpeed;
     gravity = -9.8;
     jumpForce = 3;
-    jumpTime = 0.15f; //Half a second of 'up' time
+    _jumpTime = jumpTime = 0.15f; //Half a second of 'up' time
+    jumpSpeed = 0;
     radius = 0;
     state = GROUND;
     _lastGround = 0;
+    _curJumpForce = 0;
+    playerSpeed = 0;
+
+
 
 }
 
@@ -39,6 +44,7 @@ void ThirdPersonCharacterController::start()
     {
         worldTerrain = nullptr;
     }
+    findMinGround();
 
 }
 

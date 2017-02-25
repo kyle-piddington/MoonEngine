@@ -29,22 +29,26 @@ ThirdPersonOrbitalController::ThirdPersonOrbitalController(float Cam_Move_Speed,
     _CamSensitivity(CamSensitvity),
     _trac(0.0f, 0.0f, 3.0f),
     _targ(0.0f),
-    _phi(M_PI / 6),
+    _phi(M_PI / 3),
     _theta(0.0f),
     _distance(2.0f),
     _state(NORMAL),
-    _camHeight(0.15)
+    _camHeight(0.15),
+    _baseCamHeight(0.15)
 {
 }
 
 void ThirdPersonOrbitalController::start()
 {
-    _tracInterp = _trac = _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi) + _camHeight, sinf(_phi) * sinf(_theta));
+    player = GetWorld()->findGameObjectWithTag(T_Player);
+    assert(player != nullptr);
+    _targInterp = _targ = player->getTransform().getPosition();
+  
+    _tracInterp = _trac = _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi) + _camHeight, sinf(_phi) * sinf(_theta));
     Transform & transform = gameObject->getTransform();
     transform.setPosition(_trac);
     transform.lookAt(_targ);
-    player = GetWorld()->findGameObjectWithTag(T_Player);
-    assert(player != nullptr);
+ 
     //Look for player by default
     //
     LOG(GAME, "Camera started");
@@ -59,6 +63,16 @@ void ThirdPersonOrbitalController::update(float dt)
     rotate.y -= Input::GetAxis(AXIS_VERTICAL_1) * _CamMoveSpeed * dt;
     rotate.x -= Input::GetAxis(AXIS_HORIZONTAL_1) * _CamMoveSpeed * dt;
     _targ = player->getTransform().getPosition();
+    float camHeightScalar = 1.25;
+    if(_phi > M_PI/2)
+    {
+        _camHeight = _baseCamHeight + camHeightScalar * (_phi - M_PI/2);   
+        _targ = player->getTransform().getPosition() + glm::vec3(0,_camHeight,0);     
+    }
+    else
+    {
+        _camHeight = _baseCamHeight;
+    }
     if (std::abs(rotate.y) > 1e-2 || std::abs(rotate.x) > 1e-2)
     {
         _phi += rotate.y;
@@ -68,14 +82,14 @@ void ThirdPersonOrbitalController::update(float dt)
         /* TODO allow looking all the way up.
          * M_PI - 0.1f
          * */
-        _phi = std::min(_phi, (float) M_PI / 2);
+        _phi = std::min(_phi, (float)M_PI*3/4.0f);
 
         /* Do not look beyond straight down */
         _phi = std::max(_phi, 0.1f);
 
         rotate.z = 0;
 
-        _trac = _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi) + _camHeight, sinf(_phi) * sinf(_theta));
+        _trac = _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi), sinf(_phi) * sinf(_theta));
 
     }
     else if (Input::GetButtonDown(BUTTON_3))
@@ -85,10 +99,14 @@ void ThirdPersonOrbitalController::update(float dt)
                 glm::vec3(-fwd.x, 0, -fwd.z));
 
         _phi = M_PI / 3;
+        _camHeight = _baseCamHeight;
         _theta = atan2(camDirection.z, camDirection.x);
-        _trac = _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi) + _camHeight, sinf(_phi) * sinf(_theta));
+        _trac = _targ + _distance * glm::vec3(sinf(_phi) * cosf(_theta), cosf(_phi), sinf(_phi) * sinf(_theta))
+                 + glm::vec3(0,_camHeight,0);
+
+
     }
-    else if (glm::length(gameObject->getTransform().getPosition() - player->getTransform().getPosition()) > _distance)
+    else if (glm::length(gameObject->getTransform().getPosition() - player->getTransform().getPosition()) > _distance + 0.05)
     {
         glm::vec3 camPosition = (glm::vec3(0,-_camHeight,0) + player->getTransform().getPosition());
         glm::vec3 camDirection = glm::normalize(
@@ -98,13 +116,15 @@ void ThirdPersonOrbitalController::update(float dt)
         _trac = _targ + glm::normalize(
                 gameObject->getTransform().getPosition() - camPosition) * _distance;
     }
+
     _tracInterp += (_trac - _tracInterp) * dt * 5.0f;
+    _targInterp += (_targ - _targInterp) * dt * 5.0f;
     Transform & transform = gameObject->getTransform();
     transform.setPosition(_tracInterp);
 
 
     //_targ = transform.getPosition();
-    transform.lookAt(_targ);
+    transform.lookAt(_targInterp);
 
 }
 
