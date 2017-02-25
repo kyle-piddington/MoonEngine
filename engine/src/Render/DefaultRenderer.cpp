@@ -100,21 +100,14 @@ void DefaultRenderer::render(Scene * scene)
         glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
         Material * mat = obj->getComponent<Material>();
         glm::vec3 tint = mat->getTint();
-        const MeshInfo * mesh = obj->getComponent<StaticMesh>()->getMesh();
+        Mesh * mesh = obj->getComponent<StaticMesh>();
         mesh->bind();
         glUniform3f(basicPhongProgram.getUniformLocation("tint"), tint.x, tint.y, tint.z);
         glUniformMatrix4fv(
             basicPhongProgram.getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
         glUniformMatrix3fv(
             basicPhongProgram.getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
-
-        glDrawElementsBaseVertex(
-            GL_TRIANGLES,
-            mesh->numTris,
-            GL_UNSIGNED_SHORT,
-            mesh->indexDataOffset,
-            mesh->baseVertex
-        );
+        mesh->draw();
     }
     GLVertexArrayObject::Unbind();
 }

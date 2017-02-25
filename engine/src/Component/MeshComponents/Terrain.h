@@ -24,12 +24,14 @@ namespace MoonEngine
 	 * Retrieve information associated with the terrain's mesh
 	 * @return [description]
 	 */
-		const MeshInfo * getMesh() override;
+		void  bind() override;
 	/**
 	 * Retrieve a obundingBox for the entire terrain
 	 * @return boundingBox
 	 */
 		virtual const BoundingBox & getBoundingBox() override;
+
+		virtual const BoundingBox & getExtents() override;
 	/**
 	 * Clone the component
 	 */
@@ -65,6 +67,6 @@ namespace MoonEngine
 		CDLODQuadtree::LODHitInfo lastHitInfo;
 
 		//Some bullshit debugging
-		MeshInfo * debugMesh;
+		BasicMeshInfo * debugMesh;
 	};	
 }

@@ -5,7 +5,7 @@ std::vector<std::shared_ptr<GLBuffer>> MeshCreator::backingBuffers;
 std::vector<std::shared_ptr<GLVertexArrayObject>> MeshCreator::backingArrayObjects;
 
 
-MeshInfo *  MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRight, int divX, int divY)
+BasicMeshInfo *  MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRight, int divX, int divY)
 {
 
     backingBuffers.push_back(std::make_shared<GLBuffer>(GL_ARRAY_BUFFER));
@@ -80,7 +80,7 @@ MeshInfo *  MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRight, i
 
 	vertexArrayObject->bindElementBuffer(*indexBuffer);
 	//Create meshInfo
-	MeshInfo * info = new MeshInfo();
+	BasicMeshInfo * info = new BasicMeshInfo();
 	info->numVerts = dataBuffer.size() / 5;
 	info->numTris = indices.size();
 	info->indexDataOffset = (GLvoid *) 0;
@@ -231,7 +231,7 @@ GridInfo MeshCreator::CreateGrid(glm::vec2 lowerLeft, glm::vec2 upperRight, int 
         (GLvoid *)(sizeof(float)*3));
     vertexArrayObject->bindElementBuffer(*indexBuffer);
     //Create meshInfo
-    MeshInfo * info = new MeshInfo();
+    BasicMeshInfo * info = new BasicMeshInfo();
     info->numVerts = dataBuffer.size() / 5;
     info->numTris = indices.size();
     info->indexDataOffset = (GLvoid *) 0;

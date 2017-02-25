@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Loaders/MeshInfo.h"
+#include "Loaders/BasicMeshInfo.h"
 #include <glm/glm.hpp>
 #include <memory>
 #include "GLWrapper/GLVertexArrayObject.h"
@@ -16,13 +16,13 @@ namespace MoonEngine
 		int blIdx;
 		int brIdx;
 		int gridSize;
-		MeshInfo * meshInfo;
+		BasicMeshInfo * meshInfo;
 	};
 
 	class MeshCreator
 	{
 	public:
-		static MeshInfo * CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRight, int divX = 2, int divY = 2);
+		static BasicMeshInfo * CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRight, int divX = 2, int divY = 2);
 		static GridInfo   CreateGrid(glm::vec2 lowerLeft, glm::vec2 upperRight, int vertDim);
 	private:
 		static std::vector<std::shared_ptr<GLBuffer>> backingBuffers;

@@ -1,4 +1,4 @@
-/*
+
 #include "AssimpLoader.h"
 using namespace MoonEngine;
 
@@ -277,7 +277,8 @@ static bool LoadIntoBuffer(
 			);
 
 	}
+	
+
 	return true;
 
 }
-*/

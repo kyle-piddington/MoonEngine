@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 #include "GLWrapper/GLVertexArrayObject.h"
-#include "Loaders/MeshInfo.h"
+#include "Loaders/BasicMeshInfo.h"
 #include <memory>
 
 namespace MoonEngine
@@ -19,11 +19,11 @@ namespace MoonEngine
 
         ~MeshLibrary();
 
-        MeshInfo * getInfoForMeshNamed(std::string mesh, bool smooth = false);
+        BasicMeshInfo * getInfoForMeshNamed(std::string mesh, bool smooth = false);
 
     private:
         std::string _recPath;
-        std::unordered_map<std::string, MeshInfo *> _mapMeshToInfo;
+        std::unordered_map<std::string, BasicMeshInfo *> _mapMeshToInfo;
         std::vector<std::shared_ptr<GLVertexArrayObject>> _meshVAOs;
         std::vector<std::shared_ptr<GLBuffer>> _meshBuffers;
     };

@@ -67,7 +67,7 @@ namespace MoonEngine
         void setupDirLightUniforms(GLProgram* prog);
         Camera* _mainCamera;
         glm::vec3 _mainCameraPosition;
-        MeshInfo* _renderQuad;
+        BasicMeshInfo* _renderQuad;
 		GLuint _width, _height;
         int _deferredWidth, _deferredHeight;
         GLFramebuffer _gBuffer;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Loaders/MeshInfo.h"
+#include "Loaders/BasicMeshInfo.h"
 #include "Component/Component.h"
 #include "Mesh.h"
 
@@ -11,23 +11,27 @@ namespace MoonEngine
     public:
         StaticMesh(std::string mesh, bool smooth = false);
 
-        StaticMesh(MeshInfo * _meshInfo);
+        StaticMesh(BasicMeshInfo * _meshInfo);
         
         void start();
 
         /**
          * Bind mesh to the graphics engine.
          */
-        const MeshInfo * getMesh();
+        void draw();
+
+        void bind();
         
 
         const BoundingBox & getBoundingBox();
+
+        const BoundingBox & getExtents();
 
         std::shared_ptr<Component> clone() const;
 
 		void draw() const;
     private:
-        MeshInfo * _meshInfo;
+        BasicMeshInfo * _meshInfo;
         BoundingBox bBox;
     };
 

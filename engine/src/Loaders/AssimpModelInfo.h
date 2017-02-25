@@ -1,7 +1,7 @@
 #pragma once
 #include "GLWrapper/GLVertexArrayObject.h"
 #include "Collision/BoundingBox.h"
-#include "MeshInfo.h"
+#include "BasicMeshInfo.h"
 #include <string>
 #include <unordered_map>
 //AssimpInfo contains all
@@ -13,7 +13,7 @@ namespace MoonEngine
 	struct AssimpMeshInfo
 	{
 		std::unordered_map<std::string, std::string> textures;
-		MeshInfo meshInfo;
+		BasicMeshInfo meshInfo;
 		BoundingBox box;
 
 		void bind() const
@@ -44,7 +44,7 @@ namespace MoonEngine
 
 		int stride() const;
 
-		const MeshInfo & getFullMeshInfo() const;
+		//const MeshInfo & getFullMeshInfo() const;
 
 		std::vector<std::string> getAllTextures() const;
 
@@ -67,7 +67,7 @@ namespace MoonEngine
         //Pointer to the vertex array object that contains the mesh.
         //Most meshes are saved  in MeshLibrary, but not all.
 		std::vector<AssimpMeshInfo> _meshInfo;
-		MeshInfo fullMeshInfo;
+		BasicMeshInfo fullMeshInfo;
 		GLVertexArrayObject * vertexObjectPtr;
 		bool _hasNormals;
 		bool _hasTangentBitangent;

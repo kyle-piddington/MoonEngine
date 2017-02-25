@@ -69,8 +69,7 @@ void ProgramRenderer::render(Scene * scene)
             }
         }
 		
-        Mesh * meshComp = obj->getComponent<Mesh>();
-        const MeshInfo * mesh = obj->getComponent<Mesh>()->getMesh();
+        Mesh * mesh = obj->getComponent<Mesh>();
         mesh->bind();
         mat->bind();
 
@@ -82,7 +81,7 @@ void ProgramRenderer::render(Scene * scene)
 
         glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
         glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
-        meshComp->draw();
+        mesh->draw();
         //mat->unbind();
     }
 	GLVertexArrayObject::Unbind();

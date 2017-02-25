@@ -5,7 +5,7 @@
 #include "GLWrapper/GLBuffer.h"
 #include "GLWrapper/GLVertexArrayObject.h"
 #include "GLWrapper/GLConstants.h"
-#include "MeshInfo.h"
+#include "BasicMeshInfo.h"
 #include <string>
 #include "thirdparty/tiny_obj_loader.h"
 
@@ -18,7 +18,7 @@ namespace MoonEngine
             GLBuffer * vertexBuffer,
             GLBuffer * indexBuffer,
             GLVertexArrayObject * vao,
-            MeshInfo * outInfo,
+            BasicMeshInfo * outInfo,
             bool smooth = false);
 
     private:

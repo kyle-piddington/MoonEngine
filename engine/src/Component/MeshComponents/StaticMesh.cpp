@@ -9,7 +9,7 @@ StaticMesh::StaticMesh(std::string mesh, bool smooth):
     _meshInfo = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed(mesh, smooth);
 }
 
-StaticMesh::StaticMesh(MeshInfo * _meshInfo):
+StaticMesh::StaticMesh(BasicMeshInfo * _meshInfo):
     Mesh(),
     _meshInfo(_meshInfo)
 {
@@ -20,6 +20,10 @@ void StaticMesh::start()
 	bBox =
 		 _meshInfo->boundingBox.transform(gameObject->getTransform().getMatrix());
 }
+const BoundingBox & StaticMesh::getExtents()
+{
+	return _meshInfo->boundingBox;
+}
 
 const BoundingBox & StaticMesh::getBoundingBox()
 {
@@ -28,9 +32,9 @@ const BoundingBox & StaticMesh::getBoundingBox()
 	return bBox;
 }
 
-const MeshInfo * StaticMesh::getMesh()
+void StaticMesh::bind()
 {
-    return _meshInfo;
+    _meshInfo->bind();
 }
 
 std::shared_ptr<Component> StaticMesh::clone() const

@@ -29,7 +29,7 @@ void BoxCollider::start()
         }
         else
         {
-            _originalBox = mesh->getMesh()->boundingBox;
+            _originalBox = mesh->getExtents();
         }
         _givenBox = true;
     }

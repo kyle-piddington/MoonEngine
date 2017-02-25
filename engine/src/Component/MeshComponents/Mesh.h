@@ -4,7 +4,7 @@
  * renderable meshes
  */
 #include "Component/Component.h"
-#include "Loaders/MeshInfo.h"
+
 
 namespace MoonEngine
 {
@@ -12,13 +12,14 @@ namespace MoonEngine
     {
     public:
         Mesh() {}
-
-        virtual const MeshInfo * getMesh() = 0;
-
-
+   		
+   		virtual void bind() = 0;    
+   		//Get bounding box in world space.
 		virtual const BoundingBox & getBoundingBox() = 0;
+		//Get bounding box in model space.
+		virtual const BoundingBox & getExtents() = 0;
 
 		//Submits an OpenGL call (Don't handle binding/unbinding);
 		virtual void draw() const = 0;
-    };
+    };	
 }

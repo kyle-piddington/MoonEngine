@@ -88,14 +88,19 @@ const BoundingBox & Terrain::getBoundingBox()
 	return fullBoundingBox;
 }
 
+const BoundingBox & Terrain::getExtents()
+{
+	return fullBoundingBox;
+}
+
 std::shared_ptr<Component> Terrain::clone() const
 {
 	return std::make_shared<Terrain>(*this);
 }
 
-const MeshInfo * Terrain::getMesh() 
+void Terrain::bind() 
 {
-	return gridInfo.meshInfo;
+	gridInfo.meshInfo->bind();
 }
 
 //Set uniforms constant throughout the draw call.
@@ -180,7 +185,7 @@ void Terrain::draw() const
 	setupMainUniforms(prog);
 	int lastLOD = -1;
 
-	MeshInfo * meshInfo = gridInfo.meshInfo;
+	BasicMeshInfo * meshInfo = gridInfo.meshInfo;
 	//LOG(INFO, "Drawing " + std::to_string(currentSelection.getSelectionCount()) + "nodes");
 	for(int idx = 0; idx < currentSelection.getSelectionCount(); idx++)
 	{

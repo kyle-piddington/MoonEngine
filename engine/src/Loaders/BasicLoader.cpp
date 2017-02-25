@@ -14,7 +14,7 @@ bool BasicLoader::LoadIntoBuffer(std::string fileName,
     GLBuffer * vertexBuffer,
     GLBuffer * indexBuffer,
     GLVertexArrayObject * vertexArrayObject,
-    MeshInfo * outInfo,
+    BasicMeshInfo * outInfo,
     bool smooth)
 {
     attrib_t attributes;

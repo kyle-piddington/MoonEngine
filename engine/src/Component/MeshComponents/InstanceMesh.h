@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Loaders/MeshInfo.h"
+#include "Loaders/BasicMeshInfo.h"
 #include "Component/Component.h"
 #include "Mesh.h"
 #include "EngineApp/EngineApp.h"
@@ -17,16 +17,17 @@ namespace MoonEngine
         * Bind mesh to the graphics engine.
         * Bind instance data to the graphics engines
         */
-        const MeshInfo * getMesh();
+        void bind();
 
         virtual std::shared_ptr<Component> clone() const;
 
 		virtual const BoundingBox & getBoundingBox();
+        virtual const BoundingBox & getExtents(){return getBoundingBox();}
 
         void draw() const;
 
     private:
-        MeshInfo * _meshInfo;
+        BasicMeshInfo * _meshInfo;
 
 		unsigned _numOfInstances;
 	

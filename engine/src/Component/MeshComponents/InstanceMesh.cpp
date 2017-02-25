@@ -17,9 +17,9 @@ InstanceMesh::InstanceMesh(std::string mesh, std::string instancedata, bool smoo
         sizeof(glm::vec4), GL_FLOAT, GL_FALSE, sizeof(glm::vec4));
 }
 
-const MeshInfo * InstanceMesh::getMesh()
+void  InstanceMesh::bind()
 {
-    return _meshInfo;
+    _meshInfo->bind();
 }
 
 const BoundingBox & InstanceMesh::getBoundingBox()

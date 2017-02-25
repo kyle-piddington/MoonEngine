@@ -109,7 +109,6 @@ void DeferredRenderer::geometryPass(Scene * scene)
 	{
 		mat = obj->getComponent<Material>();
 		mesh = obj->getComponent<Mesh>();
-        const MeshInfo * meshInfo = mesh->getMesh();
         
 		if (mat->isForward()) {
 			continue;
@@ -132,7 +131,7 @@ void DeferredRenderer::geometryPass(Scene * scene)
             
 		}
 		mat->bind();
-		meshInfo->bind();
+		mesh->bind();
 		//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
 		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
@@ -177,7 +176,7 @@ void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light
 
     
     
-    const MeshInfo* lightSphere = light->getComponent<PointLight>()->getSphere();;
+    const BasicMeshInfo* lightSphere = light->getComponent<PointLight>()->getSphere();;
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
     glm::mat4 M = light->getComponent<PointLight>()->getLightTransform().getMatrix();
@@ -205,7 +204,7 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
     _gBuffer.bindForLightPass();
     setupPointLightUniforms(_pointLightProgram, light);
 	
-    const MeshInfo* lightSphere = nullptr;
+    const BasicMeshInfo* lightSphere = nullptr;
     lightSphere = light->getComponent<PointLight>()->getSphere();
 
     glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
@@ -287,7 +286,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
     
     GLProgram* activeProgram = nullptr;
     Mesh* mesh = nullptr;
-    const MeshInfo* meshInfo = nullptr;
+    const BasicMeshInfo* meshInfo = nullptr;
     Material* mat = nullptr;
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
@@ -303,7 +302,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
     {
         mat = obj->getComponent<Material>();
         mesh = obj->getComponent<Mesh>();
-        meshInfo = mesh->getMesh();
+        mesh->bind();
 
         glm::mat4 M = obj->getTransform().getMatrix();
 
@@ -317,7 +316,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
 
         }
         mat->bind();
-        meshInfo->bind();
+        
         //No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
         glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 

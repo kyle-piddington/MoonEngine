@@ -33,10 +33,6 @@ int AssimpModelInfo::stride() const
 
 }
 
-const MeshInfo & AssimpModelInfo::getFullMeshInfo() const
-{
-	return fullMeshInfo;
-}
 
 std::vector<std::string> AssimpModelInfo::getAllTextures() const
 {
