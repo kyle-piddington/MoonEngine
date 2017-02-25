@@ -197,31 +197,32 @@ const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getDirLightObj
 
 void Scene::runCollisionUpdate()
 {
-    glm::vec3 colnormal;
-    if (_boxCollisionComponents.size() > 0)
-    {
-        for (size_t i = 0; i < _boxCollisionComponents.size() - 1; i++)
-        {
-            for (size_t j = i + 1; j < _boxCollisionComponents.size(); j++)
-            {
+	_renderTree->runCollisions(_playerObject);
+	//glm::vec3 colnormal;
+   // if (_boxCollisionComponents.size() > 0)
+    //{
+      //  for (size_t i = 0; i < _boxCollisionComponents.size() - 1; i++)
+       // {
+        //    for (size_t j = i + 1; j < _boxCollisionComponents.size(); j++)
+        //    {
                 //Try collision between i and j
-                if (_boxCollisionComponents[i]->intersects(
-                    _boxCollisionComponents[j], &colnormal))
-                {
+        //        if (_boxCollisionComponents[i]->intersects(
+         //           _boxCollisionComponents[j], &colnormal))
+        //        {
                     //Create a new collision
-                    Collision c;
-                    c.normal = colnormal;
-                    //Forward to both game objects
-                    c.other = _boxCollisionComponents[i]->getGameObject();
-                    _boxCollisionComponents[j]->getGameObject()->onCollisionEnter(c);
-                    c.normal = -colnormal;
-                    c.other = _boxCollisionComponents[j]->getGameObject();
-                    _boxCollisionComponents[i]->getGameObject()->onCollisionEnter(c);
-
-                }
-            }
-        }
-    }
+        //            Collision c;
+         //           c.normal = colnormal;
+         //           //Forward to both game objects
+          //          c.other = _boxCollisionComponents[i]->getGameObject();
+          //          _boxCollisionComponents[j]->getGameObject()->onCollisionEnter(c);
+          //          c.normal = -colnormal;
+           //         c.other = _boxCollisionComponents[j]->getGameObject();
+         //           _boxCollisionComponents[i]->getGameObject()->onCollisionEnter(c);
+//
+        //        }
+        //    }
+       // }
+  //  }
 }
 
 std::shared_ptr<GameObject> Scene::instantiate(GameObject * object, const Transform & newPosition)
@@ -424,6 +425,17 @@ bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * 
 
 }
 
+std::shared_ptr<GameObject> Scene::getPlayer()
+{
+	for (int i = 0; i < _renderableGameObjects.size(); i++)
+	{
+		if (T_Player == _renderableGameObjects.at(i)->getTag())
+		{
+			return _renderableGameObjects.at(i);
+		}
+	}
+}
+
 void Scene::start()
 {
     // for(auto & g : _gameObjects)
@@ -431,4 +443,5 @@ void Scene::start()
     // //	g->start();
     // }
 	_renderTree = std::make_shared<KDTree>(_renderableGameObjects);
+	_playerObject = getPlayer();
 }
