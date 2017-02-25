@@ -98,7 +98,7 @@ void runThread(std::atomic<bool> * running, std::deque<FMODAudio::__audioCommand
 			audioQueue.pop_front();
 		}
 		system->update();
-		std::this_thread::sleep_for(std::chrono::milliseconds(16));
+		std::this_thread::sleep_for(std::chrono::milliseconds(32));
 
  	}
 }

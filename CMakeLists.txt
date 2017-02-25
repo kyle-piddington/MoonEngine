@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.7)
 project (ShatteredMoon)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
 if(NOT WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 endif()
@@ -24,12 +24,19 @@ include_directories(engine/src)
 
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/deps )
-message(${CMAKE_MODULE_PATH})
 #FMod Support
 find_package(FMOD)
 if(FMOD_FOUND)
 	include_directories(${FMOD_INCLUDE_DIRS})
 endif()
+
+find_package(Assimp)
+if(Assimp_FOUND)
+	include_directories(${Assimp_INCLUDE_DIRS})
+endif()
+
+
+
 add_subdirectory(deps)
 add_subdirectory(engine)
 add_subdirectory(app)

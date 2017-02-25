@@ -13,10 +13,13 @@ file(GLOB_RECURSE GLSL "resources/*.glsl")
 #expose headers in source to CMake
 include_directories(HEADERS)
 
+
+
+
 # Set the executable.
 add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL} src/LevelEditor/Level.cpp src/LevelEditor/Level.h)
 
-target_link_libraries(MoonEngine glfw ${FMOD_LIBRARIES} ${GLFW_LIBRARIES})
+target_link_libraries(MoonEngine glfw ${ASSIMP_LIB} ${FMOD_LIBRARIES} ${assimp_LIBRARIES} ${GLFW_LIBRARIES})
 
 
 set(GLM_DIR "$ENV{GLM_INCLUDE_DIR}")
