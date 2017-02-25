@@ -22,7 +22,8 @@ TextureLibrary::~TextureLibrary()
 
 /* Get or load a texture */
 
-GLTexture * TextureLibrary::getTexture(std::string textureName, std::string extension, bool is16f)
+
+GLTexture * TextureLibrary::createImage(std::string textureName, std::string extension, bool is16f)
 {
     if (_textures.find(textureName) == _textures.end())
     {
@@ -53,10 +54,19 @@ GLTexture * TextureLibrary::getTexture(std::string textureName, std::string exte
     return _textures[textureName];
 }
 
+GLTexture * TextureLibrary::getTexture(std::string textureName)
+{
+    if (_textures.find(textureName) == _textures.end())
+    {
+        LOG(ERROR, "Could not find texture named " + textureName);
+        return _textures["default"];
+    }
+    return _textures[textureName];
+}
 void TextureLibrary::loadDefaultTexture()
 {
     std::shared_ptr<GLTexture> glTexture = TextureLoader::LoadTextureFromFile(_recPath + "default.png");
-
+    _texturePtrs.push_back(glTexture);
     _textures["default"] = glTexture.get();
 }
 

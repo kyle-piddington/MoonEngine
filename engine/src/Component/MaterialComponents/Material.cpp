@@ -26,7 +26,7 @@ Material::Material(glm::vec3 tint, string programName, unordered_map<string, str
             ext = "";
         }
         // uniform name <=> texture
-        texture_unit textureUnit = {Library::TextureLib->getTexture(texture.second, ext), _texture_unit++};
+        texture_unit textureUnit = {Library::TextureLib->createImage(texture.second, ext), _texture_unit++};
         _textures[texture.first] = textureUnit;
     }
 

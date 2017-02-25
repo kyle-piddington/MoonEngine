@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
 
 
 	//Preload canyon 32f texture
-	EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
+	EngineApp::GetAssetLibrary().TextureLib->createImage("grandCanyon",".png",true);
 	
 	stringmap canyon_texture(
             {{"heightmap", "grandCanyon"}});
