@@ -1,7 +1,1 @@
-﻿  Checking Build System
-  CMake is re-running because generate.stamp.list is missing.
-  -- Could NOT find Vulkan (missing:  VULKAN_LIBRARY VULKAN_INCLUDE_DIR) 
-  -- Using Win32 for window creation
-  -- Configuring done
-  -- Generating done
-  -- Build files have been written to: C:/Users/Derek/Documents/GitHub/MoonEngine/_build
+﻿
