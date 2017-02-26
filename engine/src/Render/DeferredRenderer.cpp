@@ -248,29 +248,26 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
     
-    for (std::shared_ptr<GameObject> obj : scene->getDirLightObjects()) {
-        
-        glm::vec3 viewLight = 
-            glm::vec3(V * glm::vec4(obj->getComponent<DirLight>()->getDirection(),0));
+    std::shared_ptr<GameObject> dirLight = scene->getDirLightObject();
+    glm::vec3 viewLight = 
+        glm::vec3(V * glm::vec4(dirLight->getComponent<DirLight>()->getDirection(),0));
 
-        DirLight* light = obj->getComponent<DirLight>();
-        //For every directional light, pass new direction and color
-        glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.color"), 1, 
-            glm::value_ptr(obj->getComponent<DirLight>()->getColor()));
-        glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1,
-            glm::value_ptr(viewLight));
-        glUniform1f(_dirLightProgram->getUniformLocation("dirLight.ambient"), obj->getComponent<DirLight>()->getAmbient());
+    DirLight* light = dirLight->getComponent<DirLight>();
+    //For every directional light, pass new direction and color
+    glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.color"), 1, 
+        glm::value_ptr(dirLight->getComponent<DirLight>()->getColor()));
+    glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1,
+        glm::value_ptr(viewLight));
+    glUniform1f(_dirLightProgram->getUniformLocation("dirLight.ambient"), dirLight->getComponent<DirLight>()->getAmbient());
 
-        
-        glDrawElementsBaseVertex(
-            GL_TRIANGLES,
-            _renderQuad->numTris,
-            GL_UNSIGNED_SHORT,
-            _renderQuad->indexDataOffset,
-            _renderQuad->baseVertex
-        );
-    }
-
+    
+    glDrawElementsBaseVertex(
+        GL_TRIANGLES,
+        _renderQuad->numTris,
+        GL_UNSIGNED_SHORT,
+        _renderQuad->indexDataOffset,
+        _renderQuad->baseVertex
+    );
     glDisable(GL_BLEND);
 
 }

@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    Logger::SetLogLevel(GAME);
+    Logger::SetLogLevel(INFO);
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 
@@ -103,7 +103,7 @@ int main(int argc, char ** argv)
 
     //scene->addGameObject(pointLight);
 
-
+    //Directional Light
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
     scene->addGameObject(dirLight);

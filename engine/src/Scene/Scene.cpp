@@ -12,11 +12,11 @@ Scene::Scene()
     _globalLightDir = glm::vec3(1, 1, 1);
     _globalTime = 0;
     _cameraFlag = 0;
+    _dirLightFlag = 0;
     _allGameObjects.clear();
     _gameObjects.clear();
     _renderableGameObjects.clear();
     _pointLightObjects.clear();
-    _dirLightObjects.clear();
     _boxCollisionComponents.clear();
     _components.clear();
     _renderTree = nullptr;
@@ -58,10 +58,14 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
         LOG(INFO, "Adding point light game object");
         _pointLightObjects.push_back(obj);
     }
-    if (obj->getComponent<DirLight>() != nullptr)
+    if (obj->getComponent<DirLight>() != nullptr && _dirLightFlag == 0)
     {
         LOG(INFO, "Adding dir light game object");
-        _dirLightObjects.push_back(obj);
+        _dirLightFlag = 1;
+        _dirLightObject = obj;
+    }
+    else if(obj->getComponent<DirLight>() != nullptr && _dirLightFlag){
+        LOG(WARN, "Attempting to add more than one directional light");
     }
 	BoxCollider * col = obj->getComponent<BoxCollider>();
 	if (col != nullptr)
@@ -180,19 +184,19 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjectsIn
 	return _renderTree->getObjectsInFrustrum(planes);
 }
 
-const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getForwardGameObjects() const
+const std::vector<std::shared_ptr<GameObject>> Scene::getForwardGameObjects() const
 {
     return _forwardGameObjects;
 }
 
-const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getPointLightObjects() const
+const std::vector<std::shared_ptr<GameObject>> Scene::getPointLightObjects() const
 {
     return _pointLightObjects;
 }
 
-const std::vector<std::shared_ptr<GameObject>> MoonEngine::Scene::getDirLightObjects() const
+std::shared_ptr<GameObject> Scene::getDirLightObject() const
 {
-    return _dirLightObjects;
+    return _dirLightObject;
 }
 
 void Scene::runCollisionUpdate()
