@@ -16,6 +16,8 @@
 #include "GLUtil/GL_LOG.h"
 #include "Libraries/Library.h"
 #include "GLWrapper/GLConstants.h"
+#include "ShadowMaps.h"
+
 
 /**
  * The Deferred renderer performs a phong rendering
@@ -30,7 +32,7 @@ namespace MoonEngine
     class DeferredRenderer: public I_Renderer
     {
     public:
-        DeferredRenderer(int width, int height, string stencilProgramName, string pointLightProgramName, string dirLightProgramName);
+        DeferredRenderer(int width, int height, string shadowMapsProgramName, string stencilProgramName, string pointLightProgramName, string dirLightProgramName);
 
         virtual ~DeferredRenderer()
         {}
@@ -55,6 +57,7 @@ namespace MoonEngine
 
     private:
 
+        void shadowMapPass(Scene* scene);
 		void geometryPass(Scene* scene);
 
         void stencilPass(std::shared_ptr<GameObject> light);
@@ -76,7 +79,10 @@ namespace MoonEngine
 		GLTexture* _colorTex, * _positionTex, * _normalTex, * _textureTex;
         GLTexture* _depthTex;
         GLTexture* _outputTex;
+        
+        ShadowMaps _shadowMaps;
 
+        GLProgram* _shadowMapsProgram;
         GLProgram* _stencilProgram;
         GLProgram* _pointLightProgram;
         GLProgram* _dirLightProgram;

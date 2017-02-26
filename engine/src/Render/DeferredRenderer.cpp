@@ -4,10 +4,11 @@
 using namespace MoonEngine;
 
 
-DeferredRenderer::DeferredRenderer(int width, int height, string stencilProgramName, 
+DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgramName, string stencilProgramName, 
     string pointLightProgramName, string dirLightProgramName):
     _mainCamera(nullptr),
     _gBuffer(width, height),
+    _shadowMaps(width, height),
     _width(width),
     _height(height),
     _positionTex(nullptr),
@@ -40,6 +41,8 @@ DeferredRenderer::DeferredRenderer(int width, int height, string stencilProgramN
     _gBuffer.status();
 
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
+
+    _shadowMapsProgram = Library::ProgramLib->getProgramForName(shadowMapsProgramName);
     _stencilProgram = Library::ProgramLib->getProgramForName(stencilProgramName);
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
     _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
@@ -66,6 +69,8 @@ void DeferredRenderer::render(Scene * scene)
 
    _mainCameraPosition = scene->getMainCamera()->getTransform().getPosition();
    glViewport(0,0,_width,_height);
+  
+   shadowMapPass(scene);
    geometryPass(scene);
 
     glEnable(GL_STENCIL_TEST);
@@ -81,6 +86,49 @@ void DeferredRenderer::render(Scene * scene)
     //forwardPass(scene);
 
     GLVertexArrayObject::Unbind();
+}
+
+void DeferredRenderer::shadowMapPass(Scene * scene)
+{
+    Mesh* mesh = nullptr;
+    _shadowMapsProgram->enable();
+    _shadowMaps.calculateShadowLevels(scene);
+    LOG_GL(__FILE__, __LINE__);
+
+    // The view is set as the light source
+    glm::mat4 V = _shadowMaps.getLightView();
+
+    for (int i = 0; i < NUM_SHADOWS; i++) {
+        LOG_GL(__FILE__, __LINE__);
+        // Bind and clear the current shadowLevel
+        _shadowMaps.bindForWriting(i);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        glm::mat4 P = _shadowMaps.getOrtho(i);
+        
+
+        for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
+        {
+            LOG_GL(__FILE__, __LINE__);
+            mesh = obj->getComponent<Mesh>();
+            const MeshInfo * meshInfo = mesh->getMesh();
+
+            glm::mat4 M = obj->getTransform().getMatrix();
+            LOG_GL(__FILE__, __LINE__);
+            //Place Uniforms that do not change per GameObject
+            glUniformMatrix4fv(_shadowMapsProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+            glUniformMatrix4fv(_shadowMapsProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+            LOG_GL(__FILE__, __LINE__);
+            meshInfo->bind();
+            //No assumptions about the shadow stage is made beyond a P, V, and M Uniforms
+            glUniformMatrix4fv(_shadowMapsProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+            LOG_GL(__FILE__, __LINE__);
+            mesh->draw();
+            LOG_GL(__FILE__, __LINE__);
+        }
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void DeferredRenderer::geometryPass(Scene * scene)

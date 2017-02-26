@@ -46,6 +46,9 @@ void Camera::setFOV(float fov)
     _P = glm::perspective(fov, _aspect, _near, _far);
 }
 
+float Camera::getFOV() const{
+    return this->_fov;
+}
 
 float Camera::getFar() const{
 	return _far;
@@ -54,7 +57,12 @@ float Camera::getNear() const{
 	return _near;
 }
 
-void Camera::getPlanes(glm::vec4 planes[])
+float MoonEngine::Camera::getAspect() const
+{
+    return this->_aspect;
+}
+
+void Camera::getPlanes(glm::vec4 planes[6])
 {
 	glm::vec3 n;
 	glm::vec4 Left, Right, Bottom, Top, Near, Far;

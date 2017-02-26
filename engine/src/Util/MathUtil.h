@@ -1,9 +1,11 @@
 #pragma once
-
 #include <cmath>
 #include <algorithm>
 #include <glm/glm.hpp>
 
+#ifdef WIN32
+#define M_PI 3.14159265359
+#endif
 namespace MoonEngine
 {
     namespace MathUtil
@@ -33,5 +35,8 @@ namespace MoonEngine
 
  		bool IntersectTri(const glm::vec3 & _orig, const glm::vec3 & _dir, const glm::vec3 & _vert0, const glm::vec3 & _vert1, 
     					  const glm::vec3 & _vert2, float &u, float &v, float &dist);
+
+        float toRadians(float degrees);
+        float toDegrees(float radians);
 	}
 }

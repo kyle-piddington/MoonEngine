@@ -16,3 +16,4 @@
 #define COLOR_TEXTURE "_gBufferColor"
 #define COMPOSITE_TEXTURE "_gBufferCompositeTexture"
 
+#define SHADOW_TEXTURE "_shadowLevel"
