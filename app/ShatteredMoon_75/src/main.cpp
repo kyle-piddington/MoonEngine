@@ -90,35 +90,6 @@ int main(int argc, char ** argv)
     levelLoader.LoadLevel("scenedata.json", scene);
     stringmap cube_texture({{"diffuse", "cube"}});
 
-    //Skydome
-    Transform skydomeTransform;
-    skydomeTransform.setPosition(glm::vec3(0, 0, 0));
-    skydomeTransform.setScale(glm::vec3(1000, 1000, 1000));
-    std::shared_ptr<GameObject> sphereObject = std::make_shared<GameObject>(skydomeTransform);
-    sphereObject->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
-    stringmap sky_textures({{"skycolor", "skycolor"}});
-    sphereObject->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "skydome.program", sky_textures, true));
-    scene->addGameObject(sphereObject);
-
-    //Lights
-    Transform lightTransform;
-    lightTransform.setPosition(glm::vec3(6, 4, 1));
-    std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_PURPLE, 0.2f, 0.2f));
-    pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
-
-    lightTransform.setPosition(glm::vec3(-5, 3, 1));
-    pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_WHITE, 0.2f, 0.2f));
-    pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
-
-    lightTransform.setPosition(glm::vec3(4, 3, -5));
-    pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_CYAN, 0.2f, 0.2f));
-    pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
 
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();

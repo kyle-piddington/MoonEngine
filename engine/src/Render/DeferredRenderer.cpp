@@ -67,6 +67,7 @@ void DeferredRenderer::setup(Scene * scene, GLFWwindow * window)
 
 void DeferredRenderer::render(Scene * scene)
 {
+    glEnable(GL_CULL_FACE);
    _gBuffer.startFrame();
 
    _mainCameraPosition = scene->getMainCamera()->getTransform().getPosition();
@@ -80,8 +81,11 @@ void DeferredRenderer::render(Scene * scene)
     }
     glDisable(GL_STENCIL_TEST);
     dirLightPass(scene);
+    glDisable(GL_CULL_FACE);
+    forwardPass(scene);
     glViewport(0,0,_deferredWidth,_deferredHeight);
-    //forwardPass(scene);
+    drawBufferToImgui("GBuffer", &_gBuffer);
+
     if(postprocessPipeline.size() == 0)
     {
         outputPass(scene);
@@ -293,7 +297,9 @@ void DeferredRenderer::outputPass(Scene * scene){
 
 
 void DeferredRenderer::forwardPass(Scene* scene) {
-    
+
+    _gBuffer.bind(GL_FRAMEBUFFER);
+    glDrawBuffer(GL_COLOR_ATTACHMENT4);
     GLProgram* activeProgram = nullptr;
     Mesh* mesh = nullptr;
     const MeshInfo* meshInfo = nullptr;
@@ -301,15 +307,14 @@ void DeferredRenderer::forwardPass(Scene* scene) {
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
     LOG_GL(__FILE__, __LINE__);
-    // Only the geometry pass writes to the depth buffer
     glDepthMask(GL_TRUE);
-    //glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
+    //glEnable(GL_BLEND);
 
 
     for (std::shared_ptr<GameObject> obj : scene->getForwardGameObjects())
     {
+
         mat = obj->getComponent<Material>();
         mesh = obj->getComponent<Mesh>();
         meshInfo = mesh->getMesh();

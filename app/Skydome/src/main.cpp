@@ -128,7 +128,7 @@ int main(int argc, char ** argv)
 
     //Terrain
     //Preload canyon 32f texture
-    EngineApp::GetAssetLibrary().TextureLib->createTexture("grandCanyon",".png",true);
+    EngineApp::GetAssetLibrary().TextureLib->createImage("grandCanyon",".png",true);
 
     stringmap canyon_texture(
             {{"heightmap", "grandCanyon"},
@@ -183,7 +183,7 @@ int main(int argc, char ** argv)
 
     });
 
-    DeferredRenderer * renderer = new DeferredRenderer(width, height, "phong_point_deferred.program", "phong_dir_deferred.program");
+    DeferredRenderer * renderer = new DeferredRenderer(width, height, "deferred_stencil.program","phong_point_deferred.program", "phong_dir_deferred.program");
     app->run(scene, renderer);
 
     delete scene;

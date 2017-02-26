@@ -91,6 +91,7 @@
             "textures": {
                 "skycolor": "skycolor"
             },
+            "forward":true,
             "collider": false
         }],
     "map": [
