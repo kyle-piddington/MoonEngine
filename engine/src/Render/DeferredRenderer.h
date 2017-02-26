@@ -14,6 +14,7 @@
 #include "thirdparty/imgui/imgui.h"
 #include <iostream>
 #include "GLUtil/GL_LOG.h"
+#include "PostProcess/PostProcessStep.h"
 
 /**
  * The Deferred renderer performs a phong rendering
@@ -50,6 +51,8 @@ namespace MoonEngine
          */
         virtual void shutdown();
 
+        void addPostProcessStep(std::shared_ptr<PostProcessStep> step);
+
 
     private:
 
@@ -78,6 +81,8 @@ namespace MoonEngine
         GLProgram* _stencilProgram;
         GLProgram* _pointLightProgram;
         GLProgram* _dirLightProgram;
+
+        std::vector<std::shared_ptr<PostProcessStep>> postprocessPipeline;
     };
 
     void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr);

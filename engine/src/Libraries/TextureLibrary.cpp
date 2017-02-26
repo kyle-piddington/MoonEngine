@@ -78,7 +78,11 @@ void TextureLibrary::addTexture(std::string textureName, std::shared_ptr<GLTextu
 GLTexture * TextureLibrary::createTexture(std::string textureName, const GLTextureConfiguration & cfg)
 {
 	std::shared_ptr<GLTexture> texture = make_shared<GLTexture>();
-	texture->init(cfg);
+	if(!texture->init(cfg))
+    {
+        LOG(ERROR, "Texture " + textureName + " failed to initialize");
+        return nullptr;
+    }
 	addTexture(textureName, texture);
 	return texture.get();
 }

@@ -44,4 +44,5 @@ MeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smooth)
 
 void MeshLibrary::loadDefaultMesh() {
     _mapMeshToInfo["quad_flat"] = MeshCreator::CreateQuad(glm::vec2(-0.5, -0.5), glm::vec2(0.5, 0.5));
+    _mapMeshToInfo["quad_full"] = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
 }
