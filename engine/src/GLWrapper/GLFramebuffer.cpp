@@ -173,6 +173,17 @@ const std::unordered_map<std::string, GLFramebuffer::texture_unit> & GLFramebuff
 	return _textureHandles;
 }
 
+void MoonEngine::GLFramebuffer::DBG_DrawToImgui(string guiName)
+{
+        auto texHandles = this->getTextureHandles();
+        ImGui::Begin(guiName.c_str());
+        for (auto texHandlePair : texHandles)
+        {
+            ImGui::Image((void *)texHandlePair.second.gl_texture->getTextureId(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
+        }
+        ImGui::End();
+}
+
 GLuint GLFramebuffer::release()
 {
     GLuint tmp = _handle;

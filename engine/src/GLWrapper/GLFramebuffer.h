@@ -7,6 +7,7 @@
 #include "util/Logger.h"
 #include "GLConstants.h"
 #include "GLProgram.h"
+#include "thirdparty/imgui/imgui.h"
 #include <vector>
 /**
  * GLFramebuffer holds on to framebuffer
@@ -78,6 +79,7 @@ namespace MoonEngine
 
 		const std::unordered_map<std::string, texture_unit> & getTextureHandles() const;
 
+        void DBG_DrawToImgui(string guiName);
         
 
     private:
