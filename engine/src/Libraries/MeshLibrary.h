@@ -26,5 +26,7 @@ namespace MoonEngine
         std::unordered_map<std::string, MeshInfo *> _mapMeshToInfo;
         std::vector<std::shared_ptr<GLVertexArrayObject>> _meshVAOs;
         std::vector<std::shared_ptr<GLBuffer>> _meshBuffers;
+
+        void loadDefaultMesh();
     };
 }

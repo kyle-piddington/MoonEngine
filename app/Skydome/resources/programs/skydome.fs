@@ -21,10 +21,10 @@ void main()
 
     //Sun
     float radius = length(normalPos - sunPos);
-    if (radius < 0.05){
-        float time = clamp(sunPos.y, 0.01, 1.0);
+    if (radius < 0.05) {
+        float time = clamp(0.8 - sunPos.x, 0.01, 1.0);
         radius = radius / 0.05;
-        if (radius < 1.0 - 0.05) {//small bias to avoid flickering
+        if (radius < 1.0 - 0.03) {//small bias to avoid flickering
             //We read the alpha value from a texture where x = radius and y = height in the sky
             vec4 sun_color = texture(sun, vec2(radius, time));
             color = mix(color, sun_color.rgb, sun_color.a);
