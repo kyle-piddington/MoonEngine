@@ -135,3 +135,10 @@ bool MathUtil::IntersectTri(const glm::vec3 & _orig, const glm::vec3 & _dir, con
    return dist >= 0;
 }
 
+float MathUtil::toRadians(float degrees) {
+    return degrees * (float)M_PI / 180.0f;
+}
+float MathUtil::toDegrees(float radians) {
+    return radians * 180.0f / (float)M_PI;
+}
+

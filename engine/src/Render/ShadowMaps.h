@@ -1,17 +1,37 @@
 #pragma once
 #include "glm/glm.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 #include "GLWrapper/GLTexture.h"
+#include "GLWrapper/GLConstants.h"
+#include "GLUtil/GLTextureConfiguration.h"
+#include "Libraries/Library.h"
+#include "Util/MathUtil.h"
+#include "Scene/Scene.h"
+#include "Component/Components.h"
 #include <vector>
 
-namespace Moonengine {
+#define NUM_SHADOWS 3
+#define NUM_CORNERS 8
 
-	class ShadowMap
+namespace MoonEngine {
+
+	class ShadowMaps
 	{
 	public:
-		ShadowMap();
-		~ShadowMap();
-		glm::mat4 getLightSpaceMatrix();
-	private:
-        std::vector<GLTexture*> depthTexs;
+		ShadowMaps(int width, int height);
+		~ShadowMaps();
+        void bindForWriting(int shadowLevel);
+        void bindForReading();
+        void calculateShadowLevels(Scene* scene);
+        const glm::mat4 getOrtho(int shadowLevel);
+        const glm::mat4 getLightView();
+
+    private:
+        std::vector<GLTexture*> _depthTexs;
+        std::vector<glm::mat4> _orthos;
+        glm::mat4 _lightView;
+        float _shadowZDepth[4];
+        GLuint _handle;
+        void status();
 	};
 }
