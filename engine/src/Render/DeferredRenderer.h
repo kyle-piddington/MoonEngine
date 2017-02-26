@@ -14,6 +14,8 @@
 #include "thirdparty/imgui/imgui.h"
 #include <iostream>
 #include "GLUtil/GL_LOG.h"
+#include "Libraries/Library.h"
+#include "GLWrapper/GLConstants.h"
 
 /**
  * The Deferred renderer performs a phong rendering
@@ -71,9 +73,9 @@ namespace MoonEngine
 		GLuint _width, _height;
         int _deferredWidth, _deferredHeight;
         GLFramebuffer _gBuffer;
-		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;
-        GLTexture _depthTex;
-        GLTexture _outputTex;
+		GLTexture* _colorTex, * _positionTex, * _normalTex, * _textureTex;
+        GLTexture* _depthTex;
+        GLTexture* _outputTex;
 
         GLProgram* _stencilProgram;
         GLProgram* _pointLightProgram;
