@@ -128,7 +128,7 @@ int main(int argc, char ** argv)
 
     //Terrain
     //Preload canyon 32f texture
-    EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
+    EngineApp::GetAssetLibrary().TextureLib->createImage("grandCanyon",".png",true);
 
     stringmap canyon_texture(
             {{"heightmap", "grandCanyon"},
@@ -170,6 +170,8 @@ int main(int argc, char ** argv)
 
     DeferredRenderer * renderer = new DeferredRenderer(width, height, 
         "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
+    renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
+
     app->run(scene, renderer);
 
     delete scene;

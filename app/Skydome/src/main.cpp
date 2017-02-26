@@ -128,7 +128,7 @@ int main(int argc, char ** argv)
 
     //Terrain
     //Preload canyon 32f texture
-    EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
+    EngineApp::GetAssetLibrary().TextureLib->createTexture("grandCanyon",".png",true);
 
     stringmap canyon_texture(
             {{"heightmap", "grandCanyon"},
@@ -153,6 +153,19 @@ int main(int argc, char ** argv)
     terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain_geom_deferred.program",canyon_texture));
     scene->addGameObject(terrainObject);
 
+
+    Transform tran;
+    tran.setPosition(glm::vec3(0.0, 150.0, 0.0));
+    tran.setScale(glm::vec3(5, 5, 5));
+
+    stringmap sun = {{"billboard", "cube"}};
+
+    std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
+    sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
+    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun,true));
+    scene->addGameObject(sunBillboard);
+
+
     float accumTime;
     int lastUpdateTime;
     scene->addCustomUpdate([&](float dt) {
@@ -166,6 +179,7 @@ int main(int argc, char ** argv)
         // 	lastUpdateTime = (int)accumTime;
         // }
         //LOG(GAME, "SUN: " + std::to_string(scene->getGlobalLightDir().x) + " " + std::to_string(scene->getGlobalLightDir().y));
+        Library::TextureLib->Debug_ShowAllTextures();
 
     });
 

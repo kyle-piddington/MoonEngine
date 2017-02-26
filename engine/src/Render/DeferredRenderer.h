@@ -14,9 +14,11 @@
 #include "thirdparty/imgui/imgui.h"
 #include <iostream>
 #include "GLUtil/GL_LOG.h"
+#include "PostProcess/PostProcessStep.h"
 #include "Libraries/Library.h"
 #include "GLWrapper/GLConstants.h"
 #include "ShadowMaps.h"
+
 
 
 /**
@@ -54,6 +56,8 @@ namespace MoonEngine
          */
         virtual void shutdown();
 
+        void addPostProcessStep(std::shared_ptr<PostProcessStep> step);
+
 
     private:
 
@@ -86,6 +90,8 @@ namespace MoonEngine
         GLProgram* _stencilProgram;
         GLProgram* _pointLightProgram;
         GLProgram* _dirLightProgram;
+
+        std::vector<std::shared_ptr<PostProcessStep>> postprocessPipeline;
     };
 
     void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr);

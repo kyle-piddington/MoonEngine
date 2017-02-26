@@ -38,6 +38,7 @@ DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgr
     _gBuffer.addTexture("stencil", *_depthTex, GL_STENCIL_ATTACHMENT);
 
     _gBuffer.addTexture("output", *_outputTex, GL_COLOR_ATTACHMENT4);
+
     _gBuffer.status();
 
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
@@ -60,6 +61,10 @@ void DeferredRenderer::setup(Scene * scene, GLFWwindow * window)
     }
     glfwGetFramebufferSize(window, &_deferredWidth, &_deferredHeight);
     glClearColor(0, 0, 0, 1.0f);
+    for(auto step : postprocessPipeline)
+    {
+        step->setup(window,scene);
+    }
 }
 
 
@@ -79,12 +84,23 @@ void DeferredRenderer::render(Scene * scene)
         pointLightPass(light);
     }
     glDisable(GL_STENCIL_TEST);
-    
     dirLightPass(scene);
     glViewport(0,0,_deferredWidth,_deferredHeight);
-    outputPass(scene);
     //forwardPass(scene);
-
+    if(postprocessPipeline.size() == 0)
+    {
+        outputPass(scene);
+    }
+    else
+    {
+        for(auto step : postprocessPipeline)
+        {
+            step->render(scene);
+        }
+    }    
+    
+    
+    //outputPass(scene);
     GLVertexArrayObject::Unbind();
 }
 
@@ -275,6 +291,8 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
 
     glCullFace(GL_BACK);
     glDisable(GL_BLEND);
+
+
 }
 
 void DeferredRenderer::dirLightPass(Scene* scene)
@@ -333,9 +351,9 @@ void DeferredRenderer::forwardPass(Scene* scene) {
     LOG_GL(__FILE__, __LINE__);
     // Only the geometry pass writes to the depth buffer
     glDepthMask(GL_TRUE);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    //glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
+    glEnable(GL_BLEND);
 
 
     for (std::shared_ptr<GameObject> obj : scene->getForwardGameObjects())
@@ -432,9 +450,14 @@ void MoonEngine::DeferredRenderer::setupDirLightUniforms(GLProgram * prog)
     glUniform1i(prog->getUniformLocation("colorTex"), id.unit);
     id = _gBuffer.getTexture("normal");
     glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
-
     //Other global Uniforms
 
+}
+
+
+void DeferredRenderer::addPostProcessStep(std::shared_ptr<PostProcessStep> step)
+{
+    postprocessPipeline.push_back(step);
 }
 
 void DeferredRenderer::shutdown()

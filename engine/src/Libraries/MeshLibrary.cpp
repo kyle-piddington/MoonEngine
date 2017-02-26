@@ -1,12 +1,13 @@
+#include <Geometry/MeshCreator.h>
 #include "MeshLibrary.h"
 #include "Loaders/BasicLoader.h"
-#include "Util/Logger.h"
 
 using namespace MoonEngine;
 
 MeshLibrary::MeshLibrary(std::string resourcePath):
     _recPath(resourcePath)
 {
+    loadDefaultMesh();
 }
 
 MeshLibrary::~MeshLibrary()
@@ -22,6 +23,7 @@ MeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smooth)
     std::string assembledName = meshName + (smooth ? " _smooth" : "_flat");
     if (_mapMeshToInfo.find(assembledName) == _mapMeshToInfo.end())
     {
+        
         //Create and add a new meshInfo
         //(Warn: returning a pointer that i'm not deleting.)
         MeshInfo * info = new MeshInfo;
@@ -39,4 +41,9 @@ MeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smooth)
     }
 
     return _mapMeshToInfo[assembledName];
+}
+
+void MeshLibrary::loadDefaultMesh() {
+    _mapMeshToInfo["quad_flat"] = MeshCreator::CreateQuad(glm::vec2(-0.5, -0.5), glm::vec2(0.5, 0.5));
+    _mapMeshToInfo["quad_full_flat"] = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
 }

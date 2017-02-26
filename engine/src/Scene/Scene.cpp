@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace MoonEngine;
 
-#define TIME_MODIFIER 0.01f
+#define TIME_MODIFIER 0.02
 
 Scene::Scene()
 {
@@ -85,7 +85,7 @@ void Scene::runUpdate(float dt)
 {
 
 	_globalTime += dt * TIME_MODIFIER;
-	_globalLightDir = glm::vec3(sin(_globalTime), cos(_globalTime), 0.0);
+	_globalLightDir = glm::vec3(sin(_globalTime), TIME_MODIFIER * 10 * cos(_globalTime), 0.0);
     instantiateNewObjects();
 
 	for (std::shared_ptr<GameObject> go : _gameObjects)
