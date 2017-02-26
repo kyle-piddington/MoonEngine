@@ -13,7 +13,8 @@ namespace MoonEngine
 	class PostProcessStep
 	{
 	public:
-		PostProcessStep();
+		PostProcessStep():
+		_quadInfo(nullptr){};
 
 	/**
 	 * Create and allocate resources needed
@@ -22,7 +23,7 @@ namespace MoonEngine
 	 * @param scene  A handle to the current scene
 	 * @param cfg    Additional configuration data
 	 */
-		virtual void setup(GLFWwindow * window, Scene * scene);
+		virtual void setup(GLFWwindow * window, Scene * scene) = 0;
 
 	/**
 	 * Render a pass of the post processing

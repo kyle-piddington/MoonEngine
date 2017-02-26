@@ -10,45 +10,34 @@ DeferredRenderer::DeferredRenderer(int width, int height, string stencilProgramN
     _gBuffer(width, height),
     _width(width),
     _height(height),
-    _positionTex(),
-    _colorTex(),
-    _normalTex(),
-    _textureTex(),
-    _depthTex(),
-    _outputTex()
+    _positionTex(nullptr),
+    _colorTex(nullptr),
+    _normalTex(nullptr),
+    _textureTex(nullptr),
+    _depthTex(nullptr),
+    _outputTex(nullptr)
 {
     GLTextureConfiguration locationCFG(width, height, GL_RGB16F, GL_RGB, GL_FLOAT);
     GLTextureConfiguration colorCFG(width, height, GL_RGBA, GL_RGBA, GL_FLOAT);
     GLTextureConfiguration depthCFG(width, height, GL_DEPTH32F_STENCIL8, 
         GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
     GLTextureConfiguration outputCFG(width, height, GL_RGBA, GL_RGB, GL_FLOAT);
- 	bool texSetupOk = true;
-	texSetupOk &= _positionTex.init(locationCFG);
-	texSetupOk &=  _colorTex.init(colorCFG);
-	texSetupOk &= _normalTex.init(locationCFG);
-	texSetupOk &= _depthTex.init(depthCFG);
-	assert(texSetupOk);
-    _gBuffer.addTexture("position", _positionTex, GL_COLOR_ATTACHMENT0);
-    
-    if (_positionTex.init(locationCFG) == false) 
-        exit(EXIT_FAILURE);
-    if (_colorTex.init(colorCFG) == false) 
-        exit(EXIT_FAILURE);
-    if (_normalTex.init(locationCFG) == false)
-        exit(EXIT_FAILURE);
-    if (_depthTex.init(depthCFG) == false)
-        exit(EXIT_FAILURE);
-    if (_outputTex.init(outputCFG) == false)
-        exit(EXIT_FAILURE);
 
-    _gBuffer.addTexture("position", _positionTex, GL_COLOR_ATTACHMENT0);
-    _gBuffer.addTexture("color", _colorTex, GL_COLOR_ATTACHMENT1);
-    _gBuffer.addTexture("normal", _normalTex, GL_COLOR_ATTACHMENT2);
+    _positionTex = Library::TextureLib->createTexture(POSITION_TEXTURE, locationCFG);
+    _normalTex = Library::TextureLib->createTexture(NORMAL_TEXTURE, locationCFG);
+    _colorTex = Library::TextureLib->createTexture(COLOR_TEXTURE, colorCFG);
+    _depthTex = Library::TextureLib->createTexture(DEPTH_STENCIL_TEXTURE, depthCFG);
+    _outputTex = Library::TextureLib->createTexture(COMPOSITE_TEXTURE, outputCFG);
 
-    _gBuffer.addTexture("depth", _depthTex, GL_DEPTH_ATTACHMENT);
-    _gBuffer.addTexture("stencil", _depthTex, GL_STENCIL_ATTACHMENT);
+    _gBuffer.addTexture("position", *_positionTex, GL_COLOR_ATTACHMENT0);
+    _gBuffer.addTexture("color", *_colorTex, GL_COLOR_ATTACHMENT1);
+    _gBuffer.addTexture("normal", *_normalTex, GL_COLOR_ATTACHMENT2);
 
-    _gBuffer.addTexture("output", _outputTex, GL_COLOR_ATTACHMENT4);
+    _gBuffer.addTexture("depth", *_depthTex, GL_DEPTH_ATTACHMENT);
+    _gBuffer.addTexture("stencil", *_depthTex, GL_STENCIL_ATTACHMENT);
+
+    _gBuffer.addTexture("output", *_outputTex, GL_COLOR_ATTACHMENT4);
+
     _gBuffer.status();
 
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));

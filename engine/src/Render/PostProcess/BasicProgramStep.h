@@ -32,11 +32,11 @@ namespace MoonEngine
 	 * Render a pass of the post processing
 	 * @param scene The scene to render.
 	 */
-		void render(Scene * scene) = 0;
+		void render(Scene * scene);
 	/**
 	 * Deallocate any resources before shutting donw.
 	 */
-		void shutdown() = 0;
+		void shutdown(){}
 	private:
 		std::string _progName;
 		std::string _inputTextureStr;

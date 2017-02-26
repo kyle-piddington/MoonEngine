@@ -9,6 +9,7 @@
 #include "GLWrapper/GLFramebuffer.h"
 #include "GLWrapper/GLBuffer.h"
 #include "GLWrapper/GLProgram.h"
+#include "GLWrapper/GLConstants.h"
 
 #include "GLUtil/GLProgramUtilities.h"
 
@@ -44,6 +45,8 @@
 #include "Render/ProgramRenderer.h"
 #include "Render/DeferredRenderer.h"
 
+//Post
+#include "Render/PostProcess.h"
 
 
 //Terrain

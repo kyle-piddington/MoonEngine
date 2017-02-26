@@ -23,6 +23,7 @@ MeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smooth)
     std::string assembledName = meshName + (smooth ? " _smooth" : "_flat");
     if (_mapMeshToInfo.find(assembledName) == _mapMeshToInfo.end())
     {
+        
         //Create and add a new meshInfo
         //(Warn: returning a pointer that i'm not deleting.)
         MeshInfo * info = new MeshInfo;
@@ -44,5 +45,5 @@ MeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smooth)
 
 void MeshLibrary::loadDefaultMesh() {
     _mapMeshToInfo["quad_flat"] = MeshCreator::CreateQuad(glm::vec2(-0.5, -0.5), glm::vec2(0.5, 0.5));
-    _mapMeshToInfo["quad_full"] = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
+    _mapMeshToInfo["quad_full_flat"] = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
 }

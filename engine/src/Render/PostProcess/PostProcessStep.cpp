@@ -6,8 +6,9 @@ void PostProcessStep::renderToScreen()
 {
 	if(_quadInfo == nullptr)
 	{
-		_quadInfo = Library::MeshLib->getInfoForMeshNamed("quad_full",true);
+		_quadInfo = Library::MeshLib->getInfoForMeshNamed("quad_full",false);
 	}
+	assert(_quadInfo != nullptr);
 	_quadInfo->bind();
 	glDrawElementsBaseVertex(GL_TRIANGLES,
 				_quadInfo->numTris,
