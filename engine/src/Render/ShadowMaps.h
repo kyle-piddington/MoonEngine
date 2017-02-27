@@ -26,6 +26,7 @@ namespace MoonEngine {
         const glm::mat4 getOrtho(int shadowLevel);
         const glm::mat4 getLightView();
 
+        void DBG_DrawToImgui();
     private:
         std::vector<GLTexture*> _depthTexs;
         std::vector<glm::mat4> _orthos;

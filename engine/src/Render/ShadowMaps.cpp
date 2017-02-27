@@ -1,5 +1,5 @@
 #include "ShadowMaps.h"
-
+#include "thirdparty/imgui/imgui.h"
 using namespace MoonEngine;
 
 ShadowMaps::ShadowMaps(int width, int height):
@@ -9,7 +9,7 @@ ShadowMaps::ShadowMaps(int width, int height):
     GLTextureConfiguration shadowCFG(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT);
     GLTexture* tempPtr;
     for (int i = 0; i < NUM_SHADOWS; i++) {
-        tempPtr = Library::TextureLib->createTexture(SHADOW_TEXTURE + i, shadowCFG);
+        tempPtr = Library::TextureLib->createTexture(SHADOW_TEXTURE + std::to_string(i), shadowCFG);
         tempPtr->bindRaw();
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -61,7 +61,7 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
      Camera* cam = scene->getMainCamera()->getComponent<Camera>();
 
     glm::mat4 CameraInvView = glm::inverse(cam->getView());
-    _lightView = glm::lookAt(glm::vec3(0, 0, 0), scene->getDirLightObject()->getComponent<DirLight>()->getDirection(), World::Up);
+    _lightView = glm::lookAt(glm::vec3(10, 10, 10), scene->getDirLightObject()->getComponent<DirLight>()->getDirection(), World::Up);
 
     float tanHalfHFOV = tanf(MathUtil::toRadians(cam->getFOV() / 2.0f));
     float tanHalfVFOV = tanf(MathUtil::toRadians((cam->getFOV() * cam->getAspect()) / 2.0f));
@@ -121,6 +121,17 @@ const glm::mat4 MoonEngine::ShadowMaps::getOrtho(int shadowLevel)
 const glm::mat4 MoonEngine::ShadowMaps::getLightView()
 {
     return _lightView;
+}
+
+void ShadowMaps::DBG_DrawToImgui()
+{
+    ImGui::Begin("Shadow Maps");
+    for (int i = 0; i < _depthTexs.size(); i++)
+    {
+        ImGui::Image((void *)_depthTexs[i]->getTextureId(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
+    }
+    ImGui::End();
+
 }
 
 void ShadowMaps::status()
