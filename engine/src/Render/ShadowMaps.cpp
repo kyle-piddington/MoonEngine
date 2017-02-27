@@ -1,5 +1,6 @@
 #include "ShadowMaps.h"
 #include "thirdparty/imgui/imgui.h"
+#include <iostream>
 using namespace MoonEngine;
 
 ShadowMaps::ShadowMaps(int width, int height):
@@ -42,9 +43,10 @@ void ShadowMaps::bindForWriting(int shadowLevel)
         LOG(ERROR, "incorrect shadowLevel selected");
         exit(EXIT_FAILURE);
     }
+
     glBindFramebuffer(GL_FRAMEBUFFER, _handle);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthTexs[shadowLevel]->getTextureId(), 0);
-
+    status();
 }
 
 void ShadowMaps::bindForReading()
@@ -61,15 +63,16 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
      Camera* cam = scene->getMainCamera()->getComponent<Camera>();
 
     glm::mat4 CameraInvView = glm::inverse(cam->getView());
-    _lightView = glm::lookAt(glm::vec3(10, 10, 10), scene->getDirLightObject()->getComponent<DirLight>()->getDirection(), World::Up);
+    glm::vec3 renderDir =  scene->getDirLightObject()->getComponent<DirLight>()->getDirection();
+    _lightView = glm::lookAt(glm::vec3(0),  scene->getDirLightObject()->getComponent<DirLight>()->getDirection(), World::Up);
 
-    float tanHalfHFOV = tanf(MathUtil::toRadians(cam->getFOV() / 2.0f));
-    float tanHalfVFOV = tanf(MathUtil::toRadians((cam->getFOV() * cam->getAspect()) / 2.0f));
+    float tanHalfHFOV = tanf((cam->getFOV() / 2.0f));
+    float tanHalfVFOV = tanf((cam->getFOV() * cam->getAspect()) / 2.0f);
     _shadowZDepth[0] = cam->getNear();
     _shadowZDepth[1] = 50.0f;
     _shadowZDepth[2] = 250.0f;
     _shadowZDepth[3] = cam->getFar();
-
+    _orthos.clear();
     for (int i = 0; i < NUM_SHADOWS; i++) {
         float xn = _shadowZDepth[i] * tanHalfHFOV;
         float xf = _shadowZDepth[i + 1] * tanHalfHFOV;
@@ -92,20 +95,20 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
         glm::vec4 frustumCornersLight[NUM_CORNERS];
 
         float minX, minY, minZ;
-        minX = minY = minZ = std::numeric_limits<float>::min();
+        minX = minY = minZ = std::numeric_limits<float>::max();
         float maxX, maxY, maxZ;
-        maxX = maxY = maxZ = std::numeric_limits<float>::max();
+        maxX = maxY = maxZ = -std::numeric_limits<float>::max();
 
         for (int j = 0; j < NUM_CORNERS; j++) {
             glm::vec4 vW = CameraInvView * frustumCorners[j];
             frustumCornersLight[j] = _lightView * vW;
 
-            minX = min(minX, frustumCornersLight[j].x);
-            maxX = max(maxX, frustumCornersLight[j].x);
-            minY = min(minY, frustumCornersLight[j].y);
-            maxY = max(maxY, frustumCornersLight[j].y);
-            minZ = min(minZ, frustumCornersLight[j].z);
-            maxZ = max(maxZ, frustumCornersLight[j].z);
+            minX = std::min(minX, frustumCornersLight[j].x);
+            maxX = std::max(maxX, frustumCornersLight[j].x);
+            minY = std::min(minY, frustumCornersLight[j].y);
+            maxY = std::max(maxY, frustumCornersLight[j].y);
+            minZ = std::min(minZ, frustumCornersLight[j].z);
+            maxZ = std::max(maxZ, frustumCornersLight[j].z);
         }
 
         _orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));

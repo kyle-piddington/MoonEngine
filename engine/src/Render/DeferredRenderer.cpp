@@ -6,17 +6,17 @@ using namespace MoonEngine;
 
 DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgramName, string stencilProgramName, 
     string pointLightProgramName, string dirLightProgramName):
-    _mainCamera(nullptr),
-    _gBuffer(width, height),
-    _shadowMaps(width, height),
-    _width(width),
-    _height(height),
-    _positionTex(nullptr),
-    _colorTex(nullptr),
-    _normalTex(nullptr),
-    _textureTex(nullptr),
-    _depthTex(nullptr),
-    _outputTex(nullptr)
+_mainCamera(nullptr),
+_gBuffer(width, height),
+_shadowMaps(width, height),
+_width(width),
+_height(height),
+_positionTex(nullptr),
+_colorTex(nullptr),
+_normalTex(nullptr),
+_textureTex(nullptr),
+_depthTex(nullptr),
+_outputTex(nullptr)
 {
     GLTextureConfiguration locationCFG(width, height, GL_RGB16F, GL_RGB, GL_FLOAT);
     GLTextureConfiguration colorCFG(width, height, GL_RGBA, GL_RGBA, GL_FLOAT);
@@ -71,13 +71,13 @@ void DeferredRenderer::setup(Scene * scene, GLFWwindow * window)
 void DeferredRenderer::render(Scene * scene)
 {
     glEnable(GL_CULL_FACE);
-   _gBuffer.startFrame();
+    _gBuffer.startFrame();
 
-   _mainCameraPosition = scene->getMainCamera()->getTransform().getPosition();
-   glViewport(0,0,_width,_height);
-  
-   shadowMapPass(scene);
-   geometryPass(scene);
+    _mainCameraPosition = scene->getMainCamera()->getTransform().getPosition();
+    glViewport(0,0,_width,_height);
+
+    shadowMapPass(scene);
+    geometryPass(scene);
 
     glEnable(GL_STENCIL_TEST);
     for (std::shared_ptr<GameObject> light : scene->getPointLightObjects()) {
@@ -112,17 +112,21 @@ void DeferredRenderer::render(Scene * scene)
 void DeferredRenderer::shadowMapPass(Scene * scene)
 {
     Mesh* mesh = nullptr;
-    _shadowMapsProgram->enable();
+    GLProgram * activeProgram = nullptr;
+    Material* mat = nullptr;
     _shadowMaps.calculateShadowLevels(scene);
     LOG_GL(__FILE__, __LINE__);
 
     // The view is set as the light source
     glm::mat4 V = _shadowMaps.getLightView();
-
     for (int i = 0; i < NUM_SHADOWS; i++) {
         LOG_GL(__FILE__, __LINE__);
         // Bind and clear the current shadowLevel
         _shadowMaps.bindForWriting(i);
+        glDrawBuffer(GL_NONE);
+        glDepthMask(GL_TRUE);
+        glEnable(GL_DEPTH_TEST);
+
         glClear(GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 P = _shadowMaps.getOrtho(i);
@@ -130,24 +134,50 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
 
         for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
         {
-            LOG_GL(__FILE__, __LINE__);
+            mat = obj->getComponent<Material>();
             mesh = obj->getComponent<Mesh>();
             const MeshInfo * meshInfo = mesh->getMesh();
 
+            if (mat->isForward()) {
+                continue;
+            }
+
             glm::mat4 M = obj->getTransform().getMatrix();
-            LOG_GL(__FILE__, __LINE__);
+
+        //sets the materials geometry shader as active
+
+            if (activeProgram != mat->getProgram()) {
+                activeProgram = mat->getProgram();
+                activeProgram->enable();
+
             //Place Uniforms that do not change per GameObject
-            glUniformMatrix4fv(_shadowMapsProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-            glUniformMatrix4fv(_shadowMapsProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-            LOG_GL(__FILE__, __LINE__);
+                glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+                glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+                if (activeProgram->hasUniform("iGlobalTime")) {
+                    glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
+                }
+
+            }
+            mat->bind();
             meshInfo->bind();
-            //No assumptions about the shadow stage is made beyond a P, V, and M Uniforms
-            glUniformMatrix4fv(_shadowMapsProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
-            LOG_GL(__FILE__, __LINE__);
+            glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+
+
+            if (activeProgram->hasUniform("tint")) {
+                glm::vec3 tint = mat->getTint();
+                glUniform3f(activeProgram->getUniformLocation("tint"), tint.x, tint.y, tint.z);
+            }
+            if (activeProgram->hasUniform("N")) {
+                glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
+                glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
+            }
+
             mesh->draw();
-            LOG_GL(__FILE__, __LINE__);
+            mat->unbind();
         }
+
     }
+    _shadowMaps.DBG_DrawToImgui();
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
@@ -159,7 +189,7 @@ void DeferredRenderer::geometryPass(Scene * scene)
 	Material* mat = nullptr;
 
     glm::mat4 V = _mainCamera->getView();
-	glm::mat4 P = _mainCamera->getProjection();
+    glm::mat4 P = _mainCamera->getProjection();
 
     
 	// Only the geometry pass writes to the depth buffer
@@ -168,54 +198,54 @@ void DeferredRenderer::geometryPass(Scene * scene)
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     
-	for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
-	{
-		mat = obj->getComponent<Material>();
-		mesh = obj->getComponent<Mesh>();
-        const MeshInfo * meshInfo = mesh->getMesh();
-        
-		if (mat->isForward()) {
-			continue;
-		}
+    for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
+    {
+      mat = obj->getComponent<Material>();
+      mesh = obj->getComponent<Mesh>();
+      const MeshInfo * meshInfo = mesh->getMesh();
 
-		glm::mat4 M = obj->getTransform().getMatrix();
-		
+      if (mat->isForward()) {
+         continue;
+     }
+
+     glm::mat4 M = obj->getTransform().getMatrix();
+
 		//sets the materials geometry shader as active
-        
-		if (activeProgram != mat->getProgram()) {
-			activeProgram = mat->getProgram();
-			activeProgram->enable();
+
+     if (activeProgram != mat->getProgram()) {
+         activeProgram = mat->getProgram();
+         activeProgram->enable();
 
 			//Place Uniforms that do not change per GameObject
-			glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-			glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-			if (activeProgram->hasUniform("iGlobalTime")) {
-				glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
-			}
-            
-		}
-		mat->bind();
-		meshInfo->bind();
+         glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+         glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+         if (activeProgram->hasUniform("iGlobalTime")) {
+            glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
+        }
+
+    }
+    mat->bind();
+    meshInfo->bind();
 		//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
-		glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+    glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
 
 		//Optional Uniforms are checked here, and bound if found
-		if (activeProgram->hasUniform("tint")) {
-			glm::vec3 tint = mat->getTint();
-			glUniform3f(activeProgram->getUniformLocation("tint"), tint.x, tint.y, tint.z);
-		}
-		if (activeProgram->hasUniform("N")) {
-			glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
-			glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
-		}
-		
-		mesh->draw();
-		mat->unbind();
-	}
+    if (activeProgram->hasUniform("tint")) {
+     glm::vec3 tint = mat->getTint();
+     glUniform3f(activeProgram->getUniformLocation("tint"), tint.x, tint.y, tint.z);
+ }
+ if (activeProgram->hasUniform("N")) {
+     glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
+     glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
+ }
+
+ mesh->draw();
+ mat->unbind();
+}
 
     //Disable the filled depth buffer
-    glDepthMask(GL_FALSE);
+glDepthMask(GL_FALSE);
 }
 
 void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light)
@@ -257,7 +287,7 @@ void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light
         GL_UNSIGNED_SHORT,
         lightSphere->indexDataOffset,
         lightSphere->baseVertex
-    );
+        );
     glStencilMask(0x00);
 
 }
@@ -267,7 +297,7 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
     _pointLightProgram->enable();
     _gBuffer.bindForLightPass();
     setupPointLightUniforms(_pointLightProgram, light);
-	
+
     const MeshInfo* lightSphere = nullptr;
     lightSphere = light->getComponent<PointLight>()->getSphere();
 
@@ -282,17 +312,17 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT);
-  
 
-	lightSphere->bind();
 
-	glDrawElementsBaseVertex(
-		GL_TRIANGLES,
-		lightSphere->numTris,
-		GL_UNSIGNED_SHORT,
-        lightSphere->indexDataOffset,
-        lightSphere->baseVertex
-	);
+    lightSphere->bind();
+
+    glDrawElementsBaseVertex(
+      GL_TRIANGLES,
+      lightSphere->numTris,
+      GL_UNSIGNED_SHORT,
+      lightSphere->indexDataOffset,
+      lightSphere->baseVertex
+      );
 
     glCullFace(GL_BACK);
     glDisable(GL_BLEND);
@@ -315,7 +345,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     
     std::shared_ptr<GameObject> dirLight = scene->getDirLightObject();
     glm::vec3 viewLight = 
-        glm::vec3(V * glm::vec4(dirLight->getComponent<DirLight>()->getDirection(),0));
+    glm::vec3(V * glm::vec4(dirLight->getComponent<DirLight>()->getDirection(),0));
 
     DirLight* light = dirLight->getComponent<DirLight>();
     //For every directional light, pass new direction and color
@@ -332,7 +362,7 @@ void DeferredRenderer::dirLightPass(Scene* scene)
         GL_UNSIGNED_SHORT,
         _renderQuad->indexDataOffset,
         _renderQuad->baseVertex
-    );
+        );
     glDisable(GL_BLEND);
 
 }
@@ -398,7 +428,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
         }
         mesh->draw();
 
-       
+
         mat->unbind();
     }
     LOG_GL(__FILE__, __LINE__);

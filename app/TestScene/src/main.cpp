@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    float windowWidth = 1600.0f, windowHeight = 900.0f;
+    float windowWidth = 640.0f, windowHeight = 480.0f;
     GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "ShatteredMoon", nullptr, nullptr);
     if (window == nullptr)
     {
@@ -61,7 +61,7 @@ int main(int argc, char ** argv)
 
     //Camera setup
     std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
-    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
+    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 300);
     cameraObj->addComponent(cam);
     cameraObj->addComponent(scene->createComponent<FirstPersonController>(5));
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
@@ -217,8 +217,8 @@ int main(int argc, char ** argv)
 
     });
 
-	DeferredRenderer * renderer = new DeferredRenderer(width, height, 
-        "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
+	 DeferredRenderer * renderer = new DeferredRenderer(width, height, 
+        "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
     delete scene;

@@ -189,7 +189,6 @@ void Terrain::draw() const
 		//drawDebugNode(node);
 		if(node.TL && node.TR && node.BL && node.BR)
 		{
-			glUniform3f(prog->getUniformLocation("tint"),1,1,1);
 			glDrawElementsBaseVertex(GL_TRIANGLES,
 				meshInfo->numTris,
 				GL_UNSIGNED_SHORT,
@@ -202,7 +201,6 @@ void Terrain::draw() const
 			int quarterTris = meshInfo->numTris / 4;
 			if(node.TL)
 			{
-				glUniform3f(prog->getUniformLocation("tint"),1,0,0);
 				//LOG(INFO, "Drawing TL");
 				glDrawElementsBaseVertex(GL_TRIANGLES,
 					quarterTris,
@@ -214,7 +212,6 @@ void Terrain::draw() const
 			if(node.TR)
 			{
 				//LOG(INFO, "Drawing TR");
-				glUniform3f(prog->getUniformLocation("tint"),0,1,0);
 				glDrawElementsBaseVertex(GL_TRIANGLES,
 					quarterTris,
 					GL_UNSIGNED_SHORT,
