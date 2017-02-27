@@ -89,8 +89,9 @@ void DeferredRenderer::render(Scene * scene)
     glDisable(GL_CULL_FACE);
     forwardPass(scene);
     glViewport(0,0,_deferredWidth,_deferredHeight);
-    drawBufferToImgui("GBuffer", &_gBuffer);
+    //forwardPass(scene);
 
+    _gBuffer.DBG_DrawToImgui("GBuffer");
     if(postprocessPipeline.size() == 0)
     {
         outputPass(scene);
@@ -337,7 +338,6 @@ void DeferredRenderer::dirLightPass(Scene* scene)
 }
 
 void DeferredRenderer::outputPass(Scene * scene){
-    drawBufferToImgui("GBuffer", &_gBuffer);
     _gBuffer.bindForOutput();
     glBlitFramebuffer(0, 0, _width, _height,
         0, 0, _deferredWidth, _deferredHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
@@ -468,15 +468,4 @@ void DeferredRenderer::addPostProcessStep(std::shared_ptr<PostProcessStep> step)
 void DeferredRenderer::shutdown()
 {
 
-}
-
-void MoonEngine::drawBufferToImgui(std::string guiName, const GLFramebuffer* bfr)
-{
-    auto texHandles = bfr->getTextureHandles();
-    ImGui::Begin(guiName.c_str());
-    for (auto texHandlePair : texHandles)
-    {
-        ImGui::Image((void *)texHandlePair.second.gl_texture->getTextureId(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
-    }
-    ImGui::End();
 }

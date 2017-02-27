@@ -11,7 +11,6 @@
 #include "Component/Components.h"
 #include "GameObject/GameObject.h"
 #include "Geometry/MeshCreator.h"
-#include "thirdparty/imgui/imgui.h"
 #include <iostream>
 #include "GLUtil/GL_LOG.h"
 #include "PostProcess/PostProcessStep.h"
@@ -94,5 +93,4 @@ namespace MoonEngine
         std::vector<std::shared_ptr<PostProcessStep>> postprocessPipeline;
     };
 
-    void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr);
 }
