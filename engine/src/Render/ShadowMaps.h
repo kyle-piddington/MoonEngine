@@ -25,7 +25,7 @@ namespace MoonEngine {
         void calculateShadowLevels(Scene* scene);
         const glm::mat4 getOrtho(int shadowLevel);
         const glm::mat4 getLightView();
-
+        const float getShadowZ(int shadowLevel);
         void DBG_DrawToImgui();
     private:
         std::vector<GLTexture*> _depthTexs;

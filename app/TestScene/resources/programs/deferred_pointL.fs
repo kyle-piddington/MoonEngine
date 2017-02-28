@@ -14,17 +14,16 @@ struct PointLight
     float ambient;
     Attenuation atten;
 };
-
 in vec2 fragTexCoords;
 
 uniform sampler2D positionTex;
 uniform sampler2D colorTex;
 uniform sampler2D normalTex;
+
 uniform PointLight pointLight;
 
+
 uniform vec2 screenSize;
-
-
 
 vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
 {

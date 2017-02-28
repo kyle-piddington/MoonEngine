@@ -25,7 +25,7 @@ GLShader GLProgramUtilities::createShaderFromFile(GLenum shaderType, std::string
 }
 
 /* Source; https://learnopengl.com/#!Getting-started/Hello-Triangle*/
-bool GLProgramUtilities::checkShaderStatus(const GLShader & shader)
+bool GLProgramUtilities::checkShaderStatus(const GLShader & shader, std::string name)
 {
     GLint success;
     GLchar infoLog[512];
@@ -58,7 +58,7 @@ bool GLProgramUtilities::checkShaderStatus(const GLShader & shader)
             default:
                 shaderType = "UNKNOWN";
         }
-        LOG(ERROR, "SHADER:" + shaderType + ":COMPILATION_FAILED\n" + std::string(infoLog));
+        LOG(ERROR, "SHADER:" + shaderType + ":" + name +":COMPILATION_FAILED\n" + std::string(infoLog));
     }
 
     return success;
