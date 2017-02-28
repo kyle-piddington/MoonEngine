@@ -52,7 +52,7 @@ void ShadowMaps::bindForWriting(int shadowLevel)
 void ShadowMaps::bindForReading()
 {
     for (int i = 0; i < _depthTexs.size(); i++) {
-        glActiveTexture(GL_TEXTURE0 + i);
+        glActiveTexture(GL_TEXTURE5 + i);
         glBindTexture(GL_TEXTURE_2D, _depthTexs[i]->getTextureId());
     }
 }
@@ -111,7 +111,8 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
             maxZ = std::max(maxZ, frustumCornersLight[j].z);
         }
 
-        _orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
+        //_orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
+        _orthos.push_back(glm::ortho(minX, 10.0f, -10.0f, 10.0f, minZ, maxZ));
     }
 
 }
@@ -119,6 +120,10 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
 const glm::mat4 MoonEngine::ShadowMaps::getOrtho(int shadowLevel)
 {
     return _orthos[shadowLevel];
+}
+
+const float ShadowMaps::getShadowZ(int shadowLevel) {
+    return _shadowZDepth[shadowLevel + 1];
 }
 
 const glm::mat4 MoonEngine::ShadowMaps::getLightView()

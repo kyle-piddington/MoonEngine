@@ -71,8 +71,10 @@ namespace MoonEngine
         void forwardPass(Scene* scene);
 
         //Setup Uniforms shared across both light passes
+        void setupShadowMapUniforms(GLProgram* prog);
         void setupPointLightUniforms(GLProgram* prog, std::shared_ptr<GameObject> light);
         void setupDirLightUniforms(GLProgram* prog);
+        
         Camera* _mainCamera;
         glm::vec3 _mainCameraPosition;
         MeshInfo* _renderQuad;

@@ -114,11 +114,14 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
     Mesh* mesh = nullptr;
     GLProgram * activeProgram = nullptr;
     Material* mat = nullptr;
+    activeProgram = _shadowMapsProgram;
+    activeProgram->enable();
     _shadowMaps.calculateShadowLevels(scene);
     LOG_GL(__FILE__, __LINE__);
 
     // The view is set as the light source
     glm::mat4 V = _shadowMaps.getLightView();
+
     for (int i = 0; i < NUM_SHADOWS; i++) {
         LOG_GL(__FILE__, __LINE__);
         // Bind and clear the current shadowLevel
@@ -134,46 +137,18 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
 
         for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
         {
-            mat = obj->getComponent<Material>();
             mesh = obj->getComponent<Mesh>();
             const MeshInfo * meshInfo = mesh->getMesh();
 
-            if (mat->isForward()) {
-                continue;
-            }
-
             glm::mat4 M = obj->getTransform().getMatrix();
 
-        //sets the materials geometry shader as active
-
-            if (activeProgram != mat->getProgram()) {
-                activeProgram = mat->getProgram();
-                activeProgram->enable();
-
             //Place Uniforms that do not change per GameObject
-                glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-                glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-                if (activeProgram->hasUniform("iGlobalTime")) {
-                    glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
-                }
+            glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+            glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 
-            }
-            mat->bind();
             meshInfo->bind();
             glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
-
-
-            if (activeProgram->hasUniform("tint")) {
-                glm::vec3 tint = mat->getTint();
-                glUniform3f(activeProgram->getUniformLocation("tint"), tint.x, tint.y, tint.z);
-            }
-            if (activeProgram->hasUniform("N")) {
-                glm::mat3 N = glm::mat3(glm::transpose(glm::inverse(V * M)));
-                glUniformMatrix3fv(activeProgram->getUniformLocation("N"), 1, GL_FALSE, glm::value_ptr(N));
-            }
-
             mesh->draw();
-            mat->unbind();
         }
 
     }
@@ -335,6 +310,8 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     glm::mat4 V = _mainCamera->getView();
 
     _dirLightProgram->enable();
+    _shadowMaps.bindForReading();
+    setupShadowMapUniforms(_dirLightProgram);
     setupDirLightUniforms(_dirLightProgram);
     _renderQuad->bind();
     
@@ -436,6 +413,25 @@ void DeferredRenderer::forwardPass(Scene* scene) {
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
 
+}
+
+void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
+{
+    for (int i = 0; i < NUM_SHADOWS; i++) {
+        glm::mat4 LV = _shadowMaps.getOrtho(i);
+        string LVname = "LV[" + to_string(i) + "]";
+        glUniformMatrix4fv(prog->getUniformLocation(LVname), 1, GL_FALSE, glm::value_ptr(LV));
+    }
+    for (int i = 0; i < NUM_SHADOWS; i++) {
+        string shadowMapName = "shadowMap[" + to_string(i) + "]";
+        GLTexture * sm = Library::TextureLib->getTexture(SHADOW_TEXTURE + to_string(i));
+        glUniform1i(prog->getUniformLocation(shadowMapName), sm->getTextureId());
+    }
+    for (int i = 0; i < NUM_SHADOWS; i++) {
+        string shadowZName = "shadowZSpace[" + to_string(i) + "]";
+        glUniform1f(prog->getUniformLocation(shadowZName), _shadowMaps.getShadowZ(i));
+    }
+    
 }
 
 void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr<GameObject> light)

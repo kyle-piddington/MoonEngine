@@ -66,12 +66,12 @@ std::shared_ptr<GLProgram> ProgramLoader::LoadProgram(std::string programInfo)
     //Create shaders
     GLShader vShader =
             GLProgramUtilities::createShaderFromFile(GL_VERTEX_SHADER, vertexShaderSource);
-    if (!GLProgramUtilities::checkShaderStatus(vShader))
+    if (!GLProgramUtilities::checkShaderStatus(vShader, shaderName))
     {
         return nullptr;
     }
     GLShader fShader = GLProgramUtilities::createShaderFromFile(GL_FRAGMENT_SHADER, fragmentShaderSource);
-    if (!GLProgramUtilities::checkShaderStatus(fShader))
+    if (!GLProgramUtilities::checkShaderStatus(fShader, shaderName))
     {
         return nullptr;
     }
@@ -82,7 +82,7 @@ std::shared_ptr<GLProgram> ProgramLoader::LoadProgram(std::string programInfo)
     {
         GLShader gShader = GLProgramUtilities::createShaderFromFile(
             GL_GEOMETRY_SHADER, document["geometry"].GetString());
-        if (!GLProgramUtilities::checkShaderStatus(gShader))
+        if (!GLProgramUtilities::checkShaderStatus(gShader, document["geometry"].GetString()))
         {
             return nullptr;
         }
