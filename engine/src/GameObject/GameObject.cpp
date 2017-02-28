@@ -5,21 +5,21 @@
 using namespace MoonEngine;
 
 GameObject::GameObject():
-    deleted(false),
-    defaultBox(glm::vec3(0,0,0),0.5f,0.5f,0.5f),
-    useMeshBounds(false),
-    useBoxColliderBounds(false),
-	tag(T_NONE)
+deleted(false),
+defaultBox(glm::vec3(0,0,0),0.5f,0.5f,0.5f),
+useMeshBounds(false),
+useBoxColliderBounds(false),
+tag(T_NONE)
 {
 
 }
 
 GameObject::GameObject(const Transform & t):
-    transform(t),
-    deleted(false),
-    useMeshBounds(false),
-    useBoxColliderBounds(false),
-	tag(T_NONE)
+transform(t),
+deleted(false),
+useMeshBounds(false),
+useBoxColliderBounds(false),
+tag(T_NONE)
 {
 
 }
@@ -38,6 +38,7 @@ void GameObject::start()
     }
 }
 
+
 void GameObject::addComponent(Component * component)
 {
     component->provideGameObject(this);
@@ -52,6 +53,19 @@ void GameObject::addComponent(Component * component)
     components.push_back(component);
 }
 
+void GameObject::addHandler(std::string message, const messageFn & fn)
+{
+    if(messageHandlers.find(message) != messageHandlers.end())
+    {
+        messageHandlers[message] = std::vector<messageFn>();
+    }
+    messageHandlers[message].push_back(fn);
+}
+
+void GameObject::addMessage(Message msg)
+{
+    waitingMessages.push_back(msg);
+}
 
 Transform & GameObject::getTransform()
 {
@@ -66,12 +80,26 @@ std::vector<Component *> GameObject::getComponents()
 void GameObject::update(float dt)
 {
     defaultTransformedBox = defaultBox.transform(transform.getMatrix());
+    //For each waiting message
+    for(const Message & msg : waitingMessages)
+    {
+        if(messageHandlers.find(msg.message) != messageHandlers.end())
+        {
+            //If a handler for the message exists
+            for(auto handler : messageHandlers[msg.message])
+            {
+                //call the handler
+                handler(msg);
+            }
+        }
+    }
+    //Clear the waiting messages
+    waitingMessages.clear();
+    //Update all components
     for (Component * c : components)
     {
         c->update(dt);
     }
-	//if (tag == T_Dynamic)
-		//getTransform().translate(dt * glm::vec3(1, 0, 0));
 }
 
 

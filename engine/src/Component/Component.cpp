@@ -1,6 +1,6 @@
 #include "Component.h"
 #include "GameObject/GameObject.h"
-
+#include "GlobalFuncs/GlobalFuncs.h"
 using namespace MoonEngine;
 
 Component::Component():
@@ -36,6 +36,30 @@ void Component::onCollisionExit(Collision col)
 {
 
 }
+
+void Component::on(std::string message, const messageFn & fn)
+{
+	gameObject->addHandler(message, fn);
+}
+
+void Component::sendMessage(std::string messageStr)
+{
+	Message msg;
+	msg.sendingObject = gameObject;
+	msg.sendingComponent = this;
+	msg.message = messageStr;
+	gameObject->addMessage(msg);
+}
+
+void Component::sendGlobalMessage(std::string messageStr)
+{
+	Message msg;
+	msg.sendingObject = gameObject;
+	msg.sendingComponent = this;
+	msg.message = messageStr;
+	GetWorld()->addGlobalMessage(msg);
+}
+
 
 bool Component::isDeleted()
 {

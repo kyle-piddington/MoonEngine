@@ -18,10 +18,15 @@ ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed
     this->playerSpeed = playerSpeed;
     gravity = -9.8;
     jumpForce = 3;
-    jumpTime = 0.15f; //Half a second of 'up' time
+    _jumpTime = jumpTime = 0.15f; //Half a second of 'up' time
+    jumpSpeed = 0;
     radius = 0;
     state = GROUND;
     _lastGround = 0;
+    _curJumpForce = 0;
+    playerSpeed = 0;
+
+
 
 }
 
@@ -39,6 +44,7 @@ void ThirdPersonCharacterController::start()
     {
         worldTerrain = nullptr;
     }
+    findMinGround();
 
 }
 
@@ -117,6 +123,9 @@ void ThirdPersonCharacterController::handleMove(float dt)
 void ThirdPersonCharacterController::handleJump(float dt)
 {
     //GUI
+    ImGui::Value("x", transform->getPosition().x);
+    ImGui::Value("z", transform->getPosition().z);
+    
     ImGui::Begin("Jump Physics");
     ImGui::InputFloat("Jump force", &jumpForce);
     ImGui::InputFloat("Jump Time", &jumpTime);
@@ -179,10 +188,10 @@ void ThirdPersonCharacterController::handleJump(float dt)
     // }
 
     //Check if on ground plane
-    if (transform->getPosition().y - bbox->getHalfWidths().y <= _lastGround && state == FALLING)
+    if (transform->getPosition().y  <= _lastGround && state == FALLING)
     {
         transform->setPosition(glm::vec3(transform->getPosition().x,
-            _lastGround + bbox->getHalfWidths().y, transform->getPosition().z));
+            _lastGround, transform->getPosition().z));
         state = GROUND;
     }
 
@@ -208,12 +217,12 @@ void ThirdPersonCharacterController::onCollisionEnter(Collision col)
 void ThirdPersonCharacterController::checkIfShouldFall()
 {
     //Early break if on ground.
-    if (transform->getPosition().y - bbox->getHalfWidths().y <= _lastGround)
+    if (transform->getPosition().y <= _lastGround)
     {
         return;
     }
     if (state != JUMPING && !GetWorld()->castRay(transform->getPosition(),
-        glm::vec3(0, -1, 0), bbox->getHalfWidths().y + 0.1,nullptr,T_Player))
+        glm::vec3(0, -1, 0), 0.1f,nullptr,T_Player))
     {
         state = FALLING;
     }

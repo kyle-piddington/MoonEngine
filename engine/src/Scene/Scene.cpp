@@ -5,7 +5,7 @@
 #include <iostream>
 using namespace MoonEngine;
 
-#define TIME_MODIFIER 0.01f
+#define TIME_MODIFIER 0.02
 
 Scene::Scene()
 {
@@ -63,14 +63,14 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
         LOG(INFO, "Adding dir light game object");
         _dirLightObjects.push_back(obj);
     }
-	BoxCollider * col = obj->getComponent<BoxCollider>();
-	if (col != nullptr)
-	{
-			LOG(INFO, "Adding collidable game object");
-			_boxCollisionComponents.push_back(col);
-	}
-	
-	
+    BoxCollider * col = obj->getComponent<BoxCollider>();
+    if (col != nullptr)
+    {
+     LOG(INFO, "Adding collidable game object");
+     _boxCollisionComponents.push_back(col);
+ }
+
+
 }
 
 /**
@@ -79,24 +79,24 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
  */
 void Scene::runUpdate(float dt)
 {
-
+    runMessageUpdate();
 	_globalTime += dt * TIME_MODIFIER;
-	_globalLightDir = glm::vec3(sin(_globalTime), cos(_globalTime), 0.0);
+	_globalLightDir = glm::vec3(sin(_globalTime), TIME_MODIFIER * 10 * cos(_globalTime), 0.0);
     instantiateNewObjects();
 
-	for (std::shared_ptr<GameObject> go : _gameObjects)
-	{
-		go->update(dt);
-	}
-	runCollisionUpdate();
-	if (updateFunctors.size() > 0)
-	{
-		for (auto & fun : updateFunctors)
-		{
-			fun(dt);
-		}
-	}
-	_renderTree->update();
+    for (std::shared_ptr<GameObject> go : _gameObjects)
+    {
+      go->update(dt);
+  }
+  runCollisionUpdate();
+  if (updateFunctors.size() > 0)
+  {
+      for (auto & fun : updateFunctors)
+      {
+         fun(dt);
+     }
+ }
+ _renderTree->update();
 
 }
 
@@ -307,36 +307,36 @@ void Scene::runDeleteGameObjects()
     {
         if (_renderableGameObjects.at(i) != nullptr && _renderableGameObjects.at(i)->isDeleted())
         {
-			_renderTree->removeObject(_renderableGameObjects.at(i));
-			_renderableGameObjects.erase(_renderableGameObjects.begin() + i);
-            i--;
-            size--;
-        }
-    }
+         _renderTree->removeObject(_renderableGameObjects.at(i));
+         _renderableGameObjects.erase(_renderableGameObjects.begin() + i);
+         i--;
+         size--;
+     }
+ }
 
-    size = _gameObjects.size();
-    for (int i = 0; i < size; i++)
+ size = _gameObjects.size();
+ for (int i = 0; i < size; i++)
+ {
+    if (_gameObjects.at(i) != nullptr && _gameObjects.at(i)->isDeleted())
     {
-        if (_gameObjects.at(i) != nullptr && _gameObjects.at(i)->isDeleted())
-        {
-            _gameObjects.erase(_gameObjects.begin() + i);
-            i--;
-            size--;
-        }
+        _gameObjects.erase(_gameObjects.begin() + i);
+        i--;
+        size--;
     }
-    size = _pointLightObjects.size();
-    for (int i = 0; i < size; i++)
+}
+size = _pointLightObjects.size();
+for (int i = 0; i < size; i++)
+{
+    if (_pointLightObjects.at(i) != nullptr && _pointLightObjects.at(i)->isDeleted())
     {
-        if (_pointLightObjects.at(i) != nullptr && _pointLightObjects.at(i)->isDeleted())
-        {
-            _pointLightObjects.erase(_pointLightObjects.begin() + i);
-            i--;
-            size--;
-        }
+        _pointLightObjects.erase(_pointLightObjects.begin() + i);
+        i--;
+        size--;
     }
-    
+}
 
-	
+
+
 
 }
 
@@ -390,38 +390,38 @@ bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * 
     {
         for (size_t i = 0; i < _boxCollisionComponents.size(); i++)
         {
-			if (excludeTag & (_boxCollisionComponents[i]->getGameObject()->getTag()))
-			{
-				continue;
-			}
-			if (_boxCollisionComponents[i]->isTrigger)
-			{
-				continue;
-			}
-			Hit thisHit;
-			
-			if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &thisHit))
-			{
-				LOG(GAME, std::to_string(tmpHit.distance));
-				if ((maxDist == -1 || thisHit.distance < maxDist) &&
-					thisHit.distance  < closestDist)
-				{
-					tmpHit = thisHit;
-					closestDist = thisHit.distance;
-				}
-			}
+         if (excludeTag & (_boxCollisionComponents[i]->getGameObject()->getTag()))
+         {
+            continue;
         }
-        if (closestDist != FLT_MAX)
+        if (_boxCollisionComponents[i]->isTrigger)
         {
-            if(hit != nullptr)
-            {
-                *hit = tmpHit;                
-            }
-            return true;
+            continue;
         }
+        Hit thisHit;
 
+        if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &thisHit))
+        {
+
+            if ((maxDist == -1 || thisHit.distance < maxDist) &&
+               thisHit.distance  < closestDist)
+            {
+               tmpHit = thisHit;
+               closestDist = thisHit.distance;
+           }
+       }
+   }
+   if (closestDist != FLT_MAX)
+   {
+    if(hit != nullptr)
+    {
+        *hit = tmpHit;                
     }
-    return false;
+    return true;
+}
+
+}
+return false;
 
 }
 
@@ -444,4 +444,26 @@ void Scene::start()
     // }
 	_renderTree = std::make_shared<KDTree>(_renderableGameObjects);
 	_playerObject = getPlayer();
+}
+
+void Scene::addGlobalMessage(const Message & message)
+{
+    _globalMessageQueue.push_back(message);
+}
+
+void Scene::runMessageUpdate()
+{
+    if(_globalMessageQueue.size() > 0)
+    {
+        //Forward each message to every gameObject.
+        for(auto & object : _gameObjects)
+        {
+            for(Message & m : _globalMessageQueue)
+            {
+                object->addMessage(m);       
+            }
+        }        
+    }
+    _globalMessageQueue.clear();
+
 }

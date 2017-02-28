@@ -28,6 +28,9 @@ BasicMeshInfo *  MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRig
 			dataBuffer.push_back(pos.x);
 			dataBuffer.push_back(pos.z);
 			dataBuffer.push_back(0);
+            dataBuffer.push_back(0);
+            dataBuffer.push_back(0);
+            dataBuffer.push_back(1);
             dataBuffer.push_back(u);
             dataBuffer.push_back(v);
             
@@ -67,7 +70,16 @@ BasicMeshInfo *  MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRig
 		3,
 		GL_FLOAT,
 		false,
-		sizeof(float)*5);
+		sizeof(float)*8);
+
+    vertexArrayObject->bindVertexBuffer(
+            GL_VERTEX_NORMAL_ATTRIBUTE,
+            *vertexBuffer,
+            3,
+            GL_FLOAT,
+            false,
+            sizeof(float)*8,
+            (GLvoid *)(sizeof(float)*3));
 
 	vertexArrayObject->bindVertexBuffer(
 		GL_VERTEX_TEXTURE_ATTRIBUTE, 
@@ -75,13 +87,15 @@ BasicMeshInfo *  MeshCreator::CreateQuad(glm::vec2 lowerLeft, glm::vec2 upperRig
 		2,
 		GL_FLOAT,
 		false,
-		sizeof(float)*5,
-		(GLvoid *)(sizeof(float)*3));
+		sizeof(float)*8,
+		(GLvoid *)(sizeof(float)*6));
+
+
 
 	vertexArrayObject->bindElementBuffer(*indexBuffer);
 	//Create meshInfo
 	BasicMeshInfo * info = new BasicMeshInfo();
-	info->numVerts = dataBuffer.size() / 5;
+	info->numVerts = dataBuffer.size() / 8;
 	info->numTris = indices.size();
 	info->indexDataOffset = (GLvoid *) 0;
 	info->baseVertex = 0;

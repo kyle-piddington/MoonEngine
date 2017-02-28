@@ -1,12 +1,13 @@
+#include <Geometry/MeshCreator.h>
 #include "MeshLibrary.h"
 #include "Loaders/BasicLoader.h"
-#include "Util/Logger.h"
 
 using namespace MoonEngine;
 
 MeshLibrary::MeshLibrary(std::string resourcePath):
     _recPath(resourcePath)
 {
+    loadDefaultMesh();
 }
 
 MeshLibrary::~MeshLibrary()
@@ -39,4 +40,8 @@ BasicMeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smoo
     }
 
     return _mapMeshToInfo[assembledName];
+}
+
+void MeshLibrary::loadDefaultMesh() {
+    _mapMeshToInfo["quad_flat"] = MeshCreator::CreateQuad(glm::vec2(-0.5, -0.5), glm::vec2(0.5, 0.5));
 }

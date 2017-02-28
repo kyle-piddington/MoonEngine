@@ -290,8 +290,8 @@ float Terrain::heightAt(float x, float z)
 	//Convert world to pixel coordinates.
 	glm::vec3 minCoords = creationInfo.dimensions.minCoords;
 	glm::vec3 mapScale = creationInfo.dimensions.size;
-	float px = (x - minCoords.x)/mapScale.x * rasterSizeX;
-	float pz = (z - minCoords.z)/mapScale.z * rasterSizeZ;
+	float px = (x - minCoords.x)/mapScale.x * (rasterSizeX - 1);
+	float pz = (z - minCoords.z)/mapScale.z * (rasterSizeZ - 1);
 	px = std::max(std::min(px, rasterSizeX - 1), 0.0f);
 	pz = std::max(std::min(pz, rasterSizeZ - 1), 0.0f);
 	float sourceHeight = creationInfo.source->getHeightAtFloat(px,pz);

@@ -22,7 +22,13 @@ DeferredRenderer::DeferredRenderer(int width, int height, string stencilProgramN
     GLTextureConfiguration depthCFG(width, height, GL_DEPTH32F_STENCIL8, 
         GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
     GLTextureConfiguration outputCFG(width, height, GL_RGBA, GL_RGB, GL_FLOAT);
-
+ 	bool texSetupOk = true;
+	texSetupOk &= _positionTex.init(locationCFG);
+	texSetupOk &=  _colorTex.init(colorCFG);
+	texSetupOk &= _normalTex.init(locationCFG);
+	texSetupOk &= _depthTex.init(depthCFG);
+	assert(texSetupOk);
+    _gBuffer.addTexture("position", _positionTex, GL_COLOR_ATTACHMENT0);
     
     if (_positionTex.init(locationCFG) == false) 
         exit(EXIT_FAILURE);
