@@ -1,6 +1,6 @@
 #include "Component.h"
 #include "GameObject/GameObject.h"
-
+#include "GlobalFuncs/GlobalFuncs.h"
 using namespace MoonEngine;
 
 Component::Component():
@@ -49,6 +49,15 @@ void Component::sendMessage(std::string messageStr)
 	msg.sendingComponent = this;
 	msg.message = messageStr;
 	gameObject->addMessage(msg);
+}
+
+void Component::sendGlobalMessage(std::string messageStr)
+{
+	Message msg;
+	msg.sendingObject = gameObject;
+	msg.sendingComponent = this;
+	msg.message = messageStr;
+	GetWorld()->addGlobalMessage(msg);
 }
 
 
