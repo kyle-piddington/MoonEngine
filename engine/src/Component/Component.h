@@ -6,6 +6,7 @@
 
 #include <memory>
 #include "Collision/Collision.h"
+#include "GameObject/Message.h"
 
 namespace MoonEngine
 {
@@ -45,6 +46,24 @@ namespace MoonEngine
         {
             return gameObject;
         }
+        /**
+         * Subscribe to an event    
+         * @param message Name of the event
+         * @param fn      Lambda for the eveent.
+         */
+        void on(std::string message, const messageFn & fn);
+       
+        /**
+         * Send a message to the gameObject
+         * @param msg the message to send.
+         */
+        void sendMessage(std::string msg);
+
+        /**
+         * Send a message to ALL gameObjects
+         * @param globalMsg the message to send to everyone.
+         */
+        void sendGlobalMessage(std::string globalMsg);
 
         bool isDeleted();
 

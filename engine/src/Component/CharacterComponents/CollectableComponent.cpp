@@ -26,7 +26,8 @@ void CollectableComponent::onCollisionEnter(Collision col)
 {
     if (T_Player == col.other->getTag())
     {
-        Delete(gameObject);
+    	sendMessage("collected");
+        //Delete(gameObject);
     }
 }
 

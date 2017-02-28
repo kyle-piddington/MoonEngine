@@ -19,5 +19,6 @@ namespace MoonEngine
 
 	private:
 		float startingTime;
+		bool isCollected;
 	};
 }

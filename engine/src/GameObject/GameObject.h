@@ -9,6 +9,7 @@
 #include "Geometry/Transform.h"
 #include "Geometry/Spatial/Node.h"
 #include "Collision/BoundingBox.h"
+#include "Message.h"
 /*
 	Core GameObject component. Contains 
 	a list of pointers to components, a tag,
@@ -87,6 +88,9 @@ namespace MoonEngine
         bool isDeleted();
 
         void setDeleted();
+
+      
+        void addMessage(Message msg);
         //Find the first appropriate component to return a bounding
         
         const BoundingBox & getBounds();
@@ -96,6 +100,10 @@ namespace MoonEngine
 		std::vector<Node *> getNodes();
 
     private:
+        friend class Component;
+        
+        void addHandler(std::string message, const messageFn & fn);
+
         /*
             Map of avaliable components
             If a component is de-allocated (Shouldn't happen often),
@@ -113,6 +121,10 @@ namespace MoonEngine
         BoundingBox defaultTransformedBox;
         bool useMeshBounds;
         bool useBoxColliderBounds;
+
+        //Messaging
+        std::vector<Message> waitingMessages;        
+        std::unordered_map<std::string, std::vector<messageFn> > messageHandlers;
 
     };
 

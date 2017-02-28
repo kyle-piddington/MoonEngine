@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include "Geometry/Spatial/KDTree.h"
 #include <functional>
+#include "GameObject/Message.h"
 
 namespace MoonEngine
 {
@@ -121,11 +122,15 @@ namespace MoonEngine
          */
         void runUpdate(float dt);
 
+        void addGlobalMessage(const Message & message);
+
         /**
          * Perform collision detection, and call onCollisionEnter() methods
          * after finishing collision detection.
          */
         void runCollisionUpdate();
+
+
 
         void addCustomUpdate(std::function<void(float)> fn);
 
@@ -151,6 +156,8 @@ namespace MoonEngine
 		std::shared_ptr<GameObject> getPlayer();
 
     private:
+
+        void runMessageUpdate();
 
         void instantiateNewObjects();
 
@@ -187,6 +194,9 @@ namespace MoonEngine
 
         //Custom update
         std::vector<std::function<void(float)>> updateFunctors;
+
+        //Global messages
+        std::vector<Message> _globalMessageQueue;
 
         float _globalTime;
         glm::vec3 _globalLightDir;
