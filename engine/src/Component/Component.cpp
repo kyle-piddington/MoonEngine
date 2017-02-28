@@ -37,6 +37,21 @@ void Component::onCollisionExit(Collision col)
 
 }
 
+void Component::on(std::string message, const messageFn & fn)
+{
+	gameObject->addHandler(message, fn);
+}
+
+void Component::sendMessage(std::string messageStr)
+{
+	Message msg;
+	msg.sendingObject = gameObject;
+	msg.sendingComponent = this;
+	msg.message = messageStr;
+	gameObject->addMessage(msg);
+}
+
+
 bool Component::isDeleted()
 {
     return deleted;

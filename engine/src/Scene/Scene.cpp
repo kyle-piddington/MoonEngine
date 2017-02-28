@@ -402,7 +402,7 @@ bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * 
 			
 			if (_boxCollisionComponents[i]->intersectsRay(origin, direction, &thisHit))
 			{
-				LOG(GAME, std::to_string(tmpHit.distance));
+				
 				if ((maxDist == -1 || thisHit.distance < maxDist) &&
 					thisHit.distance  < closestDist)
 				{
