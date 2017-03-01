@@ -4,7 +4,9 @@
 using namespace MoonEngine;
 
 ShadowMaps::ShadowMaps(int width, int height):
-    _handle(0)
+_handle(0),
+_width(width),
+_height(height)
 {
     glGenFramebuffers(1, &_handle);
     GLTextureConfiguration shadowCFG(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT);
@@ -12,11 +14,13 @@ ShadowMaps::ShadowMaps(int width, int height):
     for (int i = 0; i < NUM_SHADOWS; i++) {
         tempPtr = Library::TextureLib->createTexture(SHADOW_TEXTURE + std::to_string(i), shadowCFG);
         tempPtr->bindRaw();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  
 
         _depthTexs.push_back(tempPtr);
     }
@@ -60,7 +64,9 @@ void ShadowMaps::bindForReading()
 void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
 {
 
-     Camera* cam = scene->getMainCamera()->getComponent<Camera>();
+    static float edge = 5.0f;
+    ImGui::DragFloat("Shadow Edge: ", &edge);
+    Camera* cam = scene->getMainCamera()->getComponent<Camera>();
 
     //glm::mat4 CameraInvView = cam->getView();
     glm::mat4 CameraInvView = scene->getMainCamera()->getTransform().getMatrix();
@@ -70,8 +76,8 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
     float tanHalfHFOV = tanf((cam->getFOV() / 2.0f));
     float tanHalfVFOV = tanf((cam->getFOV() * (1/cam->getAspect())) / 2.0f);
     _shadowZDepth[0] = cam->getNear();
-    _shadowZDepth[1] = 20.0f;
-    _shadowZDepth[2] = 100.0f;
+    _shadowZDepth[1] = 5.0f;
+    _shadowZDepth[2] = 50.0f;
     _shadowZDepth[3] = cam->getFar();
     _orthos.clear();
     for (int i = 0; i < NUM_SHADOWS; i++) {
@@ -111,8 +117,8 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
             minZ = std::min(minZ, -frustumCornersLight[j].z);
             maxZ = std::max(maxZ, -frustumCornersLight[j].z);
         }
-
-        _orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
+        float thisEdge = edge*pow(2,i);
+        _orthos.push_back(glm::ortho(minX - thisEdge, maxX + thisEdge, minY - thisEdge, maxY + thisEdge, minZ - thisEdge, maxZ+ thisEdge));
         //_orthos.push_back(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, minZ, maxZ));
 
     }
@@ -152,16 +158,16 @@ void ShadowMaps::status()
     {
         switch (_framebufferStatus)
         {
-        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
             LOG(ERROR, "Framebuffer not complete, incomplete attachment");
             break;
-        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
             LOG(ERROR, "Framebuffer not complete, No textures attached");
             break;
-        case GL_FRAMEBUFFER_UNSUPPORTED:
+            case GL_FRAMEBUFFER_UNSUPPORTED:
             LOG(ERROR, "Framebuffer not complete, not supported by openGL version");
             break;
-        default:
+            default:
             LOG(ERROR, "FrameBuffer not complete... " + std::to_string(_framebufferStatus));
         }
     }

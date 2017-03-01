@@ -8,7 +8,7 @@ DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgr
     string pointLightProgramName, string dirLightProgramName):
 _mainCamera(nullptr),
 _gBuffer(width, height),
-_shadowMaps(width, height),
+_shadowMaps(2048, 2048),
 _width(width),
 _height(height),
 _positionTex(nullptr),
@@ -118,7 +118,7 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
     activeProgram->enable();
     _shadowMaps.calculateShadowLevels(scene);
     LOG_GL(__FILE__, __LINE__);
-    
+    glViewport(0,0,_shadowMaps.getWidth(),_shadowMaps.getHeight());
     glCullFace(GL_FRONT);
 
     // The view is set as the light source
@@ -157,6 +157,7 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
     _shadowMaps.DBG_DrawToImgui();
     glCullFace(GL_BACK);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0,0,_width,_height);
 }
 
 void DeferredRenderer::geometryPass(Scene * scene)

@@ -27,7 +27,11 @@ namespace MoonEngine {
         const glm::mat4 getLightView();
         const float getShadowZ(int shadowLevel);
         void DBG_DrawToImgui();
+        int getWidth(){return _width;}
+        int getHeight(){return _height;}
     private:
+        float _width;
+        float _height;
         std::vector<GLTexture*> _depthTexs;
         std::vector<glm::mat4> _orthos;
         glm::mat4 _lightView;
