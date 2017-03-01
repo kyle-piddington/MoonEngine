@@ -138,7 +138,7 @@ int main(int argc, char ** argv)
     tran.setPosition(glm::vec3(0.0, 150.0, 0.0));
     tran.setScale(glm::vec3(5, 5, 5));
 
-    stringmap sun = {{"billboard", "sun"}};
+    stringmap sun = {{"billboard", "sun.tga"}};
 
     std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
     sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
@@ -158,7 +158,7 @@ int main(int argc, char ** argv)
 
         // 	lastUpdateTime = (int)accumTime;
         // }
-        //LOG(GAME, "SUN: " + std::to_string(scene->getGlobalLightDir().x) + " " + std::to_string(scene->getGlobalLightDir().y));
+        LOG(GAME, "SUN: " + std::to_string(scene->getGlobalLightDir().x) + " " + std::to_string(scene->getGlobalLightDir().y));
         Library::TextureLib->Debug_ShowAllTextures();
 
     });
