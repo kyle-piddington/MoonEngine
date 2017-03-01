@@ -18,13 +18,13 @@ _textureTex(nullptr),
 _depthTex(nullptr),
 _outputTex(nullptr)
 {
-    GLTextureConfiguration locationCFG(width, height, GL_RGB16F, GL_RGB, GL_FLOAT);
+    GLTextureConfiguration locationCFG(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
     GLTextureConfiguration colorCFG(width, height, GL_RGBA, GL_RGBA, GL_FLOAT);
     GLTextureConfiguration depthCFG(width, height, GL_DEPTH32F_STENCIL8, 
         GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
     GLTextureConfiguration outputCFG(width, height, GL_RGBA, GL_RGB, GL_FLOAT);
 
-    _positionTex = Library::TextureLib->createTexture(POSITION_TEXTURE, colorCFG);
+    _positionTex = Library::TextureLib->createTexture(POSITION_TEXTURE, locationCFG);
     _normalTex = Library::TextureLib->createTexture(NORMAL_TEXTURE, locationCFG);
     _colorTex = Library::TextureLib->createTexture(COLOR_TEXTURE, colorCFG);
     _depthTex = Library::TextureLib->createTexture(DEPTH_STENCIL_TEXTURE, depthCFG);
@@ -118,6 +118,8 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
     activeProgram->enable();
     _shadowMaps.calculateShadowLevels(scene);
     LOG_GL(__FILE__, __LINE__);
+    
+    glCullFace(GL_FRONT);
 
     // The view is set as the light source
     glm::mat4 V = _shadowMaps.getLightView();
@@ -153,7 +155,7 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
 
     }
     _shadowMaps.DBG_DrawToImgui();
-
+    glCullFace(GL_BACK);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -417,7 +419,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
 void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
 {
     for (int i = 0; i < NUM_SHADOWS; i++) {
-        glm::mat4 LV = _shadowMaps.getOrtho(i);
+        glm::mat4 LV = _shadowMaps.getOrtho(i) * _shadowMaps.getLightView();
         string LVname = "LV[" + to_string(i) + "]";
         glUniformMatrix4fv(prog->getUniformLocation(LVname), 1, GL_FALSE, glm::value_ptr(LV));
     }

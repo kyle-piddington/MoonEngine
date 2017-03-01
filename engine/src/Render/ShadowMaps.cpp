@@ -63,8 +63,8 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
      Camera* cam = scene->getMainCamera()->getComponent<Camera>();
 
     glm::mat4 CameraInvView = glm::inverse(cam->getView());
-    glm::vec3 renderDir =  scene->getDirLightObject()->getComponent<DirLight>()->getDirection();
-    _lightView = glm::lookAt(glm::vec3(0,0,0),  scene->getDirLightObject()->getComponent<DirLight>()->getDirection(), World::Up);
+    glm::vec3 lightDir =  scene->getDirLightObject()->getComponent<DirLight>()->getDirection();
+    _lightView = glm::lookAt( glm::vec3(0, 0, 0), lightDir, World::Up);
 
     float tanHalfHFOV = tanf((cam->getFOV() / 2.0f));
     float tanHalfVFOV = tanf((cam->getFOV() * cam->getAspect()) / 2.0f);
@@ -111,8 +111,8 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
             maxZ = std::max(maxZ, frustumCornersLight[j].z);
         }
 
-       // _orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
-        _orthos.push_back(glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, minZ, maxZ));
+        //_orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
+        _orthos.push_back(glm::ortho(-5.0f, 5.0f, -5.00f, 5.00f, -5.00f, 10.0f));
 
     }
 
