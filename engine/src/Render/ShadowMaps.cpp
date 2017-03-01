@@ -64,13 +64,13 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
 
     glm::mat4 CameraInvView = glm::inverse(cam->getView());
     glm::vec3 renderDir =  scene->getDirLightObject()->getComponent<DirLight>()->getDirection();
-    _lightView = glm::lookAt(glm::vec3(0),  scene->getDirLightObject()->getComponent<DirLight>()->getDirection(), World::Up);
+    _lightView = glm::lookAt(glm::vec3(0,0,0),  scene->getDirLightObject()->getComponent<DirLight>()->getDirection(), World::Up);
 
     float tanHalfHFOV = tanf((cam->getFOV() / 2.0f));
     float tanHalfVFOV = tanf((cam->getFOV() * cam->getAspect()) / 2.0f);
     _shadowZDepth[0] = cam->getNear();
-    _shadowZDepth[1] = 50.0f;
-    _shadowZDepth[2] = 250.0f;
+    _shadowZDepth[1] = 10.0f;
+    _shadowZDepth[2] = 100.0f;
     _shadowZDepth[3] = cam->getFar();
     _orthos.clear();
     for (int i = 0; i < NUM_SHADOWS; i++) {
@@ -98,9 +98,9 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
         minX = minY = minZ = std::numeric_limits<float>::max();
         float maxX, maxY, maxZ;
         maxX = maxY = maxZ = -std::numeric_limits<float>::max();
-
+        glm::vec4 vW;
         for (int j = 0; j < NUM_CORNERS; j++) {
-            glm::vec4 vW = CameraInvView * frustumCorners[j];
+            vW = CameraInvView * frustumCorners[j];
             frustumCornersLight[j] = _lightView * vW;
 
             minX = std::min(minX, frustumCornersLight[j].x);
@@ -111,8 +111,9 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
             maxZ = std::max(maxZ, frustumCornersLight[j].z);
         }
 
-        //_orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
-        _orthos.push_back(glm::ortho(minX, 10.0f, -10.0f, 10.0f, minZ, maxZ));
+       // _orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
+        _orthos.push_back(glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, minZ, maxZ));
+
     }
 
 }

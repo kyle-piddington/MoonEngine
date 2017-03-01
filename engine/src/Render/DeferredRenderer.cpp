@@ -24,7 +24,7 @@ _outputTex(nullptr)
         GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
     GLTextureConfiguration outputCFG(width, height, GL_RGBA, GL_RGB, GL_FLOAT);
 
-    _positionTex = Library::TextureLib->createTexture(POSITION_TEXTURE, locationCFG);
+    _positionTex = Library::TextureLib->createTexture(POSITION_TEXTURE, colorCFG);
     _normalTex = Library::TextureLib->createTexture(NORMAL_TEXTURE, locationCFG);
     _colorTex = Library::TextureLib->createTexture(COLOR_TEXTURE, colorCFG);
     _depthTex = Library::TextureLib->createTexture(DEPTH_STENCIL_TEXTURE, depthCFG);
@@ -169,6 +169,7 @@ void DeferredRenderer::geometryPass(Scene * scene)
     
 	// Only the geometry pass writes to the depth buffer
     _gBuffer.bindForGeomPass();
+    _shadowMaps.bindForReading();
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -190,7 +191,7 @@ void DeferredRenderer::geometryPass(Scene * scene)
      if (activeProgram != mat->getProgram()) {
          activeProgram = mat->getProgram();
          activeProgram->enable();
-
+         setupShadowMapUniforms(activeProgram);
 			//Place Uniforms that do not change per GameObject
          glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
          glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
@@ -310,8 +311,6 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     glm::mat4 V = _mainCamera->getView();
 
     _dirLightProgram->enable();
-    _shadowMaps.bindForReading();
-    setupShadowMapUniforms(_dirLightProgram);
     setupDirLightUniforms(_dirLightProgram);
     _renderQuad->bind();
     
