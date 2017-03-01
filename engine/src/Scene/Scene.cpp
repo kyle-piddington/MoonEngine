@@ -201,7 +201,10 @@ std::shared_ptr<GameObject> Scene::getDirLightObject() const
 
 void Scene::runCollisionUpdate()
 {
-	_renderTree->runCollisions(_playerObject);
+    if (_playerObject != nullptr)
+    {
+        _renderTree->runCollisions(_playerObject);
+    }
 	//glm::vec3 colnormal;
    // if (_boxCollisionComponents.size() > 0)
     //{
@@ -439,6 +442,7 @@ std::shared_ptr<GameObject> Scene::getPlayer()
 			return _renderableGameObjects.at(i);
 		}
 	}
+    return nullptr;
 }
 
 void Scene::start()
