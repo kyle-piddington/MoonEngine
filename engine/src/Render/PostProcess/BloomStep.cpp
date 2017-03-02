@@ -1,5 +1,6 @@
 #include "BasicProgramStep.h"
 #include "Libraries/Library.h"
+#include "BloomStep.h"
 
 using namespace MoonEngine;
 

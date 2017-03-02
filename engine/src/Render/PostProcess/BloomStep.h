@@ -40,6 +40,7 @@ namespace MoonEngine
 	private:
 		std::string _progName;
 		std::string _inputTextureStr;
+
 		GLFramebuffer * fboOut;
 		GLTexture * _inputTexture;
 		GLProgram * _renderProgram;
