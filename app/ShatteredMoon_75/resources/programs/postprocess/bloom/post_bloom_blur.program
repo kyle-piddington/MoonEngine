@@ -1,5 +1,5 @@
 {
 	"name" : "post_bloom_blur",
-	"vertex" : "resources/programs/bloom/postprocess/post_bloom_blur.vs",
+	"vertex" : "resources/programs/postprocess/bloom/post_bloom_blur.vs",
 	"fragment" : "resources/programs/postprocess/bloom/post_bloom_blur.fs"
 }

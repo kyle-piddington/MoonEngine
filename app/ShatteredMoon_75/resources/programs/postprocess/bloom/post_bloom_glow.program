@@ -1,5 +1,5 @@
 {
 	"name" : "post_bloom_glow",
-	"vertex" : "resources/programs/bloom/postprocess/post_bloom_glow.vs",
+	"vertex" : "resources/programs/postprocess/bloom/post_bloom_glow.vs",
 	"fragment" : "resources/programs/postprocess/bloom/post_bloom_glow.fs"
 }

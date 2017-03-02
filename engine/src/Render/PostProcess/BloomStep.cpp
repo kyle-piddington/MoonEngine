@@ -4,10 +4,14 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <memory>
+#include "GLWrapper/GLConstants.h"
 
 using namespace MoonEngine;
 
-BloomStep::BloomStep()
+BloomStep::BloomStep(int width, int height):
+    fbo(width, height),
+    _width(width),
+    _height(height)
 {
 
 }
@@ -19,16 +23,12 @@ void BloomStep::setup(GLFWwindow * window, Scene * scene)
     _blurProgram = Library::ProgramLib->getProgramForName(path + "blur.program");
     _combineProgram = Library::ProgramLib->getProgramForName(path + "combine.program");
 
-	_inputTexture = Library::TextureLib->getTexture("output");
-
-    int _width, _height;
-    glfwGetWindowSize(window, &_width, &_height);
+	_inputTexture = Library::TextureLib->getTexture(COMPOSITE_TEXTURE);
 
     GLTextureConfiguration colorCFG(_width, _height, GL_RGBA, GL_RGBA, GL_FLOAT);
     _glowTexture = Library::TextureLib->createTexture("_bloomGlowTexture", colorCFG);
 
-    fbo = std::make_shared(_width, _height);
-    fbo->addTexture("glow", _glowTexture);
+    fbo.addTexture("glow", *_glowTexture, GL_COLOR_ATTACHMENT0);
 }
 
 void BloomStep::extractGlow() {
@@ -40,7 +40,7 @@ void BloomStep::extractGlow() {
 
 void BloomStep::render(Scene * scene)
 {
-	fbo->bind(GL_FRAMEBUFFER);
+	fbo.bind(GL_FRAMEBUFFER);
 
     extractGlow();
 

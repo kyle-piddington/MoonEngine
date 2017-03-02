@@ -18,7 +18,7 @@ namespace MoonEngine
 	class BloomStep : public PostProcessStep
 	{
 	public:
-		BloomStep();
+		BloomStep(int width, int height);
 	/**
 	 * Create and allocate resources needed
 	 * to run a post process step
@@ -38,7 +38,7 @@ namespace MoonEngine
 	 */
 		void shutdown(){}
 	private:
-        std::shared_ptr<GLFramebuffer> fbo;
+        GLFramebuffer fbo;
 
 		GLTexture * _inputTexture;
         GLTexture * _glowTexture;
@@ -46,6 +46,8 @@ namespace MoonEngine
 		GLProgram * _glowProgram;
 		GLProgram * _blurProgram;
 		GLProgram * _combineProgram;
+
+        GLuint _width, _height;
 
         void extractGlow();
 	};

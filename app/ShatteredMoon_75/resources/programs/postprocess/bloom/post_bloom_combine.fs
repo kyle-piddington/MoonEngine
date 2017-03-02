@@ -1,5 +1,9 @@
-#version 400
-out vec4 color
+#version 400 core
+in vec2 fragTexCoords;
+uniform sampler2D _inputTexture;
+out vec4 color;
+
+void main()
 {
-	return vec4(0,0,0,1);
+	color = texture(_inputTexture,fragTexCoords);
 }
