@@ -35,6 +35,9 @@ void BloomStep::extractGlow() {
     _glowProgram->enable();
     _inputTexture->bind(0);
     glUniform1i(_glowProgram->getUniformLocation("_inputTexture"), 0);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    renderToScreen();
 }
 
 
@@ -48,6 +51,10 @@ void BloomStep::render(Scene * scene)
         glUniform1f(_glowProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
     }
 
+    fbo.DBG_DrawToImgui("Bloom");
+
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    renderToScreen();
+
 }
