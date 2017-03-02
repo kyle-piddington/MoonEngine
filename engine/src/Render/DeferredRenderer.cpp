@@ -174,13 +174,18 @@ void DeferredRenderer::geometryPass(Scene * scene)
 	Mesh* mesh = nullptr;
 	Material* mat = nullptr;
 
+
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
 
     
 	// Only the geometry pass writes to the depth buffer
     _gBuffer.bindForGeomPass();
+	GLenum attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, attachments);
+
     _shadowMaps.bindForReading();
+
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
