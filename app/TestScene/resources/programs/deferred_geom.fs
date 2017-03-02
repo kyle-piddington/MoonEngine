@@ -13,10 +13,12 @@ uniform float shadowZSpace[NUM_SHADOWS];
 
 layout (location = 0) out vec4 posOut;
 layout (location = 1) out vec4 colorOut;
-layout (location = 2) out vec3 normalOut;
+layout (location = 2) out vec4 normalOut;
 
 uniform sampler2D diffuse;
 
+
+vec3 color[3] = vec3[](vec3(1,0,0), vec3(0,1,0), vec3(0,0,1));
 
 float calcShadowFactor(int ShadowIndex, vec4 LSPosition) 
 {
@@ -33,16 +35,19 @@ float calcShadowFactor(int ShadowIndex, vec4 LSPosition)
 
 void main()
 {
-    posOut.xyz = fragPos;
+    posOut = vec4(fragPos, 1.0);
     colorOut.rgb = texture(diffuse, fragTex).rgb;
     colorOut.a = 1; //Currently hardcoded specular
     normalOut.xyz = normalize(fragNor);
 
     float ShadowFactor = 0.0;
     for (int i = 0 ; i < NUM_SHADOWS ; i++) {
-        if (worldZ <= shadowZSpace[i]) {
+        if (worldZ <= -shadowZSpace[i]) {
             ShadowFactor = calcShadowFactor(i, LSPosition[i]);
-            posOut.a = ShadowFactor;
+            colorOut.rgb += color[i];
+            normalOut.a = ShadowFactor;
+            break;
+            
         }
    }
 

@@ -23,7 +23,7 @@ void main()
 	gl_Position = P * V * M * position;
 
 	for (int i = 0 ; i < NUM_SHADOWS ; i++) {
-        LSPosition[i] = LV[i] * position;
+        LSPosition[i] = LV[i] * M * position;
     }
     worldZ = gl_Position.z;
 	fragPos = vec3(V * M * position);

@@ -430,7 +430,9 @@ void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
     }
     for (int i = 0; i < NUM_SHADOWS; i++) {
         string shadowZName = "shadowZSpace[" + to_string(i) + "]";
-        glUniform1f(prog->getUniformLocation(shadowZName), _shadowMaps.getShadowZ(i));
+        glm::vec4 shadowVec(0.0f, 0.0f, _shadowMaps.getShadowZ(i), 1.0f);
+        glm::vec4 camShadow = _mainCamera->getProjection() * shadowVec;
+        glUniform1f(prog->getUniformLocation(shadowZName), camShadow.z);
     }
     
 }

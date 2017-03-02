@@ -62,14 +62,15 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
 
      Camera* cam = scene->getMainCamera()->getComponent<Camera>();
 
-    glm::mat4 CameraInvView = glm::inverse(cam->getView());
+    //glm::mat4 CameraInvView = cam->getView();
+    glm::mat4 CameraInvView = scene->getMainCamera()->getTransform().getMatrix();
     glm::vec3 lightDir =  scene->getDirLightObject()->getComponent<DirLight>()->getDirection();
     _lightView = glm::lookAt( glm::vec3(0, 0, 0), lightDir, World::Up);
 
     float tanHalfHFOV = tanf((cam->getFOV() / 2.0f));
-    float tanHalfVFOV = tanf((cam->getFOV() * cam->getAspect()) / 2.0f);
+    float tanHalfVFOV = tanf((cam->getFOV() * (1/cam->getAspect())) / 2.0f);
     _shadowZDepth[0] = cam->getNear();
-    _shadowZDepth[1] = 10.0f;
+    _shadowZDepth[1] = 20.0f;
     _shadowZDepth[2] = 100.0f;
     _shadowZDepth[3] = cam->getFar();
     _orthos.clear();
@@ -80,16 +81,16 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
         float yf = _shadowZDepth[i + 1] * tanHalfVFOV;
 
         glm::vec4 frustumCorners[NUM_CORNERS] = {
-            glm::vec4(xn,   yn, _shadowZDepth[i], 1.0),
-            glm::vec4(-xn,  yn, _shadowZDepth[i], 1.0),
-            glm::vec4(xn,  -yn, _shadowZDepth[i], 1.0),
-            glm::vec4(-xn, -yn, _shadowZDepth[i], 1.0),
+            glm::vec4(xn,   yn, -_shadowZDepth[i], 1.0),
+            glm::vec4(-xn,  yn, -_shadowZDepth[i], 1.0),
+            glm::vec4(xn,  -yn, -_shadowZDepth[i], 1.0),
+            glm::vec4(-xn, -yn, -_shadowZDepth[i], 1.0),
 
             // far face
-            glm::vec4(xf,   yf, _shadowZDepth[i + 1], 1.0),
-            glm::vec4(-xf,  yf, _shadowZDepth[i + 1], 1.0),
-            glm::vec4(xf,  -yf, _shadowZDepth[i + 1], 1.0),
-            glm::vec4(-xf, -yf, _shadowZDepth[i + 1], 1.0)
+            glm::vec4(xf,   yf, -_shadowZDepth[i + 1], 1.0),
+            glm::vec4(-xf,  yf, -_shadowZDepth[i + 1], 1.0),
+            glm::vec4(xf,  -yf, -_shadowZDepth[i + 1], 1.0),
+            glm::vec4(-xf, -yf, -_shadowZDepth[i + 1], 1.0)
         };
 
         glm::vec4 frustumCornersLight[NUM_CORNERS];
@@ -107,14 +108,15 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
             maxX = std::max(maxX, frustumCornersLight[j].x);
             minY = std::min(minY, frustumCornersLight[j].y);
             maxY = std::max(maxY, frustumCornersLight[j].y);
-            minZ = std::min(minZ, frustumCornersLight[j].z);
-            maxZ = std::max(maxZ, frustumCornersLight[j].z);
+            minZ = std::min(minZ, -frustumCornersLight[j].z);
+            maxZ = std::max(maxZ, -frustumCornersLight[j].z);
         }
 
-        //_orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
-        _orthos.push_back(glm::ortho(-5.0f, 5.0f, -5.00f, 5.00f, -5.00f, 10.0f));
+        _orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
+        //_orthos.push_back(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, minZ, maxZ));
 
     }
+
 
 }
 
