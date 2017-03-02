@@ -8,7 +8,8 @@ DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgr
     string pointLightProgramName, string dirLightProgramName):
 _mainCamera(nullptr),
 _gBuffer(width, height),
-_shadowMaps(1024, 1024),
+_shadowMaps(width, height),
+_debugShadows(false),
 _width(width),
 _height(height),
 _positionTex(nullptr),
@@ -174,6 +175,11 @@ void DeferredRenderer::geometryPass(Scene * scene)
 	Mesh* mesh = nullptr;
 	Material* mat = nullptr;
 
+    ImGui::Begin("Shadow Debug");
+    {
+        ImGui::Checkbox("CSM Levels ", &_debugShadows);
+    }
+    ImGui::End();
 
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
@@ -448,6 +454,7 @@ void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
         glm::vec4 camShadow = _mainCamera->getProjection() * shadowVec;
         glUniform1f(prog->getUniformLocation(shadowZName), camShadow.z);
     }
+    glUniform1i(prog->getUniformLocation("debugShadow"), _debugShadows);
     
 }
 

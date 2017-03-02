@@ -13,6 +13,8 @@
 
 #include "GLUtil/GLProgramUtilities.h"
 
+//Level Loader
+#include "LevelEditor/LevelLoader.h"
 
 //IO
 #include "IO/Keyboard.h"

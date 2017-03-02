@@ -7,6 +7,7 @@
 #include "Util/Logger.h"
 #include "GLWrapper/OpenGL.h"
 #include <glm/gtc/type_ptr.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/norm.hpp>
 #include "Component/Components.h"
 #include "GameObject/GameObject.h"
@@ -86,6 +87,7 @@ namespace MoonEngine
         GLTexture* _outputTex;
         
         ShadowMaps _shadowMaps;
+        bool _debugShadows;
 
         GLProgram* _shadowMapsProgram;
         GLProgram* _stencilProgram;

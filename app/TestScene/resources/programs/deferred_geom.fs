@@ -10,6 +10,7 @@ in float worldZ;
 
 uniform sampler2D shadowMap[NUM_SHADOWS];
 uniform float shadowZSpace[NUM_SHADOWS];
+uniform bool debugShadow;
 
 layout (location = 0) out vec4 posOut;
 layout (location = 1) out vec4 colorOut;
@@ -54,7 +55,8 @@ void main()
     for (int i = 0 ; i < NUM_SHADOWS ; i++) {
         if (worldZ <= -shadowZSpace[i]) {
             ShadowFactor = calcShadowFactor(i, LSPosition[i]);
-            colorOut.rgb += color[i];
+            if(debugShadow == true)
+               colorOut.rgb += color[i];
             normalOut.a = ShadowFactor;
             break;
             

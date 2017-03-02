@@ -78,7 +78,7 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
     float tanHalfHFOV = tanf((cam->getFOV() / 2.0f));
     float tanHalfVFOV = tanf((cam->getFOV() * (1/cam->getAspect())) / 2.0f);
     _shadowZDepth[0] = cam->getNear();
-    _shadowZDepth[1] = 5.0f;
+    _shadowZDepth[1] = 10.0f;
     _shadowZDepth[2] = 25.0f;
     _shadowZDepth[3] = cam->getFar();
     _orthos.clear();
@@ -121,7 +121,7 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
         }
         float thisEdge = edge*pow(2,i);
         _orthos.push_back(glm::ortho(minX - thisEdge, maxX + thisEdge, minY - thisEdge, maxY + thisEdge, minZ - thisEdge, maxZ+ thisEdge));
-        //_orthos.push_back(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, minZ, maxZ));
+        //_orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
 
     }
 
