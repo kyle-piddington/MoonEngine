@@ -38,11 +38,16 @@ namespace MoonEngine
 	 */
 		void shutdown(){}
 	private:
-		std::string _progName;
-		std::string _inputTextureStr;
-		GLFramebuffer * fboOut;
+        std::shared_ptr<GLFramebuffer> fbo;
+
 		GLTexture * _inputTexture;
-		GLProgram * _renderProgram;
+        GLTexture * _glowTexture;
+
+		GLProgram * _glowProgram;
+		GLProgram * _blurProgram;
+		GLProgram * _combineProgram;
+
+        void extractGlow();
 	};
 }
 
