@@ -8,7 +8,7 @@ DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgr
     string pointLightProgramName, string dirLightProgramName):
 _mainCamera(nullptr),
 _gBuffer(width, height),
-_shadowMaps(2048, 2048),
+_shadowMaps(1024, 1024),
 _width(width),
 _height(height),
 _positionTex(nullptr),
@@ -139,18 +139,26 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
 
         for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
         {
-            mesh = obj->getComponent<Mesh>();
-            const MeshInfo * meshInfo = mesh->getMesh();
+            if(obj->getTag()!=T_Terrain)
+            {
 
-            glm::mat4 M = obj->getTransform().getMatrix();
+                Material * tMat = obj->getComponent<Material>();
+                if(tMat->isForward())
+                {
+                    continue;
+                }
+                mesh = obj->getComponent<Mesh>();
+                const MeshInfo * meshInfo = mesh->getMesh();
+                glm::mat4 M = obj->getTransform().getMatrix();
 
-            //Place Uniforms that do not change per GameObject
-            glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-            glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+                //Place Uniforms that do not change per GameObject
+                glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+                glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 
-            meshInfo->bind();
-            glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
-            mesh->draw();
+                meshInfo->bind();
+                glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+                mesh->draw();
+            }
         }
 
     }
@@ -427,7 +435,7 @@ void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
     for (int i = 0; i < NUM_SHADOWS; i++) {
         string shadowMapName = "shadowMap[" + to_string(i) + "]";
         GLTexture * sm = Library::TextureLib->getTexture(SHADOW_TEXTURE + to_string(i));
-        glUniform1i(prog->getUniformLocation(shadowMapName), sm->getTextureId());
+        glUniform1i(prog->getUniformLocation(shadowMapName), 5+i);
     }
     for (int i = 0; i < NUM_SHADOWS; i++) {
         string shadowZName = "shadowZSpace[" + to_string(i) + "]";

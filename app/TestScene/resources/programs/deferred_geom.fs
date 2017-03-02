@@ -25,7 +25,6 @@ float calcShadowFactor(int ShadowIndex, vec4 LSPosition)
     vec3 projCoords = LSPosition.xyz / LSPosition.w;
     projCoords  = 0.5 * projCoords + 0.5;  
     float currentDepth = projCoords.z;     
-    float shadowDepth = texture(shadowMap[ShadowIndex], projCoords.xy).r; 
     float bias = 0.0001;
     //PCF
     float shadow = 0.0;

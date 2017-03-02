@@ -25,13 +25,15 @@ _height(height)
         _depthTexs.push_back(tempPtr);
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, _handle);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthTexs[0]->getTextureId(), 0);
+    // glBindFramebuffer(GL_FRAMEBUFFER, _handle);
+    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthTexs[0]->getTextureId(), 0);
 
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
+    // glDrawBuffer(GL_NONE);
+    // glReadBuffer(GL_NONE);
+    // status();
+    // glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindTexture(GL_TEXTURE_2D,0);
 
-    status();
 
 }
 
@@ -77,7 +79,7 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
     float tanHalfVFOV = tanf((cam->getFOV() * (1/cam->getAspect())) / 2.0f);
     _shadowZDepth[0] = cam->getNear();
     _shadowZDepth[1] = 5.0f;
-    _shadowZDepth[2] = 50.0f;
+    _shadowZDepth[2] = 25.0f;
     _shadowZDepth[3] = cam->getFar();
     _orthos.clear();
     for (int i = 0; i < NUM_SHADOWS; i++) {
