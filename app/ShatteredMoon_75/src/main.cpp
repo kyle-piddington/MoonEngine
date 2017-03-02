@@ -96,6 +96,10 @@ int main(int argc, char ** argv)
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
     scene->addGameObject(dirLight);
 
+    std::shared_ptr<GameObject> guiObject = std::make_shared<GameObject>();
+    guiObject->addComponent(scene->createComponent<GUI>());
+    scene->addGameObject(guiObject);
+
 
     //Terrain
     //Preload canyon 32f texture

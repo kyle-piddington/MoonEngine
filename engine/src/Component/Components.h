@@ -16,3 +16,4 @@
 #include "LightComponents/PointLight.h"
 #include "LightComponents/Light.h"
 #include "LightComponents/DirLight.h"
+#include "GUIComponents/GUI.h"

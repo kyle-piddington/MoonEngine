@@ -27,7 +27,7 @@ void CollectableComponent::onCollisionEnter(Collision col)
     if (T_Player == col.other->getTag())
     {
     	sendMessage("collected");
-        //Delete(gameObject);
+		sendGlobalMessage("picked_up_star");
     }
 }
 

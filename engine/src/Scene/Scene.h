@@ -124,6 +124,8 @@ namespace MoonEngine
 
         void addGlobalMessage(const Message & message);
 
+        void addGlobalHandler(std::string message, const messageFn & fn);
+
         /**
          * Perform collision detection, and call onCollisionEnter() methods
          * after finishing collision detection.
@@ -197,6 +199,8 @@ namespace MoonEngine
 
         //Global messages
         std::vector<Message> _globalMessageQueue;
+
+        std::unordered_map<std::string, std::vector<messageFn> > _globalMessageHandlers;
 
         float _globalTime;
         glm::vec3 _globalLightDir;

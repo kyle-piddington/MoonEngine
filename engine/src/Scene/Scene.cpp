@@ -48,11 +48,11 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 
         if(_renderTree != nullptr)
         {
-            _renderTree->addObject(obj);            
+            _renderTree->addObject(obj);
         }
 
     }
-    
+
     if (obj->getComponent<PointLight>() != nullptr)
     {
         LOG(INFO, "Adding point light game object");
@@ -422,7 +422,7 @@ bool Scene::castRay(glm::vec3 origin, glm::vec3 direction, float maxDist, Hit * 
    {
     if(hit != nullptr)
     {
-        *hit = tmpHit;                
+        *hit = tmpHit;
     }
     return true;
 }
@@ -460,18 +460,29 @@ void Scene::addGlobalMessage(const Message & message)
     _globalMessageQueue.push_back(message);
 }
 
+void Scene::addGlobalHandler(std::string message, const messageFn & fn)
+{
+    if (_globalMessageHandlers.find(message) != _globalMessageHandlers.end())
+    {
+        _globalMessageHandlers[message] = std::vector<messageFn>();
+    }
+    _globalMessageHandlers[message].push_back(fn);
+}
+
 void Scene::runMessageUpdate()
 {
-    if(_globalMessageQueue.size() > 0)
+    // Send all the global messages
+    for (Message & msg : _globalMessageQueue)
     {
-        //Forward each message to every gameObject.
-        for(auto & object : _gameObjects)
+        if (_globalMessageHandlers.find(msg.message) != _globalMessageHandlers.end())
         {
-            for(Message & m : _globalMessageQueue)
+            //If a handler for the message exists
+            for (auto handler : _globalMessageHandlers[msg.message])
             {
-                object->addMessage(m);       
+                //call the handler
+                handler(msg);
             }
-        }        
+        }
     }
     _globalMessageQueue.clear();
 
