@@ -87,10 +87,6 @@ void BloomStep::render(Scene * scene)
     extractGlow();
     blurPass();
 
-    if (_glowProgram->hasUniform("iGlobalTime")) {
-        glUniform1f(_glowProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
-    }
-
     _glowFramebuffer.DBG_DrawToImgui("Bloom");
     _tempFramebuffer.DBG_DrawToImgui("Bloom");
     _compositeFramebuffer.DBG_DrawToImgui("Bloom");
