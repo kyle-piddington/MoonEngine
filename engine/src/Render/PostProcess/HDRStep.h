@@ -7,7 +7,7 @@ namespace MoonEngine
 	class HDRStep : public PostProcessStep
 	{
 	public:
-		HDRStep(std::string progName, std::string inputTextue, GLFramebuffer * framebuffer = nullptr);
+		HDRStep(std::string progName, int width, int height);
 		/**
 		* Create and allocate resources needed
 		* to run a post process step
@@ -29,7 +29,7 @@ namespace MoonEngine
 	private:
 		std::string _progName;
 		std::string _inputTextureStr;
-		GLFramebuffer * fboOut;
+		GLFramebuffer fboOut;
 		GLTexture * _inputTexture;
 		GLProgram * _renderProgram;
 	};
