@@ -3,9 +3,9 @@
 in vec2 uv;
 uniform sampler2D texture;
 uniform float offset;
-uniform float lod;
+uniform int lod;
 
-out vec4 color;
+layout (location = 0) out vec4 blurOut;
 
 void main()
 {
@@ -13,5 +13,5 @@ void main()
     c += 5.0 * textureLod(texture, uv - offset, lod);
     c += 6.0 * textureLod(texture, uv, lod);
     c += 5.0 * textureLod(texture, uv + offset, lod);
-    color = c / 16.0;
+    blurOut = c / 16.0;
 }

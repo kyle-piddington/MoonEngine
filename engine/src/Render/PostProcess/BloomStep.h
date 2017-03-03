@@ -38,18 +38,22 @@ namespace MoonEngine
 	 */
 		void shutdown(){}
 	private:
-        GLFramebuffer fbo;
+        GLFramebuffer _compositeFramebuffer;
+        GLFramebuffer _glowFramebuffer;
+        GLFramebuffer _tempFramebuffer;
 
-		GLTexture * _inputTexture;
+		GLTexture * _compositeTexture;
         GLTexture * _glowTexture;
+        GLTexture * _tempTexture;
 
 		GLProgram * _glowProgram;
 		GLProgram * _blurProgram;
-		GLProgram * _combineProgram;
 
         GLuint _width, _height;
 
         void extractGlow();
+        void blurPass();
+
 	};
 }
 

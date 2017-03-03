@@ -37,7 +37,7 @@ namespace MoonEngine
 	/**
 	 * Convinence method to render to the screen.
 	 */
-		void renderToScreen();
+		void drawToQuad();
 	private:
 		MeshInfo * _quadInfo;
 

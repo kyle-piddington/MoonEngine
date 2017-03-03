@@ -1,5 +1,0 @@
-{
-	"name" : "post_bloom_combine",
-	"vertex" : "resources/programs/postprocess/bloom/post_bloom_combine.vs",
-	"fragment" : "resources/programs/postprocess/bloom/post_bloom_combine.fs"
-}
