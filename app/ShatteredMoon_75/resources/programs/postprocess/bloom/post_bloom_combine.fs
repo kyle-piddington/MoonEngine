@@ -5,5 +5,7 @@ out vec4 color;
 
 void main()
 {
-	color = texture(_inputTexture,fragTexCoords);
+	
+    color = texture(_inputTexture,fragTexCoords);
+
 }
