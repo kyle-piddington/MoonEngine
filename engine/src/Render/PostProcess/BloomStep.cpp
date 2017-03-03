@@ -58,13 +58,13 @@ void BloomStep::blurPass()
 
 
     // For each level of detail
-    for (int lod = 0; lod < 2; lod++) {
+    for (int lod = 0; lod <= 2; lod++) {
         glUniform1f(_blurProgram->getUniformLocation("lod"), lod);
 
         // horizontal blur
         _tempFramebuffer.bind(GL_FRAMEBUFFER);
         _glowTexture->bind(0);
-        glUniform1i(_blurProgram->getUniformLocation("texture"), 0);
+        glUniform1i(_blurProgram->getUniformLocation("glowTexture"), 0);
         glUniform2f(_blurProgram->getUniformLocation("offset"), 1.2 / _width, 0);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -73,7 +73,7 @@ void BloomStep::blurPass()
         //vertical blur
         _compositeFramebuffer.bind(GL_FRAMEBUFFER);
         _tempTexture->bind(0);
-        glUniform1i(_blurProgram->getUniformLocation("texture"), 0);
+        glUniform1i(_blurProgram->getUniformLocation("glowTexture"), 0);
         glUniform2f(_blurProgram->getUniformLocation("offset"), 0, 1.2 / _height);
 
         drawToQuad();
@@ -85,13 +85,14 @@ void BloomStep::blurPass()
 void BloomStep::render(Scene * scene)
 {
     extractGlow();
-
+    blurPass();
 
     if (_glowProgram->hasUniform("iGlobalTime")) {
         glUniform1f(_glowProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
     }
 
     _glowFramebuffer.DBG_DrawToImgui("Bloom");
+    _tempFramebuffer.DBG_DrawToImgui("Bloom");
     _compositeFramebuffer.DBG_DrawToImgui("Bloom");
 
     glBindFramebuffer(GL_FRAMEBUFFER,0);
