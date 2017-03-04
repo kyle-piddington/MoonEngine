@@ -19,10 +19,10 @@ _depthTex(nullptr),
 _outputTex(nullptr)
 {
     GLTextureConfiguration locationCFG(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
-    GLTextureConfiguration colorCFG(width, height, GL_RGBA, GL_RGBA, GL_FLOAT);
+    GLTextureConfiguration colorCFG(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
     GLTextureConfiguration depthCFG(width, height, GL_DEPTH32F_STENCIL8, 
         GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
-    GLTextureConfiguration outputCFG(width, height, GL_RGBA, GL_RGB, GL_FLOAT);
+    GLTextureConfiguration outputCFG(width, height, GL_RGBA16F, GL_RGB, GL_FLOAT);
 
     _positionTex = Library::TextureLib->createTexture(POSITION_TEXTURE, locationCFG);
     _normalTex = Library::TextureLib->createTexture(NORMAL_TEXTURE, locationCFG);

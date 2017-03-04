@@ -25,6 +25,9 @@ void HDRStep::render(Scene * scene)
 	_inputTexture->bind(0);
 	glUniform1i(_renderProgram->getUniformLocation("hdrTexture"), 0);
 
+    if (_renderProgram->hasUniform("exposure")) {
+        glUniform1f(_renderProgram->getUniformLocation("exposure"), 1.0);
+    }
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	drawToQuad();

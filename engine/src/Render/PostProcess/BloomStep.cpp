@@ -26,7 +26,7 @@ void BloomStep::setup(GLFWwindow * window, Scene * scene)
 
 	_compositeTexture = Library::TextureLib->getTexture(COMPOSITE_TEXTURE);
 
-    GLTextureConfiguration colorCFG(_width, _height, GL_RGBA, GL_RGBA, GL_FLOAT);
+    GLTextureConfiguration colorCFG(_width, _height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
     _glowTexture = Library::TextureLib->createTexture("_bloomGlowTexture", colorCFG);
     _tempTexture = Library::TextureLib->createTexture("_bloomTempTexture", colorCFG);
 
