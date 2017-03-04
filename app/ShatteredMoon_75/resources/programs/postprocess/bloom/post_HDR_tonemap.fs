@@ -15,5 +15,5 @@ void main()
 
     mapped = pow(mapped, vec3(1.0 / gamma));
 
-    color = vec4(mapped, 1.0);
+    color = vec4(hdrColor, 1.0);
 }
