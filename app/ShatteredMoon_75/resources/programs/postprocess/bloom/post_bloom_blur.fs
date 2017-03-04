@@ -3,7 +3,7 @@
 in vec2 fragTexCoords;
 uniform sampler2D glowTexture;
 uniform vec2 offset;
-uniform int lod;
+uniform float lod;
 
 layout (location = 0) out vec4 blurOut;
 

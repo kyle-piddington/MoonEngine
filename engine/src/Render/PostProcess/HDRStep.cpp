@@ -19,6 +19,7 @@ void HDRStep::setup(GLFWwindow * window, Scene * scene)
 void HDRStep::render(Scene * scene)
 {
 
+	
     /* Bind default framebuffer */
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	_renderProgram->enable();

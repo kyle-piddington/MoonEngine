@@ -18,7 +18,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    float windowWidth = 640.0f, windowHeight = 480.0f;
+    float windowWidth = 1920, windowHeight = 1080;
     GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "ShatteredMoon", nullptr, nullptr);
     if (window == nullptr)
     {
@@ -142,7 +142,7 @@ int main(int argc, char ** argv)
     DeferredRenderer * renderer = new DeferredRenderer(width, height, 
         "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
-    //renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
+    renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<HDRStep>("postprocess/bloom/post_HDR_tonemap.program"));
 
     app->run(scene, renderer);
