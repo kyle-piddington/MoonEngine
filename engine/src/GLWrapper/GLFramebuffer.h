@@ -24,8 +24,9 @@ namespace MoonEngine
     {
     public:
         struct texture_unit {
-            GLTexture * gl_texture;
+            GLTexture* gl_texture;
             GLuint unit;
+            GLenum attachment;
         };
 
         GLFramebuffer(int width, int height);
@@ -47,7 +48,7 @@ namespace MoonEngine
          * @param texture   the texture itself.
          */
         void addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo);
-
+        void bindTexture();
         /*Prepare for frame by clear final color texture*/
         void startFrame();
 
@@ -63,21 +64,19 @@ namespace MoonEngine
         
         static void Unbind();
 
-        GLuint getObject() const;
+        GLuint getHandle() const;
 
-        texture_unit getTexture(std::string name) const;
+       
+
+
+
+        void UniformTexture(GLProgram* prog, std::string uniformName, std::string textureName);
 		/**
 		* Specify what part to of the
 		* buffer to read from
 		* @param name the name of the texture
 		*/
-		void setReadBuffer(std::string name);
-
 		void drawColorAttachments(int size);
-
-		GLuint getAttachmentMode(std::string name) const;
-
-		const std::unordered_map<std::string, texture_unit> & getTextureHandles() const;
 
         void DBG_DrawToImgui(string guiName);
         
@@ -87,16 +86,14 @@ namespace MoonEngine
 
         GLuint reset(GLuint newObject = 0);
 
-        int _unitCount;
+        texture_unit getTextureUnit(std::string name) const;
+        static int _unitCount;
         int _colorCount;
         int _width;
         int _height;
         GLuint _handle;
         GLenum _framebufferStatus;
         std::unordered_map<std::string, texture_unit> _textureHandles;
-		std::unordered_map<std::string, GLuint> _textureAttachmentMode;
-
-
-        //void addRenderbuffer(const GLRenderBuffer & buffer);
     };
+
 }

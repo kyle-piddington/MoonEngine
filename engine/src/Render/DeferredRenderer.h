@@ -17,7 +17,7 @@
 #include "PostProcess/PostProcessStep.h"
 #include "Libraries/Library.h"
 #include "GLWrapper/GLConstants.h"
-#include "ShadowMaps.h"
+#include "Framebuffers/ShadowMaps.h"
 
 
 

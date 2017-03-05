@@ -43,7 +43,7 @@ ShadowMaps::~ShadowMaps()
     glDeleteFramebuffers(1, &_handle);
 }
 
-void ShadowMaps::bindForWriting(int shadowLevel)
+void ShadowMaps::bindForWriting(unsigned shadowLevel)
 {
     if (shadowLevel >= _depthTexs.size()) {
         LOG(ERROR, "incorrect shadowLevel selected");
@@ -57,7 +57,7 @@ void ShadowMaps::bindForWriting(int shadowLevel)
 
 void ShadowMaps::bindForReading()
 {
-    for (int i = 0; i < _depthTexs.size(); i++) {
+    for (unsigned i = 0; i < _depthTexs.size(); i++) {
         glActiveTexture(GL_TEXTURE5 + i);
         glBindTexture(GL_TEXTURE_2D, _depthTexs[i]->getTextureId());
     }
@@ -119,7 +119,7 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
             minZ = std::min(minZ, -frustumCornersLight[j].z);
             maxZ = std::max(maxZ, -frustumCornersLight[j].z);
         }
-        float thisEdge = edge*pow(2,i);
+        float thisEdge = edge*(float)pow(2,i);
         _orthos.push_back(glm::ortho(minX - thisEdge, maxX + thisEdge, minY - thisEdge, maxY + thisEdge, minZ - thisEdge, maxZ+ thisEdge));
         //_orthos.push_back(glm::ortho(minX, maxX, minY, maxY, minZ, maxZ));
 
@@ -145,7 +145,7 @@ const glm::mat4 MoonEngine::ShadowMaps::getLightView()
 void ShadowMaps::DBG_DrawToImgui()
 {
     ImGui::Begin("Shadow Maps");
-    for (int i = 0; i < _depthTexs.size(); i++)
+    for (unsigned i = 0; i < _depthTexs.size(); i++)
     {
         ImGui::Image((void *)_depthTexs[i]->getTextureId(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
     }

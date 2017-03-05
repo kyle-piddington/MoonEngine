@@ -3,11 +3,12 @@
 using namespace MoonEngine;
 
 
+int GLFramebuffer::_unitCount = 0;
+
 GLFramebuffer::GLFramebuffer(int width, int height):
     _width(width),
     _height(height),
     _framebufferStatus(GL_FRAMEBUFFER_UNDEFINED),
-    _unitCount(0),
     _colorCount(0),
     _textureHandles(std::unordered_map<std::string, texture_unit>())
 {
@@ -57,8 +58,8 @@ void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & text
     
     txUnit.gl_texture = &texture;
     txUnit.unit = _unitCount++;
+    txUnit.attachment = attachmentInfo;
     _textureHandles[textureName] = txUnit;
-	_textureAttachmentMode[textureName] = (GLuint) attachmentInfo;
     _framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	
     Unbind();
@@ -81,7 +82,7 @@ void GLFramebuffer::bindForStencilPass() {
 void GLFramebuffer::bindForLightPass() {
     glDrawBuffer(GL_COLOR_ATTACHMENT4);
     for (auto &tex : _textureHandles) {
-        if (tex.first != "output" && tex.first != "depth") {
+        if (tex.first != COMPOSITE_TEXTURE && tex.first != "depth") {
             glActiveTexture(GL_TEXTURE0 + tex.second.unit);
             glBindTexture(GL_TEXTURE_2D, tex.second.gl_texture->getTextureId());
         }
@@ -129,26 +130,17 @@ void GLFramebuffer::Unbind() {
 }
 
 
-GLuint MoonEngine::GLFramebuffer::getObject() const
+GLuint MoonEngine::GLFramebuffer::getHandle() const
 {
     return _handle;
 }
 
-GLFramebuffer::texture_unit GLFramebuffer::getTexture(std::string name) const
+void GLFramebuffer::UniformTexture(GLProgram * prog, std::string uniformName, std::string textureName)
 {
-    auto it = _textureHandles.find(name);
-    if (it == _textureHandles.end())
-    {
-        assert(!"Could not find texture in framebuffer");
-    }
-    return it->second;
+    texture_unit id = this->getTextureUnit(textureName);
+    glUniform1i(prog->getUniformLocation(uniformName), id.unit);
 }
 
-void GLFramebuffer::setReadBuffer(std::string name)
-{
-	GLuint buf = getAttachmentMode(name);
-	glReadBuffer(buf);
-}
 
 void GLFramebuffer::drawColorAttachments(int size) {
 	vector<GLuint> colors;
@@ -158,26 +150,10 @@ void GLFramebuffer::drawColorAttachments(int size) {
     glDrawBuffers(size, &colors[0]);
 }
 
-GLuint GLFramebuffer::getAttachmentMode(std::string name) const
-{
-	auto it = _textureAttachmentMode.find(name);
-	if (it == _textureAttachmentMode.end())
-	{
-		assert(!"Could not find texture attachment in framebuffer");
-	}
-	return it->second;
-}
-
-const std::unordered_map<std::string, GLFramebuffer::texture_unit> & GLFramebuffer::getTextureHandles() const
-{
-	return _textureHandles;
-}
-
 void MoonEngine::GLFramebuffer::DBG_DrawToImgui(string guiName)
 {
-        auto texHandles = this->getTextureHandles();
         ImGui::Begin(guiName.c_str());
-        for (auto texHandlePair : texHandles)
+        for (auto texHandlePair : _textureHandles)
         {
             ImGui::Image((void *)texHandlePair.second.gl_texture->getTextureId(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
         }
@@ -196,5 +172,15 @@ GLuint GLFramebuffer::reset(GLuint newObject)
     glDeleteFramebuffers(1, &_handle);
     _handle = newObject;
     return _handle;
+}
+
+GLFramebuffer::texture_unit GLFramebuffer::getTextureUnit(std::string name) const
+{
+    auto it = _textureHandles.find(name);
+    if (it == _textureHandles.end())
+    {
+        assert(!"Could not find texture in framebuffer");
+    }
+    return it->second;
 }
 

@@ -21,15 +21,15 @@ namespace MoonEngine {
 	public:
 		ShadowMaps(int width, int height);
 		~ShadowMaps();
-        void bindForWriting(int shadowLevel);
+        void bindForWriting(unsigned shadowLevel);
         void bindForReading();
         void calculateShadowLevels(Scene* scene);
         const glm::mat4 getOrtho(int shadowLevel);
         const glm::mat4 getLightView();
         const float getShadowZ(int shadowLevel);
         void DBG_DrawToImgui();
-        int getWidth(){return _width;}
-        int getHeight(){return _height;}
+        float getWidth(){return _width;}
+        float getHeight(){return _height;}
     private:
         float _width;
         float _height;

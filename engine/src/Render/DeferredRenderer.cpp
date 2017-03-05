@@ -31,14 +31,14 @@ _outputTex(nullptr)
     _depthTex = Library::TextureLib->createTexture(DEPTH_STENCIL_TEXTURE, depthCFG);
     _outputTex = Library::TextureLib->createTexture(COMPOSITE_TEXTURE, outputCFG);
 
-    _gBuffer.addTexture("position", *_positionTex, GL_COLOR_ATTACHMENT0);
-    _gBuffer.addTexture("color", *_colorTex, GL_COLOR_ATTACHMENT1);
-    _gBuffer.addTexture("normal", *_normalTex, GL_COLOR_ATTACHMENT2);
+    _gBuffer.addTexture(POSITION_TEXTURE, *_positionTex, POSITION_ATTACHMENT);
+    _gBuffer.addTexture(COLOR_TEXTURE, *_colorTex, COLOR_ATTACHMENT);
+    _gBuffer.addTexture(NORMAL_TEXTURE, *_normalTex, NORMAL_ATTACHMENT);
 
     _gBuffer.addTexture("depth", *_depthTex, GL_DEPTH_ATTACHMENT);
     _gBuffer.addTexture("stencil", *_depthTex, GL_STENCIL_ATTACHMENT);
 
-    _gBuffer.addTexture("output", *_outputTex, GL_COLOR_ATTACHMENT4);
+    _gBuffer.addTexture(COMPOSITE_TEXTURE, *_outputTex, COMPOSITE_ATTACHMENT);
 
     _gBuffer.status();
 
@@ -472,12 +472,9 @@ void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr
     glUniformMatrix4fv(_pointLightProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
     //Texture Uniforms
-    GLFramebuffer::texture_unit id = _gBuffer.getTexture("position");
-    glUniform1i(prog->getUniformLocation("positionTex"), id.unit);
-    id = _gBuffer.getTexture("color");
-    glUniform1i(prog->getUniformLocation("colorTex"), id.unit);
-    id = _gBuffer.getTexture("normal");
-    glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
+    _gBuffer.UniformTexture(prog, "positionTex", POSITION_TEXTURE);
+    _gBuffer.UniformTexture(prog, "colorTex", COLOR_TEXTURE);
+    _gBuffer.UniformTexture(prog, "normalTex", NORMAL_TEXTURE);
 
     //Other global Uniforms
     glUniform2f(prog->getUniformLocation("screenSize"), (float) _width,(float) _height);
@@ -499,12 +496,9 @@ void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr
 void MoonEngine::DeferredRenderer::setupDirLightUniforms(GLProgram * prog)
 {
     //Texture Uniforms
-    GLFramebuffer::texture_unit id = _gBuffer.getTexture("position");
-    glUniform1i(prog->getUniformLocation("positionTex"), id.unit);
-    id = _gBuffer.getTexture("color");
-    glUniform1i(prog->getUniformLocation("colorTex"), id.unit);
-    id = _gBuffer.getTexture("normal");
-    glUniform1i(prog->getUniformLocation("normalTex"), id.unit);
+    _gBuffer.UniformTexture(prog, "positionTex", POSITION_TEXTURE);
+    _gBuffer.UniformTexture(prog, "colorTex", COLOR_TEXTURE);
+    _gBuffer.UniformTexture(prog, "normalTex", NORMAL_TEXTURE);
     //Other global Uniforms
 
 }
