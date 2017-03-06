@@ -13,6 +13,8 @@ namespace MoonEngine
         //How the texture should be stored
         GLenum textureDataType;
 
+		
+
     public:
         /**
          * Create a new Texture configuration object, with no settings.

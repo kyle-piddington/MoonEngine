@@ -38,6 +38,6 @@ void BasicProgramStep::render(Scene * scene)
 	}
 	LOG_GL(__FILE__, __LINE__);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	renderToScreen();
+	drawToQuad();
 
 }
