@@ -43,13 +43,13 @@ GLFramebuffer & GLFramebuffer::operator=(GLFramebuffer && other)
 void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo)
 {
     assert(texture.getWidth() == _width && texture.getHeight() == _height);
-    bind(GL_DRAW_FRAMEBUFFER);
+    glBindFramebuffer(GL_FRAMEBUFFER, _handle);
     texture.bindRaw();
     LOG_GL(__FILE__, __LINE__);
 
     if (attachmentInfo >= GL_COLOR_ATTACHMENT0 && attachmentInfo < GL_COLOR_ATTACHMENT10) {
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         _colorCount += 1;
     }
     LOG_GL(__FILE__, __LINE__);
@@ -119,8 +119,21 @@ void GLFramebuffer::status()
     assert(_framebufferStatus == GL_FRAMEBUFFER_COMPLETE);
 }
 
+void GLFramebuffer::addDepthRenderbuffer()
+{
+	GLuint rbo;
+	glGenRenderbuffers(1, &rbo);
+	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, _width, _height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+	_renderBuffers.push_back(rbo);
+	
+}
+
 void GLFramebuffer::bind(GLuint mode) {
+
 	glBindFramebuffer(mode, _handle);
+	status();
 }
 
 void GLFramebuffer::Unbind() {
@@ -171,6 +184,10 @@ GLuint GLFramebuffer::reset(GLuint newObject)
 {
     glDeleteFramebuffers(1, &_handle);
     _handle = newObject;
+	if (newObject == 0 && _renderBuffers.size() > 0)
+	{
+		glDeleteRenderbuffers(_renderBuffers.size(), &_renderBuffers[0]);
+	}
     return _handle;
 }
 

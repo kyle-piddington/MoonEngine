@@ -2,7 +2,7 @@
 #include "Libraries/Library.h"
 using namespace MoonEngine;
 
-void PostProcessStep::renderToScreen()
+void PostProcessStep::drawToQuad()
 {
 	if(_quadInfo == nullptr)
 	{

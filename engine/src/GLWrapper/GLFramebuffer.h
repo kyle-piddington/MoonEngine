@@ -57,6 +57,8 @@ namespace MoonEngine
         void bindForLightPass();
         void bindForOutput();
 
+		void addDepthRenderbuffer();
+
         /*Check the status of the framebuffer*/
         void status();
         /*Bind in @param mode*/
@@ -96,4 +98,7 @@ namespace MoonEngine
         std::unordered_map<std::string, texture_unit> _textureHandles;
     };
 
+
+        //void addRenderbuffer(const GLRenderBuffer & buffer);
+    };
 }

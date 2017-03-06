@@ -40,6 +40,7 @@ void Component::onCollisionExit(Collision col)
 void Component::on(std::string message, const messageFn & fn)
 {
 	gameObject->addHandler(message, fn);
+	GetWorld()->addGlobalHandler(message, fn);
 }
 
 void Component::sendMessage(std::string messageStr)
