@@ -43,7 +43,9 @@ GLFramebuffer & GLFramebuffer::operator=(GLFramebuffer && other)
 void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo)
 {
     assert(texture.getWidth() == _width && texture.getHeight() == _height);
+    LOG_GL(__FILE__, __LINE__);
     glBindFramebuffer(GL_FRAMEBUFFER, _handle);
+    LOG_GL(__FILE__, __LINE__);
     texture.bindRaw();
     LOG_GL(__FILE__, __LINE__);
 
@@ -70,31 +72,6 @@ void GLFramebuffer::startFrame() {
     glDrawBuffer(GL_COLOR_ATTACHMENT4);
     glClear(GL_COLOR_BUFFER_BIT);
 }
-
-void GLFramebuffer::bindForGeomPass(){
-    drawColorAttachments(_colorCount);
-}
-
-void GLFramebuffer::bindForStencilPass() {
-    glDrawBuffer(GL_NONE);
-}
-
-void GLFramebuffer::bindForLightPass() {
-    glDrawBuffer(GL_COLOR_ATTACHMENT4);
-    for (auto &tex : _textureHandles) {
-        if (tex.first != COMPOSITE_TEXTURE && tex.first != "depth") {
-            glActiveTexture(GL_TEXTURE0 + tex.second.unit);
-            glBindTexture(GL_TEXTURE_2D, tex.second.gl_texture->getTextureId());
-        }
-    }
-}
-
-void GLFramebuffer::bindForOutput() {
-    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-    bind(GL_READ_FRAMEBUFFER);
-    glReadBuffer(GL_COLOR_ATTACHMENT4);
-}
-
 
 void GLFramebuffer::status()
 {
@@ -126,7 +103,7 @@ void GLFramebuffer::addDepthRenderbuffer()
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, _width, _height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-	_renderBuffers.push_back(rbo);
+	//_renderBuffers.push_back(rbo);
 	
 }
 
@@ -184,10 +161,10 @@ GLuint GLFramebuffer::reset(GLuint newObject)
 {
     glDeleteFramebuffers(1, &_handle);
     _handle = newObject;
-	if (newObject == 0 && _renderBuffers.size() > 0)
+	/*if (newObject == 0 && _renderBuffers.size() > 0)
 	{
 		glDeleteRenderbuffers(_renderBuffers.size(), &_renderBuffers[0]);
-	}
+	}*/
     return _handle;
 }
 

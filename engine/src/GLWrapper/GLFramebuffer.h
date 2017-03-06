@@ -52,11 +52,6 @@ namespace MoonEngine
         /*Prepare for frame by clear final color texture*/
         void startFrame();
 
-        void bindForGeomPass();
-        void bindForStencilPass();
-        void bindForLightPass();
-        void bindForOutput();
-
 		void addDepthRenderbuffer();
 
         /*Check the status of the framebuffer*/
@@ -68,10 +63,6 @@ namespace MoonEngine
 
         GLuint getHandle() const;
 
-       
-
-
-
         void UniformTexture(GLProgram* prog, std::string uniformName, std::string textureName);
 		/**
 		* Specify what part to of the
@@ -82,6 +73,10 @@ namespace MoonEngine
 
         void DBG_DrawToImgui(string guiName);
         
+    protected:
+        static int _unitCount;
+        int _colorCount;
+        std::unordered_map<std::string, texture_unit> _textureHandles;
 
     private:
         GLuint release();
@@ -89,16 +84,13 @@ namespace MoonEngine
         GLuint reset(GLuint newObject = 0);
 
         texture_unit getTextureUnit(std::string name) const;
-        static int _unitCount;
-        int _colorCount;
+        
         int _width;
         int _height;
         GLuint _handle;
         GLenum _framebufferStatus;
-        std::unordered_map<std::string, texture_unit> _textureHandles;
     };
 
 
         //void addRenderbuffer(const GLRenderBuffer & buffer);
-    };
 }

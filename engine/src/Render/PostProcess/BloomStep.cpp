@@ -40,9 +40,9 @@ void BloomStep::setup(GLFWwindow * window, Scene * scene)
 
     _compositeFramebuffer.addTexture("composite", *_compositeTexture, GL_COLOR_ATTACHMENT0);
 	_compositeFramebuffer.addDepthRenderbuffer();
-    _glowFramebuffer.addTexture("glow", *_glowTexture, GL_COLOR_ATTACHMENT0);
+    _glowFramebuffer.addTexture(BLOOM_GLOW_TEXTURE, *_glowTexture, GL_COLOR_ATTACHMENT0);
 	configureMipmapTexture(_glowTexture);
-    _tempFramebuffer.addTexture("temp", *_tempTexture, GL_COLOR_ATTACHMENT0);
+    _tempFramebuffer.addTexture(BLOOM_TEMP_TEXTURE, *_tempTexture, GL_COLOR_ATTACHMENT0);
 	_tempFramebuffer.addDepthRenderbuffer();
 	
 }

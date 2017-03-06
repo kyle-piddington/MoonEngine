@@ -3,7 +3,7 @@
 #include "GLWrapper/GLProgram.h"
 #include "I_Renderer.h"
 #include "Component/Components.h"
-#include "GLWrapper/GLFramebuffer.h"
+#include "Framebuffers/GBuffer.h"
 #include "Util/Logger.h"
 #include "GLWrapper/OpenGL.h"
 #include <glm/gtc/type_ptr.hpp>
@@ -81,7 +81,7 @@ namespace MoonEngine
         MeshInfo* _renderQuad;
 		GLuint _width, _height;
         int _deferredWidth, _deferredHeight;
-        GLFramebuffer _gBuffer;
+        GBuffer _gBuffer;
 		GLTexture* _colorTex, * _positionTex, * _normalTex, * _textureTex;
         GLTexture* _depthTex;
         GLTexture* _outputTex;
