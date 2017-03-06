@@ -42,7 +42,7 @@ GLFramebuffer & GLFramebuffer::operator=(GLFramebuffer && other)
 void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo)
 {
     assert(texture.getWidth() == _width && texture.getHeight() == _height);
-    bind(GL_DRAW_FRAMEBUFFER);
+    glBindFramebuffer(GL_FRAMEBUFFER, _handle);
     texture.bindRaw();
     LOG_GL(__FILE__, __LINE__);
 
