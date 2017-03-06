@@ -16,6 +16,8 @@ Scene::Scene()
     _allGameObjects.clear();
     _gameObjects.clear();
     _renderableGameObjects.clear();
+    _forwardGameObjects.clear();
+    _guiGameObjects.clear();
     _pointLightObjects.clear();
     _boxCollisionComponents.clear();
     _components.clear();
@@ -29,6 +31,9 @@ Scene::Scene()
 void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 {
     _gameObjects.push_back(obj);
+    if (obj->getTag() == T_GUI) {
+        _guiGameObjects.push_back(obj);
+    }
     if (obj->getComponent<Camera>() != nullptr && _cameraFlag == 0) {
         _cameraFlag = 1;
         _mainCamera = obj;
@@ -73,8 +78,6 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
      LOG(INFO, "Adding collidable game object");
      _boxCollisionComponents.push_back(col);
  }
-
-
 }
 
 /**
@@ -123,53 +126,51 @@ const std::vector<std::shared_ptr<GameObject>> Scene::getRenderableGameObjects()
     return _renderableGameObjects;
 }
 
+const std::vector<std::shared_ptr<GameObject>> Scene::getGuiGameObjects() const
+{
+    return _guiGameObjects;
+}
 
 std::vector<glm::vec4> getFrustrumPlanes(glm::mat4 comp)
 {
 	std::vector<glm::vec4> planes(6);
 	glm::vec3 n;
 	glm::vec4 Left, Right, Bottom, Top, Near, Far;
-	n.x = comp[0][3] + comp[0][0]; // see handout to fill in with values from comp
-	n.y = comp[1][3] + comp[1][0]; // see handout to fill in with values from comp
-	n.z = comp[2][3] + comp[2][0]; // see handout to fill in with values from comp
-	Left.w = comp[3][3] + comp[3][0]; // see handout to fill in with values from comp
+	n.x = comp[0][3] + comp[0][0];
+	n.y = comp[1][3] + comp[1][0];
+	n.z = comp[2][3] + comp[2][0];
+	Left.w = comp[3][3] + comp[3][0];
 	Left = planes[0] = glm::vec4(n, Left.w)/ glm::length(n);
-	//cout << "Left' " << Left.x << " " << Left.y << " " << Left.z << " " << Left.w << endl;
 
-	n.x = comp[0][3] - comp[0][0]; // see handout to fill in with values from comp
-	n.y = comp[1][3] - comp[1][0]; // see handout to fill in with values from comp
-	n.z = comp[2][3] - comp[2][0]; // see handout to fill in with values from comp
-	Right.w = comp[3][3] - comp[3][0]; // see handout to fill in with values from comp
+	n.x = comp[0][3] - comp[0][0];
+	n.y = comp[1][3] - comp[1][0];
+	n.z = comp[2][3] - comp[2][0];
+	Right.w = comp[3][3] - comp[3][0];
 	Right = planes[1] = glm::vec4(n, Right.w)/ glm::length(n);
-	//cout << "Right " << Right.x << " " << Right.y << " " << Right.z << " " << Right.w << endl;
 
-	n.x = comp[0][3] + comp[0][1]; // see handout to fill in with values from comp
-	n.y = comp[1][3] + comp[1][1]; // see handout to fill in with values from comp
-	n.z = comp[2][3] + comp[2][1]; // see handout to fill in with values from comp
-	Bottom.w = comp[3][3] + comp[3][1]; // see handout to fill in with values from comp
+	n.x = comp[0][3] + comp[0][1];
+	n.y = comp[1][3] + comp[1][1];
+	n.z = comp[2][3] + comp[2][1];
+	Bottom.w = comp[3][3] + comp[3][1];
 	Bottom = planes[2] = glm::vec4(n, Bottom.w)/ glm::length(n);
-	//cout << "Bottom " << Bottom.x << " " << Bottom.y << " " << Bottom.z << " " << Bottom.w << endl;
 
-	n.x = comp[0][3] - comp[0][1];// see handout to fill in with values from comp
-	n.y = comp[1][3] - comp[1][1]; // see handout to fill in with values from comp
-	n.z = comp[2][3] - comp[2][1]; // see handout to fill in with values from comp
-	Top.w = comp[3][3] - comp[3][1]; // see handout to fill in with values from comp
+	n.x = comp[0][3] - comp[0][1];
+	n.y = comp[1][3] - comp[1][1];
+	n.z = comp[2][3] - comp[2][1];
+	Top.w = comp[3][3] - comp[3][1];
 	Top = planes[3] = glm::vec4(n, Top.w)/ glm::length(n);
-	//cout << "Top " << Top.x << " " << Top.y << " " << Top.z << " " << Top.w << endl;
 
-	n.x = comp[0][3] + comp[0][2]; // see handout to fill in with values from comp
-	n.y = comp[1][3] + comp[1][2]; // see handout to fill in with values from comp
-	n.z = comp[2][3] + comp[2][2]; // see handout to fill in with values from comp
-	Near.w = comp[3][3] + comp[3][2]; // see handout to fill in with values from comp
+	n.x = comp[0][3] + comp[0][2];
+	n.y = comp[1][3] + comp[1][2];
+	n.z = comp[2][3] + comp[2][2];
+	Near.w = comp[3][3] + comp[3][2];
 	Near = planes[4] = glm::vec4(n, Near.w)/ glm::length(n);
-	//cout << "Near " << Near.x << " " << Near.y << " " << Near.z << " " << Near.w << endl;
 
-	n.x = comp[0][3] - comp[0][2]; // see handout to fill in with values from comp
-	n.y = comp[1][3] - comp[1][2]; // see handout to fill in with values from comp
-	n.z = comp[2][3] - comp[2][2]; // see handout to fill in with values from comp
-	Far.w = comp[3][3] - comp[3][2]; // see handout to fill in with values from comp
+	n.x = comp[0][3] - comp[0][2];
+	n.y = comp[1][3] - comp[1][2];
+	n.z = comp[2][3] - comp[2][2];
+	Far.w = comp[3][3] - comp[3][2];
 	Far = planes[5] = glm::vec4(n, Far.w) / glm::length(n);
-	//cout << "Far " << Far.x << " " << Far.y << " " << Far.z << " " << Far.w << endl;
 	return planes;
 }
 
@@ -318,33 +319,29 @@ void Scene::runDeleteGameObjects()
          _renderableGameObjects.erase(_renderableGameObjects.begin() + i);
          i--;
          size--;
-     }
- }
-
- size = _gameObjects.size();
- for (int i = 0; i < size; i++)
- {
-    if (_gameObjects.at(i) != nullptr && _gameObjects.at(i)->isDeleted())
-    {
-        _gameObjects.erase(_gameObjects.begin() + i);
-        i--;
-        size--;
+        }
     }
-}
-size = _pointLightObjects.size();
-for (int i = 0; i < size; i++)
-{
-    if (_pointLightObjects.at(i) != nullptr && _pointLightObjects.at(i)->isDeleted())
-    {
-        _pointLightObjects.erase(_pointLightObjects.begin() + i);
-        i--;
-        size--;
+
+     size = _gameObjects.size();
+     for (int i = 0; i < size; i++)
+     {
+        if (_gameObjects.at(i) != nullptr && _gameObjects.at(i)->isDeleted())
+        {
+            _gameObjects.erase(_gameObjects.begin() + i);
+            i--;
+            size--;
+        }
     }
-}
-
-
-
-
+    size = _pointLightObjects.size();
+    for (int i = 0; i < size; i++)
+    {
+        if (_pointLightObjects.at(i) != nullptr && _pointLightObjects.at(i)->isDeleted())
+        {
+            _pointLightObjects.erase(_pointLightObjects.begin() + i);
+            i--;
+            size--;
+        }
+    }
 }
 
 std::shared_ptr<GameObject> MoonEngine::Scene::getMainCamera()
