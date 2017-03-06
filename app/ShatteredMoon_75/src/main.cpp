@@ -97,11 +97,6 @@ int main(int argc, char ** argv)
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
     scene->addGameObject(dirLight);
 
-    std::shared_ptr<GameObject> guiObject = std::make_shared<GameObject>();
-    guiObject->addComponent(scene->createComponent<GUI>());
-    scene->addGameObject(guiObject);
-
-
     //Terrain
     //Preload canyon 32f texture
     EngineApp::GetAssetLibrary().TextureLib->createImage("grandCanyon",".png",true);
@@ -128,6 +123,11 @@ int main(int argc, char ** argv)
     terrainObject->addComponent(scene->createComponent<Terrain>(createInfo));
     terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain_geom_deferred.program",canyon_texture));
     scene->addGameObject(terrainObject);
+
+    std::shared_ptr<GameObject> guiObject = std::make_shared<GameObject>();
+    guiObject->addTag(T_GUI);
+    guiObject->addComponent(scene->createComponent<GUI>());
+    scene->addGameObject(guiObject);
 
     float accumTime;
     int lastUpdateTime;

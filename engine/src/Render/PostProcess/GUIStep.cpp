@@ -17,6 +17,7 @@ void GUIStep::setup(GLFWwindow * window, Scene * scene)
 	_compositeTexture = Library::TextureLib->getTexture(COMPOSITE_TEXTURE);
 
 	_fbo.addTexture("composite", *_compositeTexture, GL_COLOR_ATTACHMENT0);
+    _fbo.addDepthRenderbuffer();
 
     _mainCamera = scene->getMainCamera()->getComponent<Camera>();
     if (_mainCamera == nullptr)
@@ -39,6 +40,8 @@ void GUIStep::render(Scene * scene)
 //	glEnable(GL_BLEND);
 //	glBlendEquation(GL_FUNC_ADD);
 //	glBlendFunc(GL_ONE, GL_ONE);
+    glDepthMask(GL_FALSE);
+    glDisable(GL_DEPTH_TEST);
 
 	GLTexture * sample = Library::TextureLib->createImage("solid_white", ".png");
 	sample->bind(0);
