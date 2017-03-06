@@ -8,12 +8,16 @@
 |Components|https://gameprogrammingpatterns.com/component.html|
 |Sky|http://blog.simonrodriguez.fr/articles/28-06-2015_un_ciel_dans_le_shader.html|
 |Deferred Rendering|http://ogldev.atspace.co.uk/www/tutorial35/tutorial35.html https://learnopengl.com/#!Advanced-Lighting/Deferred-Shading|
+|Bloom|https://learnopengl.com/#!Advanced-Lighting/Bloom https://software.intel.com/en-us/articles/compute-shader-hdr-and-bloom http://chrismdp.com/2015/06/how-to-quickly-add-bloom-to-your-engine/|
+|HDR|https://learnopengl.com/#!Advanced-Lighting/HDR|
+|Billboards|http://www.opengl-tutorial.org/intermediate-tutorials/billboards-particles/billboards/|
 
 #### Utilities
 |Utility|Link|
 |-------|-----------|
 |ImGui|https://github.com/ocornut/imgui|
 |Terrain Rendering|http://www.vertexasylum.com/downloads/cdlod/cdlod_latest.pdf|
+|Real-world Heightmaps|http://terrain.party/|
 |JSON parsing|https://github.com/miloyip/rapidjson|
 |OBJ Loading|https://github.com/syoyo/tinyobjloader|
 |Complex Model Loading|http://assimp.sourceforge.net|

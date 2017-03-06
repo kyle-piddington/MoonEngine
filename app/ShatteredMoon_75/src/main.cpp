@@ -97,7 +97,6 @@ int main(int argc, char ** argv)
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
     scene->addGameObject(dirLight);
 
-
     //Terrain
     //Preload canyon 32f texture
     EngineApp::GetAssetLibrary().TextureLib->createImage("grandCanyon",".png",true);
@@ -125,6 +124,10 @@ int main(int argc, char ** argv)
     terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain_geom_deferred.program",canyon_texture));
     scene->addGameObject(terrainObject);
 
+    std::shared_ptr<GameObject> guiObject = std::make_shared<GameObject>();
+    guiObject->addComponent(scene->createComponent<GUI>(width, height));
+    scene->addGameObject(guiObject);
+
     float accumTime;
     int lastUpdateTime;
     scene->addCustomUpdate([&](float dt) {
@@ -143,6 +146,9 @@ int main(int argc, char ** argv)
     DeferredRenderer * renderer = new DeferredRenderer(width, height, 
         "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
+    renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
+    renderer->addPostProcessStep(std::make_shared<GUIStep>(width, height));
+    renderer->addPostProcessStep(std::make_shared<HDRStep>("postprocess/bloom/post_HDR_tonemap.program"));
 
     app->run(scene, renderer);
 
