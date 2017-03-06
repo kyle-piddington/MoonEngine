@@ -127,6 +127,9 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> guiObject = std::make_shared<GameObject>();
     guiObject->addTag(T_GUI);
     guiObject->addComponent(scene->createComponent<GUI>());
+    guiObject->getTransform().setPosition(glm::vec3(50,50,0));
+    guiObject->getTransform().setScale(glm::vec3(100,100,0));
+    
     scene->addGameObject(guiObject);
 
     float accumTime;

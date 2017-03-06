@@ -9,6 +9,6 @@ uniform mat4 P;
 out vec2 fragTexCoords;
 void main()
 {
-	gl_Position = P * position;
+	gl_Position = P * M * position;
 	fragTexCoords = texture;
 }
