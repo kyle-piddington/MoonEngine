@@ -13,7 +13,7 @@ namespace MoonEngine {
         void update(float dt);
         std::shared_ptr<Component> clone() const;
     private:
-        shared_ptr<GameObject> _guiElement;
+        std::unordered_map<std::string, std::shared_ptr<GameObject>> _guiElements;
 
     };
 }
