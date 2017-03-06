@@ -5,32 +5,34 @@
 
 using namespace MoonEngine;
 
-GUI::GUI()
+GUI::GUI(int width, int height):
+    _width(width),
+    _height(height)
 {
 }
 
-void GUI::start() {
+void GUI::addElement(string name, int scaleX, int scaleY, int posX, int posY) {
     shared_ptr<GameObject> _guiElement = GetWorld()->createGameObject();
     _guiElement->addTag(T_GUI);
 
-    _guiElement->getTransform().setPosition(glm::vec3(50, 50, 0));
-    _guiElement->getTransform().setScale(glm::vec3(100, 100, 0));
+    _guiElement->getTransform().setPosition(glm::vec3(posX, posY, 0));
+    _guiElement->getTransform().setScale(glm::vec3(scaleX, scaleY, 0));
+    // Apparently images are upside down.
+    _guiElement->getTransform().setRotation(glm::vec3(M_PI, 0, 0));
 
-    _guiElement->addComponent(GetWorld()->createComponent<SimpleTexture>("solid_white.png"));
+    _guiElement->addComponent(GetWorld()->createComponent<SimpleTexture>(name));
     GetWorld()->addGameObject(_guiElement);
 
-    _guiElements["first"] = _guiElement;
+    _guiElements[name] = _guiElement;
+}
 
-    shared_ptr<GameObject> _guiElement2 = GetWorld()->createGameObject();
-    _guiElement2->addTag(T_GUI);
+void GUI::start() {
+    addElement("Moon2", 75, 75, _width / 10, 17 * _height / 20);
+    addElement("star", 50, 50, 9 * _width / 10, 35 * _height / 40);
+    addElement("text", 25, 25, 19 * _width / 20, 71 * _height / 80);
 
-    _guiElement2->getTransform().setPosition(glm::vec3(0, 0, 0));
-    _guiElement2->getTransform().setScale(glm::vec3(50, 50, 0));
-
-    _guiElement2->addComponent(GetWorld()->createComponent<SimpleTexture>("default.png"));
-    GetWorld()->addGameObject(_guiElement2);
-
-    _guiElements["second"] = _guiElement2;
+    addElement("progress", 2 * _width / 5, 25, _width / 2, _height / 15);
+    addElement("wolfmoon", 40, 40, _width / 2, _height / 15);
 
     on("picked_up_star",[&](const Message & msg)
     {

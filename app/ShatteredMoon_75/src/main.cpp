@@ -125,7 +125,7 @@ int main(int argc, char ** argv)
     scene->addGameObject(terrainObject);
 
     std::shared_ptr<GameObject> guiObject = std::make_shared<GameObject>();
-    guiObject->addComponent(scene->createComponent<GUI>());
+    guiObject->addComponent(scene->createComponent<GUI>(width, height));
     scene->addGameObject(guiObject);
 
     float accumTime;

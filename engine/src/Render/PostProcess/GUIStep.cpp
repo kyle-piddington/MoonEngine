@@ -30,8 +30,10 @@ void GUIStep::render(Scene * scene)
 
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	for (std::shared_ptr<GameObject> obj : scene->getGuiGameObjects())
+    for (std::shared_ptr<GameObject> obj : scene->getGuiGameObjects())
 	{
         obj->getComponent<SimpleTexture>()->getTexture()->bind(0);
         glUniform1i(_renderProgram->getUniformLocation("_guiTexture"), 0);
@@ -41,6 +43,7 @@ void GUIStep::render(Scene * scene)
 
         drawToQuad();
 	}
+    glDisable(GL_BLEND);
 
     _fbo.DBG_DrawToImgui("GUI");
 }
