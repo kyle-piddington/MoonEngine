@@ -26,6 +26,9 @@ namespace MoonEngine
 			bool forward = false
 		);
 
+        Material(std::string programName, bool forward = false);
+
+
         /**
          * retrieve a base tint material used by all
          * material program.s
@@ -47,7 +50,7 @@ namespace MoonEngine
 
         virtual std::shared_ptr<Component> clone() const;
 
-        void bind();
+        virtual void bind();
 
 		inline bool isForward() {
 			return _forward;
@@ -56,21 +59,22 @@ namespace MoonEngine
         void unbind();
 
         void addTexture(std::string uniformName, GLTexture * texture);
+        
+        void loadTextures(std::unordered_map<string, string> textures);
 
-    private:
-        struct texture_unit {
+    protected:
+         struct texture_unit {
             GLTexture * gl_texture;
             GLuint unit;
         };
-
         GLSampler * _sampler;
         GLProgram * _program;
-
-        glm::vec3 _tint;
-        unordered_map<string, texture_unit> _textures;
         GLuint _texture_unit;
-
-		bool _forward;
+        bool _forward;
+        glm::vec3 _tint;    
+        unordered_map<string, texture_unit> _textures;
+     
+		
     };
 }
 

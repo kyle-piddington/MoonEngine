@@ -13,6 +13,6 @@ file(GLOB_RECURSE GLSL "resources/*.vs" "resources/*.fs" "resources/*.gs")
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
 
 #Link app library
-target_link_libraries(${PROJECT_NAME} MoonEngine)
+target_link_libraries(${PROJECT_NAME} MoonEngine )
 file(COPY resources DESTINATION ${PROJECT_BINARY_DIR})
 file(COPY moonengine.cfg DESTINATION ${PROJECT_BINARY_DIR})

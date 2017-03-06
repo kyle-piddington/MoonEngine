@@ -59,6 +59,20 @@ namespace MoonEngine
 		{
 			return this->vertexObjectPtr;
 		}
+
+		void setHasNormals(bool normals)
+		{
+			_hasNormals = normals;
+		}
+		void setHasTangentBitangent(bool tbt)
+		{
+			_hasTangentBitangent = tbt;
+		}
+		void setHasTextureCoordinates(bool txCoord)
+		{
+			_hasTextureCoordinates  = txCoord;	
+		}
+
 		//Mesh info avaliable if no other
 		//transformations / information is needed.
 		//(Useful for basic mesh display)

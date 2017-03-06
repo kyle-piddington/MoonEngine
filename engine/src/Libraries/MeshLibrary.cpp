@@ -1,11 +1,14 @@
 #include <Geometry/MeshCreator.h>
 #include "MeshLibrary.h"
 #include "Loaders/BasicLoader.h"
+#include "GlobalFuncs/GlobalFuncs.h"
+#include "Loaders/AssimpLoader.h"
+#include "Component/Components.h"
 
 using namespace MoonEngine;
 
 MeshLibrary::MeshLibrary(std::string resourcePath):
-    _recPath(resourcePath)
+_recPath(resourcePath)
 {
     loadDefaultMesh();
 }
@@ -40,6 +43,44 @@ BasicMeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smoo
     }
 
     return _mapMeshToInfo[assembledName];
+}
+
+std::shared_ptr<GameObject> MeshLibrary::getGameObjectForModelNamed(std::string name, std::string program, Scene * scene)
+{
+    Scene * scnPtr = scene;
+    if(scnPtr == nullptr)
+    {
+        scnPtr = GetWorld();
+    }
+    //Check to make sure we have a scene.
+    assert(scnPtr != nullptr);
+    std::shared_ptr<AssimpModelInfo>  info;
+    if (assimpInfo.find(name) == assimpInfo.end())
+    {
+        _meshBuffers.push_back(std::make_shared<GLBuffer>(GL_ARRAY_BUFFER));
+        _meshBuffers.push_back(std::make_shared<GLBuffer>(GL_ELEMENT_ARRAY_BUFFER));
+        GLBuffer * vertBuffer = _meshBuffers[_meshBuffers.size() - 2].get();
+        GLBuffer * indBuffer = _meshBuffers[_meshBuffers.size() - 1].get();
+        _meshVAOs.push_back(std::make_shared<GLVertexArrayObject>());
+        GLVertexArrayObject * vao = _meshVAOs[_meshVAOs.size() - 1].get();
+        info = std::make_shared<AssimpModelInfo>();
+        info->setHasNormals(true);
+        info->setHasTangentBitangent(false);
+        info->setHasTextureCoordinates(false);
+        AssimpLoader::LoadIntoBuffer(_recPath + name,vertBuffer,indBuffer,vao,
+        info.get());
+        assimpInfo[name] = info;
+
+    }
+    else
+    {
+        info = assimpInfo[name];
+    }
+    std::shared_ptr<GameObject> object = scene->createGameObject();
+    object->addComponent(scene->createComponent<AssimpMaterial>(program, info.get()));
+    object->addComponent(scene->createComponent<AssimpMesh>(info.get()));
+    return object;
+
 }
 
 void MeshLibrary::loadDefaultMesh() {

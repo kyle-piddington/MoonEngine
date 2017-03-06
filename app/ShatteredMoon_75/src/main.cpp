@@ -57,13 +57,11 @@ int main(int argc, char ** argv)
 
     playerTransform.setPosition(
             glm::vec3(-52.623940, 12.913505554199219,-101.991371));
-    std::shared_ptr<GameObject> playerObj = std::make_shared<GameObject>(playerTransform);
+    std::shared_ptr<GameObject> playerObj = Library::MeshLib->getGameObjectForModelNamed("sphere.dae","geom.program",scene); 
+    //playerObj.setPosition(playerTransform.getPosition());
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
-
-    stringmap textures({{"diffuse", "wolf.tga"}});
-
-    playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
-    playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
+    // playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
+    // playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
     playerObj->addComponent(scene->createComponent<BoxCollider>());
 
     //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));

@@ -4,34 +4,55 @@
 
 using namespace MoonEngine;
 
-Material::Material(glm::vec3 tint, string programName, unordered_map<string, string> textures, bool forward) :
-    Component(),
-    _tint(tint),
-    _textures(std::unordered_map<string, texture_unit>()),
-    _texture_unit(0),
-	_forward(forward)
+void Material::loadTextures(unordered_map<string, string> textures)
 {
-    _program = Library::ProgramLib->getProgramForName(programName);
-    if (_program == nullptr)
-    {
-        _program = Library::ProgramLib->getProgramForName("default.program");
-    }
-
-    for (auto & texture: textures)
-    {
+   for (auto & texture: textures)
+   {
         size_t extPos = texture.second.find('.');
         std::string ext = ".png";
         if (extPos != std::string::npos)
         {
             ext = "";
         }
-        // uniform name <=> texture
+            // uniform name <=> texture
         texture_unit textureUnit = {Library::TextureLib->getTexture(texture.second, ext), _texture_unit++};
         _textures[texture.first] = textureUnit;
     }
-
-    _sampler = Library::SamplerLib->getSampler("default");
+    _sampler = Library::SamplerLib->getSampler("default");   
 }
+
+Material::Material(glm::vec3 tint, string programName, unordered_map<string, string> textures, bool forward) :
+Component(),
+_tint(tint),
+_textures(std::unordered_map<string, texture_unit>()),
+_texture_unit(0),
+_forward(forward)
+{
+    _program = Library::ProgramLib->getProgramForName(programName);
+    if (_program == nullptr)
+    {
+        _program = Library::ProgramLib->getProgramForName("default.program");
+    }
+    loadTextures(textures);
+
+
+}
+
+Material::Material(string programName,  bool forward) :
+Component(),
+_tint(glm::vec3(0,0,0)),
+_textures(std::unordered_map<string, texture_unit>()),
+_texture_unit(0),
+_forward(forward)
+{
+    _program = Library::ProgramLib->getProgramForName(programName);
+    if (_program == nullptr)
+    {
+        _program = Library::ProgramLib->getProgramForName("default.program");
+    }
+}
+
+
 
 const glm::vec3 & Material::getTint() const
 {

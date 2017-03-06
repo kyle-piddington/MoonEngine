@@ -27,7 +27,8 @@ const std::vector<AssimpMeshInfo> & AssimpModelInfo::getMeshInfo() const
 
 int AssimpModelInfo::stride() const
 {
-	return (int)hasNormals()* 3 + 
+	return 3 + 
+		   (int)hasNormals()* 3 + 
 		   (int)hasTangentBitangent() * 6 + 
 		   (int)hasTextureCoordinates() * 2;
 

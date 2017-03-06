@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.7)
 project (ShatteredMoon)
 
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 if(NOT WIN32)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  ")
 endif()
 # Get the GLEW environment variable.
 set(GLEW_DIR "$ENV{GLEW_DIR}")
@@ -30,9 +30,9 @@ if(FMOD_FOUND)
 	include_directories(${FMOD_INCLUDE_DIRS})
 endif()
 
-find_package(Assimp)
-if(Assimp_FOUND)
-	include_directories(${Assimp_INCLUDE_DIRS})
+find_package(assimp)
+if(assimp_FOUND)
+	include_directories(${assimp_INCLUDE_DIRS})
 endif()
 
 

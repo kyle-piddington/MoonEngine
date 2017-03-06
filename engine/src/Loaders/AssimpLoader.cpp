@@ -61,13 +61,14 @@ bool processMesh(aiMesh * mesh,
 {
 	AssimpMeshInfo assimpMeshInfo = AssimpMeshInfo();
 	unsigned baseVertex = data.size() / outInfo->stride();
-	assimpMeshInfo.meshInfo.baseVertex = 0;
-	assimpMeshInfo.meshInfo.indexDataOffset = (GLvoid *)(sizeof(indices) * sizeof(unsigned short));
+	assimpMeshInfo.meshInfo.baseVertex = baseVertex;
+	int baseIndex = indices.size();
+	assimpMeshInfo.meshInfo.indexDataOffset = (GLvoid *)(indices.size() * sizeof(unsigned short));
 	float minX = 1e20, maxX = -1e20; 
 	float minY = 1e20, maxY = -1e20; 
 	float minZ = 1e20, maxZ = -1e20;
 	
-	data.reserve(mesh->mNumVertices * 5);
+	//data.reserve(mesh->mNumVertices * 5);
 	for(GLuint i = 0; i < mesh->mNumVertices; i++)
 	{
 		data.push_back(mesh->mVertices[i].x);
@@ -109,7 +110,7 @@ bool processMesh(aiMesh * mesh,
 	      	}
 	      	else
 	      	{
-	      		LOG(WARN, "Mesh loaded with normals requested has no normals");
+	      		LOG(WARN, "Mesh loaded with texture coordinates requested has no texture coordinates");
 	      		data.push_back(0);
 	      		data.push_back(0);
 	      	}
@@ -149,9 +150,10 @@ bool processMesh(aiMesh * mesh,
 	  {
 	  	aiFace face = mesh->mFaces[i];
 	  	for(GLuint j = 0; j < face.mNumIndices; j++)
-	  		indices.push_back(baseVertex + face.mIndices[j]);
+	  		indices.push_back(face.mIndices[j]);
 	  }
-
+	  assimpMeshInfo.meshInfo.numTris = (indices.size() - baseIndex);
+	  assimpMeshInfo.meshInfo.numVerts = data.size()/outInfo->stride() - baseVertex;
 	  aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 	  loadMaterialTextures(material, aiTextureType_DIFFUSE, &(assimpMeshInfo.textures));
 	  loadMaterialTextures(material, aiTextureType_SPECULAR, &(assimpMeshInfo.textures));
@@ -180,16 +182,16 @@ bool processNode(aiNode * node, const aiScene * scene, std::vector<float> & data
 	return false;
 }
 
-static bool LoadIntoBuffer(
+bool AssimpLoader::LoadIntoBuffer(
 		std::string fileName,
 		GLBuffer * vertexBuffer,
 		GLBuffer * indexBuffer,
 		GLVertexArrayObject * vao,
 		AssimpModelInfo * outInfo,
 		unsigned int pFlags,
-		bool smooth = false)
+		bool smooth)
 {
-	outInfo->setVertexArrayObject(vao);
+	
 	Assimp::Importer importer;
 	const aiScene * scene = importer.ReadFile(fileName, pFlags | aiProcess_Triangulate);
 	bool OK = true;
@@ -219,8 +221,7 @@ static bool LoadIntoBuffer(
 		3,
 		GL_FLOAT,
 		false,
-		stride,
-		(GLvoid *) (sizeof(float) * 3)
+		stride
 		);
 	if (outInfo->hasNormals())
 	{
@@ -277,6 +278,9 @@ static bool LoadIntoBuffer(
 			);
 
 	}
+	vao->bindElementBuffer(*indexBuffer);
+	outInfo->setVertexArrayObject(vao);
+
 	
 
 	return true;

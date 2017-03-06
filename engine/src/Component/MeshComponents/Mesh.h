@@ -21,5 +21,8 @@ namespace MoonEngine
 
 		//Submits an OpenGL call (Don't handle binding/unbinding);
 		virtual void draw() const = 0;
+
+		virtual void drawShadow() const{draw();}
+
     };	
 }
