@@ -11,6 +11,12 @@ uniform sampler2D heightmap_normal;
 uniform sampler2D diffuse;
 uniform sampler2D canyonTint;
 
+//Shadow uniforms
+const int NUM_SHADOWS = 3;
+uniform sampler2D shadowMap[NUM_SHADOWS];
+uniform float shadowZSpace[NUM_SHADOWS];
+in vec4 LSPosition[NUM_SHADOWS];
+in float worldZ;
 
 
 uniform vec2 t_resolution;
@@ -20,17 +26,36 @@ uniform vec3 iGlobalLightDir;
 uniform bool showAO;
 
 
-layout (location = 0) out vec3 posOut;
+layout (location = 0) out vec4 posOut;
 layout (location = 1) out vec4 colorOut;
-layout (location = 2) out vec3 normalOut;
+layout (location = 2) out vec4 normalOut;
 
 
-vec3 hsv2rgb(vec3 c)
+vec3 color[3] = vec3[](vec3(0.1,0,0), vec3(0,0.1,0), vec3(0,0,0.1));
+
+float calcShadowFactor(int ShadowIndex, vec4 LSPosition) 
 {
-	vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-	vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-	return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
+    vec3 projCoords = LSPosition.xyz / LSPosition.w;
+    projCoords  = 0.5 * projCoords + 0.5;  
+    float currentDepth = projCoords.z;     
+    float shadowDepth = texture(shadowMap[ShadowIndex], projCoords.xy).r; 
+    float bias = 0.01;
+    //PCF
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap[ShadowIndex], 0);
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap[ShadowIndex], 
+                                     projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.5;        
+        }    
+    }
+    shadow /= 9.0;
+    return 1-shadow;
+    
+}  
 
 float getAO()
 {
@@ -79,8 +104,20 @@ void main()
 	// blend the results of the 3 planar projections.
 	vec4 tex = xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
 	tex *= texture(canyonTint, vec2(0,(fragWorldPos.y + 0.5*noise(fragWorldPos.xy))/200));
-	posOut = fragPos;
-	colorOut = vec4( result * tex.xyz,0.01);
-	normalOut = fragNor;
+	
+	posOut = vec4(fragPos,1);
+	colorOut = vec4( result * tex.xyz,0.1);
+	normalOut.rgb = fragNor;
+	normalOut.a = 1;
+	float ShadowFactor = 0.0;
+    for (int i = 0 ; i < NUM_SHADOWS ; i++) {
+        if (worldZ <= -shadowZSpace[i]) {
+            ShadowFactor = calcShadowFactor(i, LSPosition[i]);
+            //colorOut.rgb += color[i];
+            normalOut.a = ShadowFactor;
+            break;
+            
+        }
+    }
 
 }

@@ -3,8 +3,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#define GLM_ENABLE_EXPERIMENTAL
 #include "MoonEngine.h"
-#include "LevelEditor/LevelLoader.h"
 
 using namespace MoonEngine;
 
@@ -63,7 +63,7 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 300);
     cameraObj->addComponent(cam);
-    cameraObj->addComponent(scene->createComponent<FirstPersonController>(5));
+    cameraObj->addComponent(scene->createComponent<FirstPersonController>());
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
     scene->addGameObject(cameraObj);
 
@@ -75,10 +75,12 @@ int main(int argc, char ** argv)
 
     //Ground
     Transform groundTransform;
-    groundTransform.setScale(glm::vec3(5, 1, 5));
+    groundTransform.setScale(glm::vec3(10, 0.1, 10));
+    groundTransform.setPosition(glm::vec3(0, -0.1, 0));
     std::shared_ptr<GameObject> groundObject = std::make_shared<GameObject>(groundTransform);
-    groundObject->addComponent(scene->createComponent<StaticMesh>("quad.obj", true));
-    groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
+    groundObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "geom.program", boxTextures));
+    groundObject->addComponent(scene->createComponent<BoxCollider>());
     scene->addGameObject(groundObject);
 
     //Upper Platforms

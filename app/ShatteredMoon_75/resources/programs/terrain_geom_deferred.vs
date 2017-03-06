@@ -31,6 +31,14 @@ out vec3 fragWorldPos;
 out vec3 fragWorldNor;
 out vec3 fragNor;
 out vec3 fragTex;
+
+
+//Shadow data
+const int NUM_SHADOWS = 3;
+uniform mat4 LV[NUM_SHADOWS];
+out vec4 LSPosition[NUM_SHADOWS];
+out float worldZ;
+
 uniform sampler2D heightmap;
 uniform sampler2D heightmap_normal;
 
@@ -101,6 +109,7 @@ vec3 getNormal(vec2 globalUV)
 {
 	return texture(heightmap_normal,globalUV).xyz;
 }
+
 void main()
 {
 	vec4 outUnmorphedWorldPos;
@@ -118,6 +127,11 @@ void main()
 	fragTex.z = morphK;
 	gl_Position = P * camVert;
 
+	worldZ = gl_Position.z;
+	for (int i = 0 ; i < NUM_SHADOWS ; i++) {
+        LSPosition[i] = LV[i] * worldPos;
+    }
 }
+
 
 

@@ -9,6 +9,7 @@ DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgr
 _mainCamera(nullptr),
 _gBuffer(width, height),
 _shadowMaps(width, height),
+_debugShadows(false),
 _width(width),
 _height(height),
 _positionTex(nullptr),
@@ -118,7 +119,7 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
     activeProgram->enable();
     _shadowMaps.calculateShadowLevels(scene);
     LOG_GL(__FILE__, __LINE__);
-    
+    glViewport(0,0,_shadowMaps.getWidth(),_shadowMaps.getHeight());
     glCullFace(GL_FRONT);
 
     // The view is set as the light source
@@ -139,24 +140,33 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
 
         for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
         {
-            mesh = obj->getComponent<Mesh>();
-            const MeshInfo * meshInfo = mesh->getMesh();
+            if(obj->getTag()!=T_Terrain)
+            {
 
-            glm::mat4 M = obj->getTransform().getMatrix();
+                Material * tMat = obj->getComponent<Material>();
+                if(tMat->isForward())
+                {
+                    continue;
+                }
+                mesh = obj->getComponent<Mesh>();
+                const MeshInfo * meshInfo = mesh->getMesh();
+                glm::mat4 M = obj->getTransform().getMatrix();
 
-            //Place Uniforms that do not change per GameObject
-            glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-            glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
+                //Place Uniforms that do not change per GameObject
+                glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+                glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 
-            meshInfo->bind();
-            glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
-            mesh->draw();
+                meshInfo->bind();
+                glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
+                mesh->draw();
+            }
         }
 
     }
     _shadowMaps.DBG_DrawToImgui();
     glCullFace(GL_BACK);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0,0,_width,_height);
 }
 
 void DeferredRenderer::geometryPass(Scene * scene)
@@ -165,13 +175,23 @@ void DeferredRenderer::geometryPass(Scene * scene)
 	Mesh* mesh = nullptr;
 	Material* mat = nullptr;
 
+    ImGui::Begin("Shadow Debug");
+    {
+        ImGui::Checkbox("CSM Levels ", &_debugShadows);
+    }
+    ImGui::End();
+
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
 
     
 	// Only the geometry pass writes to the depth buffer
     _gBuffer.bindForGeomPass();
+	GLenum attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, attachments);
+
     _shadowMaps.bindForReading();
+
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -426,7 +446,7 @@ void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
     for (int i = 0; i < NUM_SHADOWS; i++) {
         string shadowMapName = "shadowMap[" + to_string(i) + "]";
         GLTexture * sm = Library::TextureLib->getTexture(SHADOW_TEXTURE + to_string(i));
-        glUniform1i(prog->getUniformLocation(shadowMapName), sm->getTextureId());
+        glUniform1i(prog->getUniformLocation(shadowMapName), 5+i);
     }
     for (int i = 0; i < NUM_SHADOWS; i++) {
         string shadowZName = "shadowZSpace[" + to_string(i) + "]";
@@ -434,6 +454,7 @@ void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
         glm::vec4 camShadow = _mainCamera->getProjection() * shadowVec;
         glUniform1f(prog->getUniformLocation(shadowZName), camShadow.z);
     }
+    glUniform1i(prog->getUniformLocation("debugShadow"), _debugShadows);
     
 }
 

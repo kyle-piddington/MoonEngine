@@ -1,5 +1,6 @@
 #pragma once
 #include "glm/glm.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
 #include "GLWrapper/GLTexture.h"
 #include "GLWrapper/GLConstants.h"
@@ -27,7 +28,11 @@ namespace MoonEngine {
         const glm::mat4 getLightView();
         const float getShadowZ(int shadowLevel);
         void DBG_DrawToImgui();
+        int getWidth(){return _width;}
+        int getHeight(){return _height;}
     private:
+        float _width;
+        float _height;
         std::vector<GLTexture*> _depthTexs;
         std::vector<glm::mat4> _orthos;
         glm::mat4 _lightView;

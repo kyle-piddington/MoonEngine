@@ -29,6 +29,7 @@ currentSelection(CDLODQuadtree::LODSelection(selectionBuffer,maxRenderedTiles,gl
 	rasterSizeX = (float)creationInfo.source->getSizeX();
 	rasterSizeZ = creationInfo.source->getSizeZ();
 
+
 }
 
 Terrain::Terrain(const Terrain & other):
@@ -63,6 +64,7 @@ void Terrain::start()
 	terrainMaterial->addTexture("heightmap_normal",tex.get());
 	mainCamera = GetWorld()->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
 	assert(mainCamera != nullptr);
+	gameObject->addTag(T_Terrain);
 
 }
 
