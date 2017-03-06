@@ -22,7 +22,6 @@ namespace MoonEngine
 	 * to run a post process step
 	 * @param window A handle to the GLFW window
 	 * @param scene  A handle to the current scene
-	 * @param cfg    Additional configuration data
 	 */
 		void setup(GLFWwindow * window, Scene * scene);
 
@@ -44,7 +43,6 @@ namespace MoonEngine
         int _width;
         int _height;
 
-        Camera* _mainCamera;
     };
 }
 

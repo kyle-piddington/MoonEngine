@@ -18,12 +18,6 @@ void GUIStep::setup(GLFWwindow * window, Scene * scene)
 
 	_fbo.addTexture("composite", *_compositeTexture, GL_COLOR_ATTACHMENT0);
     _fbo.addDepthRenderbuffer();
-
-    _mainCamera = scene->getMainCamera()->getComponent<Camera>();
-    if (_mainCamera == nullptr)
-    {
-        LOG(ERROR, "No Camera in scene!");
-    }
 }
 
 void GUIStep::render(Scene * scene)
@@ -31,10 +25,8 @@ void GUIStep::render(Scene * scene)
 	_fbo.bind(GL_FRAMEBUFFER);
 	_renderProgram->enable();
 
-	glm::mat4 V = _mainCamera->getView();
 	glm::mat4 P = glm::ortho(0.0f, (float)_width, (float)_height, 0.0f, -1.0f, 1.0f);
 	glUniformMatrix4fv(_renderProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-	glUniformMatrix4fv(_renderProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
@@ -47,8 +39,6 @@ void GUIStep::render(Scene * scene)
         glm::mat4 M = obj->getTransform().getMatrix();
         glUniformMatrix4fv(_renderProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 
-
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         drawToQuad();
 	}
 
