@@ -7,15 +7,16 @@ namespace MoonEngine {
 
     class GUI : public Component {
     public:
-        GUI(int width, int height);
+        GUI(float width, float height);
 
         void start();
         void update(float dt);
         std::shared_ptr<Component> clone() const;
     private:
-        int _width, _height;
+        float _width, _height;
+        int _current_moon;
         std::unordered_map<std::string, std::shared_ptr<GameObject>> _guiElements;
 
-        void addElement(string name, int scaleX, int scaleY, int posX, int posY);
+        void addElement(string name, float scaleX, float scaleY, float posX, float posY);
     };
 }

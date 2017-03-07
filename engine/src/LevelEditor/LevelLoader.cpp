@@ -1,7 +1,6 @@
 #include <Component/MaterialComponents/Material.h>
 #include <Component/MeshComponents/StaticMesh.h>
-#include <Component/CharacterComponents/CollectableComponent.h>
-#include <Component/CharacterComponents/ShardMovement.h>
+#include <Component/Components.h>
 #include <Component/LightComponents/PointLight.h>
 #include <iostream>
 #include "LevelLoader.h"
@@ -112,13 +111,23 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
 
         object = scene->createGameObject(transform);
         object->addComponent(scene->createComponent<StaticMesh>(levelMaterial->mesh, false));
-        if (rawMaterial == "shard")
+        if (rawMaterial == "shard" || rawMaterial == "moon")
         {
-            object->addComponent(scene->createComponent<CollectableComponent>());   
+            object->addComponent(scene->createComponent<CollectableComponent>("picked_up_" + rawMaterial));
             object->addComponent(scene->createComponent<ShardMovement>());
             object->addComponent(scene->createComponent<PointLight>(glm::vec3(1,1,1), 7));
             object->addTag(T_Dynamic);
-           
+
+            if (rawMaterial == "moon") {
+                stringmap beamTextures({{"diffuse","solid_white.png"}});
+                std::shared_ptr<GameObject> beamObject = std::make_shared<GameObject>(transform);
+                beamObject->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
+                beamObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "cyl_billboard.program", beamTextures,true));
+                beamObject->addComponent(scene->createComponent<BeamComponent>());
+
+                beamObject->getTransform().setScale(glm::vec3(1,1000,1));
+                scene->addGameObject(beamObject);
+            }
         }
          
 

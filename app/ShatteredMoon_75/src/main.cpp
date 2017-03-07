@@ -87,6 +87,7 @@ int main(int argc, char ** argv)
     groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
     scene->addGameObject(groundObject);
 
+
     LevelLoader levelLoader;
     levelLoader.LoadLevel("scenedata.json", scene);
     stringmap cube_texture({{"diffuse", "cube"}});

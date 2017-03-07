@@ -5,13 +5,14 @@
 
 using namespace MoonEngine;
 
-GUI::GUI(int width, int height):
+GUI::GUI(float width, float height):
     _width(width),
-    _height(height)
+    _height(height),
+    _current_moon(0)
 {
 }
 
-void GUI::addElement(string name, int scaleX, int scaleY, int posX, int posY) {
+void GUI::addElement(string name, float scaleX, float scaleY, float posX, float posY) {
     shared_ptr<GameObject> _guiElement = GetWorld()->createGameObject();
     _guiElement->addTag(T_GUI);
 
@@ -27,16 +28,25 @@ void GUI::addElement(string name, int scaleX, int scaleY, int posX, int posY) {
 }
 
 void GUI::start() {
-    addElement("Moon2", 75, 75, _width / 10, 17 * _height / 20);
-    addElement("star", 50, 50, 9 * _width / 10, 35 * _height / 40);
-    addElement("text", 25, 25, 19 * _width / 20, 71 * _height / 80);
+    addElement("Moon0", 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
+    addElement("star", 40.0f, 40.0f, 0.085f * _width, 0.87f * _height);
+    addElement("text", 25.0f, 25.0f, 0.135f * _width, 0.88f * _height);
 
-    addElement("progress", 2 * _width / 5, 25, _width / 2, _height / 15);
-    addElement("wolfmoon", 40, 40, _width / 2, _height / 15);
+    addElement("progress", 0.4f * _width, 25.0f, 0.5f * _width, 0.067f * _height);
+    addElement("wolfmoon", 40.0f, 40.0f, 0.5f * _width, 0.067f * _height);
 
-    on("picked_up_star",[&](const Message & msg)
+    on("picked_up_shard",[&](const Message & msg)
     {
         LOG(INFO, "Received global message");
+    });
+
+    on("picked_up_moon",[&](const Message & msg)
+    {
+        _current_moon++;
+        if (_current_moon <= 3)
+        {
+            addElement("Moon" + std::to_string(_current_moon), 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
+        }
     });
 }
 

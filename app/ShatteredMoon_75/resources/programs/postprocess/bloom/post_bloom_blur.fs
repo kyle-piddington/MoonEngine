@@ -7,11 +7,19 @@ uniform float lod;
 
 layout (location = 0) out vec4 blurOut;
 
+uniform float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
+
 void main()
 {
-    vec4 c = vec4(0);
-    c += 5.0 * textureLod(glowTexture, fragTexCoords - offset, lod);
-    c += 6.0 * textureLod(glowTexture, fragTexCoords, lod);
-    c += 5.0 * textureLod(glowTexture, fragTexCoords + offset, lod);
-    blurOut = c / 16.0;
+    /* Center pixel color */
+    vec3 result = texture(glowTexture, fragTexCoords).rgb * weight[0];
+
+    /* Apply blur for surrounding pixels with offset */
+    for (int i = 1; i < 5; ++i)
+    {
+        result += texture(glowTexture, fragTexCoords + offset).rgb * weight[i];
+        result += texture(glowTexture, fragTexCoords - offset).rgb * weight[i];
+    }
+
+    blurOut = vec4(result, 1.0);
 }

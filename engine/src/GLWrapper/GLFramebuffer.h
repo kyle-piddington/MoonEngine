@@ -28,7 +28,7 @@ namespace MoonEngine
     {
     public:
         struct texture_unit {
-            GLTexture* gl_texture;
+            GLTexture * gl_texture;
             GLuint unit;
             GLenum attachment;
         };
@@ -55,10 +55,8 @@ namespace MoonEngine
         virtual void addTexture(std::string textureName, GLenum attachmentInfo, vector<TexParameter> texParameters);
         void addTexParameter(std::string textureName, TexParameter param);
 
-	    /*Prepare for frame by clear final color texture*/
+	/*Prepare for frame by clear final color texture*/
         void startFrame();
-
-		void addDepthRenderbuffer();
 
         /*Check the status of the framebuffer*/
         void status();
@@ -75,9 +73,9 @@ namespace MoonEngine
 		* buffer to read from
 		* @param name the name of the texture
 		*/
-		void drawColorAttachments(int size);
+	void drawColorAttachments(int size);
 
-        void DBG_DrawToImgui(string guiName);
+	void DBG_DrawToImgui(string guiName);
         
     protected:
         static int _unitCount;
@@ -97,5 +95,4 @@ namespace MoonEngine
     };
 
 
-        //void addRenderbuffer(const GLRenderBuffer & buffer);
 }

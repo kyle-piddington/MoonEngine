@@ -15,4 +15,5 @@ void main()
     else {
         glowOut = vec4(0.0);
     }
+    //glowOut = vec4(color.rgb * 0.09, color.a);
 }
