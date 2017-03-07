@@ -4,30 +4,11 @@
 using namespace MoonEngine;
 
 ShadowMaps::ShadowMaps(int width, int height):
-_handle(0),
-_width(width),
-_height(height)
+    GLFramebuffer(width, height)
 {
-    glGenFramebuffers(1, &_handle);
-    GLTextureConfiguration shadowCFG(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT);
-    GLTexture* tempPtr;
-    for (int i = 0; i < NUM_SHADOWS; i++) {
-        tempPtr = Library::TextureLib->createTexture(SHADOW_TEXTURE + std::to_string(i), shadowCFG);
-        tempPtr->bindRaw();
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-        GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);  
-
-        _depthTexs.push_back(tempPtr);
-    }
-
+   
     glBindFramebuffer(GL_FRAMEBUFFER, _handle);
-    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthTexs[0]->getTextureId(), 0);
-
+   
     glDrawBuffer(GL_NONE);
     glReadBuffer(GL_NONE);
     // status();
@@ -45,21 +26,19 @@ ShadowMaps::~ShadowMaps()
 
 void ShadowMaps::bindForWriting(unsigned shadowLevel)
 {
-    if (shadowLevel >= _depthTexs.size()) {
-        LOG(ERROR, "incorrect shadowLevel selected");
-        exit(EXIT_FAILURE);
-    }
+    texture_unit id = getTextureUnit(SHADOW_TEXTURE + to_string(shadowLevel));
 
     glBindFramebuffer(GL_FRAMEBUFFER, _handle);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthTexs[shadowLevel]->getTextureId(), 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, id.gl_texture->getTextureId(), 0);
     status();
 }
 
 void ShadowMaps::bindForReading()
 {
-    for (unsigned i = 0; i < _depthTexs.size(); i++) {
+    for (unsigned i = 0; i < NUM_SHADOWS; i++) {
+        texture_unit id = getTextureUnit(SHADOW_TEXTURE + to_string(i));
         glActiveTexture(GL_TEXTURE5 + i);
-        glBindTexture(GL_TEXTURE_2D, _depthTexs[i]->getTextureId());
+        glBindTexture(GL_TEXTURE_2D, id.gl_texture->getTextureId());
     }
 }
 
@@ -137,6 +116,12 @@ const float ShadowMaps::getShadowZ(int shadowLevel) {
     return _shadowZDepth[shadowLevel + 1];
 }
 
+void MoonEngine::ShadowMaps::setMidpoints(float level1, float level2)
+{
+    _shadowZDepth[1] = level1;
+    _shadowZDepth[2] = level2;
+}
+
 const glm::mat4 MoonEngine::ShadowMaps::getLightView()
 {
     return _lightView;
@@ -145,33 +130,12 @@ const glm::mat4 MoonEngine::ShadowMaps::getLightView()
 void ShadowMaps::DBG_DrawToImgui()
 {
     ImGui::Begin("Shadow Maps");
-    for (unsigned i = 0; i < _depthTexs.size(); i++)
+    for (unsigned i = 0; i < NUM_SHADOWS; i++)
     {
-        ImGui::Image((void *)_depthTexs[i]->getTextureId(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
+        texture_unit id = getTextureUnit(SHADOW_TEXTURE + to_string(i));
+        ImGui::Image((void *)id.gl_texture->getTextureId(), ImVec2(128, 128), ImVec2(0, 1), ImVec2(1, 0));
     }
     ImGui::End();
 
 }
 
-void ShadowMaps::status()
-{
-    GLuint _framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (_framebufferStatus != GL_FRAMEBUFFER_COMPLETE)
-    {
-        switch (_framebufferStatus)
-        {
-            case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-            LOG(ERROR, "Framebuffer not complete, incomplete attachment");
-            break;
-            case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-            LOG(ERROR, "Framebuffer not complete, No textures attached");
-            break;
-            case GL_FRAMEBUFFER_UNSUPPORTED:
-            LOG(ERROR, "Framebuffer not complete, not supported by openGL version");
-            break;
-            default:
-            LOG(ERROR, "FrameBuffer not complete... " + std::to_string(_framebufferStatus));
-        }
-    }
-    assert(_framebufferStatus == GL_FRAMEBUFFER_COMPLETE);
-}

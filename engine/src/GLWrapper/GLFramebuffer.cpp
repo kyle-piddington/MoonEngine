@@ -123,17 +123,6 @@ void GLFramebuffer::status()
     assert(_framebufferStatus == GL_FRAMEBUFFER_COMPLETE);
 }
 
-void GLFramebuffer::addDepthRenderbuffer()
-{
-	GLuint rbo;
-	glGenRenderbuffers(1, &rbo);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, _width, _height);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
-	//_renderBuffers.push_back(rbo);
-	
-}
-
 void GLFramebuffer::bind(GLuint mode) {
 
 	glBindFramebuffer(mode, _handle);

@@ -68,29 +68,23 @@ namespace MoonEngine
         GLuint getHandle() const;
 
         void UniformTexture(GLProgram* prog, std::string uniformName, std::string textureName);
-		/**
-		* Specify what part to of the
-		* buffer to read from
-		* @param name the name of the texture
-		*/
-	void drawColorAttachments(int size);
 
-	void DBG_DrawToImgui(string guiName);
+    	void DBG_DrawToImgui(string guiName);
         
+        int getWidth() { return _width; }
+        int getHeight() { return _height; }
     protected:
         static int _unitCount;
         std::unordered_map<std::string, texture_unit> _textureHandles;
+        int _width;
+        int _height;
+        GLuint _handle;
 
-    private:
         GLuint release();
 
         GLuint reset(GLuint newObject = 0);
 
         texture_unit getTextureUnit(std::string name) const;
-        
-        int _width;
-        int _height;
-        GLuint _handle;
         GLenum _framebufferStatus;
     };
 

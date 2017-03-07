@@ -8,14 +8,15 @@ DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgr
     string pointLightProgramName, string dirLightProgramName):
 _mainCamera(nullptr),
 _gBuffer(width, height),
-_shadowMaps(width, height),
+_shadowMaps(width*2, height*2),
 _debugShadows(false),
 _width(width),
 _height(height)
 {
+    //GBuffer Init
     GLTextureConfiguration locationCFG(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
     GLTextureConfiguration colorCFG(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
-    GLTextureConfiguration depthCFG(width, height, GL_DEPTH32F_STENCIL8, 
+    GLTextureConfiguration depthCFG(width, height, GL_DEPTH32F_STENCIL8,  
         GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
     GLTextureConfiguration outputCFG(width, height, GL_RGBA16F, GL_RGB, GL_FLOAT);
 
@@ -24,21 +25,33 @@ _height(height)
     Library::TextureLib->createTexture(COLOR_TEXTURE, colorCFG);
     Library::TextureLib->createTexture(DEPTH_STENCIL_TEXTURE, depthCFG);
     Library::TextureLib->createTexture(COMPOSITE_TEXTURE, outputCFG);
-
-
+    
     vector<TexParameter> texParams;
     texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
     texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-    _gBuffer.addTexture(POSITION_TEXTURE, POSITION_ATTACHMENT, texParams);
 
+    _gBuffer.addTexture(POSITION_TEXTURE, POSITION_ATTACHMENT, texParams);
     _gBuffer.addTexture(COLOR_TEXTURE, COLOR_ATTACHMENT);
     _gBuffer.addTexture(NORMAL_TEXTURE, NORMAL_ATTACHMENT);
-
     _gBuffer.addTexture(DEPTH_STENCIL_TEXTURE, GL_DEPTH_ATTACHMENT);
-
     _gBuffer.addTexture(COMPOSITE_TEXTURE, COMPOSITE_ATTACHMENT);
-
     _gBuffer.status();
+
+    //ShadowMaps Init
+    GLTextureConfiguration shadowCFG(width*2, height*2, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT);
+    texParams.clear();
+    texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE));
+    texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER));
+    texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER));
+    GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    for (int i = 0; i < NUM_SHADOWS; i++) {
+        Library::TextureLib->createTexture(SHADOW_TEXTURE + std::to_string(i), shadowCFG);
+        _shadowMaps.addTexture(SHADOW_TEXTURE + std::to_string(i), GL_DEPTH_ATTACHMENT, texParams);
+    }
+    _shadowMaps.status();
 
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
 

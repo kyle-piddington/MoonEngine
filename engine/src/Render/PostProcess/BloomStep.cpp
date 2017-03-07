@@ -19,14 +19,6 @@ BloomStep::BloomStep(int width, int height):
 }
 
 
-void configureMipmapTexture(GLTexture * texture)
-{
-	texture->bindRaw();
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	
-}
-
 void BloomStep::setup(GLFWwindow * window, Scene * scene)
 {
     string path = "postprocess/bloom/post_bloom_";
@@ -36,14 +28,12 @@ void BloomStep::setup(GLFWwindow * window, Scene * scene)
 	_compositeTexture = Library::TextureLib->getTexture(COMPOSITE_TEXTURE);
 
     GLTextureConfiguration colorCFG(_width / 2, _height / 2, GL_RGBA16F, GL_RGBA, GL_FLOAT);
-    _glowTexture = Library::TextureLib->createTexture("_bloomGlowTexture", colorCFG);
-    _tempTexture = Library::TextureLib->createTexture("_bloomTempTexture", colorCFG);
+    _glowTexture = Library::TextureLib->createTexture(BLOOM_GLOW_TEXTURE, colorCFG);
+    _tempTexture = Library::TextureLib->createTexture(BLOOM_TEMP_TEXTURE, colorCFG);
 
-    _compositeFramebuffer.addTexture("composite", *_compositeTexture, GL_COLOR_ATTACHMENT0);
-    _glowFramebuffer.addTexture("glow", *_glowTexture, GL_COLOR_ATTACHMENT0);
-    _glowFramebuffer.addDepthRenderbuffer();
-    _tempFramebuffer.addTexture("temp", *_tempTexture, GL_COLOR_ATTACHMENT0);
-    _tempFramebuffer.addDepthRenderbuffer();
+    _compositeFramebuffer.addTexture(COMPOSITE_TEXTURE, GL_COLOR_ATTACHMENT0);
+    _glowFramebuffer.addTexture(BLOOM_GLOW_TEXTURE, GL_COLOR_ATTACHMENT0);
+    _tempFramebuffer.addTexture(BLOOM_TEMP_TEXTURE, GL_COLOR_ATTACHMENT0);
 }
 
 void BloomStep::extractGlow()
@@ -99,7 +89,7 @@ void BloomStep::blurPass()
 
 void BloomStep::render(Scene * scene)
 {
-    glViewport(0, 0, _glowFramebuffer.getWidth(),_glowFramebuffer.getHeight());
+    glViewport(0, 0, _glowFramebuffer.getWidth(), _glowFramebuffer.getHeight());
     extractGlow();
     blurPass();
 
