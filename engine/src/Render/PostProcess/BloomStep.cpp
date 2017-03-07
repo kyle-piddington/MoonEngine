@@ -10,8 +10,8 @@ using namespace MoonEngine;
 
 BloomStep::BloomStep(int width, int height):
     _compositeFramebuffer(width, height),
-    _glowFramebuffer(width, height),
-    _tempFramebuffer(width, height),
+    _glowFramebuffer(width / 2, height / 2),
+    _tempFramebuffer(width / 2, height / 2),
     _width(width),
     _height(height)
 {
@@ -34,75 +34,71 @@ void BloomStep::setup(GLFWwindow * window, Scene * scene)
 
 	_compositeTexture = Library::TextureLib->getTexture(COMPOSITE_TEXTURE);
 
-    GLTextureConfiguration colorCFG(_width, _height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
+    GLTextureConfiguration colorCFG(_width / 2, _height / 2, GL_RGBA16F, GL_RGBA, GL_FLOAT);
     _glowTexture = Library::TextureLib->createTexture("_bloomGlowTexture", colorCFG);
     _tempTexture = Library::TextureLib->createTexture("_bloomTempTexture", colorCFG);
 
     _compositeFramebuffer.addTexture("composite", *_compositeTexture, GL_COLOR_ATTACHMENT0);
-	_compositeFramebuffer.addDepthRenderbuffer();
     _glowFramebuffer.addTexture("glow", *_glowTexture, GL_COLOR_ATTACHMENT0);
-	configureMipmapTexture(_glowTexture);
+    _glowFramebuffer.addDepthRenderbuffer();
     _tempFramebuffer.addTexture("temp", *_tempTexture, GL_COLOR_ATTACHMENT0);
-	_tempFramebuffer.addDepthRenderbuffer();
-	
+    _tempFramebuffer.addDepthRenderbuffer();
 }
 
 void BloomStep::extractGlow()
 {
     _glowFramebuffer.bind(GL_FRAMEBUFFER);
-	
     _glowProgram->enable();
     _compositeTexture->bind(0);
     glUniform1i(_glowProgram->getUniformLocation("compositeTexture"), 0);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     drawToQuad();
-	_glowTexture->bindRaw();
-	glGenerateMipmap(GL_TEXTURE_2D);
-	LOG_GL(__FILE__, __LINE__);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
 }
 
 void BloomStep::blurPass()
 {
+//    _compositeFramebuffer.bind(GL_FRAMEBUFFER);
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     _blurProgram->enable();
-    /* Add each pass to composite texture */
-    glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_ONE, GL_ONE);
-	LOG_GL(__FILE__, __LINE__);
+    glUniform1i(_blurProgram->getUniformLocation("glowTexture"), 0);
 
+    glDisable(GL_DEPTH_TEST);
 
-    // For each level of detail
-    for (int lod = 0; lod <= 2; lod++) {
-        glUniform1f(_blurProgram->getUniformLocation("lod"), (float)lod);
-		LOG_GL(__FILE__, __LINE__);
-
+    // Repeat blur 5 times
+    int repeat = 5;
+    for (int i = 0; i < repeat; i++) {
         // horizontal blur
         _tempFramebuffer.bind(GL_FRAMEBUFFER);
-		LOG_GL(__FILE__, __LINE__);
+
         _glowTexture->bind(0);
-        glUniform1i(_blurProgram->getUniformLocation("glowTexture"), 0);
-        glUniform2f(_blurProgram->getUniformLocation("offset"), 1.2f/ _width, 0);
-		LOG_GL(__FILE__, __LINE__);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glUniform2f(_blurProgram->getUniformLocation("offset"), 1.2f / _width, 0);
+
         drawToQuad();
-		LOG_GL(__FILE__, __LINE__);
+
         //vertical blur
-        _compositeFramebuffer.bind(GL_FRAMEBUFFER);
+        _glowFramebuffer.bind(GL_FRAMEBUFFER);
+
+        if (i == repeat - 1) {
+            glEnable(GL_BLEND);
+            glBlendEquation(GL_FUNC_ADD);
+            glBlendFunc(GL_ONE, GL_ONE);
+
+            glViewport(0,0,_width,_height);
+            _compositeFramebuffer.bind(GL_FRAMEBUFFER);
+        }
+
         _tempTexture->bind(0);
-        glUniform2f(_blurProgram->getUniformLocation("offset"), 0, 1.2f/ _height);
+        glUniform2f(_blurProgram->getUniformLocation("offset"), 0, 1.2f / _height);
 
         drawToQuad();
-		LOG_GL(__FILE__, __LINE__);
     }
-
     glDisable(GL_BLEND);
 }
 
 void BloomStep::render(Scene * scene)
 {
+    glViewport(0, 0, _glowFramebuffer.getWidth(),_glowFramebuffer.getHeight());
     extractGlow();
     blurPass();
 
