@@ -20,6 +20,6 @@ namespace MoonEngine
         std::shared_ptr<Component> clone() const;
     private:
         std::string _eventName;
-
+        bool _collected;
     };
 }

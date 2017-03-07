@@ -4,7 +4,9 @@
 
 using namespace MoonEngine;
 
-CollectableComponent::CollectableComponent(std::string eventName)
+CollectableComponent::CollectableComponent(std::string eventName):
+    _eventName(eventName),
+    _collected(false)
 {
 
 }
@@ -24,10 +26,14 @@ void CollectableComponent::update(float dt)
 
 void CollectableComponent::onCollisionEnter(Collision col)
 {
+    if (_collected) {
+        return;
+    }
     if (T_Player == col.other->getTag())
     {
     	sendMessage("collected");
 		sendGlobalMessage(_eventName);
+        _collected = true;
     }
 }
 
