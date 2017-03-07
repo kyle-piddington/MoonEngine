@@ -34,6 +34,14 @@ void GUI::start() {
     addElement("progress", 2 * _width / 5, 25, _width / 2, _height / 15);
     addElement("wolfmoon", 40, 40, _width / 2, _height / 15);
 
+    addElement("cube", 100, 100, _width / 2, _height / 2);
+
+    on(INTRO_STATE,[&](const Message & msg)
+    {
+        LOG(INFO, "Removing menu");
+        _guiElements["cube"]->setDeleted();
+    });
+
     on("picked_up_star",[&](const Message & msg)
     {
         LOG(INFO, "Received global message");

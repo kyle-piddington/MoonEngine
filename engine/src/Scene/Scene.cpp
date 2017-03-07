@@ -34,6 +34,9 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
     if (obj->getTag() == T_GUI) {
         _guiGameObjects.push_back(obj);
     }
+    if (obj->getComponent<GameState>() != nullptr) {
+        _gameState = obj->getComponent<GameState>();
+    }
     if (obj->getComponent<Camera>() != nullptr && _cameraFlag == 0) {
         _cameraFlag = 1;
         _mainCamera = obj;

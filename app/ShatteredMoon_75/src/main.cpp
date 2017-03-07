@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    Logger::SetLogLevel(GAME);
+    Logger::SetLogLevel(INFO);
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 
@@ -127,6 +127,10 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> guiObject = std::make_shared<GameObject>();
     guiObject->addComponent(scene->createComponent<GUI>(width, height));
     scene->addGameObject(guiObject);
+
+    std::shared_ptr<GameObject> gameState = std::make_shared<GameObject>();
+    gameState->addComponent(scene->createComponent<GameState>());
+    scene->addGameObject(gameState);
 
     float accumTime;
     int lastUpdateTime;

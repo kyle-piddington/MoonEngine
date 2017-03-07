@@ -18,3 +18,4 @@
 #include "LightComponents/Light.h"
 #include "LightComponents/DirLight.h"
 #include "GUIComponents/GUI.h"
+#include "GameStateComponents/GameState.h"
