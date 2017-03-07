@@ -12,6 +12,7 @@ uniform float windTime;
 uniform float windSpeed;
 uniform float windStrength;
 uniform float windOsc;
+uniform vec2 windDir = vec2(1,0.7);
 uniform vec3 player;
 out vec2 UV;
 
@@ -26,10 +27,10 @@ mat4 calcShear(float shearStr, vec2 shearDir)
 
 void main()
 {
-	vec2 windDir = normalize(vec2(0.7,1));
+	vec2 wDir = normalize(windDir);
 	vec3 centerPoint = vec3(I[3][0],I[3][1],I[3][2]);
 
-	mat4 anim = calcShear(windStrength*sin(windSpeed*windTime + windOsc * dot(windDir, centerPoint.xz)),windDir);
+	mat4 anim = calcShear(windStrength*sin(windSpeed*windTime + windOsc * dot(wDir, centerPoint.xz)),wDir);
 	vec3 playerPushPos = normalize(centerPoint - player);
 	mat4 playerShearAnim = 
 		calcShear(

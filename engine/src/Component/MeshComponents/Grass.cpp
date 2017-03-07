@@ -163,11 +163,13 @@ void Grass::draw() const
     static float windSpeed = 1.1f;
     static float windStrenght = 0.25f;
     static float windOsc = 0.75f;
+    static float windDir[2] = {1,0.7};
     ImGui::Begin("Grass");
     {
         ImGui::DragFloat("Wind Speed",&windSpeed);
         ImGui::DragFloat("Wind Strength", &windStrenght);
         ImGui::DragFloat("Wind Osc", &windOsc);
+        ImGui::DragFloat2("Wind Dir", windDir);
            
     }
     ImGui::End();
@@ -177,6 +179,7 @@ void Grass::draw() const
     glUniform1f(mat->getUniformLocation("windStrength"),windStrenght);
     glUniform1f(mat->getUniformLocation("windOsc"),windOsc);
     glUniform1f(mat->getUniformLocation("windTime"),windTime);
+    glUniform2fv(mat->getUniformLocation("windDir"),1,windDir);
     if(player != nullptr)
     {
         glm::vec3 playerPos = player->getTransform().getPosition();

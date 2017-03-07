@@ -33,7 +33,7 @@ void CollectableComponent::onCollisionEnter(Collision col)
     {
     	sendMessage("collected");
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 7; i++)
 		{
 			GetWorld()->instantiate(GetWorld()->getPrefab("ShardParticle").get(), gameObject->getTransform());
 		}

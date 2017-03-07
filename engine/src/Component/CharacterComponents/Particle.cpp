@@ -42,9 +42,9 @@ void Particle::update(float dt)
 				- gameObject->getTransform().getPosition());
 		}
 		
-		float scale = glm::length(player->getTransform().getPosition() - gameObject->getTransform().getPosition());
+		float scale = (glm::length(player->getTransform().getPosition() - gameObject->getTransform().getPosition()))/4.0f;
 
-		gameObject->getTransform().translate(direction / 6.0f);
+		gameObject->getTransform().translate(direction / 3.0f);
 		gameObject->getTransform().setScale(std::min(0.15f, scale));
 		if (scale <= 0.1f)
 		{
@@ -53,10 +53,7 @@ void Particle::update(float dt)
 	}
 	gameObject->getTransform().rotate(direction *dt);
 		
-	if (accumTime >= 1.0)
-	{
-		Delete(gameObject);
-	}
+	
 }
 
 std::shared_ptr<Component> Particle::clone() const
