@@ -11,13 +11,7 @@ _gBuffer(width, height),
 _shadowMaps(width, height),
 _debugShadows(false),
 _width(width),
-_height(height),
-_positionTex(nullptr),
-_colorTex(nullptr),
-_normalTex(nullptr),
-_textureTex(nullptr),
-_depthTex(nullptr),
-_outputTex(nullptr)
+_height(height)
 {
     GLTextureConfiguration locationCFG(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
     GLTextureConfiguration colorCFG(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
@@ -25,11 +19,11 @@ _outputTex(nullptr)
         GL_DEPTH_STENCIL, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
     GLTextureConfiguration outputCFG(width, height, GL_RGBA16F, GL_RGB, GL_FLOAT);
 
-    _positionTex = Library::TextureLib->createTexture(POSITION_TEXTURE, locationCFG);
-    _normalTex = Library::TextureLib->createTexture(NORMAL_TEXTURE, locationCFG);
-    _colorTex = Library::TextureLib->createTexture(COLOR_TEXTURE, colorCFG);
-    _depthTex = Library::TextureLib->createTexture(DEPTH_STENCIL_TEXTURE, depthCFG);
-    _outputTex = Library::TextureLib->createTexture(COMPOSITE_TEXTURE, outputCFG);
+    Library::TextureLib->createTexture(POSITION_TEXTURE, locationCFG);
+    Library::TextureLib->createTexture(NORMAL_TEXTURE, locationCFG);
+    Library::TextureLib->createTexture(COLOR_TEXTURE, colorCFG);
+    Library::TextureLib->createTexture(DEPTH_STENCIL_TEXTURE, depthCFG);
+    Library::TextureLib->createTexture(COMPOSITE_TEXTURE, outputCFG);
 
 
     vector<TexParameter> texParams;

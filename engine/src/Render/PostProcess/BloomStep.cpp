@@ -41,8 +41,6 @@ void BloomStep::setup(GLFWwindow * window, Scene * scene)
     _glowFramebuffer.addTexture(BLOOM_GLOW_TEXTURE, GL_COLOR_ATTACHMENT0);
 	configureMipmapTexture(_glowTexture);
     _tempFramebuffer.addTexture(BLOOM_TEMP_TEXTURE, GL_COLOR_ATTACHMENT0);
-	_tempFramebuffer.addDepthRenderbuffer();
-	
 }
 
 void BloomStep::extractGlow()

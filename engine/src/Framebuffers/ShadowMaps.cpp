@@ -25,13 +25,13 @@ _height(height)
         _depthTexs.push_back(tempPtr);
     }
 
-    // glBindFramebuffer(GL_FRAMEBUFFER, _handle);
+    glBindFramebuffer(GL_FRAMEBUFFER, _handle);
     // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthTexs[0]->getTextureId(), 0);
 
-    // glDrawBuffer(GL_NONE);
-    // glReadBuffer(GL_NONE);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
     // status();
-    // glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
     glBindTexture(GL_TEXTURE_2D,0);
 
 

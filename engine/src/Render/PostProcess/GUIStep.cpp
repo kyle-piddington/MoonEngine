@@ -17,7 +17,6 @@ void GUIStep::setup(GLFWwindow * window, Scene * scene)
 	_compositeTexture = Library::TextureLib->getTexture(COMPOSITE_TEXTURE);
 
 	_fbo.addTexture(COMPOSITE_TEXTURE, GL_COLOR_ATTACHMENT0);
-    _fbo.addDepthRenderbuffer();
 }
 
 void GUIStep::render(Scene * scene)
