@@ -31,14 +31,18 @@ _outputTex(nullptr)
     _depthTex = Library::TextureLib->createTexture(DEPTH_STENCIL_TEXTURE, depthCFG);
     _outputTex = Library::TextureLib->createTexture(COMPOSITE_TEXTURE, outputCFG);
 
-    _gBuffer.addTexture(POSITION_TEXTURE, *_positionTex, POSITION_ATTACHMENT);
-    _gBuffer.addTexture(COLOR_TEXTURE, *_colorTex, COLOR_ATTACHMENT);
-    _gBuffer.addTexture(NORMAL_TEXTURE, *_normalTex, NORMAL_ATTACHMENT);
 
-    _gBuffer.addTexture("depth", *_depthTex, GL_DEPTH_ATTACHMENT);
-    _gBuffer.addTexture("stencil", *_depthTex, GL_STENCIL_ATTACHMENT);
+    vector<TexParameter> texParams;
+    texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    _gBuffer.addTexture(POSITION_TEXTURE, POSITION_ATTACHMENT, texParams);
 
-    _gBuffer.addTexture(COMPOSITE_TEXTURE, *_outputTex, COMPOSITE_ATTACHMENT);
+    _gBuffer.addTexture(COLOR_TEXTURE, COLOR_ATTACHMENT);
+    _gBuffer.addTexture(NORMAL_TEXTURE, NORMAL_ATTACHMENT);
+
+    _gBuffer.addTexture(DEPTH_STENCIL_TEXTURE, GL_DEPTH_ATTACHMENT);
+
+    _gBuffer.addTexture(COMPOSITE_TEXTURE, COMPOSITE_ATTACHMENT);
 
     _gBuffer.status();
 

@@ -7,7 +7,9 @@
 #include "util/Logger.h"
 #include "GLConstants.h"
 #include "GLProgram.h"
+#include "Libraries/Library.h"
 #include "thirdparty/imgui/imgui.h"
+#include <functional>
 #include <vector>
 /**
  * GLFramebuffer holds on to framebuffer
@@ -20,6 +22,8 @@
 namespace MoonEngine
 {
     
+    typedef std::function<void()> TexParameter;
+
 	class GLFramebuffer
     {
     public:
@@ -47,9 +51,11 @@ namespace MoonEngine
          * @param layerName the name of the texture in the framebuffer
          * @param texture   the texture itself.
          */
-        void addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo);
-        void bindTexture();
-        /*Prepare for frame by clear final color texture*/
+        virtual void addTexture(std::string textureName, GLenum attachmentInfo);
+        virtual void addTexture(std::string textureName, GLenum attachmentInfo, vector<TexParameter> texParameters);
+        void addTexParameter(std::string textureName, TexParameter param);
+
+	    /*Prepare for frame by clear final color texture*/
         void startFrame();
 
 		void addDepthRenderbuffer();
@@ -75,7 +81,6 @@ namespace MoonEngine
         
     protected:
         static int _unitCount;
-        int _colorCount;
         std::unordered_map<std::string, texture_unit> _textureHandles;
 
     private:

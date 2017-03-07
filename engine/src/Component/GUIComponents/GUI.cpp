@@ -36,7 +36,7 @@ void GUI::start() {
 
     on("picked_up_star",[&](const Message & msg)
     {
-        std::cout << "Received global message" << endl;
+        LOG(INFO, "Received global message");
     });
 }
 

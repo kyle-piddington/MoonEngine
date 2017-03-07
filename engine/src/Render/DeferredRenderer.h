@@ -7,6 +7,7 @@
 #include "Util/Logger.h"
 #include "GLWrapper/OpenGL.h"
 #include <glm/gtc/type_ptr.hpp>
+#include <functional>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/norm.hpp>
 #include "Component/Components.h"

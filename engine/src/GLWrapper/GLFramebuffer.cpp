@@ -9,7 +9,6 @@ GLFramebuffer::GLFramebuffer(int width, int height):
     _width(width),
     _height(height),
     _framebufferStatus(GL_FRAMEBUFFER_UNDEFINED),
-    _colorCount(0),
     _textureHandles(std::unordered_map<std::string, texture_unit>())
 {
     glGenFramebuffers(1, &_handle);
@@ -40,31 +39,59 @@ GLFramebuffer & GLFramebuffer::operator=(GLFramebuffer && other)
 }
 
 
-void GLFramebuffer::addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo)
+void GLFramebuffer::addTexture(std::string textureName, GLenum attachmentInfo)
 {
-    assert(texture.getWidth() == _width && texture.getHeight() == _height);
+    GLTexture* texture = Library::TextureLib->getTexture(textureName);
+    assert(texture->getWidth() == _width && texture->getHeight() == _height);
     LOG_GL(__FILE__, __LINE__);
     glBindFramebuffer(GL_FRAMEBUFFER, _handle);
     LOG_GL(__FILE__, __LINE__);
-    texture.bindRaw();
+    texture->bindRaw();
     LOG_GL(__FILE__, __LINE__);
-
-    if (attachmentInfo >= GL_COLOR_ATTACHMENT0 && attachmentInfo < GL_COLOR_ATTACHMENT10) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        _colorCount += 1;
-    }
-    LOG_GL(__FILE__, __LINE__);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentInfo, GL_TEXTURE_2D, texture.getTextureId(), 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentInfo, GL_TEXTURE_2D, texture->getTextureId(), 0);
     texture_unit txUnit;
     
-    txUnit.gl_texture = &texture;
+    txUnit.gl_texture = texture;
     txUnit.unit = _unitCount++;
     txUnit.attachment = attachmentInfo;
     _textureHandles[textureName] = txUnit;
     _framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	
     Unbind();
+}
+
+
+void GLFramebuffer::addTexture(std::string textureName, GLenum attachmentInfo, vector<TexParameter> texParameters)
+{
+    GLTexture* texture = Library::TextureLib->getTexture(textureName);
+    assert(texture->getWidth() == _width && texture->getHeight() == _height);
+    LOG_GL(__FILE__, __LINE__);
+    glBindFramebuffer(GL_FRAMEBUFFER, _handle);
+    LOG_GL(__FILE__, __LINE__);
+    texture->bindRaw();
+    LOG_GL(__FILE__, __LINE__);
+
+    for (unsigned i = 0; i < texParameters.size(); i++)
+        texParameters[i]();
+
+    LOG_GL(__FILE__, __LINE__);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentInfo, GL_TEXTURE_2D, texture->getTextureId(), 0);
+    texture_unit txUnit;
+
+    txUnit.gl_texture = texture;
+    txUnit.unit = _unitCount++;
+    txUnit.attachment = attachmentInfo;
+    _textureHandles[textureName] = txUnit;
+    _framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+    Unbind();
+}
+
+void GLFramebuffer::addTexParameter(std::string textureName, TexParameter param)
+{
+    texture_unit id = getTextureUnit(textureName);
+    id.gl_texture->bindRaw();
+    param();
 }
 
 void GLFramebuffer::startFrame() {
@@ -132,15 +159,7 @@ void GLFramebuffer::UniformTexture(GLProgram * prog, std::string uniformName, st
 }
 
 
-void GLFramebuffer::drawColorAttachments(int size) {
-	vector<GLuint> colors;
-	for (int i = 0; i < size; i++)
-		colors.push_back(GL_COLOR_ATTACHMENT0 + i);
-    bind(GL_DRAW_FRAMEBUFFER);
-    glDrawBuffers(size, &colors[0]);
-}
-
-void MoonEngine::GLFramebuffer::DBG_DrawToImgui(string guiName)
+void GLFramebuffer::DBG_DrawToImgui(string guiName)
 {
         ImGui::Begin(guiName.c_str());
         for (auto texHandlePair : _textureHandles)
