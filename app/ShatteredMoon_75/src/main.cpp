@@ -87,15 +87,6 @@ int main(int argc, char ** argv)
     groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
     scene->addGameObject(groundObject);
 
-    stringmap beamTextures({{"diffuse","solid_white.png"}});
-    std::shared_ptr<GameObject> beamObject = std::make_shared<GameObject>(playerTransform);
-    beamObject->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
-    beamObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "cyl_billboard.program", beamTextures,true));
-    beamObject->addComponent(scene->createComponent<BeamComponent>());
-   
-    beamObject->getTransform().setScale(glm::vec3(1,1000,1));
-    scene->addGameObject(beamObject);
-
 
     LevelLoader levelLoader;
     levelLoader.LoadLevel("scenedata.json", scene);
@@ -137,6 +128,17 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> guiObject = std::make_shared<GameObject>();
     guiObject->addComponent(scene->createComponent<GUI>(width, height));
     scene->addGameObject(guiObject);
+
+    Transform tran;
+    tran.setPosition(glm::vec3(0.0, 150.0, 0.0));
+    tran.setScale(glm::vec3(5, 5, 5));
+
+    stringmap sun = {{"billboard", "sun.tga"}};
+
+    std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
+    sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
+    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun, true));
+    scene->addGameObject(sunBillboard);
 
     float accumTime;
     int lastUpdateTime;

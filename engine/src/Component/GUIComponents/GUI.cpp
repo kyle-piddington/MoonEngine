@@ -33,9 +33,9 @@ void GUI::start() {
     addElement("text", 25.0f, 25.0f, 0.135f * _width, 0.88f * _height);
 
     addElement("progress", 0.4f * _width, 25.0f, 0.5f * _width, 0.067f * _height);
-    addElement("wolfmoon", 40.0f, 40.0f, 0.5f * _width, 0.067f * _height);
+    addElement("wolfmoon", 40.0f, 40.0f, 0.33f * _width, 0.067f * _height);
 
-    on("picked_up_star",[&](const Message & msg)
+    on("picked_up_shard",[&](const Message & msg)
     {
         std::cout << "Received global message" << endl;
     });
@@ -45,7 +45,7 @@ void GUI::start() {
         _current_moon++;
         if (_current_moon <= 3)
         {
-            addElement("Moon" + _current_moon, 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
+            addElement("Moon" + std::to_string(_current_moon), 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
         }
     });
 }
