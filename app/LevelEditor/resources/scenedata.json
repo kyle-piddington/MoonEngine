@@ -1,129 +1,146 @@
 {
-"defaults": {
-    "terrain": {
-        "name": "terrain",
-        "size": [1000.0, 200.0, 1000.0]
-    },
-    "player": {
-        "material": "penguin",
-        "start": {
-            "position": [0.0, 0.0, 0.0],
-            "rotation": [0.0, 0.0, 0.0]
+    "defaults": {
+        "terrain": {
+            "name": "terrain",
+            "size": [1000.0, 200.0, 1000.0]
+        },
+        "player": {
+            "material": "penguin",
+            "start": {
+                "position": [0.0, 0.0, 0.0],
+                "rotation": [0.0, 0.0, 0.0]
+            }
         }
-    }
-},
-"materials": [
-    {
-        "name": "rock",
-        "mesh": "Rock.obj",
-        "program": "phong.program",
-        "textures": {
-            "diffuse": "Rock.tga"
-        },
-        "collider": false
     },
-    {
-        "name": "rock2",
-        "mesh": "rock2.obj",
-        "program": "phong.program",
-        "textures": {
-            "diffuse": "rock2.tga"
-        },
-        "collider": false
-    },
-    {
-        "name": "penguin",
-        "mesh": "penguin.obj",
-        "program": "phong.program",
-        "textures": {
-            "diffuse": "penguin"
-        },
-        "collider": false
-    },
-    {
-        "name": "wolf",
-        "mesh": "wolf.obj",
-        "program": "phong.program",
-        "textures": {
-            "diffuse": "wolf.tga"
-        },
-        "collider": false
-    },
-    {
-        "name": "cactus",
-        "mesh": "cactus.obj",
-        "program": "phong.program",
-        "textures": {
-            "diffuse": "cactus.jpg"
-        },
-        "collider": false
-    },
-    {
-        "name": "cactus2",
-        "mesh": "cactus2.obj",
-        "program": "phong.program",
-        "textures": {
-            "diffuse": "cactus2.png"
-        },
-        "collider": false
-    },
-    {
-        "name": "stone",
-        "mesh": "stone.obj",
-        "program": "phong.program",
-        "textures": {
-            "diffuse": "stone.jpg"
-        },
-        "collider": false
-    },
-    {
-        "name": "stone2",
-        "mesh": "stone2.obj",
-        "program": "phong.program",
-        "textures": {
-            "diffuse": "stone2.jpg"
-        },
-        "collider": false
-    },
-    {
-        "name": "skydome",
-        "mesh": "sphere.obj",
-        "program": "skydome.program",
-        "textures": {
-            "skycolor": "skycolor"
-        },
-        "collider": true
-
-    },
-    {
-        "name" : "shard",
-        "mesh" : "shard.obj",
-        "program" : "phong.program",
-        "textures": {
-            "diffuse": "solid_white.png"
-        },
-        "collider" : true
-    }
-    
-],
-
-"map": [
-    {
-        "material": "rock",
-        "position": [2.5, 10.5, 2.5],
-        "rotation": [0.0, 0.0, 0.0],
-        "scale": [1.0, 1.0, 1.0]
-    },
-    {
-        "material": "rock",
-        "position": [-2.5, 10.5, -2.5],
-        "tint": [0.3, 0.6, 0.3]
-    },
-    {
-        "material": "skydome",
-        "position": [0.0, 0.0, 0.0],
-        "rotation": [0.0, 0.0, 0.0],
-        "scale": [1000.0, 1000.0, 1000.0]
-    }
-]
+    "materials": [{
+            "name": "rock",
+            "mesh": "Rock.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "Rock.tga"
+            },
+            "collider": true
+        }, {
+            "name": "rock2",
+            "mesh": "rock2.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "rock2.tga"
+            },
+            "collider": true
+        }, {
+            "name": "penguin",
+            "mesh": "penguin.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "penguin"
+            },
+            "collider": false
+        }, {
+            "name": "wolf",
+            "mesh": "wolf.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "wolf.tga"
+            },
+            "collider": false
+        }, {
+            "name": "cactus",
+            "mesh": "cactus.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "cactus.png"
+            },
+            "collider": true
+        }, {
+            "name": "stone",
+            "mesh": "stone.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "stone.jpg"
+            },
+            "collider": true
+        }, {
+            "name": "stone2",
+            "mesh": "Stone2.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "stone2.png"
+            },
+            "collider": true
+        }, {
+            "name": "stone3",
+            "mesh": "Stone3.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "stone2.png"
+            },
+            "collider": true
+        }, {
+            "name": "shard",
+            "mesh": "shard.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "solid_white.png"
+            },
+            "collider": true
+        }, {
+            "name": "moon",
+            "mesh": "MoonPiece.obj",
+            "program": "phong.program",
+            "textures": {
+                "diffuse": "moonshard.png"
+            },
+            "collider": true
+        }, {
+            "name": "skydome",
+            "mesh": "sphere.obj",
+            "program": "skydome.program",
+            "textures": {
+                "skycolor": "skycolor"
+            },
+            "forward": true,
+            "collider": false
+        }],
+    "map": [{
+            "material": "rock",
+            "position": [2.5, 10.5, 2.5],
+            "rotation": [0.0, -0.0, 0.0],
+            "scale": [1.0, 1.0, 1.0]
+        }, {
+            "material": "rock",
+            "position": [-2.5, 10.5, -2.5],
+            "rotation": [0.0, -0.0, 0.0],
+            "scale": [1.0, 1.0, 1.0]
+        }, {
+            "material": "skydome",
+            "position": [0.0, 0.0, 0.0],
+            "rotation": [0.0, -0.0, 0.0],
+            "scale": [1000.0, 1000.0, 1000.0]
+        }, {
+            "material": "moon",
+            "position": [-47.46078109741211, 104.01529693603516, -114.6949462890625],
+            "rotation": [0.0, -0.0, 0.0],
+            "scale": [1.0, 1.0, 1.0]
+        }, {
+            "material": "moon",
+            "position": [-137.12522888183595, 102.89398956298828, 96.3516616821289],
+            "rotation": [0.0, -0.0, 0.0],
+            "scale": [1.0, 1.0, 1.0]
+        }, {
+            "material": "shard",
+            "position": [25.78530502319336, 106.16777038574219, -251.25436401367188],
+            "rotation": [0.0, -0.0, 0.0],
+            "scale": [0.5857865214347839, 0.5857865214347839, 0.5857865214347839]
+        }, {
+            "material": "shard",
+            "position": [30.70822525024414, 108.427734375, -231.832763671875],
+            "rotation": [0.0, -0.0, 0.0],
+            "scale": [0.5857865214347839, 0.5857865214347839, 0.5857865214347839]
+        }, {
+            "material": "shard",
+            "position": [26.406782150268556, 107.25534057617188, -215.47799682617188],
+            "rotation": [0.0, -0.0, 0.0],
+            "scale": [0.5857865214347839, 0.5857865214347839, 0.5857865214347839]
+        }]
 }
