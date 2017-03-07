@@ -11,7 +11,8 @@ namespace MoonEngine
     public:
         CollectableComponent(std::string eventName = "picked_up_star");
 
-        void start();
+		
+		void start();
 
         void update(float dt);
 

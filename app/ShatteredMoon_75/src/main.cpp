@@ -70,6 +70,16 @@ int main(int argc, char ** argv)
 
     scene->addGameObject(playerObj);
 
+	Transform particleTransform = Transform();
+	stringmap particleMap({ { "diffuse", "solid_white" } });
+	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(particleTransform);
+	particleObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
+	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
+	particleObj->addComponent(scene->createComponent<Particle>());
+	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(1, 1, 1), 3));
+
+	scene->addPrefab("ShardParticle", particleObj.get());
+
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
     cameraObj->addComponent(cam);
@@ -164,8 +174,8 @@ int main(int argc, char ** argv)
 
     app->run(scene, renderer);
 
-    delete scene;
-    delete renderer;
+    //delete scene;
+    //delete renderer;
 
     return 0;
 

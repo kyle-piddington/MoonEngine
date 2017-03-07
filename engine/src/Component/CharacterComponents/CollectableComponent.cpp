@@ -32,8 +32,15 @@ void CollectableComponent::onCollisionEnter(Collision col)
     if (T_Player == col.other->getTag())
     {
     	sendMessage("collected");
+
+		for (int i = 0; i < 10; i++)
+		{
+			GetWorld()->instantiate(GetWorld()->getPrefab("ShardParticle").get(), gameObject->getTransform());
+		}
 		sendGlobalMessage(_eventName);
         _collected = true;
+		Delete(gameObject);
+
     }
 }
 

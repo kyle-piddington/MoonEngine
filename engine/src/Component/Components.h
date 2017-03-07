@@ -9,6 +9,7 @@
 #include "MaterialComponents/SimpleTexture.h"
 #include "CollisionComponents/BoxCollider.h"
 #include "CharacterComponents/CollectableComponent.h"
+#include "CharacterComponents/Particle.h"
 #include "CharacterComponents/ShardMovement.h"
 #include "CharacterComponents/BeamComponent.h"
 #include "CharacterComponents/ThirdPersonCharacterController.h"
