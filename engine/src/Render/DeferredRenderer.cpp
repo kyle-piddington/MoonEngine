@@ -8,7 +8,8 @@ DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgr
     string pointLightProgramName, string dirLightProgramName):
 _mainCamera(nullptr),
 _gBuffer(width, height),
-_shadowMaps(1024, 1024),
+_shadowMaps(width, height),
+_debugShadows(false),
 _width(width),
 _height(height),
 _positionTex(nullptr),
@@ -174,6 +175,12 @@ void DeferredRenderer::geometryPass(Scene * scene)
 	Mesh* mesh = nullptr;
 	Material* mat = nullptr;
 
+    ImGui::Begin("Shadow Debug");
+    {
+        ImGui::Checkbox("CSM Levels ", &_debugShadows);
+    }
+    ImGui::End();
+
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
 
@@ -182,7 +189,10 @@ void DeferredRenderer::geometryPass(Scene * scene)
     _gBuffer.bindForGeomPass();
 	GLenum attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, attachments);
+
+
     _shadowMaps.bindForReading();
+
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -378,6 +388,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_BLEND);
 
+    std::shared_ptr<GameObject> dirLight = scene->getDirLightObject();
 
     for (std::shared_ptr<GameObject> obj : scene->getForwardGameObjects())
     {
@@ -396,6 +407,12 @@ void DeferredRenderer::forwardPass(Scene* scene) {
             glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
             glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 
+            if (activeProgram->hasUniform("dirLight.direction"))
+            {
+                glm::vec3 lDir = dirLight->getComponent<DirLight>()->getDirection();
+                glUniform3fv(activeProgram->getUniformLocation("dirLight"), 1,
+                     glm::value_ptr(lDir));
+            }
         }
         mat->bind();
         meshInfo->bind();
@@ -415,6 +432,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
         if (activeProgram->hasUniform("iGlobalTime")) {
             glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
         }
+
         mesh->draw();
 
 
@@ -445,6 +463,7 @@ void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
         glm::vec4 camShadow = _mainCamera->getProjection() * shadowVec;
         glUniform1f(prog->getUniformLocation(shadowZName), camShadow.z);
     }
+    glUniform1i(prog->getUniformLocation("debugShadow"), _debugShadows);
     
 }
 

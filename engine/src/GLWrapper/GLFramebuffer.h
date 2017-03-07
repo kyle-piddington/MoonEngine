@@ -82,7 +82,9 @@ namespace MoonEngine
 		const std::unordered_map<std::string, texture_unit> & getTextureHandles() const;
 
         void DBG_DrawToImgui(string guiName);
-        
+
+		int getWidth(){return _width;}
+		int getHeight(){return _height;}
 
     private:
         GLuint release();

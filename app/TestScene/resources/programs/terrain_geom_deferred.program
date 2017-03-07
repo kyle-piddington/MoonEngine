@@ -1,5 +1,0 @@
-{
-	"name" : "terrain-geom",
-	"vertex" : "resources/programs/terrain_geom_deferred.vs",
-	"fragment" : "resources/programs/terrain_geom_deferred.fs"
-}

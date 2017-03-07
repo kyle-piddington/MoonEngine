@@ -18,6 +18,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
     float windowWidth = 640, windowHeight = 480;
     GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "ShatteredMoon", nullptr, nullptr);
     if (window == nullptr)
@@ -96,6 +97,7 @@ int main(int argc, char ** argv)
     groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
     scene->addGameObject(groundObject);
 
+
     LevelLoader levelLoader;
     levelLoader.LoadLevel("scenedata.json", scene);
     stringmap cube_texture({{"diffuse", "cube"}});
@@ -105,7 +107,6 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
     scene->addGameObject(dirLight);
-
 
     //Terrain
     //Preload canyon 32f texture
@@ -134,6 +135,21 @@ int main(int argc, char ** argv)
     terrainObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2,0.2,0.2), "terrain_geom_deferred.program",canyon_texture));
     scene->addGameObject(terrainObject);
 
+    std::shared_ptr<GameObject> guiObject = std::make_shared<GameObject>();
+    guiObject->addComponent(scene->createComponent<GUI>(width, height));
+    scene->addGameObject(guiObject);
+
+    Transform tran;
+    tran.setPosition(glm::vec3(0.0, 150.0, 0.0));
+    tran.setScale(glm::vec3(5, 5, 5));
+
+    stringmap sun = {{"billboard", "sun.tga"}};
+
+    std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
+    sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
+    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun, true));
+    scene->addGameObject(sunBillboard);
+
     float accumTime;
     int lastUpdateTime;
     scene->addCustomUpdate([&](float dt) {
@@ -153,12 +169,13 @@ int main(int argc, char ** argv)
         "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
     renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
+    renderer->addPostProcessStep(std::make_shared<GUIStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<HDRStep>("postprocess/bloom/post_HDR_tonemap.program"));
 
     app->run(scene, renderer);
 
-    delete scene;
-    delete renderer;
+    //delete scene;
+    //delete renderer;
 
     return 0;
 

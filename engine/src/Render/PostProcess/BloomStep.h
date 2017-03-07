@@ -40,7 +40,7 @@ namespace MoonEngine
 	private:
         GLFramebuffer _compositeFramebuffer;
         GLFramebuffer _glowFramebuffer;
-        GLFramebuffer _tempFramebuffer;
+		GLFramebuffer _tempFramebuffer;
 
 		GLTexture * _compositeTexture;
         GLTexture * _glowTexture;

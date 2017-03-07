@@ -54,6 +54,9 @@ namespace MoonEngine
 
         const std::vector<std::shared_ptr<GameObject>> getForwardGameObjects() const;
 
+        const std::vector<std::shared_ptr<GameObject>> getGuiGameObjects() const;
+
+
         float distanceFromFrutrum(glm::vec4 frustPlane, glm::vec3 point);
         
 
@@ -126,6 +129,8 @@ namespace MoonEngine
 
         void addGlobalMessage(const Message & message);
 
+        void addGlobalHandler(std::string message, const messageFn & fn);
+
         /**
          * Perform collision detection, and call onCollisionEnter() methods
          * after finishing collision detection.
@@ -175,6 +180,7 @@ namespace MoonEngine
         std::vector<std::shared_ptr<GameObject>> _gameObjects;
         std::vector<std::shared_ptr<GameObject>> _renderableGameObjects;
         std::vector<std::shared_ptr<GameObject>> _forwardGameObjects;
+        std::vector<std::shared_ptr<GameObject>> _guiGameObjects;
 
 		std::shared_ptr<KDTree> _renderTree;
 		std::shared_ptr<GameObject> _playerObject;
@@ -204,6 +210,8 @@ namespace MoonEngine
 
         //Global messages
         std::vector<Message> _globalMessageQueue;
+
+        std::unordered_map<std::string, std::vector<messageFn> > _globalMessageHandlers;
 
         float _globalTime;
         glm::vec3 _globalLightDir;
