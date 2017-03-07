@@ -388,6 +388,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_BLEND);
 
+    std::shared_ptr<GameObject> dirLight = scene->getDirLightObject();
 
     for (std::shared_ptr<GameObject> obj : scene->getForwardGameObjects())
     {
@@ -406,6 +407,12 @@ void DeferredRenderer::forwardPass(Scene* scene) {
             glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
             glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 
+            if (activeProgram->hasUniform("dirLight.direction"))
+            {
+                glm::vec3 lDir = dirLight->getComponent<DirLight>()->getDirection();
+                glUniform3fv(activeProgram->getUniformLocation("dirLight"), 1,
+                     glm::value_ptr(lDir));
+            }
         }
         mat->bind();
         meshInfo->bind();
@@ -425,6 +432,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
         if (activeProgram->hasUniform("iGlobalTime")) {
             glUniform1f(activeProgram->getUniformLocation("iGlobalTime"), scene->getGlobalTime());
         }
+
         mesh->draw();
 
 

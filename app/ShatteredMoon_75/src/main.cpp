@@ -129,6 +129,17 @@ int main(int argc, char ** argv)
     guiObject->addComponent(scene->createComponent<GUI>(width, height));
     scene->addGameObject(guiObject);
 
+    Transform tran;
+    tran.setPosition(glm::vec3(0.0, 150.0, 0.0));
+    tran.setScale(glm::vec3(5, 5, 5));
+
+    stringmap sun = {{"billboard", "sun.tga"}};
+
+    std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
+    sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
+    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun, true));
+    scene->addGameObject(sunBillboard);
+
     float accumTime;
     int lastUpdateTime;
     scene->addCustomUpdate([&](float dt) {

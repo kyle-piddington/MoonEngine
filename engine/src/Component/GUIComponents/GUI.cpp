@@ -33,7 +33,7 @@ void GUI::start() {
     addElement("text", 25.0f, 25.0f, 0.135f * _width, 0.88f * _height);
 
     addElement("progress", 0.4f * _width, 25.0f, 0.5f * _width, 0.067f * _height);
-    addElement("wolfmoon", 40.0f, 40.0f, 0.5f * _width, 0.067f * _height);
+    addElement("wolfmoon", 40.0f, 40.0f, 0.33f * _width, 0.067f * _height);
 
     on("picked_up_shard",[&](const Message & msg)
     {
