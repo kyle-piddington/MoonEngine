@@ -42,6 +42,8 @@ namespace MoonEngine
 		bool intersectsRay(glm::vec3 origin, glm::vec3 direction, Hit * hit);
 
 		float heightAt(float X, float Z);
+		//Get the last terrain selection (Used by grass)
+		int getLastSelection(CDLODQuadtree::SelectedNode ** bfrPtr);
 	private:
 
 		void setupMainUniforms(GLProgram * program) const;

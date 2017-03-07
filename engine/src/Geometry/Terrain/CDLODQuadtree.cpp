@@ -189,7 +189,7 @@ void CDLODQuadtree::Node::create(int x, int z, int size, int level, const Create
 
 //Selection Routine for CDLODQuadTree
 //If the parent is fully in the frustrum, we can return true without vfc
-CDLODQuadtree::Node::LODSelectResult CDLODQuadtree::Node::LODSelect(LODSelectInfo & selInfo, bool parentFullyInFrustrum) const
+CDLODQuadtree::Node::LODSelectResult CDLODQuadtree::Node::LODSelect(LODSelectInfo & selInfo, bool parentFullyInFrustrum)
 {
 	BoundingBox box;
 	getAABB(box, selInfo.rasterSizeX, selInfo.rasterSizeZ, selInfo.mapDims);
@@ -204,12 +204,14 @@ CDLODQuadtree::Node::LODSelectResult CDLODQuadtree::Node::LODSelect(LODSelectInf
 	if(frustrumIt == IT_Outside)
 	{
 
+		previouslySelected = false;
 		return IT_OutOfFrustrum;
 	}
 	
 	float distLimit = lodRanges[this->getLevel()];
 	if(!box.intersectSphereSq(observerPos, distLimit*distLimit))
 	{
+		previouslySelected = false;
 		return IT_OutOfRange;
 	}
 
@@ -253,7 +255,9 @@ CDLODQuadtree::Node::LODSelectResult CDLODQuadtree::Node::LODSelect(LODSelectInf
 			!bRemoveSubTL, 
 			!bRemoveSubTR, 
 			!bRemoveSubBL, 
-			!bRemoveSubBR );
+			!bRemoveSubBR, previouslySelected);
+		previouslySelected = true;
+
 		if(this->getLevel() != 0)
 		{
 			float maxCamDist = sqrtf(box.maxDistFromPointSq(observerPos));
@@ -458,7 +462,7 @@ bool AABBRay( const glm::vec3 & rayOrigin, const glm::vec3 & rayDirection, const
   }
 
 
-  void CDLODQuadtree::LODSelect(LODSelection  * selectionObj) const
+  void CDLODQuadtree::LODSelect(LODSelection  * selectionObj) 
   {
   	const glm::vec3 & cameraPos = selectionObj->m_observerPos;
   	const float visibilityDistance = selectionObj->m_visibilityDistance;
