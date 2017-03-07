@@ -70,13 +70,12 @@ int main(int argc, char ** argv)
     scene->addGameObject(playerObj);
 
 	Transform particleTransform = Transform();
-
+	stringmap particleMap({ { "diffuse", "solid_white" } });
 	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(particleTransform);
-	particleObj->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
-	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(0.1, 0.1, 0.1), "geom.program", textures));
-	particleObj->addComponent(scene->createComponent<BoxCollider>());
+	particleObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
+	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
 	particleObj->addComponent(scene->createComponent<Particle>());
-	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(1, 1, 1), 7));
+	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(1, 1, 1), 3));
 
 	scene->addPrefab("ShardParticle", particleObj.get());
 

@@ -14,11 +14,12 @@ Particle::Particle() :
 
 void Particle::start()
 {
-	float a = (float)rand() / RAND_MAX * 6.28f;
-	float b = (float)rand() / RAND_MAX * 6.28f;
-	float c = (float)rand() / RAND_MAX * 6.28f;
-	direction = glm::normalize(glm::vec3(a, b, c));
+	float a = (float)rand() / RAND_MAX * 6.28f - 3.14;
+	float b = (float)rand() / RAND_MAX * 6.28f - 3.14;
+	float c = (float)rand() / RAND_MAX * 6.28f - 3.14;
+	direction = glm::vec3(a, b, c);
 	player = GetWorld()->getPlayer();
+	gameObject->getTransform().setScale(0.15f);
 }
 
 void Particle::update(float dt)
@@ -26,7 +27,8 @@ void Particle::update(float dt)
 	accumTime += dt;
 	if (state == INIT)
 	{
-		gameObject->getTransform().translate(dt * direction);
+		float speed = (0.7 - accumTime);
+		gameObject->getTransform().translate(dt * direction * speed);
 		if (accumTime >= 0.7f)
 		{
 			state = GATHER;
@@ -43,12 +45,14 @@ void Particle::update(float dt)
 		float scale = glm::length(player->getTransform().getPosition() - gameObject->getTransform().getPosition());
 
 		gameObject->getTransform().translate(direction / 6.0f);
-		gameObject->getTransform().setScale(std::min(0.25f, scale));
+		gameObject->getTransform().setScale(std::min(0.15f, scale));
 		if (scale <= 0.1f)
 		{
 			Delete(gameObject);
 		}
 	}
+	gameObject->getTransform().rotate(direction *dt);
+		
 	if (accumTime >= 1.0)
 	{
 		Delete(gameObject);
