@@ -27,7 +27,11 @@ void CollectableComponent::onCollisionEnter(Collision col)
     if (T_Player == col.other->getTag())
     {
     	sendMessage("collected");
-        //Delete(gameObject);
+		for (int i = 0; i < 10; i++)
+		{
+			GetWorld()->instantiate(GetWorld()->getPrefab("ShardParticle").get(), gameObject->getTransform());
+		}
+        Delete(gameObject);
     }
 }
 

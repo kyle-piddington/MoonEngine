@@ -476,3 +476,17 @@ void Scene::runMessageUpdate()
     _globalMessageQueue.clear();
 
 }
+
+void Scene::addPrefab(std::string name, GameObject * object)
+{
+	prefab = prefabMap({ { name, std::shared_ptr<GameObject>(object) } });
+}
+
+std::shared_ptr<GameObject> Scene::getPrefab(std::string name)
+{
+	if (prefab.find(name) != prefab.end())
+	{
+		return prefab.at(name);
+	}
+	return nullptr;
+}

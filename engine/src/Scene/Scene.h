@@ -7,10 +7,12 @@
 #include "Geometry/Spatial/KDTree.h"
 #include <functional>
 #include "GameObject/Message.h"
+#include <unordered_map>
 
 namespace MoonEngine
 {
-    class Scene
+	typedef std::unordered_map<std::string, std::shared_ptr<GameObject>> prefabMap;
+	class Scene
     {
     public:
         Scene();
@@ -155,6 +157,10 @@ namespace MoonEngine
 		
 		std::shared_ptr<GameObject> getPlayer();
 
+		void addPrefab(std::string name, GameObject * object);
+
+		std::shared_ptr<GameObject> getPrefab(std::string name);
+
     private:
 
         void runMessageUpdate();
@@ -187,6 +193,7 @@ namespace MoonEngine
 
         std::vector<std::shared_ptr<Component>> _components;
 
+		prefabMap prefab;
         //Insert queue
         std::vector<std::shared_ptr<GameObject>> _instantiateQueue;
         std::vector<std::shared_ptr<Component>> _instantiateComponents;

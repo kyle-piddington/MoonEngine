@@ -1,7 +1,7 @@
 #include "ShardMovement.h"
 #include "GameObject/GameObject.h"
 #include "GlobalFuncs/GlobalFuncs.h"
-
+#include "Component/Components.h"
 using namespace MoonEngine;
 
 ShardMovement::ShardMovement() :
@@ -29,8 +29,9 @@ void ShardMovement::update(float dt)
 	gameObject->getTransform().translate(glm::vec3(0,  0.0025 * sinf(startingTime), 0));
 	if(isCollected)
 	{
-		gameObject->getTransform().translate(glm::vec3(0,dt,0));
-
+		//gameObject->getTransform().translate(glm::vec3(0,dt,0));
+		
+		//GetWorld()->addGameObject()
 	}
 }
 

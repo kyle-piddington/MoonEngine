@@ -69,6 +69,15 @@ int main(int argc, char ** argv)
 
     scene->addGameObject(playerObj);
 
+	Transform particleTransform = Transform();
+
+	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(particleTransform);
+	particleObj->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
+	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(0.1, 0.1, 0.1), "geom.program", textures));
+	particleObj->addComponent(scene->createComponent<BoxCollider>());
+	particleObj->addComponent(scene->createComponent<Particle>());
+	scene->addPrefab("ShardParticle", particleObj.get());
+
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
     cameraObj->addComponent(cam);
