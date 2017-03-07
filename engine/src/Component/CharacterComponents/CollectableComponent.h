@@ -9,7 +9,7 @@ namespace MoonEngine
     class CollectableComponent: public Component
     {
     public:
-        CollectableComponent();
+        CollectableComponent(std::string eventName = "picked_up_star");
 
         void start();
 
@@ -18,5 +18,8 @@ namespace MoonEngine
         void onCollisionEnter(Collision col);
 
         std::shared_ptr<Component> clone() const;
+    private:
+        std::string _eventName;
+
     };
 }

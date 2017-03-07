@@ -4,7 +4,7 @@
 
 using namespace MoonEngine;
 
-CollectableComponent::CollectableComponent()
+CollectableComponent::CollectableComponent(std::string eventName)
 {
 
 }
@@ -27,7 +27,7 @@ void CollectableComponent::onCollisionEnter(Collision col)
     if (T_Player == col.other->getTag())
     {
     	sendMessage("collected");
-		sendGlobalMessage("picked_up_star");
+		sendGlobalMessage(_eventName);
     }
 }
 
