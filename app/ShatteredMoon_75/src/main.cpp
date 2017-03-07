@@ -87,6 +87,14 @@ int main(int argc, char ** argv)
     groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
     scene->addGameObject(groundObject);
 
+    stringmap beamTextures({{"diffuse","solid_white.png"}});
+    std::shared_ptr<GameObject> beamObject = std::make_shared<GameObject>(playerTransform);
+    beamObject->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
+    beamObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "cyl_billboard.program", beamTextures,true));
+    beamObject->getTransform().setScale(glm::vec3(1,1000,1));
+    scene->addGameObject(beamObject);
+
+
     LevelLoader levelLoader;
     levelLoader.LoadLevel("scenedata.json", scene);
     stringmap cube_texture({{"diffuse", "cube"}});
