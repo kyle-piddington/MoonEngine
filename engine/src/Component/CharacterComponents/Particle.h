@@ -9,8 +9,7 @@ namespace MoonEngine
 	enum ParticleState
 	{
 		INIT,
-		GATHER,
-		END
+		GATHER
 	};
 	class Particle : public Component
 	{

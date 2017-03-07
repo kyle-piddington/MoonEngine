@@ -1,6 +1,7 @@
 #include "Particle.h"
 #include "GameObject/GameObject.h"
 #include "GlobalFuncs/GlobalFuncs.h"
+#include <iostream>
 
 using namespace MoonEngine;
 
@@ -26,31 +27,31 @@ void Particle::update(float dt)
 	if (state == INIT)
 	{
 		gameObject->getTransform().translate(dt * direction);
-
-		if (accumTime >= 0.5f)
+		if (accumTime >= 0.7f)
 		{
 			state = GATHER;
 		}
 	}
-	else if (state == GATHER)
-	{
-		
-		if (player != nullptr)
-		{
-			direction = dt * glm::normalize(gameObject->getTransform().getPosition() - player->getTransform().getPosition());
-		}
-		gameObject->getTransform().translate(dt * direction);
-	}
 	else
 	{
-		if (accumTime >= 2.5)
+		if (player != nullptr)
+		{
+			direction = glm::normalize(player->getTransform().getPosition()
+				- gameObject->getTransform().getPosition());
+		}
+		
+		float scale = glm::length(player->getTransform().getPosition() - gameObject->getTransform().getPosition());
+
+		gameObject->getTransform().translate(direction / 6.0f);
+		gameObject->getTransform().setScale(std::min(0.25f, scale));
+		if (scale <= 0.1f)
 		{
 			Delete(gameObject);
 		}
 	}
-	if (state != END && player->getBounds().contains(gameObject->getBounds()))
+	if (accumTime >= 1.0)
 	{
-		state = END;
+		Delete(gameObject);
 	}
 }
 

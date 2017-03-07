@@ -76,6 +76,8 @@ int main(int argc, char ** argv)
 	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(0.1, 0.1, 0.1), "geom.program", textures));
 	particleObj->addComponent(scene->createComponent<BoxCollider>());
 	particleObj->addComponent(scene->createComponent<Particle>());
+	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(1, 1, 1), 7));
+
 	scene->addPrefab("ShardParticle", particleObj.get());
 
     //Camera setup
