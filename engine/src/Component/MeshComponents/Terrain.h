@@ -41,7 +41,11 @@ namespace MoonEngine
 
 		bool intersectsRay(glm::vec3 origin, glm::vec3 direction, Hit * hit);
 
+		BoundingBox getBoxForCDLODNode(CDLODQuadtree::SelectedNode & node) const;
+
 		float heightAt(float X, float Z);
+
+		glm::vec3 normalAt(float X, float Z);
 		//Get the last terrain selection (Used by grass)
 		int getLastSelection(CDLODQuadtree::SelectedNode ** bfrPtr);
 	private:
@@ -61,6 +65,7 @@ namespace MoonEngine
 		BoundingBox fullBoundingBox;
 		float rasterSizeX;
 		float rasterSizeZ;
+		unsigned char * normalDataBuffer;
 
 		bool _showAOMap;
 

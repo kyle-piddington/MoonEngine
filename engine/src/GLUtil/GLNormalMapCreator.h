@@ -28,7 +28,7 @@ namespace MoonEngine
 		 * The alpha channel of the normal map stores the ambient term
 		 * of the heightmap. (Using some basic AO algorithms)
 		 */
-		std::shared_ptr<GLTexture> GenerateNormalMap(IHeightmapSource * heightmap, const GLTextureConfiguration & newTextureConf, const MapDimensions & mDims);
+		std::shared_ptr<GLTexture> GenerateNormalMap(IHeightmapSource * heightmap, const GLTextureConfiguration & newTextureConf, const MapDimensions & mDims, unsigned char ** dataOut = nullptr);
 
 
 	};

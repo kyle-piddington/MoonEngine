@@ -204,13 +204,16 @@ CDLODQuadtree::Node::LODSelectResult CDLODQuadtree::Node::LODSelect(LODSelectInf
 	if(frustrumIt == IT_Outside)
 	{
 
-		previouslySelected = false;
+		
 		return IT_OutOfFrustrum;
 	}
 	
 	float distLimit = lodRanges[this->getLevel()];
 	if(!box.intersectSphereSq(observerPos, distLimit*distLimit))
 	{
+		//Only set previouslySelected to false
+		//when out of range. Frustrum should not re-create
+		//grass
 		previouslySelected = false;
 		return IT_OutOfRange;
 	}
