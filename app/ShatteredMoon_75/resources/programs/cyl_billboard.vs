@@ -16,19 +16,14 @@ void main()
 
    	mat4 MV = V * M;
    	// Column 0:
-	MV[0][0] = 1;
+	MV[0][0] = M[0][0];
 	MV[0][1] = 0;
 	MV[0][2] = 0;
-
-	// // Column 1:
-	// MV[1][0] = 0;
-	// MV[1][1] = 1;
-	// MV[1][2] = 0;
 
 	// Column 2:
 	MV[2][0] = 0;
 	MV[2][1] = 0;
-	MV[2][2] = 1;
+	MV[2][2] = M[2][2];
 
 
 	gl_Position = P * MV * vec4(position, 1.0f);
