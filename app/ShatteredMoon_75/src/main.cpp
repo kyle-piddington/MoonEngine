@@ -7,6 +7,7 @@
 #include "MoonEngine.h"
 #include "LevelEditor/LevelLoader.h"
 
+
 using namespace MoonEngine;
 
 
@@ -44,6 +45,8 @@ int main(int argc, char ** argv)
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 
+    AudioService::GetAudio()->loadSound("bgMusic.mp3",true, true);
+    AudioService::GetAudio()->playSound("bgMusic.mp3");
 
 
     //Game Objects
@@ -176,6 +179,8 @@ int main(int argc, char ** argv)
 
     //delete scene;
     //delete renderer;
+
+    AudioService::GetAudio()->shutdown();
 
     return 0;
 

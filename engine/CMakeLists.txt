@@ -14,9 +14,9 @@ file(GLOB_RECURSE GLSL "resources/*.glsl")
 include_directories(HEADERS)
 
 # Set the executable.
-add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL})
 
-target_link_libraries(MoonEngine glfw ${GLFW_LIBRARIES})
+add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL})
+target_link_libraries(MoonEngine glfw ${FMOD_LIBRARIES} ${GLFW_LIBRARIES})
 
 
 set(GLM_DIR "$ENV{GLM_INCLUDE_DIR}")
@@ -32,9 +32,13 @@ if (NOT GLEW_DIR)
 endif ()
 include_directories(${GLEW_DIR}/include)
 
+#Set up FMOD header includes
+include_directories(${FMOD_INCLUDE_DIR})
+
 if (WIN32)
     # With prebuilt binaries
-    target_link_libraries(MoonEngine ${GLEW_DIR}/lib/Release/Win32/glew32s.lib)
+    target_link_libraries(MoonEngine ${GLEW_DIR}/lib/Release/Win32/glew32s.lib )
+
 else ()
     target_link_libraries(MoonEngine ${GLEW_DIR}/lib/libGLEW.a)
 endif ()

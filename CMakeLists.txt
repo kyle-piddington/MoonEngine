@@ -2,10 +2,13 @@ cmake_minimum_required(VERSION 2.7)
 project (ShatteredMoon)
 
 
+Message("$ENV{FMOD_HOME}")
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 if(NOT WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
 endif()
+
 # Get the GLEW environment variable.
 set(GLEW_DIR "$ENV{GLEW_DIR}")
 if (NOT GLEW_DIR)
@@ -22,6 +25,14 @@ include_directories(${GLM_DIR})
 
 include_directories(engine/src)
 
+
+set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/deps )
+message(${CMAKE_MODULE_PATH})
+#FMod Support
+find_package(FMOD REQUIRED)
+if(FMOD_FOUND)
+	include_directories(${FMOD_INCLUDE_DIRS})
+endif()
 add_subdirectory(deps)
 add_subdirectory(engine)
 add_subdirectory(app)
@@ -29,3 +40,5 @@ add_subdirectory(test)
 
 #add_subdirectory(deps/assimp)
 #include_directories(deps/assimp/include)
+
+

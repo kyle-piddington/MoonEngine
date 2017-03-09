@@ -50,6 +50,8 @@
 //Post
 #include "Render/PostProcess.h"
 
+//Sound
+#include "Sound/AudioService.h"
 
 //Terrain
 #include "Geometry/Terrain/CDLODQuadtree.h"

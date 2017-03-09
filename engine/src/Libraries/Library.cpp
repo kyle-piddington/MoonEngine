@@ -1,5 +1,6 @@
 #include "Library.h"
 #include "SamplerLibrary.h"
+#include "Sound/AudioService.h"
 #include <iostream>
 #include <unordered_map>
 
@@ -23,6 +24,7 @@ void Library::Init(MoonEngineCfg config)
     TextureLib = std::make_shared<TextureLibrary>(resourcePath + dirs["textures"]);
     SamplerLib = std::make_shared<SamplerLibrary>();
     LevelLib = std::make_shared<Level>(resourcePath);
+    AudioService::SetResourcePath(resourcePath + dirs["sounds"]);
 }
 
 void Library::Destroy()
