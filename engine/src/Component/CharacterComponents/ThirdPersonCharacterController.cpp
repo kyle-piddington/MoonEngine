@@ -205,8 +205,8 @@ void ThirdPersonCharacterController::onCollisionEnter(Collision col)
     else if ((state == JUMPING || state == FALLING) &&
         glm::dot(col.normal, glm::vec3(0, -1, 0)) > cosf(M_PI / 3) && jumpSpeed > 0)
     {
-        state = FALLING;
-        jumpSpeed = 0;
+        //state = FALLING;
+        //jumpSpeed = 0;
     }
 }
 
