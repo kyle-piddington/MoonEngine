@@ -79,7 +79,7 @@ int main(int argc, char ** argv)
 	particleObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
 	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
 	particleObj->addComponent(scene->createComponent<Particle>());
-	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(1, 1, 1), 3));
+	//particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(1, 1, 1), 3));
 
 	scene->addPrefab("ShardParticle", particleObj.get());
 
@@ -152,6 +152,15 @@ int main(int argc, char ** argv)
     sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
     sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun, true));
     scene->addGameObject(sunBillboard);
+
+    //Grass
+    stringmap grassMap {{"diffuse","grassTexture.png"}};
+    std::shared_ptr<GameObject> grass  = std::make_shared<GameObject>(playerTransform);
+    grass->addComponent(scene->createComponent<Grass>("grass.obj",false,8096*2));
+    grass->addComponent(scene->createComponent<Material>(glm::vec3(1.0,1.0,1.0),"grass.program",grassMap,true));
+    scene->addGameObject(grass);
+    
+    
 
     float accumTime;
     int lastUpdateTime;

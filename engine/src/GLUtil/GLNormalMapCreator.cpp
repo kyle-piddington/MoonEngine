@@ -50,12 +50,13 @@ float sampleAO(IHeightmapSource * heightmap,  glm::vec2 sampleCenter,const MapDi
 	return 1; // std::max(0.0f, 1 - occlusion / numSamples);
 }
 
-std::shared_ptr<GLTexture> GLNormalMapCreator::GenerateNormalMap(IHeightmapSource * heightmap, const GLTextureConfiguration  & newTextureConf, const MapDimensions & mDims)
+std::shared_ptr<GLTexture> GLNormalMapCreator::GenerateNormalMap(IHeightmapSource * heightmap, const GLTextureConfiguration  & newTextureConf, const MapDimensions & mDims, unsigned char ** dataOut)
 {
 	int rasterSizeX = heightmap->getSizeX();
 	int rasterSizeY = heightmap->getSizeZ();
 	float xzScale =  mDims.size.x/rasterSizeX;
 	float yScale = (float)mDims.size.y / 65535.f;
+
 	unsigned char * dataBuffer = new unsigned char[ 4 * newTextureConf.getWidth() * newTextureConf.getHeight()];
 	for(int i = 0; i < newTextureConf.getWidth(); i++)
 	{
@@ -90,6 +91,14 @@ std::shared_ptr<GLTexture> GLNormalMapCreator::GenerateNormalMap(IHeightmapSourc
 	/*@TODO: FIX THIS WHEN MERGING WITH RENDER*/
 	std::shared_ptr<GLTexture> normalTexture = std::make_shared<GLTexture>();
 	normalTexture->init(dataBuffer, newTextureConf);
+	if(dataOut == nullptr)
+	{
+		free(dataBuffer);
+	}
+	else
+	{
+		*dataOut = dataBuffer;
+	}
 	return normalTexture;
 
 }

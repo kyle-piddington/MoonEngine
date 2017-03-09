@@ -33,6 +33,7 @@ namespace MoonEngine
             unsigned short Size;
             unsigned short MinY;
             unsigned short MaxY;
+            bool previouslySelected;
 
 
             //Is the Top-left of this node selected
@@ -49,7 +50,7 @@ namespace MoonEngine
 
             SelectedNode(){};
             SelectedNode(const Node * node, int LODLevel, 
-                bool tl, bool tr, bool bl, bool br);
+                bool tl, bool tr, bool bl, bool br, bool previouslySelected);
             void    getAABB( BoundingBox & aabb, int rasterSizeX, int rasterSizeY, const MapDimensions & mapDims ) const;
         };
 
@@ -221,6 +222,7 @@ namespace MoonEngine
             unsigned short minY;
             unsigned short maxY;
 
+            bool previouslySelected;
             //Children node pointers.
             //In CDLOD implementation, reused as float* pointers 
             //(Pointer size == float size)
@@ -251,7 +253,7 @@ namespace MoonEngine
         private:
             void create(int x, int y, int size, int level, const CreateInfo & CreateInfo, Node * allNodesBuffer, int &allNodesBufferLastIdx);
 
-            LODSelectResult LODSelect(LODSelectInfo & selInfo, bool parentInFrustrum) const;
+            LODSelectResult LODSelect(LODSelectInfo & selInfo, bool parentInFrustrum);
 
             void getAreaMinMaxHeight(int fromX, int fromZ, int toX, int toZ, float &minY, float &maxY, const CDLODQuadtree & quadtree) const;
         
@@ -290,7 +292,7 @@ namespace MoonEngine
 
         int     GetLODLevelCount() const {return m_createInfo.LODLevelCount;}
 
-        void LODSelect(LODSelection * selectionObj) const;
+        void LODSelect(LODSelection * selectionObj);
 
         void getAreaMinMaxHeight(
             float fromX, 
@@ -384,14 +386,15 @@ namespace MoonEngine
        aabb = BoundingBox(minX,maxX,minY,maxY,minZ,maxZ);
        //aabb.yHalfWidth = std::max(aabb.yHalfWidth, 1e-3f);
     }
-    inline CDLODQuadtree::SelectedNode::SelectedNode( const Node * node, int LODLevel, bool tl, bool tr, bool bl, bool br )
-   : LODLevel(LODLevel), TL(tl), TR(tr), BL(bl), BR(br)
+    inline CDLODQuadtree::SelectedNode::SelectedNode( const Node * node, int LODLevel, bool tl, bool tr, bool bl, bool br, bool previouslySelected )
+   : LODLevel(LODLevel), TL(tl), TR(tr), BL(bl), BR(br), previouslySelected(previouslySelected)
     {
        this->X = node->X;
        this->Z = node->Z;
        this->Size = node->Size;
        this->MinY = node->minY;
        this->MaxY = node->maxY;
+       
     }
 
 }
