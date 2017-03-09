@@ -7,6 +7,7 @@
 #include "MoonEngine.h"
 #include "LevelEditor/LevelLoader.h"
 
+
 using namespace MoonEngine;
 
 
@@ -19,7 +20,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    float windowWidth = 640, windowHeight = 480;
+    float windowWidth = 1920, windowHeight = 1080;
     GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "ShatteredMoon", nullptr, nullptr);
     if (window == nullptr)
     {
@@ -44,6 +45,8 @@ int main(int argc, char ** argv)
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 
+    AudioService::GetAudio()->loadSound("bgMusic.mp3",true, true);
+    AudioService::GetAudio()->playSound("bgMusic.mp3");
 
 
     //Game Objects
@@ -185,6 +188,8 @@ int main(int argc, char ** argv)
 
     //delete scene;
     //delete renderer;
+
+    AudioService::GetAudio()->shutdown();
 
     return 0;
 
