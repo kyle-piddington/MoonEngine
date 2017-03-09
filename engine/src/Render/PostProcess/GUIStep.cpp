@@ -16,8 +16,7 @@ void GUIStep::setup(GLFWwindow * window, Scene * scene)
 	_renderProgram = Library::ProgramLib->getProgramForName("postprocess/gui.program");
 	_compositeTexture = Library::TextureLib->getTexture(COMPOSITE_TEXTURE);
 
-	_fbo.addTexture("composite", *_compositeTexture, GL_COLOR_ATTACHMENT0);
-    _fbo.addDepthRenderbuffer();
+	_fbo.addTexture(COMPOSITE_TEXTURE, GL_COLOR_ATTACHMENT0);
 }
 
 void GUIStep::render(Scene * scene)

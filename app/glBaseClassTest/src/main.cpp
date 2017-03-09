@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 	GLBuffer buffer(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
 	GLVertexArrayObject obj;
 	obj.bindVertexBuffer(0,buffer);
-	glClearColor(0.2,0.2,0.6,1.0);
+	glClearColor(0.2f,0.2f,0.6f,1.0f);
 	program.enable();
 	while(!glfwWindowShouldClose(window))
 	{

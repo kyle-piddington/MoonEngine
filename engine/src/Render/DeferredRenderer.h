@@ -3,10 +3,11 @@
 #include "GLWrapper/GLProgram.h"
 #include "I_Renderer.h"
 #include "Component/Components.h"
-#include "GLWrapper/GLFramebuffer.h"
+#include "Framebuffers/GBuffer.h"
 #include "Util/Logger.h"
 #include "GLWrapper/OpenGL.h"
 #include <glm/gtc/type_ptr.hpp>
+#include <functional>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/norm.hpp>
 #include "Component/Components.h"
@@ -17,7 +18,7 @@
 #include "PostProcess/PostProcessStep.h"
 #include "Libraries/Library.h"
 #include "GLWrapper/GLConstants.h"
-#include "ShadowMaps.h"
+#include "Framebuffers/ShadowMaps.h"
 
 
 
@@ -81,7 +82,7 @@ namespace MoonEngine
         MeshInfo* _renderQuad;
 		GLuint _width, _height;
         int _deferredWidth, _deferredHeight;
-        GLFramebuffer _gBuffer;
+        GBuffer _gBuffer;
 		GLTexture* _colorTex, * _positionTex, * _normalTex, * _textureTex;
         GLTexture* _depthTex;
         GLTexture* _outputTex;

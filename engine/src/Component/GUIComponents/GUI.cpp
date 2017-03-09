@@ -37,7 +37,7 @@ void GUI::start() {
 
     on("picked_up_shard",[&](const Message & msg)
     {
-        std::cout << "Received global message" << endl;
+        LOG(INFO, "Received global message");
     });
 
     on("picked_up_moon",[&](const Message & msg)
