@@ -34,7 +34,7 @@ void GBuffer::bindForStencilPass() {
 }
 
 void GBuffer::bindForLightPass() {
-    glDrawBuffer(GL_COLOR_ATTACHMENT4);
+    glDrawBuffer(COMPOSITE_ATTACHMENT);
     for (auto &tex : _textureHandles) {
         if (tex.first != COMPOSITE_TEXTURE && tex.first != "depth") {
             glActiveTexture(GL_TEXTURE0 + tex.second.unit);
