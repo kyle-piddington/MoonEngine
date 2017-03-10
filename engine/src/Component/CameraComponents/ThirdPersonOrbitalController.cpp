@@ -31,10 +31,10 @@ ThirdPersonOrbitalController::ThirdPersonOrbitalController(float Cam_Move_Speed,
     _targ(0.0f),
     _phi(M_PI / 3),
     _theta(0.0f),
-    _distance(2.0f),
+    _distance(2.5f),
     _state(NORMAL),
     _camHeight(0.15),
-    _baseCamHeight(0.15)
+    _baseCamHeight(0.25)
 {
 }
 
@@ -63,7 +63,7 @@ void ThirdPersonOrbitalController::update(float dt)
     rotate.y -= Input::GetAxis(AXIS_VERTICAL_1) * _CamMoveSpeed * dt;
     rotate.x -= Input::GetAxis(AXIS_HORIZONTAL_1) * _CamMoveSpeed * dt;
     _targ = player->getTransform().getPosition();
-    float camHeightScalar = 1.25;
+    float camHeightScalar = 0.85 * _distance;
     if(_phi > M_PI/2)
     {
         _camHeight = _baseCamHeight + camHeightScalar * (_phi - M_PI/2);   

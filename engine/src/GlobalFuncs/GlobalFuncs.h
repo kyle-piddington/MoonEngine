@@ -6,6 +6,7 @@
 
 namespace MoonEngine
 {
+    typedef unsigned int uint;
     /**
      * Create a copy of this game object at the game object's location
      * @param objToCopy the object to copy.

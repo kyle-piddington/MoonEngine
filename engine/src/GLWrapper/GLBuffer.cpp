@@ -71,6 +71,10 @@ GLuint GLBuffer::release()
     return retInt;
 }
 
+void GLBuffer::unbind()
+{
+    glBindBuffer(_type, 0);
+}
 GLuint GLBuffer::reset(GLuint newObject)
 {
     glDeleteBuffers(1, &_objectId);

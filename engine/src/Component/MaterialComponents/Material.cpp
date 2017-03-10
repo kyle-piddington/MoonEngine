@@ -14,8 +14,8 @@ void Material::loadTextures(unordered_map<string, string> textures)
         {
             ext = "";
         }
-            // uniform name <=> texture
-        texture_unit textureUnit = {Library::TextureLib->getTexture(texture.second, ext), _texture_unit++};
+        // uniform name <=> texture
+        texture_unit textureUnit = {Library::TextureLib->createImage(texture.second, ext), _texture_unit++};
         _textures[texture.first] = textureUnit;
     }
     _sampler = Library::SamplerLib->getSampler("default");   

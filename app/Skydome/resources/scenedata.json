@@ -89,10 +89,9 @@
             "mesh": "sphere.obj",
             "program": "skydome.program",
             "textures": {
-                "skycolor": "skycolor",
-                "sun": "sun.tga"
+                "skycolor": "skycolor"
             },
-            "forward": true,
+            "forward":true,
             "collider": false
         }],
     "map": [

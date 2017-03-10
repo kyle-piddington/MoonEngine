@@ -24,26 +24,31 @@ std::shared_ptr<GLTexture> TextureLoader::LoadTextureFromFile16f(const std::stri
     }
 
     GLenum texType;
+	GLenum texInputType;
     switch (ncomps)
     {
         case 1:
         texType = GL_RED;
-
+		texInputType = GL_R16;
         break;
         case 2:
         texType = GL_RG;
+		texInputType = GL_RG16;
         break;
         case 3:
         texType = GL_RGB;
+		texInputType = GL_RGB16;
         break;
         case 4:
         texType = GL_RGBA;
+		texInputType = GL_RGBA16;
         break;
         default:
         texType = GL_RGB;
+		texInputType = GL_RGB16;
         break;
     }
-    GLTextureConfiguration cfg(width, height, texType, texType, GL_UNSIGNED_SHORT);
+	GLTextureConfiguration cfg(width, height, texInputType, texType, GL_UNSIGNED_SHORT);
     auto tex = std::make_shared<GLTexture>();
     //If texture fails to initialize...
     if (!tex->init(data, cfg))

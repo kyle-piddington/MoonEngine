@@ -3,17 +3,24 @@
 #include "GLWrapper/GLProgram.h"
 #include "I_Renderer.h"
 #include "Component/Components.h"
-#include "GLWrapper/GLFramebuffer.h"
+#include "Framebuffers/GBuffer.h"
 #include "Util/Logger.h"
 #include "GLWrapper/OpenGL.h"
 #include <glm/gtc/type_ptr.hpp>
+#include <functional>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/norm.hpp>
 #include "Component/Components.h"
 #include "GameObject/GameObject.h"
 #include "Geometry/MeshCreator.h"
-#include "thirdparty/imgui/imgui.h"
 #include <iostream>
 #include "GLUtil/GL_LOG.h"
+#include "PostProcess/PostProcessStep.h"
+#include "Libraries/Library.h"
+#include "GLWrapper/GLConstants.h"
+#include "Framebuffers/ShadowMaps.h"
+
+
 
 /**
  * The Deferred renderer performs a phong rendering
@@ -28,7 +35,7 @@ namespace MoonEngine
     class DeferredRenderer: public I_Renderer
     {
     public:
-        DeferredRenderer(int width, int height, string stencilProgramName, string pointLightProgramName, string dirLightProgramName);
+        DeferredRenderer(int width, int height, string shadowMapsProgramName, string stencilProgramName, string pointLightProgramName, string dirLightProgramName);
 
         virtual ~DeferredRenderer()
         {}
@@ -50,9 +57,12 @@ namespace MoonEngine
          */
         virtual void shutdown();
 
+        void addPostProcessStep(std::shared_ptr<PostProcessStep> step);
+
 
     private:
 
+        void shadowMapPass(Scene* scene);
 		void geometryPass(Scene* scene);
 
         void stencilPass(std::shared_ptr<GameObject> light);
@@ -63,22 +73,29 @@ namespace MoonEngine
         void forwardPass(Scene* scene);
 
         //Setup Uniforms shared across both light passes
+        void setupShadowMapUniforms(GLProgram* prog);
         void setupPointLightUniforms(GLProgram* prog, std::shared_ptr<GameObject> light);
         void setupDirLightUniforms(GLProgram* prog);
+        
         Camera* _mainCamera;
         glm::vec3 _mainCameraPosition;
         BasicMeshInfo* _renderQuad;
 		GLuint _width, _height;
         int _deferredWidth, _deferredHeight;
-        GLFramebuffer _gBuffer;
-		GLTexture _colorTex, _positionTex, _normalTex, _textureTex;
-        GLTexture _depthTex;
-        GLTexture _outputTex;
+        GBuffer _gBuffer;
+		GLTexture* _colorTex, * _positionTex, * _normalTex, * _textureTex;
+        GLTexture* _depthTex;
+        GLTexture* _outputTex;
+        
+        ShadowMaps _shadowMaps;
+        bool _debugShadows;
 
+        GLProgram* _shadowMapsProgram;
         GLProgram* _stencilProgram;
         GLProgram* _pointLightProgram;
         GLProgram* _dirLightProgram;
+
+        std::vector<std::shared_ptr<PostProcessStep>> postprocessPipeline;
     };
 
-    void drawBufferToImgui(std::string guiName, const GLFramebuffer * bfr);
 }

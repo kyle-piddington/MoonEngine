@@ -6,11 +6,14 @@
 #include <glm/glm.hpp>
 #include "Geometry/Spatial/KDTree.h"
 #include <functional>
+#include <Component/GameStateComponents/GameState.h>
 #include "GameObject/Message.h"
+#include <unordered_map>
 
 namespace MoonEngine
 {
-    class Scene
+	typedef std::unordered_map<std::string, std::shared_ptr<GameObject>> prefabMap;
+	class Scene
     {
     public:
         Scene();
@@ -52,12 +55,17 @@ namespace MoonEngine
 
         const std::vector<std::shared_ptr<GameObject>> getForwardGameObjects() const;
 
+        const std::vector<std::shared_ptr<GameObject>> getGuiGameObjects() const;
+
+        GameState * getGameState(){ return _gameState;};
+
+
         float distanceFromFrutrum(glm::vec4 frustPlane, glm::vec3 point);
         
 
         const std::vector<std::shared_ptr<GameObject>> getPointLightObjects() const;
 
-        const std::vector<std::shared_ptr<GameObject>> getDirLightObjects() const;
+        std::shared_ptr<GameObject> getDirLightObject() const;
 
         std::shared_ptr<GameObject> createGameObject()
         {
@@ -124,6 +132,8 @@ namespace MoonEngine
 
         void addGlobalMessage(const Message & message);
 
+        void addGlobalHandler(std::string message, const messageFn & fn);
+
         /**
          * Perform collision detection, and call onCollisionEnter() methods
          * after finishing collision detection.
@@ -155,6 +165,10 @@ namespace MoonEngine
 		
 		std::shared_ptr<GameObject> getPlayer();
 
+		void addPrefab(std::string name, GameObject * object);
+
+		std::shared_ptr<GameObject> getPrefab(std::string name);
+
     private:
 
         void runMessageUpdate();
@@ -169,12 +183,16 @@ namespace MoonEngine
         std::vector<std::shared_ptr<GameObject>> _gameObjects;
         std::vector<std::shared_ptr<GameObject>> _renderableGameObjects;
         std::vector<std::shared_ptr<GameObject>> _forwardGameObjects;
+        std::vector<std::shared_ptr<GameObject>> _guiGameObjects;
+
+        GameState * _gameState;
 
 		std::shared_ptr<KDTree> _renderTree;
 		std::shared_ptr<GameObject> _playerObject;
 
         std::vector<std::shared_ptr<GameObject>> _pointLightObjects;
-        std::vector<std::shared_ptr<GameObject>> _dirLightObjects;
+        std::shared_ptr<GameObject> _dirLightObject;
+        int _dirLightFlag;
 
         //Main Camera Object
         std::shared_ptr<GameObject> _mainCamera;
@@ -186,6 +204,7 @@ namespace MoonEngine
 
         std::vector<std::shared_ptr<Component>> _components;
 
+		prefabMap prefab;
         //Insert queue
         std::vector<std::shared_ptr<GameObject>> _instantiateQueue;
         std::vector<std::shared_ptr<Component>> _instantiateComponents;
@@ -196,6 +215,8 @@ namespace MoonEngine
 
         //Global messages
         std::vector<Message> _globalMessageQueue;
+
+        std::unordered_map<std::string, std::vector<messageFn> > _globalMessageHandlers;
 
         float _globalTime;
         glm::vec3 _globalLightDir;

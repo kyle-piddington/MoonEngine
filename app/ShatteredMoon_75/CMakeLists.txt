@@ -16,3 +16,29 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
 target_link_libraries(${PROJECT_NAME} MoonEngine )
 file(COPY resources DESTINATION ${PROJECT_BINARY_DIR})
 file(COPY moonengine.cfg DESTINATION ${PROJECT_BINARY_DIR})
+
+
+
+#Windows specific: Copy FMod DLLs to debug and release
+MACRO(GetFModDLLs DEBUG_NAME RELEASE_NAME)
+                string(REPLACE "_vc.lib" ".dll" FMOD_DLL
+"${FMOD_LIBRARY_DEBUG}")
+                set (${DEBUG_NAME} ${${DEBUG_NAME}} ${FMOD_DLL})
+                string(REPLACE "_vc.lib" ".dll" FMOD_DLL
+"${FMOD_LIBRARY}")
+                set (${RELEASE_NAME} ${${RELEASE_NAME}} ${FMOD_DLL})
+         
+
+ENDMACRO()
+
+if (WIN32)
+        GetFModDLLs(DEBUG_DLLS RELEASE_DLLS)
+      	set (DLL_TO_DBG ${CMAKE_CURRENT_BINARY_DIR}/Debug)
+        set (DLL_TO_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/Release)
+        foreach(dll ${DEBUG_DLLS})
+                file(COPY ${dll} DESTINATION ${DLL_TO_DBG})
+        endforeach()
+        foreach(dll ${RELEASE_DLLS})
+                file(COPY ${dll} DESTINATION ${DLL_TO_RELEASE})
+        endforeach()
+endif(WIN32)

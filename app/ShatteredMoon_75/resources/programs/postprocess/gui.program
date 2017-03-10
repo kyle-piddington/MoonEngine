@@ -1,0 +1,5 @@
+{
+	"name" : "gui",
+	"vertex" : "resources/programs/postprocess/gui.vs",
+	"fragment" : "resources/programs/postprocess/gui.fs"
+}

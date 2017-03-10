@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 if(NOT WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  ")
 endif()
+
 # Get the GLEW environment variable.
 set(GLEW_DIR "$ENV{GLEW_DIR}")
 if (NOT GLEW_DIR)
@@ -25,7 +26,7 @@ include_directories(engine/src)
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/deps )
 #FMod Support
-find_package(FMOD)
+find_package(FMOD REQUIRED)
 if(FMOD_FOUND)
 	include_directories(${FMOD_INCLUDE_DIRS})
 endif()

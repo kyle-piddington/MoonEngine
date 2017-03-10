@@ -11,11 +11,12 @@ uniform sampler2D positionTex;
 uniform sampler2D colorTex;
 uniform sampler2D normalTex;
 
+
 uniform DirLight dirLight;
 
 in vec2 fragTexCoord;
 
-vec4 calcDirLight(vec3 Diffuse, vec3 Normal, vec3 worldPos, float Specular)
+vec4 calcDirLight(vec3 Diffuse, vec3 Normal, vec3 worldPos, float Specular, float ShadowFactor)
 {
     //Ambient
     vec4 AmbientColor = vec4(dirLight.color * dirLight.ambient, 1.0);
@@ -30,7 +31,7 @@ vec4 calcDirLight(vec3 Diffuse, vec3 Normal, vec3 worldPos, float Specular)
     float specPercent = pow(max(dot(Normal, halfDir), 0.0), 16.0);
     vec4 SpecularColor = vec4(dirLight.color * specPercent * Specular, 1.0);
     
-    return (AmbientColor + DiffuseColor + SpecularColor);
+    return (AmbientColor + ShadowFactor* (DiffuseColor + SpecularColor));
 }
 
 
@@ -49,7 +50,7 @@ void main()
 	vec3 Normal = texture(normalTex, TexCoord).xyz;
     Normal = normalize(Normal);
     float Specular = texture(colorTex, TexCoord).a;
+    float ShadowFactor = texture(normalTex, TexCoord).a;
     
-
-	finalColor = calcDirLight(Diffuse, Normal, WorldPos, Specular);
+    finalColor = calcDirLight(Diffuse, Normal, WorldPos, Specular, ShadowFactor);
 }

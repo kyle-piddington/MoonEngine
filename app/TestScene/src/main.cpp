@@ -3,9 +3,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#define COLORS_BASIC
+#define GLM_ENABLE_EXPERIMENTAL
 #include "MoonEngine.h"
-#include "LevelEditor/LevelLoader.h"
 
 using namespace MoonEngine;
 
@@ -19,7 +18,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     float windowWidth = 1600.0f, windowHeight = 900.0f;
-    GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "ShatteredMoon", nullptr, nullptr);
+    GLFWwindow * window = glfwCreateWindow((int) windowWidth, (int) windowHeight, "ShatteredMoon", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -38,7 +37,7 @@ int main(int argc, char ** argv)
         std::cout << "Failed to initialize GLEW" << std::endl;
         return -1;
     }
-
+    
     Logger::SetLogLevel(WARN);
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
@@ -62,9 +61,9 @@ int main(int argc, char ** argv)
 
     //Camera setup
     std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
-    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
+    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 300);
     cameraObj->addComponent(cam);
-    cameraObj->addComponent(scene->createComponent<FirstPersonController>(5));
+    cameraObj->addComponent(scene->createComponent<FirstPersonController>());
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
     scene->addGameObject(cameraObj);
 
@@ -76,10 +75,12 @@ int main(int argc, char ** argv)
 
     //Ground
     Transform groundTransform;
-    groundTransform.setScale(glm::vec3(5, 1, 5));
+    groundTransform.setScale(glm::vec3(10, 0.1, 10));
+    groundTransform.setPosition(glm::vec3(0, -0.1, 0));
     std::shared_ptr<GameObject> groundObject = std::make_shared<GameObject>(groundTransform);
-    groundObject->addComponent(scene->createComponent<StaticMesh>("quad.obj", true));
-    groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
+    groundObject->addComponent(scene->createComponent<StaticMesh>("cubev2.obj", false));
+    groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.9, 0.5, 0.5), "geom.program", boxTextures));
+    groundObject->addComponent(scene->createComponent<BoxCollider>());
     scene->addGameObject(groundObject);
 
     //Upper Platforms
@@ -218,8 +219,8 @@ int main(int argc, char ** argv)
 
     });
 
-	DeferredRenderer * renderer = new DeferredRenderer(width, height, 
-        "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
+	 DeferredRenderer * renderer = new DeferredRenderer(width, height, 
+        "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
     delete scene;

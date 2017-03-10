@@ -7,6 +7,9 @@
 #include "util/Logger.h"
 #include "GLConstants.h"
 #include "GLProgram.h"
+#include "Libraries/Library.h"
+#include "thirdparty/imgui/imgui.h"
+#include <functional>
 #include <vector>
 /**
  * GLFramebuffer holds on to framebuffer
@@ -19,12 +22,15 @@
 namespace MoonEngine
 {
     
+    typedef std::function<void()> TexParameter;
+
 	class GLFramebuffer
     {
     public:
         struct texture_unit {
             GLTexture * gl_texture;
             GLuint unit;
+            GLenum attachment;
         };
 
         GLFramebuffer(int width, int height);
@@ -45,15 +51,12 @@ namespace MoonEngine
          * @param layerName the name of the texture in the framebuffer
          * @param texture   the texture itself.
          */
-        void addTexture(const std::string & textureName, GLTexture & texture, GLenum attachmentInfo);
+        virtual void addTexture(std::string textureName, GLenum attachmentInfo);
+        virtual void addTexture(std::string textureName, GLenum attachmentInfo, vector<TexParameter> texParameters);
+        void addTexParameter(std::string textureName, TexParameter param);
 
-        /*Prepare for frame by clear final color texture*/
+	/*Prepare for frame by clear final color texture*/
         void startFrame();
-
-        void bindForGeomPass();
-        void bindForStencilPass();
-        void bindForLightPass();
-        void bindForOutput();
 
         /*Check the status of the framebuffer*/
         void status();
@@ -62,39 +65,28 @@ namespace MoonEngine
         
         static void Unbind();
 
-        GLuint getObject() const;
+        GLuint getHandle() const;
 
-        texture_unit getTexture(std::string name) const;
-		/**
-		* Specify what part to of the
-		* buffer to read from
-		* @param name the name of the texture
-		*/
-		void setReadBuffer(std::string name);
+        void UniformTexture(GLProgram* prog, std::string uniformName, std::string textureName);
 
-		void drawColorAttachments(int size);
-
-		GLuint getAttachmentMode(std::string name) const;
-
-		const std::unordered_map<std::string, texture_unit> & getTextureHandles() const;
-
+    	void DBG_DrawToImgui(string guiName);
         
+        int getWidth() { return _width; }
+        int getHeight() { return _height; }
+    protected:
+        static int _unitCount;
+        std::unordered_map<std::string, texture_unit> _textureHandles;
+        int _width;
+        int _height;
+        GLuint _handle;
 
-    private:
         GLuint release();
 
         GLuint reset(GLuint newObject = 0);
 
-        int _unitCount;
-        int _colorCount;
-        int _width;
-        int _height;
-        GLuint _handle;
+        texture_unit getTextureUnit(std::string name) const;
         GLenum _framebufferStatus;
-        std::unordered_map<std::string, texture_unit> _textureHandles;
-		std::unordered_map<std::string, GLuint> _textureAttachmentMode;
-
-
-        //void addRenderbuffer(const GLRenderBuffer & buffer);
     };
+
+
 }

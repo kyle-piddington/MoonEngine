@@ -3,7 +3,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#define COLORS_BASIC
 #include "MoonEngine.h"
 #include "LevelEditor/LevelLoader.h"
 
@@ -19,7 +18,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     float windowWidth = 800.0f, windowHeight = 600.0f;
-    GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "ShatteredMoon", nullptr, nullptr);
+    GLFWwindow * window = glfwCreateWindow((int) windowWidth, (int) windowHeight, "ShatteredMoon", nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -39,7 +38,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    Logger::SetLogLevel(GAME);
+    Logger::SetLogLevel(INFO);
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 
@@ -103,7 +102,7 @@ int main(int argc, char ** argv)
 
     //scene->addGameObject(pointLight);
 
-
+    //Directional Light
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
     scene->addGameObject(dirLight);
@@ -111,7 +110,7 @@ int main(int argc, char ** argv)
 
     //Terrain
     //Preload canyon 32f texture
-    EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
+    EngineApp::GetAssetLibrary().TextureLib->createImage("grandCanyon",".png",true);
     
     stringmap canyon_texture(
             {{"heightmap", "grandCanyon"},
@@ -151,8 +150,8 @@ int main(int argc, char ** argv)
 
     });
 
-	DeferredRenderer * renderer = new DeferredRenderer(windowWidth, windowHeight, 
-        "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
+    DeferredRenderer * renderer = new DeferredRenderer(windowWidth, windowHeight,
+        "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
     delete scene;

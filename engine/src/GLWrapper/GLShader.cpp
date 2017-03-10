@@ -15,7 +15,7 @@ GLShader::GLShader(GLenum shaderType, const char * source):
     _objectId = glCreateShader(shaderType);
     glShaderSource(_objectId, 1, &source, NULL);
     glCompileShader(_objectId);
-    compiled = GLProgramUtilities::checkShaderStatus(*this);
+    compiled = GLProgramUtilities::checkShaderStatus(*this, "NULL");
 }
 
 GLShader::~GLShader()

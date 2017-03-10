@@ -7,6 +7,8 @@
  */
 namespace MoonEngine
 {
+    static bool _inputEnabled;
+
     struct GLFWHandler
     {
         /**
@@ -64,6 +66,7 @@ namespace MoonEngine
         static void update();
 
         static void Start();
+
 
     };
 }

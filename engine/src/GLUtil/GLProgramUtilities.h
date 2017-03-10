@@ -20,7 +20,7 @@ namespace MoonEngine
          * @param  shader The shader to check
          * @return        true if shader is ok.
          */
-        bool checkShaderStatus(const GLShader & shader);
+        bool checkShaderStatus(const GLShader & shader, std::string name);
 
         /**
          * Check the status of a program, and print

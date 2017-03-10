@@ -23,9 +23,13 @@ FIND_PATH(FMOD_INCLUDE_DIR "fmod.h"
   /opt
   DOC "fmod - Headers"
 )
-
+if(MSVC)
+SET(FMOD_NAMES fmod_vc)
+SET(FMOD_DBG_NAMES fmodL_vc)
+else(MSVC)
 SET(FMOD_NAMES fmod)
 SET(FMOD_DBG_NAMES fmodL)
+endif(MSVC)
 
 FIND_LIBRARY(FMOD_LIBRARY NAMES ${FMOD_NAMES}
   PATHS

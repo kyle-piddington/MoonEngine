@@ -53,6 +53,12 @@ int main(int argc, char ** argv)
     cameraObj->getTransform().translate(glm::vec3(0,150,-5));
     scene->addGameObject(cameraObj);
 
+    std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
+    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
+    scene->addGameObject(dirLight);
+
+
+
 
     //Game Objects
 //    Transform playerTransform = Transform();
@@ -100,35 +106,9 @@ int main(int argc, char ** argv)
     stringmap cube_texture({{"diffuse", "cube"}});
 
 
-    //Lights
-    Transform lightTransform;
-    lightTransform.setPosition(glm::vec3(6, 4, 1));
-    std::shared_ptr<GameObject> pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_PURPLE, 0.2f, 0.2f));
-    pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
-
-    lightTransform.setPosition(glm::vec3(-5, 3, 1));
-    pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_WHITE, 0.2f, 0.2f));
-    pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
-
-    lightTransform.setPosition(glm::vec3(4, 3, -5));
-    pointLight = make_shared<GameObject>(lightTransform);
-    pointLight->addComponent(scene->createComponent<PointLight>(pointLight->getTransform().getPosition(), COLOR_CYAN, 0.2f, 0.2f));
-    pointLight->getComponent<PointLight>()->setRange(10);
-    //scene->addGameObject(pointLight);
-
-
-    std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
-    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
-    scene->addGameObject(dirLight);
-
-
     //Terrain
     //Preload canyon 32f texture
-    EngineApp::GetAssetLibrary().TextureLib->getTexture("grandCanyon",".png",true);
+    EngineApp::GetAssetLibrary().TextureLib->createImage("grandCanyon",".png",true);
 
     stringmap canyon_texture(
             {{"heightmap", "grandCanyon"},
@@ -158,7 +138,7 @@ int main(int argc, char ** argv)
     tran.setPosition(glm::vec3(0.0, 150.0, 0.0));
     tran.setScale(glm::vec3(5, 5, 5));
 
-    stringmap sun = {{"billboard", "cube"}};
+    stringmap sun = {{"billboard", "sun.tga"}};
 
     std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
     sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
@@ -178,12 +158,16 @@ int main(int argc, char ** argv)
 
         // 	lastUpdateTime = (int)accumTime;
         // }
-        //LOG(GAME, "SUN: " + std::to_string(scene->getGlobalLightDir().x) + " " + std::to_string(scene->getGlobalLightDir().y));
+        LOG(GAME, "SUN: " + std::to_string(scene->getGlobalLightDir().x) + " " + std::to_string(scene->getGlobalLightDir().y));
         Library::TextureLib->Debug_ShowAllTextures();
 
     });
 
-    DeferredRenderer * renderer = new DeferredRenderer(width, height, "phong_point_deferred.program", "phong_dir_deferred.program");
+    DeferredRenderer * renderer = new DeferredRenderer(width, height,
+        "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
+
+    renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
+
     app->run(scene, renderer);
 
     delete scene;

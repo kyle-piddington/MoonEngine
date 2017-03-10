@@ -26,6 +26,7 @@ BasicMeshInfo * MeshLibrary::getInfoForMeshNamed(std::string meshName, bool smoo
     std::string assembledName = meshName + (smooth ? " _smooth" : "_flat");
     if (_mapMeshToInfo.find(assembledName) == _mapMeshToInfo.end())
     {
+        
         //Create and add a new meshInfo
         //(Warn: returning a pointer that i'm not deleting.)
         BasicMeshInfo * info = new BasicMeshInfo;
@@ -85,4 +86,5 @@ std::shared_ptr<GameObject> MeshLibrary::getGameObjectForModelNamed(std::string 
 
 void MeshLibrary::loadDefaultMesh() {
     _mapMeshToInfo["quad_flat"] = MeshCreator::CreateQuad(glm::vec2(-0.5, -0.5), glm::vec2(0.5, 0.5));
+    _mapMeshToInfo["quad_full_flat"] = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
 }

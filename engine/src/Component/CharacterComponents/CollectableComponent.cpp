@@ -4,7 +4,9 @@
 
 using namespace MoonEngine;
 
-CollectableComponent::CollectableComponent()
+CollectableComponent::CollectableComponent(std::string eventName):
+    _eventName(eventName),
+    _collected(false)
 {
 
 }
@@ -24,10 +26,21 @@ void CollectableComponent::update(float dt)
 
 void CollectableComponent::onCollisionEnter(Collision col)
 {
+    if (_collected) {
+        return;
+    }
     if (T_Player == col.other->getTag())
     {
     	sendMessage("collected");
-        //Delete(gameObject);
+
+		for (int i = 0; i < 7; i++)
+		{
+			GetWorld()->instantiate(GetWorld()->getPrefab("ShardParticle").get(), gameObject->getTransform());
+		}
+		sendGlobalMessage(_eventName);
+        _collected = true;
+		Delete(gameObject);
+
     }
 }
 

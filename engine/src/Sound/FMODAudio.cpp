@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cassert>
 #include <deque>
+#include <mutex>
 #include "AudioService.h"
 using namespace MoonEngine;
 //Code for initialization taken from https://katyscode.wordpress.com/2012/10/05/cutting-your-teeth-on-fmod-part-1-build-environment-initialization-and-playing-sounds/

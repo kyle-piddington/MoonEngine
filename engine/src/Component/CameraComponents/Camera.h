@@ -30,9 +30,13 @@ namespace MoonEngine
 
         void getPlanes(glm::vec4 planes[6]);
 
+        float getFOV() const;
+
 		float getFar() const;
 
 		float getNear() const;
+
+        float getAspect() const;
 
         /**
          * Set the field of view of this camera

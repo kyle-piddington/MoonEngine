@@ -29,6 +29,7 @@ currentSelection(CDLODQuadtree::LODSelection(selectionBuffer,maxRenderedTiles,gl
 	rasterSizeX = (float)creationInfo.source->getSizeX();
 	rasterSizeZ = creationInfo.source->getSizeZ();
 
+
 }
 
 Terrain::Terrain(const Terrain & other):
@@ -56,13 +57,14 @@ void Terrain::start()
 	//Create Heightmap
 	GLNormalMapCreator creator;
 	GLTextureConfiguration normalMapCfg(creationInfo.source->getSizeX(), creationInfo.source->getSizeZ());
-	auto tex = creator.GenerateNormalMap(creationInfo.source, normalMapCfg,creationInfo.dimensions);
+	auto tex = creator.GenerateNormalMap(creationInfo.source, normalMapCfg,creationInfo.dimensions, &normalDataBuffer);
 	//Track the heightmap in the texture library.
 	Library::TextureLib->addTexture("heightmap_normal",tex);
 	terrainMaterial = gameObject->getComponent<Material>();
 	terrainMaterial->addTexture("heightmap_normal",tex.get());
 	mainCamera = GetWorld()->findGameObjectWithComponent<Camera>()->getComponent<Camera>();
 	assert(mainCamera != nullptr);
+	gameObject->addTag(T_Terrain);
 
 }
 
@@ -153,6 +155,12 @@ void Terrain::setupUniformsForNode(CDLODQuadtree::SelectedNode & node, GLProgram
 	glUniform4fv(program->getUniformLocation("t_param.g_quadOffset"),1,glm::value_ptr(minCoords));
 }
 
+BoundingBox Terrain::getBoxForCDLODNode(CDLODQuadtree::SelectedNode & node) const
+{
+	BoundingBox box;
+	node.getAABB(box, tree.getRasterSizeX(), tree.getRasterSizeZ(), creationInfo.dimensions);
+	return box;
+}
 void Terrain::drawDebugNode(CDLODQuadtree::SelectedNode node) const
 {
 	Transform boxTrasnform;
@@ -178,6 +186,13 @@ void Terrain::drawDebugNode(CDLODQuadtree::SelectedNode node) const
 	terrainMaterial->getProgram()->enable();
 }
 
+
+int Terrain::getLastSelection(CDLODQuadtree::SelectedNode ** bfrPtr)
+{
+	*bfrPtr = selectionBuffer;
+	return currentSelection.getSelectionCount();
+}
+
 void Terrain::draw() const
 {
 	Transform t;
@@ -194,7 +209,6 @@ void Terrain::draw() const
 		//drawDebugNode(node);
 		if(node.TL && node.TR && node.BL && node.BR)
 		{
-			glUniform3f(prog->getUniformLocation("tint"),1,1,1);
 			glDrawElementsBaseVertex(GL_TRIANGLES,
 				meshInfo->numTris,
 				GL_UNSIGNED_SHORT,
@@ -207,7 +221,6 @@ void Terrain::draw() const
 			int quarterTris = meshInfo->numTris / 4;
 			if(node.TL)
 			{
-				glUniform3f(prog->getUniformLocation("tint"),1,0,0);
 				//LOG(INFO, "Drawing TL");
 				glDrawElementsBaseVertex(GL_TRIANGLES,
 					quarterTris,
@@ -219,7 +232,6 @@ void Terrain::draw() const
 			if(node.TR)
 			{
 				//LOG(INFO, "Drawing TR");
-				glUniform3f(prog->getUniformLocation("tint"),0,1,0);
 				glDrawElementsBaseVertex(GL_TRIANGLES,
 					quarterTris,
 					GL_UNSIGNED_SHORT,
@@ -296,5 +308,24 @@ float Terrain::heightAt(float x, float z)
 	pz = std::max(std::min(pz, rasterSizeZ - 1), 0.0f);
 	float sourceHeight = creationInfo.source->getHeightAtFloat(px,pz);
 	return minCoords.y + sourceHeight/65535.0f * mapScale.y;
+
+}
+
+glm::vec3 Terrain::normalAt(float x, float z)
+{
+	glm::vec3 minCoords = creationInfo.dimensions.minCoords;
+	glm::vec3 mapScale = creationInfo.dimensions.size;
+	int px = (x - minCoords.x)/mapScale.x * (rasterSizeX - 1);
+	int pz = (z - minCoords.z)/mapScale.z * (rasterSizeZ - 1);
+	px = (int)std::max(std::min(px, (int)(rasterSizeX - 1)), 0);
+	pz = (int)std::max(std::min(pz, (int)(rasterSizeZ - 1)), 0);
+	int txWidth = creationInfo.source->getSizeX();
+	char nx = normalDataBuffer[4*(pz * creationInfo.source->getSizeX() + px)];
+	char ny = normalDataBuffer[4*(pz * creationInfo.source->getSizeX() + px) + 1];
+	char nz = normalDataBuffer[4*(pz * creationInfo.source->getSizeX() + px) + 2];
+	float fx = nx/127.0f - 1.0f;
+	float fy = ny/127.0f - 1.0f;
+	float fz = nz/127.0f - 1.0f;
+	return glm::vec3(fx,fy,fz);
 
 }

@@ -57,6 +57,8 @@ namespace MoonEngine
          */
         void bind() const;
 
+        void unbind();
+
         /**
          * Retrieve the objectId of the vertex buffer.
          * @return objectId

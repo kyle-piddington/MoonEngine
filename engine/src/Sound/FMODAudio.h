@@ -7,6 +7,7 @@
 #include <thread>
 #include <unordered_map>
 #include <deque>
+#include <atomic>
 namespace MoonEngine
 {
 	class FMODAudio : public Audio
