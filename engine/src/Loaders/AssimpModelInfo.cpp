@@ -52,4 +52,5 @@ void AssimpModelInfo::addMeshInfo(AssimpMeshInfo & ami)
 {
 	ami.meshInfo.setVertexArrayObject(vertexObjectPtr);
 	_meshInfo.push_back(ami);
+	boundingBox = boundingBox.merge(ami.box);
 }

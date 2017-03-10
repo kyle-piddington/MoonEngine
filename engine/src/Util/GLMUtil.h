@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-
+#include "assimp/matrix4x4.h"
 namespace MoonEngine
 {
     namespace GLMUtil
@@ -14,5 +14,6 @@ namespace MoonEngine
          */
         glm::vec3 FromHex(unsigned hexCode);
 
+        glm::mat4 FromAssimp(const aiMatrix4x4 & mat);
     }
 }

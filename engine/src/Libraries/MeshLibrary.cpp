@@ -67,7 +67,7 @@ std::shared_ptr<GameObject> MeshLibrary::getGameObjectForModelNamed(std::string 
         info = std::make_shared<AssimpModelInfo>();
         info->setHasNormals(true);
         info->setHasTangentBitangent(false);
-        info->setHasTextureCoordinates(false);
+        info->setHasTextureCoordinates(true);
         AssimpLoader::LoadIntoBuffer(_recPath + name,vertBuffer,indBuffer,vao,
         info.get());
         assimpInfo[name] = info;

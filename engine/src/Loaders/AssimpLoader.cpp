@@ -1,5 +1,6 @@
 
 #include "AssimpLoader.h"
+#include "Util/GLMUtil.h"
 using namespace MoonEngine;
 
 
@@ -54,6 +55,7 @@ void loadMaterialTextures(
 }
 
 bool processMesh(aiMesh * mesh, 
+	aiMatrix4x4 transform,
 	const aiScene * scene,
 	std::vector<float> & data, 
 	std::vector<unsigned short> & indices,
@@ -68,26 +70,31 @@ bool processMesh(aiMesh * mesh,
 	float minY = 1e20, maxY = -1e20; 
 	float minZ = 1e20, maxZ = -1e20;
 	
+	glm::mat4 M = GLMUtil::FromAssimp(transform);
 	//data.reserve(mesh->mNumVertices * 5);
 	for(GLuint i = 0; i < mesh->mNumVertices; i++)
 	{
-		data.push_back(mesh->mVertices[i].x);
-		data.push_back(mesh->mVertices[i].y);
-		data.push_back(mesh->mVertices[i].z);
-		minX = std::min(minX,mesh->mVertices[i].x);
-		maxX = std::max(maxX,mesh->mVertices[i].x);
-		minY = std::min(minY,mesh->mVertices[i].y);
-		maxY = std::max(maxY,mesh->mVertices[i].y);
-		minZ = std::min(minZ,mesh->mVertices[i].z);
-		maxZ = std::max(maxZ,mesh->mVertices[i].z);
+		glm::vec4 vert = M * glm::vec4(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,1);
+
+		data.push_back(vert.x);
+		data.push_back(vert.y);
+		data.push_back(vert.z);
+		minX = std::min(minX,vert.x);
+		maxX = std::max(maxX,vert.x);
+		minY = std::min(minY,vert.y);
+		maxY = std::max(maxY,vert.y);
+		minZ = std::min(minZ,vert.z);
+		maxZ = std::max(maxZ,vert.z);
 		
 		if(outInfo->hasNormals())
 		{
 			if(mesh->HasNormals())
 			{
-				data.push_back(mesh->mNormals[i].x);
-				data.push_back(mesh->mNormals[i].y);
-				data.push_back(mesh->mNormals[i].z);				
+				glm::vec4 nor = glm::transpose(glm::inverse(M)) * 
+					glm::vec4(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z,0);
+				data.push_back(nor.x);
+				data.push_back(nor.y);
+				data.push_back(nor.z);				
 			}
 			else
 			{
@@ -159,23 +166,27 @@ bool processMesh(aiMesh * mesh,
 	  loadMaterialTextures(material, aiTextureType_SPECULAR, &(assimpMeshInfo.textures));
 	  loadMaterialTextures(material, aiTextureType_NORMALS, &(assimpMeshInfo.textures));
 	  assimpMeshInfo.box = BoundingBox(minX,maxX,minY,maxY,minZ,maxZ);
+	  
 	  outInfo->addMeshInfo(assimpMeshInfo);
+
 	  return true;
 	}
 
-bool processNode(aiNode * node, const aiScene * scene, std::vector<float> & data, std::vector<unsigned short> & indices, AssimpModelInfo * outInfo)
+bool processNode(aiNode * node, aiMatrix4x4 transform, const aiScene * scene, std::vector<float> & data, std::vector<unsigned short> & indices, AssimpModelInfo * outInfo)
 {
+
+	aiMatrix4x4 trans = transform * node->mTransformation;
 	bool OK = true;
 	if(node != nullptr)
 	{
 		for(uint i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh * mesh = scene->mMeshes[node->mMeshes[i]];
-			OK &= processMesh(mesh, scene, data, indices, outInfo);
+			OK &= processMesh(mesh, trans, scene, data, indices, outInfo);
 		}
 		for(int i = 0; i < node->mNumChildren; i++)
 		{
-			OK &= processNode(node->mChildren[i], scene, data, indices, outInfo);
+			OK &= processNode(node->mChildren[i], trans, scene, data, indices, outInfo);
 		}
 		return OK;
 	}
@@ -202,7 +213,7 @@ bool AssimpLoader::LoadIntoBuffer(
 	}
 	std::vector<float> data;
 	std::vector<unsigned short> indices;
-	OK = processNode(scene->mRootNode, scene, data, indices, outInfo);
+	OK = processNode(scene->mRootNode, aiMatrix4x4(), scene, data, indices, outInfo);
 	if(!OK)
 	{
 		LOG(ERROR, "Issue loading mesh");

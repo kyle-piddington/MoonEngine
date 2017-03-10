@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Loaders/MeshInfo.h"
+#include "Loaders/BasicMeshInfo.h"
 #include "Component/Component.h"
 #include "Mesh.h"
 #include "EngineApp/EngineApp.h"
@@ -18,7 +18,7 @@ namespace MoonEngine
         * Bind mesh to the graphics engine.
         * Bind instance data to the graphics engines
         */
-        const MeshInfo * getMesh();
+        void bind();
 
         void start();
 
@@ -27,6 +27,8 @@ namespace MoonEngine
         virtual std::shared_ptr<Component> clone() const;
 
 		virtual const BoundingBox & getBoundingBox();
+
+		virtual const BoundingBox & getExtents();
 
 		void addTransformsToBuffer(const std::vector<glm::mat4> & newTransforms);
 
@@ -37,7 +39,7 @@ namespace MoonEngine
 
     	void generateGrassForTile(CDLODQuadtree::SelectedNode & node, std::vector<glm::mat4> * newTransforms);
     	float windTime;
-        MeshInfo * _meshInfo;
+        BasicMeshInfo * _meshInfo;
 		unsigned _numOfInstances;
 		unsigned _cInstance;
 		unsigned _maxInstances;

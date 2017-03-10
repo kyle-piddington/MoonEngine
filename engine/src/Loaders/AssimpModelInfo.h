@@ -15,6 +15,7 @@ namespace MoonEngine
 		std::unordered_map<std::string, std::string> textures;
 		BasicMeshInfo meshInfo;
 		BoundingBox box;
+		glm::mat4 M;
 
 		void bind() const
 		{

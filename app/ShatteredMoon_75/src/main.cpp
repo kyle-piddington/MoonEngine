@@ -58,7 +58,8 @@ int main(int argc, char ** argv)
 
     playerTransform.setPosition(
             glm::vec3(-52.623940, 12.913505554199219,-101.991371));
-    std::shared_ptr<GameObject> playerObj = Library::MeshLib->getGameObjectForModelNamed("sphere.dae","geom.program",scene); 
+    std::shared_ptr<GameObject> playerObj = Library::MeshLib->getGameObjectForModelNamed("fresh_wolf.fbx","geom.program",scene); 
+    
     //playerObj.setPosition(playerTransform.getPosition());
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
     // playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
@@ -66,7 +67,7 @@ int main(int argc, char ** argv)
     playerObj->addComponent(scene->createComponent<BoxCollider>());
 
     //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
-    playerObj->getTransform().setScale(glm::vec3(0.2, 0.2, 0.2));
+    playerObj->getTransform().setScale(glm::vec3(0.05, 0.05, 0.05));
     playerObj->addTag(T_Player);
 
     scene->addGameObject(playerObj);

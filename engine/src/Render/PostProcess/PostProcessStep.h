@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Scene/Scene.h"
-#include "Loaders/MeshInfo.h"
+#include "Loaders/BasicMeshInfo.h"
 #include <GLFW/glfw3.h>
 namespace MoonEngine
 {
@@ -39,7 +39,7 @@ namespace MoonEngine
 	 */
 		void drawToQuad();
 	private:
-		MeshInfo * _quadInfo;
+		BasicMeshInfo * _quadInfo;
 
 	};	
 }

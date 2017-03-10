@@ -161,16 +161,16 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
                     continue;
                 }
                 mesh = obj->getComponent<Mesh>();
-                const MeshInfo * meshInfo = mesh->getMesh();
+                mesh->bind();
                 glm::mat4 M = obj->getTransform().getMatrix();
 
                 //Place Uniforms that do not change per GameObject
                 glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
                 glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
 
-                meshInfo->bind();
+                
                 glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
-                mesh->draw();
+                mesh->drawShadow();
             }
         }
 
@@ -214,7 +214,7 @@ void DeferredRenderer::geometryPass(Scene * scene)
     {
         mat = obj->getComponent<Material>();
         mesh = obj->getComponent<Mesh>();
-        const MeshInfo * meshInfo = mesh->getMesh();
+        
 
         if (mat->isForward()) {
             continue;
@@ -238,7 +238,7 @@ void DeferredRenderer::geometryPass(Scene * scene)
 
         }
         mat->bind();
-        meshInfo->bind();
+        mesh->bind();
 		//No assumptions about the geometry stage is made beyond a P, V, and M Uniforms
         glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
 

@@ -54,14 +54,19 @@ void Grass::update(float dt)
     }
 }
 
-const MeshInfo * Grass::getMesh()
+void Grass::bind()
 {
-    return _meshInfo;
+    _meshInfo->bind();
 }
 
 const BoundingBox & Grass::getBoundingBox()
 {
 	return _meshInfo->boundingBox;
+}
+
+const BoundingBox & Grass::getExtents()
+{
+    return _meshInfo->boundingBox;
 }
 
 std::shared_ptr<Component> Grass::clone() const

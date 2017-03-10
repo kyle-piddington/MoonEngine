@@ -1,4 +1,5 @@
 #include "GLMUtil.h"
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace MoonEngine;
 
@@ -11,3 +12,14 @@ glm::vec3 GLMUtil::FromHex(unsigned hexCode)
     return ret;
 }
 
+
+glm::mat4 GLMUtil::FromAssimp(const aiMatrix4x4 & aiMat)
+{
+	
+	glm::mat4 matrix = glm::mat4(aiMat.a1, aiMat.a2, aiMat.a3, aiMat.a4,
+								 aiMat.b1, aiMat.b2, aiMat.b3, aiMat.b4,
+								 aiMat.c1, aiMat.c2, aiMat.c3, aiMat.c4,
+								 aiMat.d1, aiMat.d2, aiMat.d3, aiMat.d4);
+	return glm::transpose(matrix);//.transpose();
+	
+}

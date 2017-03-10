@@ -5,6 +5,7 @@
 
 std::unordered_map<string, Material::texture_unit> AssimpMaterial::loadTextures( unordered_map<string, string> textures)
 {
+   _program->enable();
    std::unordered_map<string, Material::texture_unit> txMap;
    for (auto & texture: textures)
    {
@@ -14,16 +15,22 @@ std::unordered_map<string, Material::texture_unit> AssimpMaterial::loadTextures(
         {
             ext = "";
         }
+        if(_program->hasUniform(texture.first))
+        {
+
+            Material::texture_unit textureUnit = {Library::TextureLib->createImage(texture.second, ext), _texture_unit++};
+            txMap[texture.first] = textureUnit;
             // uniform name <=> texture
-        Material::texture_unit textureUnit = {Library::TextureLib->getTexture(texture.second, ext), _texture_unit++};
-        txMap[texture.first] = textureUnit;
+        }
+
     }
     
     return txMap;  
 }
 
 AssimpMaterial::AssimpMaterial(std::string program, AssimpModelInfo * modelInfo):
-	Material(program, false)
+	Material(program, false),
+    meshTextures()
 {
 	for(auto info : modelInfo->getMeshInfo())
 	{
@@ -42,10 +49,12 @@ void AssimpMaterial::bind()
 
 void AssimpMaterial::bindTexturesForMesh(int mesh)
 {
+    LOG_GL(__FILE__, __LINE__);
 	for (auto & _texture: meshTextures[mesh])
     {
         Material::texture_unit texture = _texture.second;
         texture.gl_texture->bind(texture.unit);
+        LOG_GL(__FILE__, __LINE__);
         glUniform1i(_program->getUniformLocation(_texture.first),texture.unit);
         LOG_GL(__FILE__, __LINE__);
     }

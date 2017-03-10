@@ -31,6 +31,7 @@ _forward(forward)
     _program = Library::ProgramLib->getProgramForName(programName);
     if (_program == nullptr)
     {
+        LOG(ERROR, "Could not load program  " + programName);
         _program = Library::ProgramLib->getProgramForName("default.program");
     }
     loadTextures(textures);
@@ -48,6 +49,7 @@ _forward(forward)
     _program = Library::ProgramLib->getProgramForName(programName);
     if (_program == nullptr)
     {
+        LOG(ERROR, "Could not load program " + programName);
         _program = Library::ProgramLib->getProgramForName("default.program");
     }
 }
