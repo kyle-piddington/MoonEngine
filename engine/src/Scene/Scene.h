@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include "Geometry/Spatial/KDTree.h"
 #include <functional>
+#include <Component/GameStateComponents/GameState.h>
 #include "GameObject/Message.h"
 #include <unordered_map>
 
@@ -55,6 +56,8 @@ namespace MoonEngine
         const std::vector<std::shared_ptr<GameObject>> getForwardGameObjects() const;
 
         const std::vector<std::shared_ptr<GameObject>> getGuiGameObjects() const;
+
+        GameState * getGameState(){ return _gameState;};
 
 
         float distanceFromFrutrum(glm::vec4 frustPlane, glm::vec3 point);
@@ -181,6 +184,8 @@ namespace MoonEngine
         std::vector<std::shared_ptr<GameObject>> _renderableGameObjects;
         std::vector<std::shared_ptr<GameObject>> _forwardGameObjects;
         std::vector<std::shared_ptr<GameObject>> _guiGameObjects;
+
+        GameState * _gameState;
 
 		std::shared_ptr<KDTree> _renderTree;
 		std::shared_ptr<GameObject> _playerObject;

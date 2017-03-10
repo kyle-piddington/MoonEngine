@@ -41,7 +41,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    Logger::SetLogLevel(GAME);
+    Logger::SetLogLevel(INFO);
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 
@@ -142,6 +142,7 @@ int main(int argc, char ** argv)
     guiObject->addComponent(scene->createComponent<GUI>(width, height));
     scene->addGameObject(guiObject);
 
+
     Transform tran;
     tran.setPosition(glm::vec3(0.0, 150.0, 0.0));
     tran.setScale(glm::vec3(5, 5, 5));
@@ -161,6 +162,10 @@ int main(int argc, char ** argv)
     scene->addGameObject(grass);
     
     
+    std::shared_ptr<GameObject> gameState = std::make_shared<GameObject>();
+    gameState->addComponent(scene->createComponent<GameState>());
+    scene->addGameObject(gameState);
+
 
     float accumTime;
     int lastUpdateTime;

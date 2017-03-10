@@ -34,6 +34,9 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
     if (obj->getTag() == T_GUI) {
         _guiGameObjects.push_back(obj);
     }
+    if (obj->getComponent<GameState>() != nullptr) {
+        _gameState = obj->getComponent<GameState>();
+    }
     if (obj->getComponent<Camera>() != nullptr && _cameraFlag == 0) {
         _cameraFlag = 1;
         _mainCamera = obj;
@@ -338,6 +341,26 @@ void Scene::runDeleteGameObjects()
         if (_pointLightObjects.at(i) != nullptr && _pointLightObjects.at(i)->isDeleted())
         {
             _pointLightObjects.erase(_pointLightObjects.begin() + i);
+            i--;
+            size--;
+        }
+    }
+    size = _forwardGameObjects.size();
+    for (int i = 0; i < size; i++)
+    {
+        if (_forwardGameObjects.at(i) != nullptr && _forwardGameObjects.at(i)->isDeleted())
+        {
+            _forwardGameObjects.erase(_forwardGameObjects.begin() + i);
+            i--;
+            size--;
+        }
+    }
+    size = _guiGameObjects.size();
+    for (int i = 0; i < size; i++)
+    {
+        if (_guiGameObjects.at(i) != nullptr && _guiGameObjects.at(i)->isDeleted())
+        {
+            _guiGameObjects.erase(_guiGameObjects.begin() + i);
             i--;
             size--;
         }

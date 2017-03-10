@@ -1,3 +1,4 @@
+#include <MoonEngine.h>
 #include "GLFWHandler.h"
 #include "Keyboard.h"
 #include "Mouse.h"
@@ -14,6 +15,12 @@ using namespace MoonEngine;
 
 void GLFWHandler::key_callback(GLFWwindow * window, int key, int scancode, int action, int mode)
 {
+    /* Hit key = start game */
+    if (!_inputEnabled) {
+        _inputEnabled = true;
+        GetWorld()->getGameState()->setState(INTRO_STATE);
+        return;
+    }
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -107,6 +114,7 @@ void GLFWHandler::joystick_callback(int joy, int event)
 
 void GLFWHandler::Start()
 {
+    _inputEnabled = false;
     //Check for controller input
     int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
     if (present == GLFW_TRUE)
