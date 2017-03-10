@@ -34,6 +34,7 @@ _height(height)
     _gBuffer.addTexture(COLOR_TEXTURE, COLOR_ATTACHMENT);
     _gBuffer.addTexture(NORMAL_TEXTURE, NORMAL_ATTACHMENT);
     _gBuffer.addTexture(DEPTH_STENCIL_TEXTURE, GL_DEPTH_ATTACHMENT);
+    _gBuffer.addTexture(DEPTH_STENCIL_TEXTURE, GL_STENCIL_ATTACHMENT);
     _gBuffer.addTexture(COMPOSITE_TEXTURE, COMPOSITE_ATTACHMENT);
     _gBuffer.status();
 
