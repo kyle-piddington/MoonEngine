@@ -1,0 +1,5 @@
+{
+	"name" : "billboard",
+	"vertex" : "resources/programs/billboard.vs",
+	"fragment" : "resources/programs/billboard.fs"
+}
