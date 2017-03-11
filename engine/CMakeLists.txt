@@ -13,15 +13,15 @@ file(GLOB_RECURSE GLSL "resources/*.glsl")
 #expose headers in source to CMake
 include_directories(HEADERS)
 
-find_package(assimp)
+find_package(assimp REQUIRED)
 if(assimp_FOUND)
-    include_directories(${assimp_INCLUDE_DIRS})
+    include_directories(${ASSIMP_INCLUDE_DIRS})
 endif()
 
 # Set the executable.
 
 add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL})
-target_link_libraries(MoonEngine glfw ${assimp_LIBRARIES} ${FMOD_LIBRARIES} ${GLFW_LIBRARIES})
+target_link_libraries(MoonEngine glfw ${ASSIMP_LIBRARIES} ${FMOD_LIBRARIES} ${GLFW_LIBRARIES})
 
 
 

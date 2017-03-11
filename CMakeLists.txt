@@ -31,7 +31,7 @@ if(FMOD_FOUND)
 	include_directories(${FMOD_INCLUDE_DIRS})
 endif()
 
-find_package(assimp)
+find_package(assimp REQUIRED)
 if(assimp_FOUND)
 	include_directories(${assimp_INCLUDE_DIRS})
 endif()
