@@ -7,11 +7,11 @@ using namespace MoonEngine;
 DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgramName, string stencilProgramName, 
     string pointLightProgramName, string dirLightProgramName):
 _mainCamera(nullptr),
+_width(width), _height(height),
+_deferredWidth(width), _deferredHeight(height),
 _gBuffer(width, height),
-_shadowMaps(width*2, height*2),
-_debugShadows(false),
-_width(width),
-_height(height)
+_shadowMaps(width*2, height*2), 
+_debugShadows(false)
 {
     //GBuffer Init
     GLTextureConfiguration locationCFG(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
@@ -48,7 +48,7 @@ _height(height)
     texParams.push_back(std::bind(glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER));
     GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
     glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-    for (int i = 0; i < NUM_SHADOWS; i++) {
+    for (auto i = 0; i < NUM_SHADOWS; i++) {
         Library::TextureLib->createTexture(SHADOW_TEXTURE + std::to_string(i), shadowCFG);
         _shadowMaps.addTexture(SHADOW_TEXTURE + std::to_string(i), GL_DEPTH_ATTACHMENT, texParams);
     }
@@ -93,7 +93,7 @@ void DeferredRenderer::render(Scene * scene)
     geometryPass(scene);
 
     glEnable(GL_STENCIL_TEST);
-    for (std::shared_ptr<GameObject> light : scene->getPointLightObjects()) {
+    for (auto light : scene->getPointLightObjects()) {
         stencilPass(light);
         pointLightPass(light);
     }
@@ -124,9 +124,8 @@ void DeferredRenderer::render(Scene * scene)
 
 void DeferredRenderer::shadowMapPass(Scene * scene)
 {
-    Mesh* mesh = nullptr;
-    GLProgram * activeProgram = nullptr;
-    Material* mat = nullptr;
+    Mesh* mesh;
+    GLProgram * activeProgram;
     activeProgram = _shadowMapsProgram;
     activeProgram->enable();
     _shadowMaps.calculateShadowLevels(scene);
@@ -137,7 +136,7 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
     // The view is set as the light source
     glm::mat4 V = _shadowMaps.getLightView();
 
-    for (int i = 0; i < NUM_SHADOWS; i++) {
+    for (auto i = 0; i < NUM_SHADOWS; i++) {
         LOG_GL(__FILE__, __LINE__);
         // Bind and clear the current shadowLevel
         _shadowMaps.bindForWriting(i);
@@ -150,12 +149,11 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
         glm::mat4 P = _shadowMaps.getOrtho(i);
         
 
-        for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
+        for (auto obj : scene->getRenderableGameObjectsInFrustrum(P*V))
         {
             if(obj->getTag()!=T_Terrain)
             {
-
-                Material * tMat = obj->getComponent<Material>();
+                auto tMat = obj->getComponent<Material>();
                 if(tMat->isForward())
                 {
                     continue;
@@ -184,8 +182,8 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
 void DeferredRenderer::geometryPass(Scene * scene)
 {
 	GLProgram* activeProgram = nullptr;
-	Mesh* mesh = nullptr;
-	Material* mat = nullptr;
+	Mesh* mesh;
+	Material* mat;
 
     ImGui::Begin("Shadow Debug");
     {
@@ -209,7 +207,7 @@ void DeferredRenderer::geometryPass(Scene * scene)
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     
-    for (std::shared_ptr<GameObject> obj : scene->getRenderableGameObjectsInFrustrum(P*V))
+    for (auto obj : scene->getRenderableGameObjectsInFrustrum(P*V))
     {
       mat = obj->getComponent<Material>();
       mesh = obj->getComponent<Mesh>();
@@ -219,7 +217,7 @@ void DeferredRenderer::geometryPass(Scene * scene)
          continue;
      }
 
-     glm::mat4 M = obj->getTransform().getMatrix();
+        auto M = obj->getTransform().getMatrix();
 
 		//sets the materials geometry shader as active
 
@@ -309,7 +307,7 @@ void DeferredRenderer::pointLightPass(std::shared_ptr<GameObject> light)
     _gBuffer.bindForLightPass();
     setupPointLightUniforms(_pointLightProgram, light);
 
-    const MeshInfo* lightSphere = nullptr;
+    const MeshInfo* lightSphere;
     lightSphere = light->getComponent<PointLight>()->getSphere();
 
     glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
@@ -353,18 +351,16 @@ void DeferredRenderer::dirLightPass(Scene* scene)
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
     glBlendFunc(GL_ONE, GL_ONE);
-    
-    std::shared_ptr<GameObject> dirLight = scene->getDirLightObject();
-    glm::vec3 viewLight = 
-    glm::vec3(V * glm::vec4(dirLight->getComponent<DirLight>()->getDirection(),0));
 
-    DirLight* light = dirLight->getComponent<DirLight>();
+    auto dirLight = scene->getDirLightObject()->getComponent<DirLight>();
+    glm::vec3 viewLight = glm::vec3(V * glm::vec4(dirLight->getDirection(),0));
+
     //For every directional light, pass new direction and color
     glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.color"), 1, 
-        glm::value_ptr(dirLight->getComponent<DirLight>()->getColor()));
+        glm::value_ptr(dirLight->getColor()));
     glUniform3fv(_dirLightProgram->getUniformLocation("dirLight.direction"), 1,
         glm::value_ptr(viewLight));
-    glUniform1f(_dirLightProgram->getUniformLocation("dirLight.ambient"), dirLight->getComponent<DirLight>()->getAmbient());
+    glUniform1f(_dirLightProgram->getUniformLocation("dirLight.ambient"), dirLight->getAmbient());
 
     
     glDrawElementsBaseVertex(
@@ -390,9 +386,9 @@ void DeferredRenderer::forwardPass(Scene* scene) {
     _gBuffer.bind(GL_FRAMEBUFFER);
     glDrawBuffer(GL_COLOR_ATTACHMENT4);
     GLProgram* activeProgram = nullptr;
-    Mesh* mesh = nullptr;
-    const MeshInfo* meshInfo = nullptr;
-    Material* mat = nullptr;
+    Mesh* mesh;
+    const MeshInfo* meshInfo;
+    Material* mat;
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
     LOG_GL(__FILE__, __LINE__);
@@ -459,18 +455,18 @@ void DeferredRenderer::forwardPass(Scene* scene) {
 
 void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
 {
-    for (int i = 0; i < NUM_SHADOWS; i++) {
-        glm::mat4 LV = _shadowMaps.getOrtho(i) * _shadowMaps.getLightView();
+    for (auto i = 0; i < NUM_SHADOWS; i++) {
+        auto LV = _shadowMaps.getOrtho(i) * _shadowMaps.getLightView();
         string LVname = "LV[" + to_string(i) + "]";
         glUniformMatrix4fv(prog->getUniformLocation(LVname), 1, GL_FALSE, glm::value_ptr(LV));
     }
-    for (int i = 0; i < NUM_SHADOWS; i++) {
-        string shadowMapName = "shadowMap[" + to_string(i) + "]";
+    for (auto i = 0; i < NUM_SHADOWS; i++) {
+        auto shadowMapName = "shadowMap[" + to_string(i) + "]";
         GLTexture * sm = Library::TextureLib->getTexture(SHADOW_TEXTURE + to_string(i));
         glUniform1i(prog->getUniformLocation(shadowMapName), 5+i);
     }
-    for (int i = 0; i < NUM_SHADOWS; i++) {
-        string shadowZName = "shadowZSpace[" + to_string(i) + "]";
+    for (auto i = 0; i < NUM_SHADOWS; i++) {
+        auto shadowZName = "shadowZSpace[" + to_string(i) + "]";
         glm::vec4 shadowVec(0.0f, 0.0f, _shadowMaps.getShadowZ(i), 1.0f);
         glm::vec4 camShadow = _mainCamera->getProjection() * shadowVec;
         glUniform1f(prog->getUniformLocation(shadowZName), camShadow.z);
@@ -481,9 +477,9 @@ void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
 
 void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr<GameObject> light)
 {
-    glm::mat4 V = _mainCamera->getView();
-    glm::mat4 P = _mainCamera->getProjection();
-    glm::mat4 M = light->getComponent<PointLight>()->getLightTransform().getMatrix();
+    auto V = _mainCamera->getView();
+    auto P = _mainCamera->getProjection();
+    auto M = light->getComponent<PointLight>()->getLightTransform().getMatrix();
     glm::vec3 lightPosition = light->getComponent<PointLight>()->getPosition();
     glm::vec3 viewLightPosition = glm::vec3(V* M * glm::vec4(0,0,0, 1.0));
 
@@ -498,7 +494,7 @@ void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr
     _gBuffer.UniformTexture(prog, "normalTex", NORMAL_TEXTURE);
 
     //Other global Uniforms
-    glUniform2f(prog->getUniformLocation("screenSize"), (float) _width,(float) _height);
+    glUniform2f(prog->getUniformLocation("screenSize"), static_cast<float>(_width),static_cast<float>(_height));
 
     //PointLight Specific Uniforms
     glUniform3fv(_pointLightProgram->getUniformLocation("pointLight.color"), 1,

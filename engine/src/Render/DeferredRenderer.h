@@ -83,10 +83,7 @@ namespace MoonEngine
 		GLuint _width, _height;
         int _deferredWidth, _deferredHeight;
         GBuffer _gBuffer;
-		GLTexture* _colorTex, * _positionTex, * _normalTex, * _textureTex;
-        GLTexture* _depthTex;
-        GLTexture* _outputTex;
-        
+	        
         ShadowMaps _shadowMaps;
         bool _debugShadows;
 
