@@ -27,10 +27,39 @@ void GUI::addElement(string name, float scaleX, float scaleY, float posX, float 
     _guiElements[name] = _guiElement;
 }
 
+void GUI::createStringTexture(std::string text) {
+    int width = 50;
+    int height = 50;
+    unsigned char pixels[width * height * 4];
+    memset(pixels, 0x20, width * height * 4);	/* clear fb */
+
+    dtx_target_raster(pixels, width, height);
+
+    dtx_color(1.0, 1.0, 1.0, 1.0);
+    dtx_position(0.2, 15);
+    dtx_printf("hello world!");
+
+    GLTextureConfiguration cfg(width, height, GL_RGBA, GL_RGBA, GL_UNSIGNED_SHORT);
+    Library::TextureLib->createTexture("text_test", pixels, cfg);
+
+}
+
 void GUI::start() {
+    string path = Library::getResourcePath() + "serif_s24.glyphmap";
+    LOG(INFO, "Loading font " + path);
+
+    if(!(font = dtx_open_font_glyphmap(path.c_str()))) {
+        LOG(INFO, "Couldn't load font");
+    }
+    dtx_use_font(font, 24);
+    dtx_set(DTX_RASTER_BLEND, 1);
+
+    createStringTexture("");
+
+
     addElement("Moon0", 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
     addElement("star", 40.0f, 40.0f, 0.085f * _width, 0.87f * _height);
-    addElement("text", 25.0f, 25.0f, 0.135f * _width, 0.88f * _height);
+    addElement("text_test", 25.0f, 25.0f, 0.135f * _width, 0.88f * _height);
 
     addElement("progress", 0.4f * _width, 25.0f, 0.5f * _width, 0.067f * _height);
     addElement("wolfmoon", 40.0f, 40.0f, 0.33f * _width, 0.067f * _height);

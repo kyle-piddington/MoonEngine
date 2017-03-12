@@ -19,6 +19,10 @@ GLTexture * SimpleTexture::getTexture() {
     return _texture;
 }
 
+void SimpleTexture::setTexture(GLTexture * texture) {
+    _texture = texture;
+}
+
 std::shared_ptr<Component> SimpleTexture::clone() const
 {
     return std::make_shared<SimpleTexture>(*this);

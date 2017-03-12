@@ -1,6 +1,5 @@
 #include "GUIStep.h"
 #include "Libraries/Library.h"
-#include "thirdparty/text/drawtext.h"
 
 using namespace MoonEngine;
 
@@ -18,14 +17,6 @@ void GUIStep::setup(GLFWwindow * window, Scene * scene)
 	_compositeTexture = Library::TextureLib->getTexture(COMPOSITE_TEXTURE);
 
 	_fbo.addTexture(COMPOSITE_TEXTURE, GL_COLOR_ATTACHMENT0);
-
-    string path = Library::getResourcePath();
-    LOG(INFO, "Loading font " + path + "\n");
-
-    struct dtx_font *font;
-    if(!(font = dtx_open_font("serif.ttf", 24))) {
-        LOG(INFO, "Couldn't load font");
-    }
 }
 
 void GUIStep::render(Scene * scene)
@@ -51,6 +42,7 @@ void GUIStep::render(Scene * scene)
 
         drawToQuad();
 	}
+
     glDisable(GL_BLEND);
 
     _fbo.DBG_DrawToImgui("GUI");
