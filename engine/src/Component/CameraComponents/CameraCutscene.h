@@ -29,6 +29,7 @@ namespace MoonEngine
         glm::vec3 _toPos;
         glm::vec3 _fromLookAt;
         glm::vec3 _toLookAt;
+        glm::vec3 _playerPos;
 
         float _maxStepAmount;
         float _currentStepRatio;
