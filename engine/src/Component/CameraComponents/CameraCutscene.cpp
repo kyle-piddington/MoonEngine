@@ -17,8 +17,9 @@ void CameraCutscene::start()
 {
     // cameraPos, lookAtPos
     _cameraSteps.push_back({glm::vec3(0, 200, 0), glm::vec3(-32.62, 20.91, -101.99)});
-    _cameraSteps.push_back({glm::vec3(-32.62, 150.91, -101.99), glm::vec3(-32.62, 20.91, -101.99)});
-    _cameraSteps.push_back({glm::vec3(-32.62, 25.91, -101.99), glm::vec3(-32.62, 20.91, -101.99)});
+    _cameraSteps.push_back({glm::vec3(100, 200, 0), glm::vec3(-32.62, 20.91, -101.99)});
+    _cameraSteps.push_back({glm::vec3(100, 200, 100), glm::vec3(-32.62, 20.91, -101.99)});
+    _cameraSteps.push_back({glm::vec3(0, 200, 100), glm::vec3(100, 100.91, -101.99)});
 
     fetchCurrentSteps();
 }

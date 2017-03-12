@@ -5,21 +5,22 @@
 using namespace MoonEngine;
 
 GameObject::GameObject():
-deleted(false),
-defaultBox(glm::vec3(0,0,0),0.5f,0.5f,0.5f),
-useMeshBounds(false),
-useBoxColliderBounds(false),
-tag(T_NONE)
+    deleted(false),
+    defaultBox(glm::vec3(0,0,0),0.5f,0.5f,0.5f),
+    useMeshBounds(false),
+    useBoxColliderBounds(false),
+    tag(T_NONE)
 {
 
 }
 
 GameObject::GameObject(const Transform & t):
-transform(t),
-deleted(false),
-useMeshBounds(false),
-useBoxColliderBounds(false),
-tag(T_NONE)
+    transform(t),
+    deleted(false),
+    defaultBox(glm::vec3(0,0,0),0.5f,0.5f,0.5f),
+    useMeshBounds(false),
+    useBoxColliderBounds(false),
+    tag(T_NONE)
 {
 
 }
@@ -55,7 +56,7 @@ void GameObject::addComponent(Component * component)
 
 void GameObject::addHandler(std::string message, const messageFn & fn)
 {
-    if(messageHandlers.find(message) != messageHandlers.end())
+    if(messageHandlers.find(message) == messageHandlers.end())
     {
         messageHandlers[message] = std::vector<messageFn>();
     }

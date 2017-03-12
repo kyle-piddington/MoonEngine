@@ -482,7 +482,7 @@ void Scene::addGlobalMessage(const Message & message)
 
 void Scene::addGlobalHandler(std::string message, const messageFn & fn)
 {
-    if (_globalMessageHandlers.find(message) != _globalMessageHandlers.end())
+    if (_globalMessageHandlers.find(message) == _globalMessageHandlers.end())
     {
         _globalMessageHandlers[message] = std::vector<messageFn>();
     }
