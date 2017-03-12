@@ -13,12 +13,22 @@ _currentState(MENU_STATE)
 
 void GameState::start()
 {
-    on(INTRO_STATE, [&](const Message & msg) {
+    on(INTRO_STATE, [&](const Message & msg)
+    {
         LOG(INFO, "Adding cutscene");
         GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
         Component * cutscene = GetWorld()->createComponent<CameraCutscene>();
         cutscene->start();
         cameraObj->addComponent(cutscene);
+    });
+
+    on(PLAYING_STATE, [&](const Message & msg)
+    {
+        LOG(INFO, "Adding orbital camera");
+        GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
+        Component * control = GetWorld()->createComponent<ThirdPersonOrbitalController>();
+        cameraObj->addComponent(control);
+        control->start();
     });
 }
 

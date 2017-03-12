@@ -22,7 +22,7 @@ namespace MoonEngine
         std::shared_ptr<Component> clone() const;
 
     private:
-
+        bool _running;
         int _currentStep;
 
         glm::vec3 _fromPos;

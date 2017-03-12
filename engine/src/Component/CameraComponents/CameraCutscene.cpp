@@ -1,12 +1,11 @@
 #include <iostream>
 #include <Geometry/Transform.h>
-#include "CameraCutscene.h"
-#include "Util/MathUtil.h"
-#include "GameObject/GameObject.h"
+#include <MoonEngine.h>
 
 using namespace MoonEngine;
 
 CameraCutscene::CameraCutscene():
+    _running(true),
     _currentStep(0),
     _maxStepAmount(1.0)
 {
@@ -37,7 +36,12 @@ void CameraCutscene::fetchCurrentSteps() {
 
 void CameraCutscene::update(float dt)
 {
+    if (!_running) {
+        return;
+    }
     if (_currentStep >= _cameraSteps.size() - 1) {
+        _running = false;
+        GetWorld()->getGameState()->setState(PLAYING_STATE);
         return;
     }
 

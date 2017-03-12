@@ -35,12 +35,12 @@ void GUI::start() {
     addElement("progress", 0.4f * _width, 25.0f, 0.5f * _width, 0.067f * _height);
     addElement("wolfmoon", 40.0f, 40.0f, 0.33f * _width, 0.067f * _height);
 
-    addElement("cube", 100, 100, _width / 2, _height / 2);
+    addElement("menu", _width / 2, _height / 2, _width / 2, _height / 2);
 
     on(INTRO_STATE,[&](const Message & msg)
     {
         LOG(INFO, "Removing menu");
-        _guiElements["cube"]->setDeleted();
+        _guiElements["menu"]->setDeleted();
     });
 
     on("picked_up_star",[&](const Message & msg)
