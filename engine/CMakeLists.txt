@@ -20,7 +20,7 @@ endif()
 
 # Set the executable.
 
-add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL})
+add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL} src/Component/CameraComponents/CameraCutscene.cpp src/Component/CameraComponents/CameraCutscene.h)
 target_link_libraries(MoonEngine glfw ${ASSIMP_LIBRARIES} ${FMOD_LIBRARIES} ${GLFW_LIBRARIES})
 
 

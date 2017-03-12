@@ -62,11 +62,12 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> playerObj = Library::MeshLib->getGameObjectForModelNamed("Wolf_fbx.fbx","character.program",scene);
 
     //playerObj.setPosition(playerTransform.getPosition());
+
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
     // playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
     // playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
     playerObj->addComponent(scene->createComponent<BoxCollider>());
-    playerObj->addComponent(scene->createComponent<PointLight>(glm::vec3(5, 5, 5), 2.5f));
+    playerObj->addComponent(scene->createComponent<PointLight>(COLOR_CYAN, 3.0f));
 
     //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
     playerObj->getTransform().setScale(glm::vec3(1.0, 1.0, 1.0));
@@ -87,19 +88,11 @@ int main(int argc, char ** argv)
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
     cameraObj->addComponent(cam);
-    cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
+    //cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
+    cameraObj->addComponent(scene->createComponent<CameraCutscene>());
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
     //cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
     scene->addGameObject(cameraObj);
-
-
-    //Ground
-    Transform groundTransform;
-    groundTransform.setScale(glm::vec3(5, 1, 5));
-    std::shared_ptr<GameObject> groundObject = std::make_shared<GameObject>(groundTransform);
-    groundObject->addComponent(scene->createComponent<StaticMesh>("quad.obj", true));
-    groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
-    scene->addGameObject(groundObject);
 
 
     LevelLoader levelLoader;
