@@ -1,7 +1,9 @@
 
 #include "AssimpLoader.h"
 #include "Util/GLMUtil.h"
+#include "VertexBoneData.h"
 using namespace MoonEngine;
+
 
 
 std::string textureStringForAssimpType(const aiTextureType & type)
@@ -49,11 +51,31 @@ void loadMaterialTextures(
 		aiString str;
 		mat->GetTexture(type, i, &str);
 		std::string texString =  std::string(str.C_Str());
-		(*textures)[texType] = texString;
+		int lastSlash = texString.find_last_of("\\/");
+		(*textures)[texType] = texString.substr(lastSlash + 1,texString.size());
 	}
 	
 }
 
+//Load bone data for a mesh.
+std::vector<VertexBoneData> loadBoneData(aiMesh * mesh, AssimpMeshInfo * meshOutInfo, AssimpModelInfo * modelOutInfo, glm::mat4 meshSpace)
+{
+	std::vector<VertexBoneData> boneData(mesh->mNumVertices);
+	meshOutInfo->boneOffsets.resize(modelOutInfo->getNumBones());
+	for(int i = 0; i < mesh->mNumBones; i++)
+	{
+		aiBone * bone = mesh->mBones[i];
+		int id = modelOutInfo->getBoneId(std::string(bone->mName.C_Str()));
+		for(int i = 0; i < bone->mNumWeights; i++)
+		{
+			const aiVertexWeight & weight = bone->mWeights[i];
+			boneData[weight.mVertexId].addBoneData(id,weight.mWeight);
+		}
+		meshOutInfo->boneOffsets[id] = GLMUtil::FromAssimp(bone->mOffsetMatrix);
+	}
+	return boneData;
+}
+//Process a mesh
 bool processMesh(aiMesh * mesh, 
 	aiMatrix4x4 transform,
 	const aiScene * scene,
@@ -71,9 +93,17 @@ bool processMesh(aiMesh * mesh,
 	float minZ = 1e20, maxZ = -1e20;
 	
 	glm::mat4 M = GLMUtil::FromAssimp(transform);
+	std::vector<VertexBoneData> bData;
+	if(outInfo->hasBones())
+	{
+		//Load bone data
+		bData = loadBoneData(mesh,&assimpMeshInfo, outInfo, M);
+	}
 	//data.reserve(mesh->mNumVertices * 5);
 	for(GLuint i = 0; i < mesh->mNumVertices; i++)
 	{
+		//If things are bad remove this M
+		//And i hope it works
 		glm::vec4 vert = M * glm::vec4(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,1);
 
 		data.push_back(vert.x);
@@ -122,10 +152,10 @@ bool processMesh(aiMesh * mesh,
 	      		data.push_back(0);
 	      	}
 
-	      }
+	    }
 
-	      if(outInfo->hasTangentBitangent())
-	      {
+	    if(outInfo->hasTangentBitangent())
+	    {
 	      	if(mesh->HasTangentsAndBitangents())
 	      	{
 	      		data.push_back(mesh->mTangents[i].x);
@@ -149,7 +179,21 @@ bool processMesh(aiMesh * mesh,
 	      		data.push_back(0);
 	      		data.push_back(0);
 	      	}
-	      }
+	    }
+	    if(outInfo->hasBones())
+	    {
+	    	//SUPER HACKY, 
+	    	//Reincode Bone index 
+	    	//as a float.
+	    	for(int j = 0; j < 4; j++)
+	    	{
+	    		data.push_back(*((float *)&(bData[i].boneIds[j])));
+	    	}
+	    	for(int j = 0; j < 4; j++)
+	    	{
+	    		data.push_back(bData[i].boneWeights[j]);
+	    	}
+	    }
 
 
 	  }
@@ -193,6 +237,47 @@ bool processNode(aiNode * node, aiMatrix4x4 transform, const aiScene * scene, st
 	return false;
 }
 
+void loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node, int parentIdx)
+{
+	AssimpBoneInfo boneInfo;
+	boneInfo.boneName = std::string(node->mName.data);
+	int idx = parentIdx;
+	if(!boneInfo.boneName.empty())
+	{
+		boneInfo.parentBoneIndex = parentIdx;
+		boneInfo.offsetMatrix = GLMUtil::FromAssimp(node->mTransformation);
+		idx = outInfo->addBone(boneInfo);
+	}
+	
+	for(int i = 0; i < node->mNumChildren; i++)
+    {
+        loadBonesForModel(outInfo, node->mChildren[i],idx);
+    }
+
+}
+
+void loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node)
+{
+	outInfo->setRootInverseTransform(glm::inverse(GLMUtil::FromAssimp(node->mTransformation)));
+	AssimpBoneInfo rootInfo;
+	int idx = -1;
+	rootInfo.boneName = std::string(node->mName.data);
+	if(!rootInfo.boneName.empty())
+	{
+		rootInfo.boneName = std::string(node->mName.data);
+		rootInfo.parentBoneIndex = -1;
+		rootInfo.offsetMatrix = glm::mat4(1.0);
+		idx = outInfo->addBone(rootInfo);
+	}
+	
+
+	for(int i = 0; i < node->mNumChildren; i++)
+    {
+        loadBonesForModel(outInfo, node->mChildren[i],idx);
+    }
+
+}
+
 bool AssimpLoader::LoadIntoBuffer(
 		std::string fileName,
 		GLBuffer * vertexBuffer,
@@ -213,6 +298,7 @@ bool AssimpLoader::LoadIntoBuffer(
 	}
 	std::vector<float> data;
 	std::vector<unsigned short> indices;
+	loadBonesForModel(outInfo, scene->mRootNode);
 	OK = processNode(scene->mRootNode, aiMatrix4x4(), scene, data, indices, outInfo);
 	if(!OK)
 	{
@@ -226,6 +312,7 @@ bool AssimpLoader::LoadIntoBuffer(
 	int texCoordsOffset  = 0;
 	int tangentOffset = 0;
 	int bitangentOffset = 0;
+	int boneOffset = 0;
 	vao->bindVertexBuffer(
 		GL_VERTEX_POSITION_ATTRIBUTE,
 		*vertexBuffer,
@@ -240,6 +327,7 @@ bool AssimpLoader::LoadIntoBuffer(
 		texCoordsOffset += sizeof(float) * 3;
 		tangentOffset += sizeof(float) * 3;
 		bitangentOffset += sizeof(float) * 3;
+		boneOffset += sizeof(float) * 3;
 		vao->bindVertexBuffer(
 			GL_VERTEX_NORMAL_ATTRIBUTE,
 			*vertexBuffer,
@@ -255,6 +343,7 @@ bool AssimpLoader::LoadIntoBuffer(
 		LOG(INFO, "Loading mesh with textures");
 		tangentOffset += sizeof(float) * 2;
 		bitangentOffset += sizeof(float) * 2;
+		boneOffset += sizeof(float) * 2;
 		vao->bindVertexBuffer(
 			GL_VERTEX_TEXTURE_ATTRIBUTE,
 			*vertexBuffer,
@@ -269,6 +358,7 @@ bool AssimpLoader::LoadIntoBuffer(
 	{
 		LOG(INFO, "Loading mesh with Tangents and Bitangents");
 		bitangentOffset += sizeof(float) * 3;
+		boneOffset += sizeof(float) * 6;
 		vao->bindVertexBuffer(
 			GL_VERTEX_TANGENT_ATTRIBUTE,
 			*vertexBuffer,
@@ -289,6 +379,29 @@ bool AssimpLoader::LoadIntoBuffer(
 			);
 
 	}
+	if(outInfo->hasBones())
+	{
+		LOG(INFO, "Loading mesh with bones");
+		vao->bindVertexBuffer(
+			GL_VERTEX_BONE_ID_ATTRIBUTE,
+			*vertexBuffer,
+			4,
+			GL_UNSIGNED_INT,
+			false,
+			stride,
+			(GLvoid *) boneOffset
+			);
+		vao->bindVertexBuffer(
+			GL_VERTEX_BONE_WEIGHT_ATTRIBUTE,
+			*vertexBuffer,
+			4,
+			GL_FLOAT,
+			false,
+			stride,
+			(GLvoid *) (boneOffset + sizeof(float)*4)
+			);
+
+	}
 	vao->bindElementBuffer(*indexBuffer);
 	outInfo->setVertexArrayObject(vao);
 
@@ -297,3 +410,5 @@ bool AssimpLoader::LoadIntoBuffer(
 	return true;
 
 }
+
+

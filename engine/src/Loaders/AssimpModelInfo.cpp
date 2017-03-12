@@ -29,8 +29,18 @@ int AssimpModelInfo::stride() const
 {
 	return 3 + 
 		   (int)hasNormals()* 3 + 
+		   (int)hasTextureCoordinates() * 2 + 
 		   (int)hasTangentBitangent() * 6 + 
-		   (int)hasTextureCoordinates() * 2;
+		   (int)hasBones() *  8;
+
+}
+
+int AssimpModelInfo::addBone(const AssimpBoneInfo & boneInfo)
+{
+	_hasBones = true;
+	_boneInfo.push_back(boneInfo);
+	_boneToIndexMap[boneInfo.boneName] = _boneInfo.size() - 1;
+	return _boneInfo.size() - 1;
 
 }
 
@@ -53,4 +63,18 @@ void AssimpModelInfo::addMeshInfo(AssimpMeshInfo & ami)
 	ami.meshInfo.setVertexArrayObject(vertexObjectPtr);
 	_meshInfo.push_back(ami);
 	boundingBox = boundingBox.merge(ami.box);
+}
+int AssimpModelInfo::getBoneId(const std::string & string)
+{
+	const auto & itr = _boneToIndexMap.find(string);
+	if(itr != _boneToIndexMap.end())
+	{
+		return itr->second;
+	}
+	else
+	{
+		LOG(ERROR, "Could not find bone of name " + string);
+		assert(false);
+		return -1;
+	}
 }
