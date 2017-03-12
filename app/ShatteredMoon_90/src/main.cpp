@@ -58,20 +58,22 @@ int main(int argc, char ** argv)
 
     playerTransform.setPosition(
             glm::vec3(-52.623940, 12.913505554199219,-101.991371));
-    std::shared_ptr<GameObject> playerObj = Library::MeshLib->getGameObjectForModelNamed("wolf_fbx.fbx","geom.program",scene); 
-    
+
+    std::shared_ptr<GameObject> playerObj = Library::MeshLib->getGameObjectForModelNamed("Wolf_fbx.fbx","character.program",scene);
+
     //playerObj.setPosition(playerTransform.getPosition());
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
     // playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
     // playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
     playerObj->addComponent(scene->createComponent<BoxCollider>());
+    playerObj->addComponent(scene->createComponent<PointLight>(glm::vec3(5, 5, 5), 2.5f));
 
     //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
-    playerObj->getTransform().setScale(glm::vec3(1, 1, 1));
+    playerObj->getTransform().setScale(glm::vec3(1.0, 1.0, 1.0));
     playerObj->addTag(T_Player);
 
     scene->addGameObject(playerObj);
-
+    
 	Transform particleTransform = Transform();
 	stringmap particleMap({ { "diffuse", "solid_white" } });
 	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(particleTransform);

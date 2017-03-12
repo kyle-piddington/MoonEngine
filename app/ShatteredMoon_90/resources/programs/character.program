@@ -1,0 +1,5 @@
+{
+	"name" : "geom",
+	"vertex" : "resources/programs/character.vs",
+	"fragment" : "resources/programs/character.fs"
+}
