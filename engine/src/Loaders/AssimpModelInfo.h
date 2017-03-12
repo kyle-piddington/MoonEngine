@@ -4,18 +4,64 @@
 #include "BasicMeshInfo.h"
 #include <string>
 #include <unordered_map>
+#include <glm/gtc/quaternion.hpp>
 //AssimpInfo contains all
 //data imported by assimp, metadata
 //about the mesh, and a meshInfo 
 //for binding later.
 namespace MoonEngine
 {
+
+	struct AssimpBoneInfo
+	{
+		int parentBoneIndex;
+		std::string boneName;
+		glm::mat4 offsetMatrix;
+	};
+
+	struct AssimpPositionKeyFrame
+	{
+		glm::vec3 position;
+		float mTime;
+	};
+
+	struct AssimpRotationKeyFrame
+	{
+		glm::quat position;
+		float mTime;
+	};
+
+	struct AssimpScaleKeyFrame
+	{
+		glm::vec3 scale;
+		float mTime;
+	};
+
+	struct AssimpBoneAnimInfo
+	{
+		int boneId;
+		std::vector<AssimpPositionKeyFrame> translationKeys;
+		std::vector<AssimpRotationKeyFrame> rotationKeys;
+		std::vector<AssimpScaleKeyFrame> scaleKeys;
+	};
+
+	struct AssimpAnimationInfo
+	{
+		std::string name;
+		double duration;
+		double ticksPerSecond;
+		std::vector<AssimpBoneAnimInfo> boneAnimData;
+	};
+
 	struct AssimpMeshInfo
 	{
 		std::unordered_map<std::string, std::string> textures;
 		BasicMeshInfo meshInfo;
 		BoundingBox box;
 		glm::mat4 M;
+		//Mat4 offsets for binding matricies.
+		std::vector<glm::mat4> boneOffsets;
+
 
 		void bind() const
 		{
@@ -74,14 +120,44 @@ namespace MoonEngine
 			_hasTextureCoordinates  = txCoord;	
 		}
 
+		/**
+		 * Add a bone and return it's index
+		 * @param  boneInfo new bone info to add
+		 * @return          index in the array of bones (for parent)
+		 */
+		int addBone(const AssimpBoneInfo & boneInfo);
+
+		int getBoneId(const std::string & string);
+
+		int getNumBones(){return _boneInfo.size();}
 		//Mesh info avaliable if no other
 		//transformations / information is needed.
 		//(Useful for basic mesh display)
 		
+		void setRootInverseTransform(const glm::mat4 & rootInverseTransform)
+		{
+			_rootInverseTransform = rootInverseTransform;
+		}
+		
+		glm::mat4 getRootInverseTransform() const
+		{
+			return _rootInverseTransform;
+		}
+
+		void addAnimation(const AssimpAnimationInfo & info)
+		{
+			_animations.push_back(info);
+		}
+
 	private:
         //Pointer to the vertex array object that contains the mesh.
         //Most meshes are saved  in MeshLibrary, but not all.
+        std::vector<AssimpAnimationInfo> _animations;
 		std::vector<AssimpMeshInfo> _meshInfo;
+		std::vector<AssimpBoneInfo> _boneInfo;
+		std::unordered_map<std::string, int> _boneToIndexMap;
+		glm::mat4 _rootInverseTransform;
+
 		BasicMeshInfo fullMeshInfo;
 		GLVertexArrayObject * vertexObjectPtr;
 		bool _hasNormals;

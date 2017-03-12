@@ -58,6 +58,7 @@ int main(int argc, char ** argv)
 
     playerTransform.setPosition(
             glm::vec3(-52.623940, 12.913505554199219,-101.991371));
+
     std::shared_ptr<GameObject> playerObj = Library::MeshLib->getGameObjectForModelNamed("Wolf_fbx.fbx","character.program",scene);
 
     //playerObj.setPosition(playerTransform.getPosition());

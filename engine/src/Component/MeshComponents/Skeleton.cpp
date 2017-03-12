@@ -69,7 +69,7 @@ Bone * const Skeleton::getBone(std::string boneName)
     auto boneId = boneMap.find(boneName);
     if(boneId == boneMap.end())
     {
-        LOG(ERROR) << "No Bone named " << boneName << "In skeleton!";
+        //LOG(ERROR) << "No Bone named " << boneName << "In skeleton!";
         return nullptr;
     }
     else
@@ -123,6 +123,6 @@ void Skeleton::finalizeAnimation()
 {
     for (std::vector<BoneTreeNode>::iterator i = boneRoot.children.begin(); i != boneRoot.children.end(); ++i)
     {
-        finalizeAnimation(*i,glm::mat4(1.0));
+        finalizeAnimation(*i,rootInverseTransform);
     }
 }
