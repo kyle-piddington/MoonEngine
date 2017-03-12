@@ -14,9 +14,10 @@ namespace MoonEngine
 
 	struct AssimpBoneInfo
 	{
-		int parentBoneIndex;
+		int boneIdx;
 		std::string boneName;
 		glm::mat4 offsetMatrix;
+		std::vector<int> childBones;
 	};
 
 	struct AssimpPositionKeyFrame
@@ -128,6 +129,10 @@ namespace MoonEngine
 		int addBone(const AssimpBoneInfo & boneInfo);
 
 		int getBoneId(const std::string & string);
+
+		AssimpBoneInfo getBoneInfo(int id){
+			assert(id < _boneInfo.size());
+			return _boneInfo[id];}
 
 		int getNumBones(){return _boneInfo.size();}
 		//Mesh info avaliable if no other

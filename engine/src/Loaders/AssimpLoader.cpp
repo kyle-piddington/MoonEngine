@@ -237,7 +237,7 @@ bool processNode(aiNode * node, aiMatrix4x4 transform, const aiScene * scene, st
 	return false;
 }
 
-void loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node, int parentIdx)
+int loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node, int parentIdx)
 {
 	AssimpBoneInfo boneInfo;
 	boneInfo.boneName = std::string(node->mName.data);
@@ -251,30 +251,17 @@ void loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node, int parentIdx)
 	
 	for(int i = 0; i < node->mNumChildren; i++)
     {
-        loadBonesForModel(outInfo, node->mChildren[i],idx);
+        boneInfo.childBones.push_back(loadBonesForModel(outInfo, node->mChildren[i],idx));
     }
+    return idx;
 
 }
 
 void loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node)
 {
-	outInfo->setRootInverseTransform(glm::inverse(GLMUtil::FromAssimp(node->mTransformation)));
-	AssimpBoneInfo rootInfo;
-	int idx = -1;
-	rootInfo.boneName = std::string(node->mName.data);
-	if(!rootInfo.boneName.empty())
-	{
-		rootInfo.boneName = std::string(node->mName.data);
-		rootInfo.parentBoneIndex = -1;
-		rootInfo.offsetMatrix = glm::mat4(1.0);
-		idx = outInfo->addBone(rootInfo);
-	}
-	
-
-	for(int i = 0; i < node->mNumChildren; i++)
-    {
-        loadBonesForModel(outInfo, node->mChildren[i],idx);
-    }
+	outInfo->setRootInverseTransform(glm::inverse(GLMUtil::FromAssimp(node->mTransformation))); 
+	loadBonesForModel(outInfo, node,-1);
+    
 
 }
 
@@ -299,6 +286,10 @@ bool AssimpLoader::LoadIntoBuffer(
 	std::vector<float> data;
 	std::vector<unsigned short> indices;
 	loadBonesForModel(outInfo, scene->mRootNode);
+	if(outInfo->hasBones())
+	{
+		loadAnimationsForModel(outInfo, scene->mRootNode);
+	}
 	OK = processNode(scene->mRootNode, aiMatrix4x4(), scene, data, indices, outInfo);
 	if(!OK)
 	{
@@ -391,6 +382,7 @@ bool AssimpLoader::LoadIntoBuffer(
 			stride,
 			(GLvoid *) boneOffset
 			);
+
 		vao->bindVertexBuffer(
 			GL_VERTEX_BONE_WEIGHT_ATTRIBUTE,
 			*vertexBuffer,

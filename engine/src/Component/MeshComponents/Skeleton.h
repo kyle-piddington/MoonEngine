@@ -3,9 +3,8 @@
 #include "Geometry/Transform.h"
 #include <unordered_map>
 #include <vector>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "Loaders/AssimpModelInfo.h"
+#include "Component/Component.h"
 /**
  * A Skeleton for a model, used in animation.
  */
@@ -20,10 +19,7 @@ namespace MoonEngine
     private:
 
         friend class Skeleton;
-
-        //Consider inverse heierchy
-        //Index of the parent in Skeleton's "Bones" array
-        int parentBoneIdx;
+        
         //Initial offset from the base model
         glm::mat4 offsetTransform;
         //Local animated offset, used in final animation
@@ -82,23 +78,6 @@ namespace MoonEngine
             return animTransform;
         }
 
-        /**
-         * Determine if this bone is at the root of the heiarchy
-         * @return True if the bone has no parent
-         */
-        bool isRoot()
-        {
-            return parentBoneIdx == -1;
-        }
-
-        /**
-         * Get the index of the parent in the bone array
-         * @return the index of the parnet
-         */
-        int getParentIdx()
-        {
-            return parentBoneIdx;
-        }
 
         /**
          * Get the bone name
@@ -115,7 +94,7 @@ namespace MoonEngine
 /**
  * Skeleton is a collection of bones organized into a heiearchy
  */
-    class Skeleton
+    class Skeleton : public Component
     {
         /**
          * A boneTreeNode is a node in the bone heiarchy
@@ -126,6 +105,7 @@ namespace MoonEngine
             int boneIdx;
             std::vector<BoneTreeNode> children;
         };
+
         /**
          * The current bones in the system
          */
@@ -144,19 +124,13 @@ namespace MoonEngine
          */
         std::unordered_map<std::string, int> boneMap;
 
-        /**
-         * Commit all parent->child relationships and premultiply the bind matricies
-         * @param node  The current node to commit the relationship on
-         * @param pIdx the index of the node's parent.
-         */
-        void finalize(BoneTreeNode & node, int pIdx);
-
+     
         /**
          * Recursivly import bones from an assimp heiarchy
          * @param node   The aiNode to process for bones
          * @param parent The previous node
          */
-        void importBonesFromAssimp(aiNode * node, BoneTreeNode & parent);
+        void importBonesFromAssimp(AssimpBoneInfo & node, BoneTreeNode & parent);
 
         /**
          * Pre-multiply the bone animation heiarchy
@@ -184,7 +158,7 @@ namespace MoonEngine
          * Import bones from an assimp data structure
          * @param node the ndoe to process
          */
-        void importBonesFromAssimp(aiNode * node);
+        void importBonesFromAssimp(AssimpModelInfo & info);
 
         /**
          * Add a bone to the skeleton
@@ -212,6 +186,10 @@ namespace MoonEngine
          * (This should be replaced with a dirty flag later.)
          */
         void finalizeAnimation();
+
+
+        virtual std::shared_ptr<Component> clone() const;
+
 
 
         /**
