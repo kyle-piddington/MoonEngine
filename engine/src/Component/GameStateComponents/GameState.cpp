@@ -17,8 +17,9 @@ void GameState::start()
     {
         LOG(INFO, "Adding cutscene");
         GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
-        Component * cutscene = GetWorld()->createComponent<CameraCutscene>();
+        CameraCutscene * cutscene = GetWorld()->createComponent<CameraCutscene>();
         cutscene->start();
+        cutscene->loadSteps("cutscene.json");
         cameraObj->addComponent(cutscene);
         Component * record = GetWorld()->createComponent<CameraRecorder>();
         record->start();
