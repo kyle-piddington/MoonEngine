@@ -6,7 +6,7 @@
 using namespace MoonEngine;
 
 CameraCutscene::CameraCutscene():
-    _running(true),
+    _running(false),
     _currentStep(0),
     _maxStepAmount(1.0),
     _startPlayer(false),
@@ -57,6 +57,8 @@ void CameraCutscene::setStepPlayer(bool start, bool end)
 void CameraCutscene::setSteps(std::vector<CameraStep> steps)
 {
     _cameraSteps = steps;
+
+    _playerPos = GetWorld()->getPlayer()->getTransform().getPosition();
     if (_startPlayer)
     {
         _cameraSteps.insert(_cameraSteps.begin(), {_playerPos + glm::vec3(5,5,5), _playerPos});
@@ -65,22 +67,12 @@ void CameraCutscene::setSteps(std::vector<CameraStep> steps)
     {
         _cameraSteps.push_back({_playerPos + glm::vec3(5,5,5), _playerPos});
     }
+
+    fetchCurrentSteps();
 }
 
 void CameraCutscene::start()
 {
-    _playerPos = GetWorld()->getPlayer()->getTransform().getPosition();
-
-    // cameraPos, lookAtPos
-    std::vector<CameraStep> steps;
-    steps.push_back({glm::vec3(0, 200, 0), glm::vec3(-32.62, 20.91, -101.99)});
-    steps.push_back({glm::vec3(100, 200, 0), glm::vec3(-32.62, 20.91, -101.99)});
-    steps.push_back({glm::vec3(100, 200, 100), glm::vec3(-32.62, 20.91, -101.99)});
-    steps.push_back({glm::vec3(0, 200, 100), glm::vec3(100, 100.91, -101.99)});
-    setStepPlayer(false, true);
-    setSteps(steps);
-
-    fetchCurrentSteps();
 }
 
 void CameraCutscene::fetchCurrentSteps() {
@@ -92,6 +84,7 @@ void CameraCutscene::fetchCurrentSteps() {
 
     // Keep position and lookat point in sync
     _currentStepRatio = distance(_fromPos, _toPos) / distance(_fromLookAt, _toLookAt);
+    _running = true;
 }
 
 void CameraCutscene::update(float dt)
