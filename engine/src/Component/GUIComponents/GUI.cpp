@@ -28,8 +28,8 @@ void GUI::addElement(string name, float scaleX, float scaleY, float posX, float 
 }
 
 void GUI::createStringTexture(std::string text) {
-    int width = 50;
-    int height = 50;
+    int width = 200;
+    int height = 100;
     unsigned char * pixels;
     if(!(pixels = (unsigned char *)malloc(width * height * 4))) {
         perror("failed to allocate image memory");
@@ -40,10 +40,10 @@ void GUI::createStringTexture(std::string text) {
     dtx_target_raster(pixels, width, height);
 
     dtx_color(1.0, 1.0, 1.0, 1.0);
-    dtx_position(5, 5);
+    dtx_position(width / 2, height / 2);
     dtx_printf("1234567890!");
 
-    GLTextureConfiguration cfg(width, height, GL_RGBA, GL_RGBA, GL_UNSIGNED_SHORT);
+    GLTextureConfiguration cfg(width / 2, height / 2, GL_RGBA, GL_RGBA, GL_UNSIGNED_SHORT);
     Library::TextureLib->createTexture("text_test", pixels, cfg);
 
 }
