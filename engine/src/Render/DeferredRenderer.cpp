@@ -99,7 +99,8 @@ void DeferredRenderer::render(Scene * scene)
     LOG_GL(__FILE__, __LINE__);
     ssaoPass(scene);
     LOG_GL(__FILE__, __LINE__);
-//    ssaoBlurPass(scene);
+    ssaoBlurPass(scene);
+
     glEnable(GL_STENCIL_TEST);
     for (auto light : scene->getPointLightObjects()) {
         stencilPass(light);
@@ -110,8 +111,8 @@ void DeferredRenderer::render(Scene * scene)
     glDisable(GL_CULL_FACE);
     forwardPass(scene);
     glViewport(0,0,_deferredWidth,_deferredHeight);
-    //forwardPass(scene);
 
+    _ssaoBuffers.DBG_DrawToImgui("SSAO");
     _gBuffer.DBG_DrawToImgui("GBuffer");
     if(postprocessPipeline.size() == 0)
     {
@@ -271,7 +272,7 @@ void MoonEngine::DeferredRenderer::ssaoPass(Scene * scene)
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
     _ssaoProgram->enable();
-    _ssaoBuffers.DBG_DrawToImgui("SSAO");
+   
     _gBuffer.bindForLightPass();
     _ssaoBuffers.bindForSSAO();
     LOG_GL(__FILE__, __LINE__);
@@ -297,8 +298,19 @@ void MoonEngine::DeferredRenderer::ssaoPass(Scene * scene)
 
 void MoonEngine::DeferredRenderer::ssaoBlurPass(Scene * scene)
 {
-   // _ssaoBlurProgram->enable();
-    //_ssaoBuffers.bindForBlur();
+   _ssaoBlurProgram->enable();
+   _ssaoBuffers.bindForBlur();
+   setupSSAOBlurUniforms(_ssaoBlurProgram);
+   glClear(GL_COLOR_BUFFER_BIT);
+
+   _renderQuad->bind();
+   glDrawElementsBaseVertex(
+       GL_TRIANGLES,
+       _renderQuad->numTris,
+       GL_UNSIGNED_SHORT,
+       _renderQuad->indexDataOffset,
+       _renderQuad->baseVertex
+   );
 }
 
 void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light)
@@ -532,6 +544,12 @@ void DeferredRenderer::setupSSAOUniforms(GLProgram* prog)
     
 }
 
+void DeferredRenderer::setupSSAOBlurUniforms(GLProgram* prog)
+{
+    _ssaoBuffers.UniformTexture(prog, "ssaoColor", SSAO_COLOR_TEXTURE);
+    glUniform2f(prog->getUniformLocation("screenSize"), static_cast<float>(_width), static_cast<float>(_height));
+}
+
 void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr<GameObject> light)
 {
     auto V = _mainCamera->getView();
@@ -573,6 +591,7 @@ void MoonEngine::DeferredRenderer::setupDirLightUniforms(GLProgram * prog)
     _gBuffer.UniformTexture(prog, "positionTex", POSITION_TEXTURE);
     _gBuffer.UniformTexture(prog, "colorTex", COLOR_TEXTURE);
     _gBuffer.UniformTexture(prog, "normalTex", NORMAL_TEXTURE);
+    _ssaoBuffers.UniformTexture(prog, "ssaoTex", SSAO_COLOR_TEXTURE);
     //Other global Uniforms
 
 }

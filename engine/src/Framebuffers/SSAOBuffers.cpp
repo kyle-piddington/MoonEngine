@@ -72,6 +72,11 @@ void SSAOBuffers::DBG_DrawToImgui(string guiName)
     ImGui::End();
 }
 
+void SSAOBuffers::UniformTexture(GLProgram * prog, std::string uniformName, std::string textureName)
+{
+    _ssaoBuffer.UniformTexture(prog, uniformName, textureName);
+}
+
 float SSAOBuffers::lerp(float a, float b, float f)
 {
     return a + f * (b - a);

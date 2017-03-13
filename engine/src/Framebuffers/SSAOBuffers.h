@@ -15,6 +15,7 @@ public:
         return _noise;
     }
     void DBG_DrawToImgui(string guiName);
+    void UniformTexture(GLProgram * prog, std::string uniformName, std::string textureName);
 private:
     GLFramebuffer _ssaoBuffer;
     GLFramebuffer _ssaoBlurBuffer;

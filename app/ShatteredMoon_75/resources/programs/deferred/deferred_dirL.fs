@@ -52,6 +52,6 @@ void main()
     float ssao = texture(ssaoTex, TexCoord).r;
     float Specular = texture(colorTex, TexCoord).a;
     float ShadowFactor = texture(normalTex, TexCoord).a;
-    finalColor = vec4(ssao);
-    //finalColor = calcDirLight(Diffuse, ssao, Normal, WorldPos, Specular, ShadowFactor);
+    //finalColor = vec4(ssao);
+    finalColor = calcDirLight(Diffuse, ssao, Normal, WorldPos, Specular, ShadowFactor);
 }
