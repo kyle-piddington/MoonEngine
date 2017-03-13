@@ -1,5 +1,5 @@
 {
 	"name" : "SSAO",
-	"vertex" : "resources/programs/SSAO.vs",
-	"fragment" : "resources/programs/SSAO.fs"
+	"vertex" : "resources/programs/SSAO/SSAO.vs",
+	"fragment" : "resources/programs/SSAO/SSAO.fs"
 }

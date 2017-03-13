@@ -4,12 +4,15 @@
 using namespace MoonEngine;
 
 
-DeferredRenderer::DeferredRenderer(int width, int height, string shadowMapsProgramName, string stencilProgramName, 
+DeferredRenderer::DeferredRenderer(int width, int height, 
+    string ssaoProgramName, string ssaoBlurProgramName,
+    string shadowMapsProgramName, string stencilProgramName, 
     string pointLightProgramName, string dirLightProgramName):
 _mainCamera(nullptr),
 _width(width), _height(height),
 _deferredWidth(width), _deferredHeight(height),
 _gBuffer(width, height),
+_ssaoBuffers(width, height, 64),
 _shadowMaps(width*2, height*2), 
 _debugShadows(false)
 {
@@ -57,6 +60,8 @@ _debugShadows(false)
     _renderQuad = MeshCreator::CreateQuad(glm::vec2(-1, -1), glm::vec2(1, 1));
 
     _shadowMapsProgram = Library::ProgramLib->getProgramForName(shadowMapsProgramName);
+    _ssaoProgram = Library::ProgramLib->getProgramForName(ssaoProgramName);
+    _ssaoBlurProgram = Library::ProgramLib->getProgramForName(ssaoBlurProgramName);
     _stencilProgram = Library::ProgramLib->getProgramForName(stencilProgramName);
     _pointLightProgram = Library::ProgramLib->getProgramForName(pointLightProgramName);
     _dirLightProgram = Library::ProgramLib->getProgramForName(dirLightProgramName);
@@ -91,7 +96,10 @@ void DeferredRenderer::render(Scene * scene)
 
     shadowMapPass(scene);
     geometryPass(scene);
-
+    LOG_GL(__FILE__, __LINE__);
+    ssaoPass(scene);
+    LOG_GL(__FILE__, __LINE__);
+//    ssaoBlurPass(scene);
     glEnable(GL_STENCIL_TEST);
     for (auto light : scene->getPointLightObjects()) {
         stencilPass(light);
@@ -255,6 +263,42 @@ void DeferredRenderer::geometryPass(Scene * scene)
 
     //Disable the filled depth buffer
 glDepthMask(GL_FALSE);
+}
+
+void MoonEngine::DeferredRenderer::ssaoPass(Scene * scene)
+{
+    LOG_GL(__FILE__, __LINE__);
+    glm::mat4 V = _mainCamera->getView();
+    glm::mat4 P = _mainCamera->getProjection();
+    _ssaoProgram->enable();
+    _ssaoBuffers.DBG_DrawToImgui("SSAO");
+    _gBuffer.bindForLightPass();
+    _ssaoBuffers.bindForSSAO();
+    LOG_GL(__FILE__, __LINE__);
+    setupSSAOUniforms(_ssaoProgram);
+    LOG_GL(__FILE__, __LINE__);
+    glUniformMatrix4fv(_ssaoProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
+    LOG_GL(__FILE__, __LINE__);
+    glDepthMask(GL_TRUE);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    LOG_GL(__FILE__, __LINE__);
+   
+    _renderQuad->bind();
+    glDrawElementsBaseVertex(
+        GL_TRIANGLES,
+        _renderQuad->numTris,
+        GL_UNSIGNED_SHORT,
+        _renderQuad->indexDataOffset,
+        _renderQuad->baseVertex
+    );
+
+}
+
+void MoonEngine::DeferredRenderer::ssaoBlurPass(Scene * scene)
+{
+   // _ssaoBlurProgram->enable();
+    //_ssaoBuffers.bindForBlur();
 }
 
 void MoonEngine::DeferredRenderer::stencilPass(std::shared_ptr<GameObject> light)
@@ -462,7 +506,6 @@ void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
     }
     for (auto i = 0; i < NUM_SHADOWS; i++) {
         auto shadowMapName = "shadowMap[" + to_string(i) + "]";
-        GLTexture * sm = Library::TextureLib->getTexture(SHADOW_TEXTURE + to_string(i));
         glUniform1i(prog->getUniformLocation(shadowMapName), 5+i);
     }
     for (auto i = 0; i < NUM_SHADOWS; i++) {
@@ -472,6 +515,20 @@ void DeferredRenderer::setupShadowMapUniforms(GLProgram * prog)
         glUniform1f(prog->getUniformLocation(shadowZName), camShadow.z);
     }
     glUniform1i(prog->getUniformLocation("debugShadow"), _debugShadows);
+    
+}
+
+void DeferredRenderer::setupSSAOUniforms(GLProgram* prog)
+{
+    int i = 0;
+    _gBuffer.UniformTexture(prog, "positionTex", POSITION_TEXTURE);
+    _gBuffer.UniformTexture(prog, "normalTex", NORMAL_TEXTURE);
+    LOG_GL(__FILE__, __LINE__);
+    //Related to the GL_TEXTURExX number in this case 10
+    glUniform1i(prog->getUniformLocation("noiseTex"), 10);
+    glUniform2f(prog->getUniformLocation("screenSize"), static_cast<float>(_width), static_cast<float>(_height));
+    for (auto sample : _ssaoBuffers.getKernel())
+        glUniform3fv(prog->getUniformLocation(("kernel[" + to_string(i++) + "]")), 1, &sample[0]);
     
 }
 

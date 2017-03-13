@@ -19,6 +19,7 @@ in vec2 fragTexCoords;
 uniform sampler2D positionTex;
 uniform sampler2D colorTex;
 uniform sampler2D normalTex;
+uniform sampler2D ssao;
 
 uniform PointLight pointLight;
 

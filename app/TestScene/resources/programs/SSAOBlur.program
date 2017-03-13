@@ -1,0 +1,5 @@
+{
+	"name" : "SSAOBlur",
+	"vertex" : "resources/programs/SSAO/SSAOBlur.vs",
+	"fragment" : "resources/programs/SSAO/SSAOBlur.fs"
+}
