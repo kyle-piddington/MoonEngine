@@ -18,11 +18,16 @@ namespace MoonEngine
 
     private:
         bool _recording;
+        int _counter;
+
+        int _savesPerSecond;
 
         std::vector<CameraStep> _recordedSteps;
 
         void saveSteps();
+        void writeJsonFile(rapidjson::Document & document);
+        rapidjson::Value serializeVec3(glm::vec3 obj, rapidjson::Document::AllocatorType& allocator);
 
-    };
+        };
 
 }

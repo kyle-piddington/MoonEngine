@@ -20,6 +20,9 @@ void GameState::start()
         Component * cutscene = GetWorld()->createComponent<CameraCutscene>();
         cutscene->start();
         cameraObj->addComponent(cutscene);
+        Component * record = GetWorld()->createComponent<CameraRecorder>();
+        record->start();
+        cameraObj->addComponent(record);
     });
 
     on(PLAYING_STATE, [&](const Message & msg)
