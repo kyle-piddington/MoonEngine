@@ -90,7 +90,7 @@ namespace MoonEngine
         BasicMeshInfo* _renderQuad;
 		GLuint _width, _height;
         int _deferredWidth, _deferredHeight;
-        bool _debugShadows;
+        bool _debugShadows, _debugSSAO;
 
         GBuffer _gBuffer;
         SSAOBuffers _ssaoBuffers;

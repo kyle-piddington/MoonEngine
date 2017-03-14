@@ -14,7 +14,7 @@ _deferredWidth(width), _deferredHeight(height),
 _gBuffer(width, height),
 _ssaoBuffers(width, height, 64),
 _shadowMaps(width*2, height*2), 
-_debugShadows(false)
+_debugShadows(false), _debugSSAO(false)
 {
     //GBuffer Init
     GLTextureConfiguration locationCFG(width, height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
@@ -96,10 +96,17 @@ void DeferredRenderer::render(Scene * scene)
 
     shadowMapPass(scene);
     geometryPass(scene);
-    LOG_GL(__FILE__, __LINE__);
-    ssaoPass(scene);
-    LOG_GL(__FILE__, __LINE__);
-    ssaoBlurPass(scene);
+
+    ImGui::Begin("SSAO Debug");
+    {
+        ImGui::Checkbox("Disable SSAO", &_debugSSAO);
+    }
+    ImGui::End();
+
+    if (!_debugSSAO) {
+        ssaoPass(scene);
+        ssaoBlurPass(scene);
+    }
 
     glEnable(GL_STENCIL_TEST);
     for (auto light : scene->getPointLightObjects()) {
@@ -270,22 +277,17 @@ void DeferredRenderer::geometryPass(Scene * scene)
 
 void MoonEngine::DeferredRenderer::ssaoPass(Scene * scene)
 {
-    LOG_GL(__FILE__, __LINE__);
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
     _ssaoProgram->enable();
    
     _gBuffer.bindForLightPass();
     _ssaoBuffers.bindForSSAO();
-    LOG_GL(__FILE__, __LINE__);
     setupSSAOUniforms(_ssaoProgram);
-    LOG_GL(__FILE__, __LINE__);
     glUniformMatrix4fv(_ssaoProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-    LOG_GL(__FILE__, __LINE__);
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    LOG_GL(__FILE__, __LINE__);
    
     _renderQuad->bind();
     glDrawElementsBaseVertex(
@@ -572,6 +574,7 @@ void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr
     _gBuffer.UniformTexture(prog, "positionTex", POSITION_TEXTURE);
     _gBuffer.UniformTexture(prog, "colorTex", COLOR_TEXTURE);
     _gBuffer.UniformTexture(prog, "normalTex", NORMAL_TEXTURE);
+    _ssaoBuffers.UniformTexture(prog, "ssaoTex", SSAO_COLOR_TEXTURE);
 
     //Other global Uniforms
     glUniform2f(prog->getUniformLocation("screenSize"), static_cast<float>(_width),static_cast<float>(_height));
