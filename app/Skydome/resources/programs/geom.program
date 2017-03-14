@@ -1,5 +1,0 @@
-{
-	"name" : "geom",
-	"vertex" : "resources/programs/deferred_geom.vs",
-	"fragment" : "resources/programs/deferred_geom.fs"
-}

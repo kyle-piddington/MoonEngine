@@ -150,7 +150,7 @@ int main(int argc, char ** argv)
 
     });
 
-    DeferredRenderer * renderer = new DeferredRenderer(windowWidth, windowHeight,
+    DeferredRenderer * renderer = new DeferredRenderer(windowWidth, windowHeight, "SSAO.program", "SSAOBlur.program",
         "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 

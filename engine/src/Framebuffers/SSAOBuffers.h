@@ -7,10 +7,10 @@ public:
     SSAOBuffers(int width, int height, int samples);
     void bindForSSAO();
     void bindForBlur();
-    auto getKernel() {
+    vector<glm::vec3> getKernel() {
         return _kernel;
     }
-    auto getNoise()
+    vector<glm::vec3> getNoise()
     {
         return _noise;
     }
