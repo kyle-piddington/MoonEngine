@@ -92,15 +92,6 @@
                 "diffuse": "moonshard.png"
             },
             "collider": true
-        }, {
-            "name": "skydome",
-            "mesh": "sphere.obj",
-            "program": "skydome.program",
-            "textures": {
-                "skycolor": "skycolor"
-            },
-            "forward": true,
-            "collider": false
         }],
     "map": [{
             "material": "rock",
@@ -112,11 +103,6 @@
             "position": [-2.5, 10.5, -2.5],
             "rotation": [0.0, -0.0, 0.0],
             "scale": [1.0, 1.0, 1.0]
-        }, {
-            "material": "skydome",
-            "position": [0.0, 0.0, 0.0],
-            "rotation": [0.0, -0.0, 0.0],
-            "scale": [1000.0, 1000.0, 1000.0]
         }, {
             "material": "moon",
             "position": [-47.46078109741211, 104.22688293457031, -114.6949462890625],
