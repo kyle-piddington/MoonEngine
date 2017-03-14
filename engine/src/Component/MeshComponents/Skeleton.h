@@ -130,7 +130,7 @@ namespace MoonEngine
          * @param node   The aiNode to process for bones
          * @param parent The previous node
          */
-        void importBonesFromAssimp(AssimpBoneInfo & node, BoneTreeNode & parent);
+        void importBonesFromAssimp(AssimpBoneInfo & node, AssimpModelInfo & info, BoneTreeNode & parent);
 
         /**
          * Pre-multiply the bone animation heiarchy
@@ -144,6 +144,8 @@ namespace MoonEngine
          * Construct an empty skeleton
          */
         Skeleton();
+
+        Skeleton(AssimpModelInfo & info);
 
         ~Skeleton();
 
@@ -166,7 +168,7 @@ namespace MoonEngine
          * @param  boneMtx  offset matrix
          * @return          Index
          */
-        int addBone(std::string boneName, glm::mat4 boneMtx);
+        int addBone(AssimpBoneInfo & info);
 
         /**
          * Get the size of the bone array

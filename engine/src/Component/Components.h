@@ -20,6 +20,9 @@
 #include "CameraComponents/ThirdPersonOrbitalController.h"
 #include "MeshComponents/Terrain.h"
 #include "MeshComponents/Grass.h"
+#include "MeshComponents/Skeleton.h"
+#include "MeshComponents/Animator.h"
+
 
 #include "LevelEditor/LevelBuilder.h"
 #include "LightComponents/PointLight.h"

@@ -244,7 +244,6 @@ int loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node, int parentIdx)
 	int idx = parentIdx;
 	if(!boneInfo.boneName.empty())
 	{
-		boneInfo.parentBoneIndex = parentIdx;
 		boneInfo.offsetMatrix = GLMUtil::FromAssimp(node->mTransformation);
 		idx = outInfo->addBone(boneInfo);
 	}
@@ -265,6 +264,64 @@ void loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node)
 
 }
 
+AssimpAnimationInfo loadAnimationForModel(AssimpModelInfo * outInfo, aiAnimation * aiAnim, std::string animName)
+{
+
+	AssimpAnimationInfo animInfo;
+	animInfo.name = animName;
+	animInfo.duration = aiAnim->mDuration;
+	animInfo.ticksPerSecond = aiAnim->mTicksPerSecond != 0 ? aiAnim->mTicksPerSecond : 25.0f;
+	for(int bone = 0; bone < aiAnim->mNumChannels; bone++)
+    {
+        aiNodeAnim * nodeAnim = aiAnim->mChannels[bone];
+        AssimpBoneAnimInfo boneAnimInfo;
+        boneAnimInfo.boneName = std::string(nodeAnim->mNodeName.data);
+
+        for(int transKeys = 0; transKeys < nodeAnim->mNumPositionKeys; transKeys++)
+        {
+            aiVectorKey key = nodeAnim->mPositionKeys[transKeys];
+            
+            AssimpPositionKeyFrame frame(
+                    glm::vec3(key.mValue.x, key.mValue.y, key.mValue.z),
+                    key.mTime);
+            boneAnimInfo.translationKeys.push_back(frame);
+        }
+        for(int rotKeys = 0; rotKeys < nodeAnim->mNumRotationKeys; rotKeys++)
+        {
+            aiQuatKey  key = nodeAnim->mRotationKeys[rotKeys];
+            AssimpRotationKeyFrame frame(
+                    glm::quat(key.mValue.w,key.mValue.x,key.mValue.y,key.mValue.z),
+                    key.mTime);
+            boneAnimInfo.rotationKeys.push_back(frame);
+        }
+        for(int scaleKeys = 0; scaleKeys < nodeAnim->mNumScalingKeys; scaleKeys++)
+        {
+            aiVectorKey key = nodeAnim->mScalingKeys[scaleKeys];
+            AssimpScaleKeyFrame frame(glm::vec3(key.mValue.x,key.mValue.y,key.mValue.z),key.mTime);
+            boneAnimInfo.scaleKeys.push_back(frame);
+        }
+        animInfo.boneAnimData.push_back(boneAnimInfo);
+    }
+    LOG(INFO, "Loaded animation " + animName);
+    return animInfo;
+}
+
+void loadAnimationsForModel(AssimpModelInfo * outInfo, const aiScene * scene)
+{
+	int unnamedAnimations = 0;
+	for(int i = 0; i < scene->mNumAnimations; i++)
+	{
+		aiAnimation * aiAnim = scene->mAnimations[i];
+		std::string animationName = std::string(aiAnim->mName.data);
+  		if(animationName.empty())
+		{
+		    animationName = "imported_" + std::to_string(unnamedAnimations);
+		    unnamedAnimations++;
+		}
+		AssimpAnimationInfo animInfo = loadAnimationForModel(outInfo, aiAnim, animationName);
+		outInfo->addAnimation(animInfo);
+	}
+}
 bool AssimpLoader::LoadIntoBuffer(
 		std::string fileName,
 		GLBuffer * vertexBuffer,
@@ -288,7 +345,7 @@ bool AssimpLoader::LoadIntoBuffer(
 	loadBonesForModel(outInfo, scene->mRootNode);
 	if(outInfo->hasBones())
 	{
-		loadAnimationsForModel(outInfo, scene->mRootNode);
+		loadAnimationsForModel(outInfo, scene);
 	}
 	OK = processNode(scene->mRootNode, aiMatrix4x4(), scene, data, indices, outInfo);
 	if(!OK)

@@ -4,6 +4,7 @@
 #include "BasicMeshInfo.h"
 #include <string>
 #include <unordered_map>
+#include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 //AssimpInfo contains all
 //data imported by assimp, metadata
@@ -14,33 +15,47 @@ namespace MoonEngine
 
 	struct AssimpBoneInfo
 	{
-		int boneIdx;
+		AssimpBoneInfo():
+		parentBoneIndex(-1),
+		boneName(""),
+		offsetMatrix(1.0),
+		childBones(){}
+		int parentBoneIndex;
 		std::string boneName;
 		glm::mat4 offsetMatrix;
-		std::vector<int> childBones;
+		std::vector<int>childBones;
 	};
 
 	struct AssimpPositionKeyFrame
 	{
+		AssimpPositionKeyFrame(glm::vec3 position, float time):
+			position(position),
+			mTime(time){}
 		glm::vec3 position;
 		float mTime;
 	};
 
 	struct AssimpRotationKeyFrame
 	{
-		glm::quat position;
+		AssimpRotationKeyFrame(glm::quat rotation, float time):
+			rotation(rotation),
+			mTime(time){}
+		glm::quat rotation;
 		float mTime;
 	};
 
 	struct AssimpScaleKeyFrame
 	{
+		AssimpScaleKeyFrame(glm::vec3 scale, float time):
+			scale(scale),
+			mTime(time){}
 		glm::vec3 scale;
 		float mTime;
 	};
 
 	struct AssimpBoneAnimInfo
 	{
-		int boneId;
+		std::string boneName;
 		std::vector<AssimpPositionKeyFrame> translationKeys;
 		std::vector<AssimpRotationKeyFrame> rotationKeys;
 		std::vector<AssimpScaleKeyFrame> scaleKeys;
@@ -130,9 +145,11 @@ namespace MoonEngine
 
 		int getBoneId(const std::string & string);
 
-		AssimpBoneInfo getBoneInfo(int id){
+		AssimpBoneInfo getBoneInfo(int id)
+		{
 			assert(id < _boneInfo.size());
-			return _boneInfo[id];}
+			return _boneInfo[id];
+		}
 
 		int getNumBones(){return _boneInfo.size();}
 		//Mesh info avaliable if no other
@@ -152,6 +169,11 @@ namespace MoonEngine
 		void addAnimation(const AssimpAnimationInfo & info)
 		{
 			_animations.push_back(info);
+		}
+
+		const std::vector<AssimpAnimationInfo> & getAnimations()
+		{
+			return _animations;
 		}
 
 	private:

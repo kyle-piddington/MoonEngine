@@ -20,9 +20,15 @@ void Bone::setAnimatedTransform(glm::mat4 transform)
     this->localAnimTransform = transform;
 }
 
-Skeleton::Skeleton()
+Skeleton::Skeleton():
+Component()
 {
 
+}
+Skeleton::Skeleton(AssimpModelInfo & info):
+Component()
+{
+    importBonesFromAssimp(info);
 }
 Skeleton::~Skeleton()
 {
@@ -33,27 +39,26 @@ int Skeleton::getNumBones()
 {
     return bones.size();
 }
-void Skeleton::importBonesFromAssimp(AssimpBoneInfo node, BoneTreeNode & thisNode)
+
+void Skeleton::importBonesFromAssimp(AssimpBoneInfo & node, AssimpModelInfo & info, BoneTreeNode & thisNode)
 {
-    int boneIdx = addBone(node)
+    int boneIdx = addBone(node);
     thisNode.boneIdx = boneIdx;
-    for(int i = 0; i < node->mNumChildren; i++)
+    for(int i = 0; i < node.childBones.size(); i++)
     {
         thisNode.children.push_back(BoneTreeNode());
-        importBonesFromAssimp(node->mChildren[i],thisNode.children.back());
+        AssimpBoneInfo childInfo = info.getBoneInfo(node.childBones[i]);
+        importBonesFromAssimp(childInfo, info, thisNode.children.back());
     }
 
 
 }
 void Skeleton::importBonesFromAssimp(AssimpModelInfo & importInfo)
 {
-    rootInverseTransform = importInfo.getRootInverseTranform();
+    rootInverseTransform = importInfo.getRootInverseTransform();
     AssimpBoneInfo rootInfo = importInfo.getBoneInfo(0); 
-    for(int i = 0; i < rootInfo.childBones.size(); i++)
-    {
-        boneRoot.children.push_back(BoneTreeNode());
-        importBonesFromAssimp(rootInfo->chldBones[i],boneRoot.children.back());
-    }
+    boneRoot.children.push_back(BoneTreeNode());
+    importBonesFromAssimp(rootInfo,importInfo, boneRoot.children.back());
 
 }
 Bone * const Skeleton::getBone(std::string boneName)
@@ -73,11 +78,11 @@ Bone * const Skeleton::getBone(std::string boneName)
 /**
  * Returns index of added bone
  */
-int Skeleton::addBone(AssimpBoneInfo info)
+int Skeleton::addBone(AssimpBoneInfo & info)
 {
     Bone bone(info.boneName,bones.size(),info.offsetMatrix);
     bones.push_back(bone);
-    boneMap[boneName] = bone.getIndex();
+    boneMap[info.boneName] = bone.getIndex();
     return bone.getIndex();
 
 }
