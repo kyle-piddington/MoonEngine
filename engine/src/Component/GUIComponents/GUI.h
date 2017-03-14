@@ -23,5 +23,7 @@ namespace MoonEngine {
         struct dtx_font *font;
 
         void createStringTexture(string text);
+
+        int _stars_collected;
     };
 }

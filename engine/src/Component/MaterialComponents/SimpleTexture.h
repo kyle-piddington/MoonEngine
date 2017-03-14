@@ -16,7 +16,7 @@ namespace MoonEngine
         GLTexture * getTexture();
         virtual std::shared_ptr<Component> clone() const;
 
-        void setTexture(GLTexture * texture);
+        void setTexture(string textureName);
 
     private:
         GLTexture * _texture;
