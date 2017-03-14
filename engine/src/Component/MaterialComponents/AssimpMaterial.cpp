@@ -1,6 +1,7 @@
 #include "AssimpMaterial.h"
 #include "Libraries/Library.h"
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 
 
 std::unordered_map<string, Material::texture_unit> AssimpMaterial::loadTextures( unordered_map<string, string> textures)
@@ -30,7 +31,8 @@ std::unordered_map<string, Material::texture_unit> AssimpMaterial::loadTextures(
 
 AssimpMaterial::AssimpMaterial(std::string program, AssimpModelInfo * modelInfo):
 	Material(program, false),
-    meshTextures()
+    meshTextures(),
+    _skeleton(nullptr)
 {
 	for(auto info : modelInfo->getMeshInfo())
 	{
@@ -43,8 +45,25 @@ AssimpMaterial::AssimpMaterial(std::string program, AssimpModelInfo * modelInfo)
 
 void AssimpMaterial::bind()
 {
-
+    if(_skeleton != nullptr)
+    {
+        _skeleton->finalizeAnimation();
+        std::vector<Bone> bones = _skeleton->getAllBones();
+        std::vector<glm::mat4> boneTransforms(bones.size());
+        for(int i = 0; i < bones.size(); i++)
+        {
+            boneTransforms[bones[i].getIndex()] = bones[i].getAnimMatrix();
+        }
+        bindSkeletonBones(boneTransforms);
+    }
 	//Specific binds are managed by a mesh. (Since assimp models are drawn) mesh by mesh
+   
+}
+
+void AssimpMaterial::start()
+{
+    //Try and get skeleton
+    _skeleton = getGameObject()->getComponent<Skeleton>();
 }
 
 void AssimpMaterial::bindTexturesForMesh(int mesh)
@@ -59,6 +78,26 @@ void AssimpMaterial::bindTexturesForMesh(int mesh)
         LOG_GL(__FILE__, __LINE__);
     }
 
+}
+
+void AssimpMaterial::bindSkeletonBinds(const std::vector<glm::mat4> &bindMatrix)
+{
+    for(int i = 0; i < bindMatrix.size(); i++)
+    {
+        glm::mat4 m = bindMatrix[i];
+        glUniformMatrix4fv(_program->getUniformLocation("gBinds[" + std::to_string(i) + "]"),1,GL_FALSE,glm::value_ptr(m));    
+    }
+    
+    LOG_GL(__FILE__, __LINE__);
+}
+void AssimpMaterial::bindSkeletonBones(const std::vector<glm::mat4> &boneMatrix)
+{
+    for(int i = 0; i < boneMatrix.size(); i++)
+    {
+        glm::mat4 m = boneMatrix[i];
+        glUniformMatrix4fv(_program->getUniformLocation("gBones[" + std::to_string(i) + "]"),1,GL_FALSE,glm::value_ptr(m));    
+    } 
+    LOG_GL(__FILE__, __LINE__);
 }
 
 std::shared_ptr<Component> AssimpMaterial::clone() const

@@ -3,6 +3,8 @@
 #include "Component/Component.h"
 #include "Component/CollisionComponents/BoxCollider.h"
 #include "Component/MeshComponents/Terrain.h"
+#include "Component/MeshComponents/Animator.h"
+
 #include "Geometry/Transform.h"
 /**
  * Controls a character in a first-person matter
@@ -50,6 +52,7 @@ namespace MoonEngine
         float radius;
         GameObject * mainCamera;
         Terrain * worldTerrain;
+        Animator * animator;
         BoxCollider * bbox;
 
     };

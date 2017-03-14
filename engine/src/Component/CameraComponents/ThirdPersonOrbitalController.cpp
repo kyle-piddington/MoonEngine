@@ -48,6 +48,7 @@ void ThirdPersonOrbitalController::start()
     Transform & transform = gameObject->getTransform();
     transform.setPosition(_trac);
     transform.lookAt(_targ);
+    
  
     //Look for player by default
     //

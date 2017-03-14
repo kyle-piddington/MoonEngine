@@ -34,13 +34,13 @@ const BoundingBox & AssimpMesh::getExtents()
 void AssimpMesh::draw() const
 {
     const std::vector<AssimpMeshInfo> & submeshInfo = _modelInfo->getMeshInfo();
-    
     for(int i = 0; i < submeshInfo.size(); i++)
     {
         if(_material != nullptr)
         {
             _material->bindTexturesForMesh(i);
         }
+        _material->bindSkeletonBinds(submeshInfo[i].boneOffsets);
         LOG_GL(__FILE__, __LINE__);
         glDrawElementsBaseVertex(GL_TRIANGLES,
           submeshInfo[i].meshInfo.numTris,
@@ -54,6 +54,7 @@ void AssimpMesh::draw() const
 void AssimpMesh::drawShadow() const
 {
     const std::vector<AssimpMeshInfo> & submeshInfo = _modelInfo->getMeshInfo();
+    //bindSkeletonBinds(_modelInfo.boneOffsets);
     for(int i = 0; i < submeshInfo.size(); i++)
     {
         glDrawElementsBaseVertex(GL_TRIANGLES,

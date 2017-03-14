@@ -1,5 +1,5 @@
 {
-	"name" : "geom",
+	"name" : "character-geom",
 	"vertex" : "resources/programs/character.vs",
 	"fragment" : "resources/programs/character.fs"
 }

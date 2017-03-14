@@ -158,7 +158,7 @@ namespace MoonEngine
 
         /**
          * Import bones from an assimp data structure
-         * @param node the ndoe to process
+         * @param node the node to process
          */
         void importBonesFromAssimp(AssimpModelInfo & info);
 
@@ -202,6 +202,8 @@ namespace MoonEngine
         {
             return bones;
         }
+
+
 
     };
 };

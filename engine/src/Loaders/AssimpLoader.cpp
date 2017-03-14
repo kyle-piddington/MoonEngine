@@ -2,6 +2,7 @@
 #include "AssimpLoader.h"
 #include "Util/GLMUtil.h"
 #include "VertexBoneData.h"
+#include <iostream>
 using namespace MoonEngine;
 
 
@@ -104,8 +105,16 @@ bool processMesh(aiMesh * mesh,
 	{
 		//If things are bad remove this M
 		//And i hope it works
-		glm::vec4 vert = M * glm::vec4(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,1);
-
+		glm::vec4 vert;
+		//Trying a few things with the model matrix
+		if(outInfo->hasBones())
+		{
+			vert = glm::vec4(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,1);
+		}
+		else
+		{
+			vert = M * glm::vec4(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,1);
+		}
 		data.push_back(vert.x);
 		data.push_back(vert.y);
 		data.push_back(vert.z);
@@ -183,11 +192,12 @@ bool processMesh(aiMesh * mesh,
 	    if(outInfo->hasBones())
 	    {
 	    	//SUPER HACKY, 
-	    	//Reincode Bone index 
-	    	//as a float.
+	    	//Reincode Bone index as a float. It will be
+	    	//decompresed as an int later.
 	    	for(int j = 0; j < 4; j++)
 	    	{
-	    		data.push_back(*((float *)&(bData[i].boneIds[j])));
+	    		int idx = bData[i].boneIds[j];
+	    		data.push_back(idx);
 	    	}
 	    	for(int j = 0; j < 4; j++)
 	    	{
@@ -250,7 +260,12 @@ int loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node, int parentIdx)
 	
 	for(int i = 0; i < node->mNumChildren; i++)
     {
-        boneInfo.childBones.push_back(loadBonesForModel(outInfo, node->mChildren[i],idx));
+    	unsigned int nextBone = loadBonesForModel(outInfo, node->mChildren[i],idx);
+    	if(idx < outInfo->getNumBones() && idx >= 0)
+    	{
+    		outInfo->getBoneInfo(idx).childBones.push_back(nextBone);
+    	}
+        
     }
     return idx;
 
@@ -357,10 +372,10 @@ bool AssimpLoader::LoadIntoBuffer(
 	indexBuffer->setData(sizeof(unsigned short) * indices.size(), &indices[0], GL_STATIC_DRAW);
 		//Configure VAO
 	int stride = sizeof(float)*outInfo->stride();
-	int texCoordsOffset  = 0;
-	int tangentOffset = 0;
-	int bitangentOffset = 0;
-	int boneOffset = 0;
+	int texCoordsOffset  = sizeof(float) * 3;
+	int tangentOffset = sizeof(float) * 3;
+	int bitangentOffset = sizeof(float) * 3;
+	int boneOffset = sizeof(float) * 3;
 	vao->bindVertexBuffer(
 		GL_VERTEX_POSITION_ATTRIBUTE,
 		*vertexBuffer,
@@ -429,12 +444,14 @@ bool AssimpLoader::LoadIntoBuffer(
 	}
 	if(outInfo->hasBones())
 	{
+		assert(sizeof(unsigned int) == sizeof(float));
 		LOG(INFO, "Loading mesh with bones");
+		
 		vao->bindVertexBuffer(
 			GL_VERTEX_BONE_ID_ATTRIBUTE,
 			*vertexBuffer,
 			4,
-			GL_UNSIGNED_INT,
+			GL_FLOAT,
 			false,
 			stride,
 			(GLvoid *) boneOffset
@@ -447,7 +464,7 @@ bool AssimpLoader::LoadIntoBuffer(
 			GL_FLOAT,
 			false,
 			stride,
-			(GLvoid *) (boneOffset + sizeof(float)*4)
+			(GLvoid *) (boneOffset + sizeof(float) * 4)
 			);
 
 	}

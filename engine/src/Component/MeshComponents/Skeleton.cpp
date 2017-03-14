@@ -1,4 +1,5 @@
 #include "Skeleton.h"
+#include "Util/Logger.h"
 #include <glm/gtc/type_ptr.hpp>
 
 using namespace MoonEngine;
@@ -55,6 +56,7 @@ void Skeleton::importBonesFromAssimp(AssimpBoneInfo & node, AssimpModelInfo & in
 }
 void Skeleton::importBonesFromAssimp(AssimpModelInfo & importInfo)
 {
+
     rootInverseTransform = importInfo.getRootInverseTransform();
     AssimpBoneInfo rootInfo = importInfo.getBoneInfo(0); 
     boneRoot.children.push_back(BoneTreeNode());
@@ -66,7 +68,7 @@ Bone * const Skeleton::getBone(std::string boneName)
     auto boneId = boneMap.find(boneName);
     if(boneId == boneMap.end())
     {
-        //LOG(ERROR) << "No Bone named " << boneName << "In skeleton!";
+        LOG(ERROR,  "No Bone named " + boneName + "In skeleton!");
         return nullptr;
     }
     else
@@ -80,6 +82,7 @@ Bone * const Skeleton::getBone(std::string boneName)
  */
 int Skeleton::addBone(AssimpBoneInfo & info)
 {
+    LOG(INFO, "Adding bone " + info.boneName);
     Bone bone(info.boneName,bones.size(),info.offsetMatrix);
     bones.push_back(bone);
     boneMap[info.boneName] = bone.getIndex();

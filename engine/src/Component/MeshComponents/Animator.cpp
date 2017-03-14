@@ -21,6 +21,7 @@ void Animator::start()
 
 void Animator::update(float dt)
 {
+	
 	if(_skeleton && _currentAnimation)
 	{
 		_animTime += _speedMultiply * dt;
@@ -29,7 +30,11 @@ void Animator::update(float dt)
 		for(const SkeletalAnimation::BoneAnimation & animation : boneAnims)
 		{
 			Transform cTransform = animation.getTransformAtTick(tick);
-			_skeleton->getBone(animation.getBoneName())->setAnimatedTransform(cTransform.getMatrix());
+			Bone * bone = _skeleton->getBone(animation.getBoneName());
+			if(bone)
+			{
+				bone->setAnimatedTransform(cTransform.getMatrix());
+			}
 		}
 	}
 

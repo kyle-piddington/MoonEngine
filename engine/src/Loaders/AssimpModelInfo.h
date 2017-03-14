@@ -145,7 +145,7 @@ namespace MoonEngine
 
 		int getBoneId(const std::string & string);
 
-		AssimpBoneInfo getBoneInfo(int id)
+		AssimpBoneInfo & getBoneInfo(int id)
 		{
 			assert(id < _boneInfo.size());
 			return _boneInfo[id];
