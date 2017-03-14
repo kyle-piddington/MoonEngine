@@ -94,6 +94,18 @@ void GLFramebuffer::addTexParameter(std::string textureName, TexParameter param)
     param();
 }
 
+int GLFramebuffer::getTexUnit(string textureName)
+{
+    texture_unit id = getTextureUnit(textureName);
+    return id.unit;
+}
+
+GLTexture* GLFramebuffer::getTexture(string textureName)
+{
+    texture_unit id = getTextureUnit(textureName);
+    return id.gl_texture;
+}
+
 void GLFramebuffer::startFrame() {
     bind(GL_DRAW_FRAMEBUFFER);
     glDrawBuffer(GL_COLOR_ATTACHMENT4);

@@ -10,7 +10,8 @@ Mesh(),
 _maxInstances(numInstances),
 _cInstance(0),
 _numOfInstances(0),
-windTime(0)
+windTime(0),
+bBox(glm::vec3(0,0,0),1000,1000,1000)
 {
     _meshInfo = EngineApp::GetAssetLibrary().MeshLib->getInfoForMeshNamed(mesh, smooth);
    _instanceBuffer = std::make_shared<GLBuffer>(GL_ARRAY_BUFFER, sizeof(glm::mat4) * _maxInstances, nullptr, GL_DYNAMIC_DRAW);
@@ -61,12 +62,12 @@ void Grass::bind()
 
 const BoundingBox & Grass::getBoundingBox()
 {
-	return _meshInfo->boundingBox;
+	return bBox;
 }
 
 const BoundingBox & Grass::getExtents()
 {
-    return _meshInfo->boundingBox;
+    return bBox;
 }
 
 std::shared_ptr<Component> Grass::clone() const

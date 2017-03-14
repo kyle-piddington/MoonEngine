@@ -30,6 +30,7 @@ void GBuffer::bindForGeomPass() {
 }
 
 void GBuffer::bindForStencilPass() {
+    bind(GL_FRAMEBUFFER);
     glDrawBuffer(GL_NONE);
 }
 

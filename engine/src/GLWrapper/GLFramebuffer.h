@@ -54,7 +54,8 @@ namespace MoonEngine
         virtual void addTexture(std::string textureName, GLenum attachmentInfo);
         virtual void addTexture(std::string textureName, GLenum attachmentInfo, vector<TexParameter> texParameters);
         void addTexParameter(std::string textureName, TexParameter param);
-
+        int getTexUnit(string textureName);
+        GLTexture* getTexture(string textureName);
 	/*Prepare for frame by clear final color texture*/
         void startFrame();
 

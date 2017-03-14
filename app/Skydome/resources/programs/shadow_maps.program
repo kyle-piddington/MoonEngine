@@ -1,5 +1,0 @@
-{
-	"name" : "shadow_maps",
-	"vertex" : "resources/programs/shadow_maps.vs",
-	"fragment" : "resources/programs/shadow_maps.fs"
-}

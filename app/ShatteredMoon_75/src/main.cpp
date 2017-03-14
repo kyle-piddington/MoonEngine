@@ -182,7 +182,9 @@ int main(int argc, char ** argv)
     });
 
     DeferredRenderer * renderer = new DeferredRenderer(width, height, 
-        "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
+        "SSAO.program", "SSAOBlur.program",
+        "shadow_maps.program", "deferred_stencil.program", 
+        "deferred_pointL.program", "deferred_dirL.program");
     renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
     renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<GUIStep>(width, height));

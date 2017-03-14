@@ -201,7 +201,9 @@ int main(int argc, char ** argv)
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE));
     scene->addGameObject(dirLight);
 
-
+    std::shared_ptr<GameObject> gameState = std::make_shared<GameObject>();
+    gameState->addComponent(scene->createComponent<GameState>());
+    scene->addGameObject(gameState);
     
     
     float accumTime;
@@ -220,7 +222,9 @@ int main(int argc, char ** argv)
     });
 
 	 DeferredRenderer * renderer = new DeferredRenderer(width, height, 
-        "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
+        "SSAO.program", "SSAOBlur.program",
+        "shadow_maps.program", "deferred_stencil.program", 
+         "deferred_pointL.program", "deferred_dirL.program");
     app->run(scene, renderer);
 
     delete scene;
