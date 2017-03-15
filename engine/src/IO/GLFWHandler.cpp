@@ -18,7 +18,15 @@ void GLFWHandler::key_callback(GLFWwindow * window, int key, int scancode, int a
     /* Hit key = start game */
     if (!_inputEnabled) {
         _inputEnabled = true;
-        GetWorld()->getGameState()->setState(INTRO_STATE);
+        if(GetWorld()->getGameState() != nullptr)
+        {
+            GetWorld()->getGameState()->setState(INTRO_STATE);            
+        }
+        else
+        {
+            _inputEnabled = true;
+        }
+
         return;
     }
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)

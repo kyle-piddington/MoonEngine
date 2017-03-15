@@ -1,5 +1,0 @@
-{
-	"name" : "post_passthrough",
-	"vertex" : "resources/programs/postprocess/post_passthrough.vs",
-	"fragment" : "resources/programs/postprocess/post_passthrough.fs"
-}

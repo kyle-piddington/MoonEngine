@@ -8,8 +8,17 @@ namespace MoonEngine
 	struct VertexBoneData
 	{
 
-		uint boneIds[NUM_BONES_PER_VERTEX];
+		unsigned int boneIds[NUM_BONES_PER_VERTEX];
 		float boneWeights[NUM_BONES_PER_VERTEX];
+
+		VertexBoneData()
+		{
+			for(int i = 0; i < NUM_BONES_PER_VERTEX; i++)
+			{
+				boneIds[i] = 0;
+				boneWeights[i] = 0.0f;
+			}
+		}
 		void addBoneData(int Bone, float weight)
 		{
 			for(uint i = 0; i < NUM_BONES_PER_VERTEX; i++)

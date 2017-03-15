@@ -10,6 +10,7 @@ struct DirLight
 uniform sampler2D positionTex;
 uniform sampler2D colorTex;
 uniform sampler2D normalTex;
+uniform sampler2D ssaoTex;
 
 
 uniform DirLight dirLight;
@@ -19,7 +20,8 @@ in vec2 fragTexCoord;
 vec4 calcDirLight(vec3 Diffuse, vec3 Normal, vec3 worldPos, float Specular, float ShadowFactor)
 {
     //Ambient
-    vec4 AmbientColor = vec4(dirLight.color * dirLight.ambient, 1.0);
+    vec4 AmbientColor = vec4(dirLight.color * dirLight.ambient, 1.0) * 
+    texture(ssaoTex,fragTexCoord).r;
 
     // Diffuse
     vec3 lightDir = normalize(-dirLight.direction);

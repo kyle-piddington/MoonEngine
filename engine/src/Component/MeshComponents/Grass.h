@@ -34,6 +34,9 @@ namespace MoonEngine
 
         void draw() const;
 
+        //No shadows from grass
+        void drawShadow() const {}
+
 
     private:
 
@@ -47,6 +50,7 @@ namespace MoonEngine
 	    std::shared_ptr<GLBuffer> _instanceBuffer;
 	    Terrain * _terrainComponent;
 	    GameObject * player;
+	    BoundingBox bBox;
 		std::vector<glm::mat4> _instanceTransforms;
 
     };

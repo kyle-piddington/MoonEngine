@@ -2,6 +2,7 @@
 #include "AssimpLoader.h"
 #include "Util/GLMUtil.h"
 #include "VertexBoneData.h"
+#include <iostream>
 using namespace MoonEngine;
 
 
@@ -104,8 +105,16 @@ bool processMesh(aiMesh * mesh,
 	{
 		//If things are bad remove this M
 		//And i hope it works
-		glm::vec4 vert = M * glm::vec4(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,1);
-
+		glm::vec4 vert;
+		//Trying a few things with the model matrix
+		if(outInfo->hasBones())
+		{
+			vert = glm::vec4(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,1);
+		}
+		else
+		{
+			vert = M * glm::vec4(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z,1);
+		}
 		data.push_back(vert.x);
 		data.push_back(vert.y);
 		data.push_back(vert.z);
@@ -183,11 +192,12 @@ bool processMesh(aiMesh * mesh,
 	    if(outInfo->hasBones())
 	    {
 	    	//SUPER HACKY, 
-	    	//Reincode Bone index 
-	    	//as a float.
+	    	//Reincode Bone index as a float. It will be
+	    	//decompresed as an int later.
 	    	for(int j = 0; j < 4; j++)
 	    	{
-	    		data.push_back(*((float *)&(bData[i].boneIds[j])));
+	    		int idx = bData[i].boneIds[j];
+	    		data.push_back(idx);
 	    	}
 	    	for(int j = 0; j < 4; j++)
 	    	{
@@ -237,47 +247,96 @@ bool processNode(aiNode * node, aiMatrix4x4 transform, const aiScene * scene, st
 	return false;
 }
 
-void loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node, int parentIdx)
+int loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node, int parentIdx)
 {
 	AssimpBoneInfo boneInfo;
 	boneInfo.boneName = std::string(node->mName.data);
 	int idx = parentIdx;
 	if(!boneInfo.boneName.empty())
 	{
-		boneInfo.parentBoneIndex = parentIdx;
 		boneInfo.offsetMatrix = GLMUtil::FromAssimp(node->mTransformation);
 		idx = outInfo->addBone(boneInfo);
 	}
 	
 	for(int i = 0; i < node->mNumChildren; i++)
     {
-        loadBonesForModel(outInfo, node->mChildren[i],idx);
+    	unsigned int nextBone = loadBonesForModel(outInfo, node->mChildren[i],idx);
+    	if(idx < outInfo->getNumBones() && idx >= 0)
+    	{
+    		outInfo->getBoneInfo(idx).childBones.push_back(nextBone);
+    	}
+        
     }
+    return idx;
 
 }
 
 void loadBonesForModel(AssimpModelInfo * outInfo, aiNode * node)
 {
-	outInfo->setRootInverseTransform(glm::inverse(GLMUtil::FromAssimp(node->mTransformation)));
-	AssimpBoneInfo rootInfo;
-	int idx = -1;
-	rootInfo.boneName = std::string(node->mName.data);
-	if(!rootInfo.boneName.empty())
-	{
-		rootInfo.boneName = std::string(node->mName.data);
-		rootInfo.parentBoneIndex = -1;
-		rootInfo.offsetMatrix = glm::mat4(1.0);
-		idx = outInfo->addBone(rootInfo);
-	}
-	
-
-	for(int i = 0; i < node->mNumChildren; i++)
-    {
-        loadBonesForModel(outInfo, node->mChildren[i],idx);
-    }
+	outInfo->setRootInverseTransform(glm::inverse(GLMUtil::FromAssimp(node->mTransformation))); 
+	loadBonesForModel(outInfo, node,-1);
+    
 
 }
 
+AssimpAnimationInfo loadAnimationForModel(AssimpModelInfo * outInfo, aiAnimation * aiAnim, std::string animName)
+{
+
+	AssimpAnimationInfo animInfo;
+	animInfo.name = animName;
+	animInfo.duration = aiAnim->mDuration;
+	animInfo.ticksPerSecond = aiAnim->mTicksPerSecond != 0 ? aiAnim->mTicksPerSecond : 25.0f;
+	for(int bone = 0; bone < aiAnim->mNumChannels; bone++)
+    {
+        aiNodeAnim * nodeAnim = aiAnim->mChannels[bone];
+        AssimpBoneAnimInfo boneAnimInfo;
+        boneAnimInfo.boneName = std::string(nodeAnim->mNodeName.data);
+
+        for(int transKeys = 0; transKeys < nodeAnim->mNumPositionKeys; transKeys++)
+        {
+            aiVectorKey key = nodeAnim->mPositionKeys[transKeys];
+            
+            AssimpPositionKeyFrame frame(
+                    glm::vec3(key.mValue.x, key.mValue.y, key.mValue.z),
+                    key.mTime);
+            boneAnimInfo.translationKeys.push_back(frame);
+        }
+        for(int rotKeys = 0; rotKeys < nodeAnim->mNumRotationKeys; rotKeys++)
+        {
+            aiQuatKey  key = nodeAnim->mRotationKeys[rotKeys];
+            AssimpRotationKeyFrame frame(
+                    glm::quat(key.mValue.w,key.mValue.x,key.mValue.y,key.mValue.z),
+                    key.mTime);
+            boneAnimInfo.rotationKeys.push_back(frame);
+        }
+        for(int scaleKeys = 0; scaleKeys < nodeAnim->mNumScalingKeys; scaleKeys++)
+        {
+            aiVectorKey key = nodeAnim->mScalingKeys[scaleKeys];
+            AssimpScaleKeyFrame frame(glm::vec3(key.mValue.x,key.mValue.y,key.mValue.z),key.mTime);
+            boneAnimInfo.scaleKeys.push_back(frame);
+        }
+        animInfo.boneAnimData.push_back(boneAnimInfo);
+    }
+    LOG(INFO, "Loaded animation " + animName);
+    return animInfo;
+}
+
+void loadAnimationsForModel(AssimpModelInfo * outInfo, const aiScene * scene)
+{
+	int unnamedAnimations = 0;
+	for(int i = 0; i < scene->mNumAnimations; i++)
+	{
+		aiAnimation * aiAnim = scene->mAnimations[i];
+		std::string animationName = std::string(aiAnim->mName.data);
+  		if(animationName.empty())
+		{
+		    animationName = "imported_" + std::to_string(unnamedAnimations);
+		    unnamedAnimations++;
+		}
+		AssimpAnimationInfo animInfo = loadAnimationForModel(outInfo, aiAnim, animationName);
+		outInfo->addAnimation(animInfo);
+	}
+}
 bool AssimpLoader::LoadIntoBuffer(
 		std::string fileName,
 		GLBuffer * vertexBuffer,
@@ -299,6 +358,10 @@ bool AssimpLoader::LoadIntoBuffer(
 	std::vector<float> data;
 	std::vector<unsigned short> indices;
 	loadBonesForModel(outInfo, scene->mRootNode);
+	if(outInfo->hasBones())
+	{
+		loadAnimationsForModel(outInfo, scene);
+	}
 	OK = processNode(scene->mRootNode, aiMatrix4x4(), scene, data, indices, outInfo);
 	if(!OK)
 	{
@@ -309,10 +372,10 @@ bool AssimpLoader::LoadIntoBuffer(
 	indexBuffer->setData(sizeof(unsigned short) * indices.size(), &indices[0], GL_STATIC_DRAW);
 		//Configure VAO
 	int stride = sizeof(float)*outInfo->stride();
-	int texCoordsOffset  = 0;
-	int tangentOffset = 0;
-	int bitangentOffset = 0;
-	int boneOffset = 0;
+	int texCoordsOffset  = sizeof(float) * 3;
+	int tangentOffset = sizeof(float) * 3;
+	int bitangentOffset = sizeof(float) * 3;
+	int boneOffset = sizeof(float) * 3;
 	vao->bindVertexBuffer(
 		GL_VERTEX_POSITION_ATTRIBUTE,
 		*vertexBuffer,
@@ -381,16 +444,19 @@ bool AssimpLoader::LoadIntoBuffer(
 	}
 	if(outInfo->hasBones())
 	{
+		assert(sizeof(unsigned int) == sizeof(float));
 		LOG(INFO, "Loading mesh with bones");
+		
 		vao->bindVertexBuffer(
 			GL_VERTEX_BONE_ID_ATTRIBUTE,
 			*vertexBuffer,
 			4,
-			GL_UNSIGNED_INT,
+			GL_FLOAT,
 			false,
 			stride,
 			(GLvoid *) boneOffset
 			);
+
 		vao->bindVertexBuffer(
 			GL_VERTEX_BONE_WEIGHT_ATTRIBUTE,
 			*vertexBuffer,
@@ -398,7 +464,7 @@ bool AssimpLoader::LoadIntoBuffer(
 			GL_FLOAT,
 			false,
 			stride,
-			(GLvoid *) (boneOffset + sizeof(float)*4)
+			(GLvoid *) (boneOffset + sizeof(float) * 4)
 			);
 
 	}

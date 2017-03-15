@@ -44,6 +44,11 @@ void ThirdPersonCharacterController::start()
     {
         worldTerrain = nullptr;
     }
+    animator = gameObject->getComponent<Animator>();
+    if(animator)
+    {
+        animator->setAnimation("run2|Wolf_Run_Cycle_");
+    }
     findMinGround();
 
 }

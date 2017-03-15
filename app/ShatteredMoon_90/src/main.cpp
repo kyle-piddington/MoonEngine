@@ -150,8 +150,8 @@ int main(int argc, char ** argv)
     //Grass
     stringmap grassMap {{"diffuse","grassTexture.png"}};
     std::shared_ptr<GameObject> grass  = std::make_shared<GameObject>(playerTransform);
-    grass->addComponent(scene->createComponent<Grass>("grass.obj",false,8096*2));
-    grass->addComponent(scene->createComponent<Material>(glm::vec3(1.0,1.0,1.0),"grass.program",grassMap,true));
+    grass->addComponent(scene->createComponent<Grass>("grass.obj",false,8096));
+    grass->addComponent(scene->createComponent<Material>(glm::vec3(1.0,1.0,1.0),"grass.program",grassMap,false));
     scene->addGameObject(grass);
     
     
@@ -176,7 +176,9 @@ int main(int argc, char ** argv)
     });
 
     DeferredRenderer * renderer = new DeferredRenderer(width, height, 
-        "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
+        "SSAO.program", "SSAOBlur.program",
+        "shadow_maps.program", "deferred_stencil.program", 
+        "deferred_pointL.program", "deferred_dirL.program");
     renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
     renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<GUIStep>(width, height));

@@ -15,5 +15,7 @@ namespace MoonEngine
         glm::vec3 FromHex(unsigned hexCode);
 
         glm::mat4 FromAssimp(const aiMatrix4x4 & mat);
+
+        
     }
 }

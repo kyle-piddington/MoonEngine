@@ -5,7 +5,7 @@
 using namespace MoonEngine;
 
 //Small tracker for naming unnamed animations
-int SkeletalAnimation::numImported = 0;
+
 
 SkeletalAnimation::PositionKeyFrame
 SkeletalAnimation::PositionKeyFrame::interpolate(const PositionKeyFrame & f1, const PositionKeyFrame & f2, float time)
@@ -183,46 +183,34 @@ float SkeletalAnimation::getTickForTime(float time) const
 
 }
 
-SkeletalAnimation SkeletalAnimation::importFromAssimp(aiAnimation * aiAnim)
+void SkeletalAnimation::importFromAssimp(const AssimpAnimationInfo & aiAnim)
 {
-    SkeletalAnimation sAnim;
-    sAnim.name = std::string(aiAnim->mName.data);
-    if(sAnim.name.empty())
+    
+    this->name = aiAnim.name;
+    
+    this->tickDuration = aiAnim.duration;
+    this->ticksPerSecond = aiAnim.ticksPerSecond;
+    for(int bone = 0; bone < aiAnim.boneAnimData.size(); bone++)
     {
-        sAnim.name = "imported_" + std::to_string(SkeletalAnimation::numImported);
-        SkeletalAnimation::numImported++;
+        AssimpBoneAnimInfo nodeAnim = aiAnim.boneAnimData[bone];
+        BoneAnimation boneAnim(nodeAnim.boneName);
+        for(int translationKey = 0; translationKey < nodeAnim.translationKeys.size(); translationKey++)
+        {
+            PositionKeyFrame frame(nodeAnim.translationKeys[translationKey].position, nodeAnim.translationKeys[translationKey].mTime);
+            boneAnim.addFrame(frame);
+        }
+        for(int rotKey = 0; rotKey < nodeAnim.rotationKeys.size(); rotKey++)
+        {
+            RotationKeyFrame frame(nodeAnim.rotationKeys[rotKey].rotation, nodeAnim.rotationKeys[rotKey].mTime);
+            boneAnim.addFrame(frame);
+        }
+        for(int scaleKey = 0; scaleKey < nodeAnim.scaleKeys.size(); scaleKey++)
+        {
+            ScaleKeyFrame frame(nodeAnim.scaleKeys[scaleKey].scale, nodeAnim.scaleKeys[scaleKey].mTime);
+            boneAnim.addFrame(frame);
+        }
+        this->boneAnimations.push_back(boneAnim);
     }
-    sAnim.tickDuration = aiAnim->mDuration;
-    sAnim.ticksPerSecond = aiAnim->mTicksPerSecond != 0 ? aiAnim->mTicksPerSecond : 25.0f;
-    for(int bone = 0; bone < aiAnim->mNumChannels; bone++)
-    {
-        aiNodeAnim * nodeAnim = aiAnim->mChannels[bone];
-        BoneAnimation boneAnim(std::string(nodeAnim->mNodeName.data));
-        for(int transKeys = 0; transKeys < nodeAnim->mNumPositionKeys; transKeys++)
-        {
-            aiVectorKey key = nodeAnim->mPositionKeys[transKeys];
-            PositionKeyFrame frame(
-                    glm::vec3(key.mValue.x, key.mValue.y, key.mValue.z),
-                    key.mTime);
-            boneAnim.addFrame(frame);
-        }
-        for(int rotKeys = 0; rotKeys < nodeAnim->mNumRotationKeys; rotKeys++)
-        {
-            aiQuatKey  key = nodeAnim->mRotationKeys[rotKeys];
-            RotationKeyFrame frame(
-                    glm::quat(key.mValue.w,key.mValue.x,key.mValue.y,key.mValue.z),
-                    key.mTime);
-            boneAnim.addFrame(frame);
-        }
-        for(int scaleKeys = 0; scaleKeys < nodeAnim->mNumScalingKeys; scaleKeys++)
-        {
-            aiVectorKey key = nodeAnim->mScalingKeys[scaleKeys];
-            ScaleKeyFrame frame(glm::vec3(key.mValue.x,key.mValue.y,key.mValue.z),key.mTime);
-            boneAnim.addFrame(frame);
-        }
-        std::cout << "adding frames for " << boneAnim.getBoneName() << " " << nodeAnim->mNumPositionKeys << " Translational, " << nodeAnim->mNumRotationKeys << " Rotational, " << nodeAnim->mNumScalingKeys << " Scale keys" << std::endl;
-        sAnim.boneAnimations.push_back(boneAnim);
-    }
-    return sAnim;
+
 
 }

@@ -3,6 +3,7 @@
 #include <assimp/scene.h>
 #include "Geometry/Transform.h"
 #include <vector>
+#include "Loaders/AssimpModelInfo.h"
 namespace MoonEngine
 {
 /**
@@ -11,9 +12,6 @@ namespace MoonEngine
 
     class SkeletalAnimation
     {
-        static int numImported;
-
-
     public:
         /**
          * Represents a change of translation of a bone
@@ -138,6 +136,7 @@ namespace MoonEngine
              * The name of the bone this animation effects
              */
             std::string boneName;
+
             /**
              * Positional keyframes
              */
@@ -215,7 +214,7 @@ namespace MoonEngine
          * @param  anim The animation to import
          * @return      A new SkeletalAnimation with the assimp information
          */
-        static SkeletalAnimation importFromAssimp(aiAnimation * anim);
+        void importFromAssimp(const AssimpAnimationInfo & aiAnim);
 
         /**
          * Get all of the animation data for this skeleton

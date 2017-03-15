@@ -54,6 +54,7 @@ void GLVertexArrayObject::bindVertexBuffer(GLuint attribute, const GLBuffer & bu
     {
         glEnableVertexAttribArray(attribute);
         glVertexAttribPointer(attribute, size, type, normalized, stride, offset);
+        
     }
     LOG_GL(__FILE__, __LINE__);
 

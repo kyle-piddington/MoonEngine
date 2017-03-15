@@ -15,6 +15,8 @@ uniform float windOsc;
 uniform vec2 windDir = vec2(1,0.7);
 uniform vec3 player;
 out vec2 UV;
+out vec3 fragNor;
+out vec3 fragPos;
 
 mat4 calcShear(float shearStr, vec2 shearDir)
 {
@@ -37,6 +39,10 @@ void main()
 			0.25*max(0,2 - length(centerPoint - player))
 			,playerPushPos.xz);
 
-	gl_Position = P * V *  I * anim * playerShearAnim * position;
+	mat3 N = transpose(inverse(V*I*anim*playerShearAnim));
+
+	fragPos = V *  I * anim * playerShearAnim * position;
+	fragNor = N * vec3(0,1,0);
+	gl_Position = P *fragPos;
 	UV = texCoords;
 }

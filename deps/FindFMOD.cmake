@@ -35,6 +35,7 @@ FIND_LIBRARY(FMOD_LIBRARY NAMES ${FMOD_NAMES}
   PATHS
   $ENV{FMOD_HOME}
   $ENV{EXTERNLIBS}/fmod
+  $ENV{EXTERNLIBS}/fmod
   ~/Library/Frameworks
   /Library/Frameworks
   /usr/local

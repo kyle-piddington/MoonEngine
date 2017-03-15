@@ -80,6 +80,21 @@ std::shared_ptr<GameObject> MeshLibrary::getGameObjectForModelNamed(std::string 
     std::shared_ptr<GameObject> object = scene->createGameObject();
     object->addComponent(scene->createComponent<AssimpMaterial>(program, info.get()));
     object->addComponent(scene->createComponent<AssimpMesh>(info.get()));
+    if(info->hasBones())
+    {
+        object->addComponent(scene->createComponent<Skeleton>(*info));
+        //Create and add animations to the animators
+        Animator * animator = scene->createComponent<Animator>();
+        const std::vector<AssimpAnimationInfo> & animations = info->getAnimations();
+        for(int i = 0; i < animations.size(); i++)
+        {
+            SkeletalAnimation skelAnim;
+            skelAnim.importFromAssimp(animations[i]);
+            animator->addAnimation(skelAnim);
+        }
+        object->addComponent(animator);
+    }
+    
     return object;
 
 }
