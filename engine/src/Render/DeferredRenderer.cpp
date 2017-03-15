@@ -280,14 +280,14 @@ void MoonEngine::DeferredRenderer::ssaoPass(Scene * scene)
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();
     _ssaoProgram->enable();
-   
+    
     _gBuffer.bindForLightPass();
     _ssaoBuffers.bindForSSAO();
     setupSSAOUniforms(_ssaoProgram);
     glUniformMatrix4fv(_ssaoProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-    glDepthMask(GL_TRUE);
+    glDepthMask(GL_FALSE);
     glClear(GL_COLOR_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
+    glDisable(GL_DEPTH_TEST);
    
     _renderQuad->bind();
     glDrawElementsBaseVertex(
@@ -574,7 +574,7 @@ void DeferredRenderer::setupPointLightUniforms(GLProgram * prog, std::shared_ptr
     _gBuffer.UniformTexture(prog, "positionTex", POSITION_TEXTURE);
     _gBuffer.UniformTexture(prog, "colorTex", COLOR_TEXTURE);
     _gBuffer.UniformTexture(prog, "normalTex", NORMAL_TEXTURE);
-    _ssaoBuffers.UniformTexture(prog, "ssaoTex", SSAO_COLOR_TEXTURE);
+    _ssaoBuffers.UniformTexture(prog, "ssaoTex", SSAO_BLUR_TEXTURE);
 
     //Other global Uniforms
     glUniform2f(prog->getUniformLocation("screenSize"), static_cast<float>(_width),static_cast<float>(_height));

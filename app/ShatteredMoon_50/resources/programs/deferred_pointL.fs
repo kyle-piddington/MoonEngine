@@ -28,9 +28,7 @@ uniform vec2 screenSize;
 
 vec4 calcLightEffect(vec3 WorldPos, vec3 Diffuse, vec3 Normal, float Specular)
 {
-    //Ambient
-    vec4 AmbientColor = vec4(pointLight.color * pointLight.ambient, 1.0);
-
+    
     // Diffuse
     vec3 lightDir = normalize(pointLight.position - WorldPos);
     vec4 DiffuseColor = vec4(max(dot(Normal, lightDir), 0.0) * Diffuse * pointLight.color, 1.0);

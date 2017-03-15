@@ -15,9 +15,11 @@ SkyStep::SkyStep(int width, int height):
 void SkyStep::setup(GLFWwindow * window, Scene * scene)
 {
 	_renderProgram = Library::ProgramLib->getProgramForName("skydome.program");
-	_compositeTexture = Library::TextureLib->getTexture(COMPOSITE_TEXTURE);
 
 	_fbo.addTexture(COMPOSITE_TEXTURE, GL_COLOR_ATTACHMENT0);
+    _fbo.addTexture(DEPTH_STENCIL_TEXTURE, GL_DEPTH_ATTACHMENT);
+    _fbo.addTexture(DEPTH_STENCIL_TEXTURE, GL_STENCIL_ATTACHMENT);
+
 
     _mainCamera = scene->getMainCamera()->getComponent<Camera>();
     if (_mainCamera == nullptr)
@@ -51,8 +53,10 @@ void SkyStep::render(Scene * scene)
     _sphere->getComponent<SimpleTexture>()->getTexture()->bind(0);
     glUniform1i(_renderProgram->getUniformLocation("skycolor"), 0);
 
-    glDepthMask(GL_TRUE);
+    glDepthMask(GL_FALSE);
+    glDisable(GL_STENCIL_TEST);
     glEnable(GL_DEPTH_TEST);
+
 //    glEnable(GL_BLEND);
 //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

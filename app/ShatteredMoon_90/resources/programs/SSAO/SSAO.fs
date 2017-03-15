@@ -15,15 +15,12 @@ float bias = 0.025;
 int kernelSize = 64;
 vec2 noiseScale = vec2(screenSize.x/4.0, screenSize.y/4.0); 
 
-vec2 locTexCoord()
-{
-    return gl_FragCoord.xy/screenSize;
-}
+in vec2 TexCoords;
 
 void main()
 {
     // Get input for SSAO algorithm
-    vec2 TexCoords = locTexCoord();
+   
     vec3 fragPos = texture(positionTex, TexCoords).xyz;
     vec3 normal = normalize(texture(normalTex, TexCoords).rgb);
     vec3 randomVec = normalize(texture(noiseTex, TexCoords * noiseScale).xyz);
@@ -51,5 +48,5 @@ void main()
     }
     occlusion = 1.0 - (occlusion / kernelSize);
     
-    ssaoColor = occlusion;
+    ssaoColor = clamp(0,1,occlusion);
 }
