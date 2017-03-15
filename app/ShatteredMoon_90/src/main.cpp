@@ -136,14 +136,15 @@ int main(int argc, char ** argv)
 
 
     Transform tran;
-    tran.setPosition(glm::vec3(0.0, 150.0, 0.0));
-    tran.setScale(glm::vec3(5, 5, 5));
+    tran.setPosition(glm::vec3(-15.0, 100.0, -100.0));
+    tran.setScale(glm::vec3(1, 1000, 1));
 
-    stringmap sun = {{"billboard", "sun.tga"}};
+    stringmap sun = {{"diffuse", "watercolor-sun.png"}};
 
     std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
-    sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
-    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun, true));
+    sunBillboard->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
+    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "cyl_billboard.program", sun, true));
+
     scene->addGameObject(sunBillboard);
 
     //Grass
@@ -178,7 +179,7 @@ int main(int argc, char ** argv)
         "shadow_maps.program", "deferred_stencil.program", "deferred_pointL.program", "deferred_dirL.program");
     renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
     renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
-    renderer->addPostProcessStep(std::make_shared<SkyStep>(width, height));
+    //renderer->addPostProcessStep(std::make_shared<SkyStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<GUIStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<HDRStep>("postprocess/bloom/post_HDR_tonemap.program"));
 

@@ -98,6 +98,10 @@ void CameraCutscene::update(float dt)
         return;
     }
 
+    if (Keyboard::key(GLFW_KEY_SPACE)) {
+        _maxStepAmount *= 10;
+    }
+
     // Interpolate
     _fromPos = MathUtil::moveTowards(_fromPos, _toPos, _maxStepAmount);
     _fromLookAt = MathUtil::moveTowards(_fromLookAt, _toLookAt, _maxStepAmount / _currentStepRatio);
