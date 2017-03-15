@@ -21,6 +21,10 @@ namespace MoonEngine
 
         std::shared_ptr<Component> clone() const;
 
+        void setSteps(std::vector<CameraStep> steps);
+        void loadSteps(std::string file);
+        void setStepPlayer(bool start, bool end);
+
     private:
         bool _running;
         int _currentStep;
@@ -36,6 +40,9 @@ namespace MoonEngine
         std::vector<CameraStep> _cameraSteps;
 
         void fetchCurrentSteps();
+
+        bool _startPlayer;
+        bool _endPlayer;
     };
 
 }

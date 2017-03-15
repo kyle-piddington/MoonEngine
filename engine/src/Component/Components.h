@@ -8,6 +8,7 @@
 #include "CameraComponents/FirstPersonController.h"
 #include "CameraComponents/ThirdPersonOrbitalController.h"
 #include "CameraComponents/CameraCutscene.h"
+#include "CameraComponents/CameraRecorder.h"
 
 #include "MaterialComponents/Material.h"
 #include "MaterialComponents/AssimpMaterial.h"

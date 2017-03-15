@@ -2,6 +2,7 @@
 
 #include "GLWrapper/GLProgram.h"
 #include "Libraries/Library.h"
+#include "thirdparty/text/drawtext.h"
 
 namespace MoonEngine {
 
@@ -18,5 +19,11 @@ namespace MoonEngine {
         std::unordered_map<std::string, std::shared_ptr<GameObject>> _guiElements;
 
         void addElement(string name, float scaleX, float scaleY, float posX, float posY);
+
+        struct dtx_font *font;
+
+        void createStringTexture(string text);
+
+        int _stars_collected;
     };
 }

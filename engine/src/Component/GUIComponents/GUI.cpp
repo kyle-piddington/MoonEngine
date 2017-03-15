@@ -8,7 +8,8 @@ using namespace MoonEngine;
 GUI::GUI(float width, float height):
     _width(width),
     _height(height),
-    _current_moon(0)
+    _current_moon(0),
+    _stars_collected(0)
 {
 }
 
@@ -27,10 +28,42 @@ void GUI::addElement(string name, float scaleX, float scaleY, float posX, float 
     _guiElements[name] = _guiElement;
 }
 
+void GUI::createStringTexture(std::string text) {
+    int width = 120;
+    int height = 120;
+    unsigned char * pixels;
+    if(!(pixels = (unsigned char *)malloc(width * height * 4))) {
+        perror("failed to allocate image memory");
+        return;
+    }
+    memset(pixels, 0x20, width * height * 4);	/* clear fb */
+
+    dtx_target_raster(pixels, width, height);
+
+    dtx_color(1.0, 1.0, 1.0, 1.0);
+    dtx_position(0, height / 2);
+    dtx_printf(text.c_str());
+
+    GLTextureConfiguration cfg(width / 2, height / 2, GL_RGBA, GL_RGBA, GL_UNSIGNED_SHORT);
+    Library::TextureLib->createTexture("star_count", pixels, cfg);
+
+}
+
 void GUI::start() {
+    string path = Library::getResourcePath() + "font_s72.glyphmap";
+    LOG(INFO, "Loading font " + path);
+
+    if(!(font = dtx_open_font_glyphmap(path.c_str()))) {
+        LOG(INFO, "Couldn't load font");
+    }
+    dtx_use_font(font, 72);
+    dtx_set(DTX_RASTER_BLEND, 1);
+
+    createStringTexture(to_string(_stars_collected));
+
     addElement("Moon0", 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
     addElement("star", 40.0f, 40.0f, 0.085f * _width, 0.87f * _height);
-    addElement("text", 25.0f, 25.0f, 0.135f * _width, 0.88f * _height);
+    addElement("star_count", 30.0f, -30.0f, 0.14f * _width, 0.88f * _height);
 
     addElement("progress", 0.4f * _width, 25.0f, 0.5f * _width, 0.067f * _height);
     addElement("wolfmoon", 40.0f, 40.0f, 0.33f * _width, 0.067f * _height);
@@ -43,9 +76,14 @@ void GUI::start() {
         _guiElements["menu"]->setDeleted();
     });
 
-    on("picked_up_star",[&](const Message & msg)
+    on("picked_up_shard",[&](const Message & msg)
     {
+        _stars_collected++;
         LOG(INFO, "Received global message");
+
+        SimpleTexture * texture = _guiElements["star_count"]->getComponent<SimpleTexture>();
+        createStringTexture(to_string(_stars_collected));
+        texture->setTexture("star_count");
     });
 
     on("picked_up_moon",[&](const Message & msg)
