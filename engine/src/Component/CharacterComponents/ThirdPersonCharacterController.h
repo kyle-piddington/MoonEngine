@@ -38,6 +38,8 @@ namespace MoonEngine
 
         void checkIfShouldFall();
         void findMinGround();
+
+        void updateAnimation();
         Transform * transform;
         float playerSpeed;
         float jumpSpeed;
@@ -54,6 +56,8 @@ namespace MoonEngine
         Terrain * worldTerrain;
         Animator * animator;
         BoxCollider * bbox;
+
+
 
     };
 }

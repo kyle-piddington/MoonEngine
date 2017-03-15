@@ -12,7 +12,7 @@ BeamComponent::BeamComponent()
 
 void BeamComponent::start()
 {
-	playerObject = GetWorld()->findGameObjectWithTag(T_Player);
+	playerObject = GetWorld()->getPlayer().get();
 	xzPos = glm::vec2(gameObject->getTransform().getPosition().x, gameObject->getTransform().getPosition().z); 
 }
 

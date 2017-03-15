@@ -22,6 +22,8 @@ Scene::Scene()
     _boxCollisionComponents.clear();
     _components.clear();
     _renderTree = nullptr;
+    _playerObject = nullptr;
+    _gameState = nullptr;
 }
 
 /**
@@ -455,11 +457,15 @@ return false;
 
 std::shared_ptr<GameObject> Scene::getPlayer()
 {
-	for (int i = 0; i < _renderableGameObjects.size(); i++)
+    if(_playerObject != nullptr)
+    {
+        return _playerObject;
+    }
+	for (int i = 0; i < _gameObjects.size(); i++)
 	{
-		if (T_Player == _renderableGameObjects.at(i)->getTag())
+		if (T_Player == _gameObjects.at(i)->getTag())
 		{
-			return _renderableGameObjects.at(i);
+			return _gameObjects.at(i);
 		}
 	}
     return nullptr;

@@ -24,7 +24,15 @@ int main(int argc, char **argv) {
 	   All meshes are guarenteed to have positions 
 	   and normals, but not neccesarily texture coordinates
 	*/
-	Renderer * renderer = app->CreateDefaultRenderer();
+	DeferredRenderer * renderer = new DeferredRenderer(width, height, 
+		"SSAO.program", "SSAOBlur.program",
+		"shadow_maps.program", "deferred_stencil.program", 
+		"deferred_pointL.program", "deferred_dirL.program");
+	renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
+	renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
+	//renderer->addPostProcessStep(std::make_shared<GUIStep>(width, height));
+	renderer->addPostProcessStep(std::make_shared<HDRStep>("postprocess/bloom/post_HDR_tonemap.program"));
+
 	app->addCustomUpdate([&](float deltaTime)
 	{
 		LOG(Info, "NumGameObjects" + scene->getNumberOfObjects());
