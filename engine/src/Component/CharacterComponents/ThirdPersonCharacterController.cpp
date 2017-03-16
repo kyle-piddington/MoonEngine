@@ -145,6 +145,19 @@ void ThirdPersonCharacterController::handleMove(float dt)
 
     }
     transform->translate(dt * playerDirection);
+    if(_lastGround + 1e-2> transform->getPosition().y && state == FALLING)
+    {
+        state = GROUND;
+    }
+    if(state == GROUND && fabs(_lastGround - transform->getPosition().y) < 1e-1)
+
+    {
+        transform->setPosition(
+        glm::vec3(transform->getPosition().x, 
+        _lastGround, 
+        transform->getPosition().z));
+
+    }
     transform->setPosition(
         glm::vec3(transform->getPosition().x, 
         std::max(transform->getPosition().y, _lastGround), 
@@ -249,7 +262,7 @@ void ThirdPersonCharacterController::onCollisionEnter(Collision col)
 void ThirdPersonCharacterController::checkIfShouldFall()
 {
     //Early break if on ground.
-    if (transform->getPosition().y <= _lastGround)
+    if (transform->getPosition().y <= _lastGround + 1e-1)
     {
         return;
     }

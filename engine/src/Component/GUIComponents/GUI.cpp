@@ -155,14 +155,20 @@ void GUI::start()
         createStringTexture(to_string(_stars_collected));
         texture->setTexture("star_count");
 
-        addElement("gui_shard_glow", 100.0f, 80.0f, 0.105f * _width, 0.87f * _height);
-        _animatingShard = true;
+        if (!_animatingShard)
+        {
+            addElement("gui_shard_glow", 100.0f, 80.0f, 0.105f * _width, 0.87f * _height);
+            _animatingShard = true;
+        }
     });
 
     on("picked_up_moon",[&](const Message & msg)
     {
         _current_moon++;
-        _animatingMoon = true;
+        if (!_animatingMoon)
+        {
+            _animatingMoon = true;
+        }
 
         if (_current_moon <= 3)
         {

@@ -43,7 +43,7 @@ void CameraCutscene::loadSteps(string file)
         const rapidjson::Value & rawLookAt = step[1];
         glm::vec3 stepLookAt = glm::vec3(rawLookAt[0].GetFloat(), rawLookAt[1].GetFloat(), rawLookAt[2].GetFloat());
 
-        newSteps.push_back({stepPos, stepLookAt});
+        newSteps.push_back({stepPos, stepPos - stepLookAt});
     }
 
     setSteps(newSteps);
@@ -67,11 +67,11 @@ void CameraCutscene::setSteps(std::vector<CameraStep> steps)
     _playerPos = GetWorld()->getPlayer()->getTransform().getPosition();
     if (_startPlayer)
     {
-        _cameraSteps.insert(_cameraSteps.begin(), {_playerPos + glm::vec3(5,5,5), _playerPos});
+        _cameraSteps.insert(_cameraSteps.begin(), {_playerPos + glm::vec3(1), _playerPos});
     }
     if (_endPlayer)
     {
-        _cameraSteps.push_back({_playerPos + glm::vec3(5,5,5), _playerPos});
+        _cameraSteps.push_back({_playerPos + glm::vec3(1), _playerPos});
     }
 
     _currentStep = 0;
