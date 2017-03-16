@@ -21,7 +21,7 @@ namespace MoonEngine
 		}
 		void addBoneData(int Bone, float weight)
 		{
-			for(uint i = 0; i < NUM_BONES_PER_VERTEX; i++)
+			for(unsigned int i = 0; i < NUM_BONES_PER_VERTEX; i++)
 			{
 				if(boneWeights[i] == 0.0){
 					boneIds[i] = Bone;
@@ -31,7 +31,7 @@ namespace MoonEngine
 				}
 			}
 
-      		assert(!"Too many vertices for bone."); //Too many bones!
+      		assert(false); //Too many bones!
  		}
 		bool isEmpty()
 		{
