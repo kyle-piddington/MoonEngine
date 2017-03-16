@@ -18,6 +18,7 @@ namespace MoonEngine
 	private:
 		float accumTime;
 		glm::vec3 direction;
+		float scale;
 		std::shared_ptr<GameObject> player;
 	};
 }
