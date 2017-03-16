@@ -97,9 +97,10 @@ void DeferredRenderer::render(Scene * scene)
     shadowMapPass(scene);
     geometryPass(scene);
 
-    ImGui::Begin("SSAO Debug");
+    ImGui::Begin("Debug Controls");
     {
         ImGui::Checkbox("Disable SSAO", &_debugSSAO);
+        ImGui::Checkbox("CSM Levels ", &_debugShadows);
     }
     ImGui::End();
 
@@ -200,12 +201,6 @@ void DeferredRenderer::geometryPass(Scene * scene)
 	GLProgram* activeProgram = nullptr;
 	Mesh* mesh;
 	Material* mat;
-
-    ImGui::Begin("Shadow Debug");
-    {
-        ImGui::Checkbox("CSM Levels ", &_debugShadows);
-    }
-    ImGui::End();
 
     glm::mat4 V = _mainCamera->getView();
     glm::mat4 P = _mainCamera->getProjection();

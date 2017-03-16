@@ -21,6 +21,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     float windowWidth = 1280, windowHeight = 960;
+
     GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "ShatteredMoon", nullptr, nullptr);
     if (window == nullptr)
     {
@@ -101,7 +102,7 @@ int main(int argc, char ** argv)
 
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
-    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
+    dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.13f, 0.5f));
     
     scene->addGameObject(dirLight);
 
