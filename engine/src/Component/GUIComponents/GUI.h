@@ -25,12 +25,17 @@ namespace MoonEngine {
         void createStringTexture(string text);
 
         void animateShardGui();
+        void animateMoonGui();
 
-        bool _animating;
-        float _size_change;
+        float _shardTicker;
+        bool _animatingShard;
+        float _shardSizeChange;
+
+        float _moonTicker;
+        bool _animatingMoon;
+        float _moonSizeChange;
 
         int _stars_collected;
 
-        float _ticker;
     };
 }

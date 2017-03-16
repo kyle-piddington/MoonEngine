@@ -10,9 +10,12 @@ GUI::GUI(float width, float height):
     _height(height),
     _current_moon(0),
     _stars_collected(0),
-    _ticker(0.0),
-    _animating(false),
-    _size_change(1.5)
+    _shardTicker(0.0),
+    _moonTicker(0.0),
+    _shardSizeChange(1.5),
+    _moonSizeChange(3.0),
+    _animatingShard(false),
+    _animatingMoon(false)
 {
 }
 
@@ -54,22 +57,57 @@ void GUI::createStringTexture(std::string text) {
 
 void GUI::animateShardGui()
 {
-    if (_animating) {
-        glm::vec3 scale = glm::vec3(100.0 + _ticker, 80.0 + _ticker, 0.0);
-        glm::vec3 rotation = glm::vec3(M_PI, 0.0, sin(_ticker) / 10.0);
+    if (_animatingShard) {
+        glm::vec3 scale = glm::vec3(100.0 + _shardTicker, 80.0 + _shardTicker, 0.0);
+        glm::vec3 rotation = glm::vec3(M_PI, 0.0, sin(_shardTicker) / 10.0);
         _guiElements["gui_shard_glow"]->getTransform().setScale(scale);
         _guiElements["gui_shard_glow"]->getTransform().setRotation(rotation);
 
-        _ticker += _size_change;
+        _shardTicker += _shardSizeChange;
 
-        if (_ticker > 30.0) {
-            _size_change = -1.5f;
+        if (_shardTicker > 30.0) {
+            _shardSizeChange = -1.5f;
         }
-        if (_ticker <= 0.0) {
-            _animating = false;
-            _ticker = 0.0;
-            _size_change = 1.5;
+        if (_shardTicker <= 0.0) {
+            _animatingShard = false;
+            _shardTicker = 0.0;
+            _shardSizeChange = 1.5;
             _guiElements["gui_shard_glow"]->setDeleted();
+        }
+    }
+}
+
+void GUI::animateMoonGui()
+{
+    if (_animatingMoon) {
+        glm::vec3 scale = glm::vec3(75.0 + _moonTicker, 75.0 + _moonTicker, 0.0);
+        glm::vec3 rotation = glm::vec3(M_PI, 0.0, 0.0);
+
+        int moon = _current_moon;
+        if (_moonSizeChange > 0) {
+            moon--;
+        }
+        string currentTexture = "Moon" + std::to_string(moon);
+
+        if (_moonTicker > 20.0 && _moonSizeChange == 3.0) {
+            _moonSizeChange = 5.0f;
+        }
+        if (_moonTicker > 30.0) {
+            addElement("Moon" + std::to_string(_current_moon), scale.x, scale.y, 0.1f * _width, 0.7f * _height);
+            _guiElements[currentTexture]->setDeleted();
+
+            _moonSizeChange = -3.0f;
+        }
+
+        _guiElements[currentTexture]->getTransform().setScale(scale);
+        _guiElements[currentTexture]->getTransform().setRotation(rotation);
+
+        _moonTicker += _moonSizeChange;
+
+        if (_moonTicker <= 0.0) {
+            _animatingMoon = false;
+            _moonTicker = 0.0;
+            _moonSizeChange = 3.0;
         }
     }
 }
@@ -111,15 +149,16 @@ void GUI::start() {
         texture->setTexture("star_count");
 
         addElement("gui_shard_glow", 100.0f, 80.0f, 0.105f * _width, 0.87f * _height);
-        _animating = true;
+        _animatingShard = true;
     });
 
     on("picked_up_moon",[&](const Message & msg)
     {
         _current_moon++;
+        _animatingMoon = true;
+
         if (_current_moon <= 3)
         {
-            addElement("Moon" + std::to_string(_current_moon), 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
 
             /* GAME OVER MAN, GAME OVER */
             if (_current_moon == 3) {
@@ -143,6 +182,7 @@ void GUI::update(float dt)
         glm::vec3(0.1*_width + (_width*0.8 * t), progressPos.y,progressPos.z));
 
     animateShardGui();
+    animateMoonGui();
 }
 
 std::shared_ptr<Component> GUI::clone() const
