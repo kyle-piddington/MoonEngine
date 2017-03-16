@@ -92,8 +92,11 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 void Scene::runUpdate(float dt)
 {
     runMessageUpdate();
-	_globalTime += dt * TIME_MODIFIER;
-	//_dirLightObject->getComponent<DirLight>()->setDirection(glm::vec3(sin(_globalTime), TIME_MODIFIER * 10 * cos(_globalTime), -1.0));
+
+    if (_gameState->currentState() == PLAYING_STATE)
+    {
+        _globalTime += dt * TIME_MODIFIER;
+    }
     instantiateNewObjects();
 
     for (std::shared_ptr<GameObject> go : _gameObjects)
