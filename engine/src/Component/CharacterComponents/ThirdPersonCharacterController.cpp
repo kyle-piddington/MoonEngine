@@ -7,6 +7,7 @@
 #include "thirdparty/imgui/imgui.h"
 #include <string>
 #include <algorithm>
+#include <MoonEngine.h>
 
 #ifndef M_PI
 #define M_PI 3.141592653589793
@@ -25,7 +26,7 @@ ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed
     _lastGround = 0;
     _curJumpForce = 0;
     playerSpeed = 0;
-    _currentlyMoving = false;
+    _currentAnim = ANIM_SEAT;
 }
 
 void ThirdPersonCharacterController::start()
@@ -45,7 +46,7 @@ void ThirdPersonCharacterController::start()
     animator = gameObject->getComponent<Animator>();
     if(animator)
     {
-        animator->setAnimation("run2|Wolf_Idle_");
+        animator->setAnimation(animations[_currentAnim]);
     }
     findMinGround();
 
@@ -93,26 +94,31 @@ void ThirdPersonCharacterController::handleMove(float dt)
     glm::vec3 camRightXZ = -glm::vec3(camRight.x, 0, camRight.z);
 
     glm::vec2 direction = glm::vec2(Input::GetAxis(AXIS_HORIZONTAL_0), Input::GetAxis(AXIS_VERTICAL_0));
-    /* Not moving */
-    if (abs(direction.x) < 0.001 && abs(direction.y) < 0.001)
+
+    /* Change animation state? */
+    int anim;
+    glm::vec2 dir = abs(direction);
+
+    if (glm::all(glm::lessThan(dir, glm::vec2(0.001, 0.001))))
     {
-        if (_currentlyMoving)
-        {
-            if (animator)
-            {
-                animator->setAnimation("run2|Wolf_Idle_");
-            }
-            _currentlyMoving = false;
-        }
+        anim = ANIM_IDLE;
+    } else if (glm::all(glm::lessThan(dir, glm::vec2(0.6, 0.6))))
+    {
+        anim = ANIM_WALK;
+    } else
+    {
+        anim = ANIM_RUN;
     }
-    else {
-        if (!_currentlyMoving)
+    if (Keyboard::isKeyDown(GLFW_KEY_LEFT_SHIFT) || Input::GetButton(BUTTON_1))
+    {
+        anim = ANIM_CREEP;
+    }
+
+    if (anim != _currentAnim) {
+        _currentAnim = anim;
+        if (animator)
         {
-            if (animator)
-            {
-                animator->setAnimation("run2|Wolf_Run_Cycle_");
-            }
-            _currentlyMoving = true;
+            animator->setAnimation(animations[_currentAnim]);
         }
     }
 

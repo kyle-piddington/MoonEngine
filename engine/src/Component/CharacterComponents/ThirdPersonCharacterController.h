@@ -47,7 +47,7 @@ namespace MoonEngine
         float jumpTime;
         float _curJumpForce;
 
-        bool _currentlyMoving;
+        int _currentAnim;
         
         float _jumpTime;
         float gravity;
@@ -59,7 +59,19 @@ namespace MoonEngine
         Animator * animator;
         BoxCollider * bbox;
 
+        #define ANIM_CREEP 0
+        #define ANIM_IDLE 1
+        #define ANIM_WALK 2
+        #define ANIM_RUN 3
+        #define ANIM_SEAT 4
 
+        string animations[5] = {
+                "run2|Wolf_creep_cycle",
+                "run2|Wolf_Idle_",
+                "run2|Wolf_Walk_cycle_",
+                "run2|Wolf_Run_Cycle_",
+                "run2|Wolf_seat_"
+        };
 
     };
 }
