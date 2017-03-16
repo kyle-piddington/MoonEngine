@@ -1,0 +1,5 @@
+{
+	"name" : "cyl_billboard",
+	"vertex" : "resources/programs/cyl_billboard.vs",
+	"fragment" : "resources/programs/cyl_billboard.fs"
+}
