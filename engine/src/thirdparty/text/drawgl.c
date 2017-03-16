@@ -15,6 +15,7 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#define NO_GLU
 #ifndef NO_OPENGL
 #include <stdarg.h>
 #include <math.h>
@@ -33,7 +34,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <OpenGL/gl.h>
 #else
 #define GL_GLEXT_LEGACY		/* don't include glext.h internally in gl.h */
+#include <GL/glew.h>
 #include <GL/gl.h>
+
 #ifndef NO_GLU
 #include <GL/glu.h>
 #endif
@@ -195,11 +198,12 @@ static void set_glyphmap_texture(struct dtx_glyphmap *gmap)
 
 	if(!gmap->tex_valid) {
 		glBindTexture(GL_TEXTURE_2D, gmap->tex);
+		glGenerateMipmap(GL_TEXTURE_2D);
 #ifdef GL_ES
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, gmap->xsz, gmap->ysz, 0, GL_ALPHA, GL_UNSIGNED_BYTE, gmap->pixels);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		glGenerateMipmap(GL_TEXTURE_2D); 
 #elif !defined(NO_GLU)
-		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_ALPHA, gmap->xsz, gmap->ysz, GL_ALPHA, GL_UNSIGNED_BYTE, gmap->pixels);
+		glGenerateMipmap(GL_TEXTURE_2D);
 #else
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, gmap->xsz, gmap->ysz, 0, GL_ALPHA, GL_UNSIGNED_BYTE, gmap->pixels);
 #endif

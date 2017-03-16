@@ -49,10 +49,10 @@ endif(WIN32)
 
 #Windows specific: Copy FMod DLLs to debug and release
 MACRO(GetAssimpDLLs DEBUG_NAME RELEASE_NAME)
-	string(REPLACE "lib/assimp-vc140-mt.lib" "bin/assimp-vc140.mt.dll" ASSIMP_DLL
+	string(REPLACE ".lib" ".dll" ASSIMP_DLL
 			"${ASSIMP_LIBRARY}")
-                set (${DEBUG_NAME} ${${DEBUG_NAME}} ${FMOD_DLL})
-                set (${RELEASE_NAME} ${${RELEASE_NAME}} ${FMOD_DLL})
+                set (${DEBUG_NAME} ${${DEBUG_NAME}} ${ASSIMP_DLL})
+                set (${RELEASE_NAME} ${${RELEASE_NAME}} ${ASSIMP_DLL})
          
 
 ENDMACRO()
