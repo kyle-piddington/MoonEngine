@@ -24,6 +24,13 @@ namespace MoonEngine {
 
         void createStringTexture(string text);
 
+        void animateShardGui();
+
+        bool _animating;
+        float _size_change;
+
         int _stars_collected;
+
+        float _ticker;
     };
 }

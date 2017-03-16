@@ -9,7 +9,10 @@ GUI::GUI(float width, float height):
     _width(width),
     _height(height),
     _current_moon(0),
-    _stars_collected(0)
+    _stars_collected(0),
+    _ticker(0.0),
+    _animating(false),
+    _size_change(1.5)
 {
 }
 
@@ -49,6 +52,28 @@ void GUI::createStringTexture(std::string text) {
 
 }
 
+void GUI::animateShardGui()
+{
+    if (_animating) {
+        glm::vec3 scale = glm::vec3(100.0 + _ticker, 80.0 + _ticker, 0.0);
+        glm::vec3 rotation = glm::vec3(M_PI, 0.0, sin(_ticker) / 10.0);
+        _guiElements["gui_shard_glow"]->getTransform().setScale(scale);
+        _guiElements["gui_shard_glow"]->getTransform().setRotation(rotation);
+
+        _ticker += _size_change;
+
+        if (_ticker > 30.0) {
+            _size_change = -1.5f;
+        }
+        if (_ticker <= 0.0) {
+            _animating = false;
+            _ticker = 0.0;
+            _size_change = 1.5;
+            _guiElements["gui_shard_glow"]->setDeleted();
+        }
+    }
+}
+
 void GUI::start() {
     string path = Library::getResourcePath() + "font_s72.glyphmap";
     LOG(INFO, "Loading font " + path);
@@ -62,8 +87,8 @@ void GUI::start() {
     createStringTexture(to_string(_stars_collected));
 
     addElement("Moon0", 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
-    addElement("star", 40.0f, 40.0f, 0.085f * _width, 0.87f * _height);
-    addElement("star_count", 30.0f, -30.0f, 0.14f * _width, 0.88f * _height);
+    addElement("gui_shard_flat", 100.0f, 80.0f, 0.105f * _width, 0.87f * _height);
+    addElement("star_count", 30.0f, -30.0f, 0.145f * _width, 0.885f * _height);
 
     addElement("progress", 0.4f * _width, 25.0f, 0.5f * _width, 0.067f * _height);
     addElement("wolfmoon", 40.0f, 40.0f, 0.33f * _width, 0.067f * _height);
@@ -84,6 +109,9 @@ void GUI::start() {
         SimpleTexture * texture = _guiElements["star_count"]->getComponent<SimpleTexture>();
         createStringTexture(to_string(_stars_collected));
         texture->setTexture("star_count");
+
+        addElement("gui_shard_glow", 100.0f, 80.0f, 0.105f * _width, 0.87f * _height);
+        _animating = true;
     });
 
     on("picked_up_moon",[&](const Message & msg)
@@ -103,7 +131,7 @@ void GUI::start() {
 
     on(ENDED_STATE,[&](const Message & msg)
     {
-        addElement("wolfmoon", 100.0f, 100.0f, _width / 2, _height / 2);
+        addElement("wolfmoon", 200.0f, 200.0f, _width / 2, _height / 2);
     });
 }
 
@@ -113,6 +141,8 @@ void GUI::update(float dt)
     glm::vec3 progressPos = _guiElements["wolfmoon"]->getTransform().getPosition();
     _guiElements["wolfmoon"]->getTransform().setPosition(
         glm::vec3(0.1*_width + (_width*0.8 * t), progressPos.y,progressPos.z));
+
+    animateShardGui();
 }
 
 std::shared_ptr<Component> GUI::clone() const
