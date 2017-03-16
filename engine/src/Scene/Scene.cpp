@@ -93,7 +93,7 @@ void Scene::runUpdate(float dt)
 {
     runMessageUpdate();
 
-    if (_gameState->currentState() == PLAYING_STATE)
+    if (_gameState != nullptr && _gameState->currentState() == PLAYING_STATE)
     {
         _globalTime += dt * TIME_MODIFIER;
     }
