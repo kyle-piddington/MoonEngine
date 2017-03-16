@@ -26,25 +26,25 @@ void Input::provide(std::shared_ptr<InputService> serv)
 float Input::GetAxis(Axis axis)
 {
     assert(_service != nullptr);
-    float axisVal = _service->getAxisRaw(axis);
-    switch (axis)
-    {
-        case AXIS_HORIZONTAL_0:
-            _targHAxis0 = axisVal;
-            return _smoothedHAxis0;
-
-        case AXIS_HORIZONTAL_1:
-            _targHAxis1 = axisVal;
-            return _smoothedHAxis1;
-
-        case AXIS_VERTICAL_0:
-            _targVAxis0 = axisVal;
-            return _smoothedVAxis0;
-
-        case AXIS_VERTICAL_1:
-            _targVAxis1 = axisVal;
-            return _smoothedVAxis1;
-    }
+    return  _service->getAxisRaw(axis);
+//    switch (axis)
+//    {
+//        case AXIS_HORIZONTAL_0:
+//            _targHAxis0 = axisVal;
+//            return _smoothedHAxis0;
+//
+//        case AXIS_HORIZONTAL_1:
+//            _targHAxis1 = axisVal;
+//            return _smoothedHAxis1;
+//
+//        case AXIS_VERTICAL_0:
+//            _targVAxis0 = axisVal;
+//            return _smoothedVAxis0;
+//
+//        case AXIS_VERTICAL_1:
+//            _targVAxis1 = axisVal;
+//            return _smoothedVAxis1;
+//    }
 }
 
 bool Input::GetButtonDown(Button b)

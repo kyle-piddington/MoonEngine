@@ -66,11 +66,15 @@ namespace MoonEngine
         void sendGlobalMessage(std::string globalMsg);
 
         bool isDeleted();
-
         void setDeleted();
+
+        bool isEnabled();
+        void setDisabled();
 
     private:
         bool deleted;
+        bool enabled;
+
     protected:
         GameObject * gameObject;
 

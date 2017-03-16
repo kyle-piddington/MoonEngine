@@ -5,12 +5,12 @@
 #include <iostream>
 using namespace MoonEngine;
 
-#define TIME_MODIFIER 0.02
+#define TIME_MODIFIER 0.005
 
 Scene::Scene()
 {
     _globalLightDir = glm::vec3(1, 1, 1);
-    _globalTime = 0.33;
+    _globalTime = 0.0;
     _cameraFlag = 0;
     _dirLightFlag = 0;
     _allGameObjects.clear();
@@ -22,6 +22,8 @@ Scene::Scene()
     _boxCollisionComponents.clear();
     _components.clear();
     _renderTree = nullptr;
+    _playerObject = nullptr;
+    _gameState = nullptr;
 }
 
 /**
@@ -90,8 +92,11 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 void Scene::runUpdate(float dt)
 {
     runMessageUpdate();
-	//_globalTime += dt * TIME_MODIFIER;
-	//_dirLightObject->getComponent<DirLight>()->setDirection(glm::vec3(sin(_globalTime), TIME_MODIFIER * 10 * cos(_globalTime), -1.0));
+
+    if (_gameState != nullptr && _gameState->currentState() == PLAYING_STATE)
+    {
+        _globalTime += dt * TIME_MODIFIER;
+    }
     instantiateNewObjects();
 
     for (std::shared_ptr<GameObject> go : _gameObjects)
@@ -455,11 +460,15 @@ return false;
 
 std::shared_ptr<GameObject> Scene::getPlayer()
 {
-	for (int i = 0; i < _renderableGameObjects.size(); i++)
+    if(_playerObject != nullptr)
+    {
+        return _playerObject;
+    }
+	for (int i = 0; i < _gameObjects.size(); i++)
 	{
-		if (T_Player == _renderableGameObjects.at(i)->getTag())
+		if (T_Player == _gameObjects.at(i)->getTag())
 		{
-			return _renderableGameObjects.at(i);
+			return _gameObjects.at(i);
 		}
 	}
     return nullptr;
@@ -482,7 +491,7 @@ void Scene::addGlobalMessage(const Message & message)
 
 void Scene::addGlobalHandler(std::string message, const messageFn & fn)
 {
-    if (_globalMessageHandlers.find(message) != _globalMessageHandlers.end())
+    if (_globalMessageHandlers.find(message) == _globalMessageHandlers.end())
     {
         _globalMessageHandlers[message] = std::vector<messageFn>();
     }
@@ -492,7 +501,9 @@ void Scene::addGlobalHandler(std::string message, const messageFn & fn)
 void Scene::runMessageUpdate()
 {
     // Send all the global messages
-    for (Message & msg : _globalMessageQueue)
+    std::vector<Message> bufferedMessage = _globalMessageQueue;
+    _globalMessageQueue.clear();
+    for (Message & msg : bufferedMessage)
     {
         if (_globalMessageHandlers.find(msg.message) != _globalMessageHandlers.end())
         {
@@ -504,7 +515,6 @@ void Scene::runMessageUpdate()
             }
         }
     }
-    _globalMessageQueue.clear();
 
 }
 

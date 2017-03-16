@@ -6,6 +6,14 @@ using namespace MoonEngine;
 SimpleTexture::SimpleTexture(string textureName) :
     Component()
 {
+    setTexture(textureName);
+}
+
+GLTexture * SimpleTexture::getTexture() {
+    return _texture;
+}
+
+void SimpleTexture::setTexture(string textureName) {
     size_t extPos = textureName.find('.');
     std::string ext = ".png";
     if (extPos != std::string::npos)
@@ -13,10 +21,6 @@ SimpleTexture::SimpleTexture(string textureName) :
         ext = "";
     }
     _texture = Library::TextureLib->createImage(textureName, ext);
-}
-
-GLTexture * SimpleTexture::getTexture() {
-    return _texture;
 }
 
 std::shared_ptr<Component> SimpleTexture::clone() const

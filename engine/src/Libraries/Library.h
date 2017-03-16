@@ -11,6 +11,8 @@
 
 namespace MoonEngine
 {
+    static std::string _libraryResourcePath = "";
+
     struct Library
     {
         static void Init(MoonEngineCfg config);
@@ -23,5 +25,7 @@ namespace MoonEngine
         static std::shared_ptr<TextureLibrary> TextureLib;
         static std::shared_ptr<SamplerLibrary> SamplerLib;
         static std::shared_ptr<Level> LevelLib;
+
+        static std::string getResourcePath();
     };
 }

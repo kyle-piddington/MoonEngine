@@ -33,8 +33,8 @@ namespace MoonEngine
         void addTexture(std::string textureName, std::shared_ptr<GLTexture> ptr);
 
 		GLTexture * createTexture(std::string textureName, const GLTextureConfiguration & cfg);
-   
-    
+        GLTexture * createTexture(std::string textureName, void * data, const GLTextureConfiguration & cfg);
+
         void Debug_ShowAllTextures();
 
     private:

@@ -179,7 +179,7 @@ void Grass::draw() const
            
     }
     ImGui::End();
-
+    glDisable(GL_CULL_FACE);
     GLProgram * mat = gameObject->getComponent<Material>()->getProgram();
     glUniform1f(mat->getUniformLocation("windSpeed"),windSpeed);
     glUniform1f(mat->getUniformLocation("windStrength"),windStrenght);
@@ -202,5 +202,6 @@ void Grass::draw() const
         _numOfInstances);    
         LOG_GL(__FILE__, __LINE__);       
     }
+    glEnable(GL_CULL_FACE);
 
 }

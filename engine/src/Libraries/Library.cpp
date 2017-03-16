@@ -15,7 +15,7 @@ std::shared_ptr<Level> Library::LevelLib;
 
 void Library::Init(MoonEngineCfg config)
 {
-    string resourcePath = config.assetPath;
+    std::string resourcePath = _libraryResourcePath = config.assetPath;
     std::unordered_map<std::string, std::string> dirs = config.asset_directories;
 
     MeshLib = std::make_shared<MeshLibrary>(resourcePath + dirs["meshes"]);
@@ -25,6 +25,11 @@ void Library::Init(MoonEngineCfg config)
     SamplerLib = std::make_shared<SamplerLibrary>();
     LevelLib = std::make_shared<Level>(resourcePath);
     AudioService::SetResourcePath(resourcePath + dirs["sounds"]);
+}
+
+std::string Library::getResourcePath()
+{
+    return _libraryResourcePath;
 }
 
 void Library::Destroy()

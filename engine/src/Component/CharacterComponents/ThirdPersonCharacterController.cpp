@@ -7,6 +7,7 @@
 #include "thirdparty/imgui/imgui.h"
 #include <string>
 #include <algorithm>
+#include <MoonEngine.h>
 
 #ifndef M_PI
 #define M_PI 3.141592653589793
@@ -25,9 +26,7 @@ ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed
     _lastGround = 0;
     _curJumpForce = 0;
     playerSpeed = 0;
-
-
-
+    _currentAnim = ANIM_SEAT;
 }
 
 void ThirdPersonCharacterController::start()
@@ -47,7 +46,7 @@ void ThirdPersonCharacterController::start()
     animator = gameObject->getComponent<Animator>();
     if(animator)
     {
-        animator->setAnimation("run2|Wolf_Run_Cycle_");
+        animator->setAnimation(animations[_currentAnim]);
     }
     findMinGround();
 
@@ -95,6 +94,34 @@ void ThirdPersonCharacterController::handleMove(float dt)
     glm::vec3 camRightXZ = -glm::vec3(camRight.x, 0, camRight.z);
 
     glm::vec2 direction = glm::vec2(Input::GetAxis(AXIS_HORIZONTAL_0), Input::GetAxis(AXIS_VERTICAL_0));
+
+    /* Change animation state? */
+    int anim;
+    glm::vec2 dir = abs(direction);
+
+    if (glm::all(glm::lessThan(dir, glm::vec2(0.001, 0.001))))
+    {
+        anim = ANIM_IDLE;
+    } else if (glm::all(glm::lessThan(dir, glm::vec2(0.6, 0.6))))
+    {
+        anim = ANIM_WALK;
+    } else
+    {
+        anim = ANIM_RUN;
+    }
+    if (Keyboard::isKeyDown(GLFW_KEY_LEFT_SHIFT) || Input::GetButton(BUTTON_1))
+    {
+        anim = ANIM_CREEP;
+    }
+
+    if (anim != _currentAnim) {
+        _currentAnim = anim;
+        if (animator)
+        {
+            animator->setAnimation(animations[_currentAnim]);
+        }
+    }
+
     //direction.y = -direction.y;
     glm::vec3 playerDirection = (camForwardXZ * direction.y + camRightXZ * direction.x);
 
@@ -118,6 +145,19 @@ void ThirdPersonCharacterController::handleMove(float dt)
 
     }
     transform->translate(dt * playerDirection);
+    if(_lastGround + 1e-2> transform->getPosition().y && state == FALLING)
+    {
+        state = GROUND;
+    }
+    if(state == GROUND && fabs(_lastGround - transform->getPosition().y) < 1e-1)
+
+    {
+        transform->setPosition(
+        glm::vec3(transform->getPosition().x, 
+        _lastGround, 
+        transform->getPosition().z));
+
+    }
     transform->setPosition(
         glm::vec3(transform->getPosition().x, 
         std::max(transform->getPosition().y, _lastGround), 
@@ -222,7 +262,7 @@ void ThirdPersonCharacterController::onCollisionEnter(Collision col)
 void ThirdPersonCharacterController::checkIfShouldFall()
 {
     //Early break if on ground.
-    if (transform->getPosition().y <= _lastGround)
+    if (transform->getPosition().y <= _lastGround + 1e-1)
     {
         return;
     }

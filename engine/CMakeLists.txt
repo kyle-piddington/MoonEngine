@@ -2,6 +2,7 @@ project (MoonEngine)
 # Use glob to get the list of all source files.
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE CCSOURCES "src/*.cc")
+file(GLOB_RECURSE CSOURCES "src/*.c")
 
 #Backup hard file locations of the link_libraries
 
@@ -17,9 +18,11 @@ find_package(assimp REQUIRED)
 
 include_directories(${ASSIMP_INCLUDE_DIR})
 
+
+
 # Set the executable.
 
-add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${HEADERS} ${GLSL})
+add_library(MoonEngine ${SOURCES} ${CCSOURCES} ${CSOURCES} ${HEADERS} ${GLSL})
 target_link_libraries(MoonEngine glfw ${ASSIMP_LIBRARIES} ${FMOD_LIBRARIES} ${GLFW_LIBRARIES})
 
 

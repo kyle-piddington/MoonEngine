@@ -22,7 +22,8 @@ FirstPersonController::FirstPersonController(float Cam_Move_Speed, float CamSens
 void FirstPersonController::update(float dt)
 {
     float speed = _CamMoveSpeed;
-    if (Keyboard::isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
+    if (Keyboard::isKeyDown(GLFW_KEY_LEFT_SHIFT))
+    {
         speed *= 15;
     }
 
@@ -50,6 +51,7 @@ void FirstPersonController::update(float dt)
     Transform & transform = gameObject->getTransform();
     transform.setRotation(glm::vec3(_phi, _theta, 0.0));
     transform.translate(transform.forward() * translateVec.y + transform.right() * translateVec.x);
+
 }
 
 std::shared_ptr<Component> FirstPersonController::clone() const

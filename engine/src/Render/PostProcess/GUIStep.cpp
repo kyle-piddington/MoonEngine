@@ -42,6 +42,7 @@ void GUIStep::render(Scene * scene)
 
         drawToQuad();
 	}
+
     glDisable(GL_BLEND);
 
     _fbo.DBG_DrawToImgui("GUI");

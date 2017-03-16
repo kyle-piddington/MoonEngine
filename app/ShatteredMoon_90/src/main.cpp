@@ -62,11 +62,13 @@ int main(int argc, char ** argv)
     std::shared_ptr<GameObject> playerObj = Library::MeshLib->getGameObjectForModelNamed("Wolf_fbx.fbx","character.program",scene);
 
     //playerObj.setPosition(playerTransform.getPosition());
+
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
     // playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
     // playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
     playerObj->addComponent(scene->createComponent<BoxCollider>());
-    playerObj->addComponent(scene->createComponent<PointLight>(glm::vec3(5, 5, 5), 2.5f));
+    playerObj->addComponent(scene->createComponent<PointLight>(COLOR_CYAN, 3.0f));
+    playerObj->addComponent(scene->createComponent<PlayerBrightness>());
 
     //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
     playerObj->getTransform().setScale(glm::vec3(1.0, 1.0, 1.0));
@@ -87,19 +89,9 @@ int main(int argc, char ** argv)
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
     cameraObj->addComponent(cam);
-    cameraObj->addComponent(scene->createComponent<ThirdPersonOrbitalController>());
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
     //cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
     scene->addGameObject(cameraObj);
-
-
-    //Ground
-    Transform groundTransform;
-    groundTransform.setScale(glm::vec3(5, 1, 5));
-    std::shared_ptr<GameObject> groundObject = std::make_shared<GameObject>(groundTransform);
-    groundObject->addComponent(scene->createComponent<StaticMesh>("quad.obj", true));
-    groundObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "geom.program"));
-    scene->addGameObject(groundObject);
 
 
     LevelLoader levelLoader;
@@ -110,6 +102,7 @@ int main(int argc, char ** argv)
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
+    
     scene->addGameObject(dirLight);
 
     //Terrain
@@ -145,14 +138,14 @@ int main(int argc, char ** argv)
 
 
     Transform tran;
-    tran.setPosition(glm::vec3(0.0, 150.0, 0.0));
-    tran.setScale(glm::vec3(5, 5, 5));
+    tran.setScale(glm::vec3(50, 50, 50));
 
-    stringmap sun = {{"billboard", "sun.tga"}};
+    stringmap sun = {{"diffuse", "watercolor-sun.png"}};
 
     std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
-    sunBillboard->addComponent(scene->createComponent<StaticMesh>("quad", false));
+    sunBillboard->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
     sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun, true));
+    sunBillboard->addComponent(scene->createComponent<SunMovement>());
     scene->addGameObject(sunBillboard);
 
     //Grass
@@ -189,6 +182,7 @@ int main(int argc, char ** argv)
         "deferred_pointL.program", "deferred_dirL.program");
     renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
     renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
+    renderer->addPostProcessStep(std::make_shared<SkyStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<GUIStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<HDRStep>("postprocess/bloom/post_HDR_tonemap.program"));
 
