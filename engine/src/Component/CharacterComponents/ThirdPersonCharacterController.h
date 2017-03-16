@@ -46,6 +46,8 @@ namespace MoonEngine
         float jumpForce;
         float jumpTime;
         float _curJumpForce;
+
+        bool _currentlyMoving;
         
         float _jumpTime;
         float gravity;

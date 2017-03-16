@@ -25,9 +25,7 @@ ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed
     _lastGround = 0;
     _curJumpForce = 0;
     playerSpeed = 0;
-
-
-
+    _currentlyMoving = false;
 }
 
 void ThirdPersonCharacterController::start()
@@ -47,7 +45,7 @@ void ThirdPersonCharacterController::start()
     animator = gameObject->getComponent<Animator>();
     if(animator)
     {
-        animator->setAnimation("run2|Wolf_Run_Cycle_");
+        animator->setAnimation("run2|Wolf_Idle_");
     }
     findMinGround();
 
@@ -95,6 +93,29 @@ void ThirdPersonCharacterController::handleMove(float dt)
     glm::vec3 camRightXZ = -glm::vec3(camRight.x, 0, camRight.z);
 
     glm::vec2 direction = glm::vec2(Input::GetAxis(AXIS_HORIZONTAL_0), Input::GetAxis(AXIS_VERTICAL_0));
+    /* Not moving */
+    if (abs(direction.x) < 0.001 && abs(direction.y) < 0.001)
+    {
+        if (_currentlyMoving)
+        {
+            if (animator)
+            {
+                animator->setAnimation("run2|Wolf_Idle_");
+            }
+            _currentlyMoving = false;
+        }
+    }
+    else {
+        if (!_currentlyMoving)
+        {
+            if (animator)
+            {
+                animator->setAnimation("run2|Wolf_Run_Cycle_");
+            }
+            _currentlyMoving = true;
+        }
+    }
+
     //direction.y = -direction.y;
     glm::vec3 playerDirection = (camForwardXZ * direction.y + camRightXZ * direction.x);
 
