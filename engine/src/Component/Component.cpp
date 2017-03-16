@@ -38,11 +38,16 @@ void Component::onCollisionExit(Collision col)
 
 }
 
-void Component::on(std::string message, const messageFn & fn)
+void Component::on(std::string message, const messageFn & fn, GameObject * targObject)
 {
-	gameObject->addHandler(message, fn);
+	if(targObject == nullptr)
+	{
+		targObject = gameObject;
+	}
+	targObject->addHandler(message, fn);
 	GetWorld()->addGlobalHandler(message, fn);
 }
+
 
 void Component::sendMessage(std::string messageStr)
 {

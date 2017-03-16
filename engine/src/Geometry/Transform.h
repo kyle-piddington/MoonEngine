@@ -74,6 +74,8 @@ namespace MoonEngine
         */
         void lookAt(glm::vec3 target, glm::vec3 up = World::Up);
 
+        void lookAlong(glm::vec3 vector, glm::vec3 up = World::Up);
+
         /**
         * Scale the transform
         */

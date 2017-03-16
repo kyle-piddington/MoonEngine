@@ -111,7 +111,7 @@ void Grass::generateGrassForTile(CDLODQuadtree::SelectedNode & node, std::vector
             c.x,c.y,c.z,1);
 
             glm::mat4 r = 
-            glm::mat4_cast(glm::angleAxis(theta, glm::vec3(0,1,0)));
+            glm::mat4_cast(glm::angleAxis(theta, nor));
 
             glm::mat4 s = glm::mat4(
                 0.15 + 2*grassScale, 0, 0, 0,
@@ -119,6 +119,7 @@ void Grass::generateGrassForTile(CDLODQuadtree::SelectedNode & node, std::vector
                 0, 0, 0.15 + 2*grassScale, 0,
                 0,0,0, 1
             );
+
             newTransforms->push_back(t*r*s);
         }
     }

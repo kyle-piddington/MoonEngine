@@ -9,7 +9,7 @@ namespace MoonEngine
 	class BeamComponent : public Component
 	{
 	public:
-		BeamComponent();
+		BeamComponent(GameObject * pickupObject);
 		
 		void start();
 
@@ -18,6 +18,7 @@ namespace MoonEngine
 		std::shared_ptr<Component> clone() const;
 
 	private:
+		GameObject * moonShardObject;
 		GameObject * playerObject;
 		glm::vec2 xzPos;
 	};
