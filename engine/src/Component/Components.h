@@ -18,7 +18,9 @@
 #include "CharacterComponents/CollectableComponent.h"
 #include "CharacterComponents/Particle.h"
 #include "CharacterComponents/ShardMovement.h"
+#include "CharacterComponents/SunMovement.h"
 #include "CharacterComponents/BeamComponent.h"
+
 #include "CharacterComponents/ThirdPersonCharacterController.h"
 #include "MeshComponents/Terrain.h"
 #include "MeshComponents/Grass.h"

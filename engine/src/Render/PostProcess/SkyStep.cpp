@@ -29,7 +29,7 @@ void SkyStep::setup(GLFWwindow * window, Scene * scene)
 
     // ...
     _sphere = GetWorld()->createGameObject();
-    _sphere->getTransform().setScale(glm::vec3(500, 500, 500));
+    _sphere->getTransform().setScale(glm::vec3(1000, 1000, 1000));
     _sphere->addComponent(GetWorld()->createComponent<SimpleTexture>("skycolor"));
     _sphere->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
 
@@ -38,6 +38,12 @@ void SkyStep::setup(GLFWwindow * window, Scene * scene)
 
 void SkyStep::render(Scene * scene)
 {
+    //recenter sphere on player.
+    if(scene->getPlayer() != nullptr)
+    {
+        _sphere->getTransform().setPosition(scene->getPlayer()->getTransform().getPosition());
+    }
+
 	_fbo.bind(GL_FRAMEBUFFER);
 	_renderProgram->enable();
 

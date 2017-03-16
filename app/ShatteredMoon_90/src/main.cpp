@@ -136,15 +136,14 @@ int main(int argc, char ** argv)
 
 
     Transform tran;
-    tran.setPosition(glm::vec3(-15.0, 100.0, -100.0));
-    tran.setScale(glm::vec3(1, 1000, 1));
+    tran.setScale(glm::vec3(50, 50, 50));
 
     stringmap sun = {{"diffuse", "watercolor-sun.png"}};
 
     std::shared_ptr<GameObject> sunBillboard = std::make_shared<GameObject>(tran);
     sunBillboard->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
-    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "cyl_billboard.program", sun, true));
-
+    sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun, true));
+    sunBillboard->addComponent(scene->createComponent<SunMovement>());
     scene->addGameObject(sunBillboard);
 
     //Grass

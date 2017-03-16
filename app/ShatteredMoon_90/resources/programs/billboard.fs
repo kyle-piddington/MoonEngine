@@ -1,11 +1,10 @@
 #version 400 core
 
 in vec2 UV;
-in vec3 sunPos;
 
 out vec4 color;
 
-uniform sampler2D sun;
+uniform sampler2D diffuse;
 uniform float iGlobalTime;
 
 void main()
@@ -15,13 +14,13 @@ void main()
     vec2 disc_center = vec2(0.5, 0.5);
 
     vec2 center = UV - disc_center;
-    float dist = dot(center, center);
-    if (dist > 0.50001) {
+    
+    vec4 suncolor = texture(diffuse, UV);//vec2(dist, 0.5));
+    if(suncolor.a < 0.1)
+    {
         discard;
     }
-
-    vec4 suncolor = texture(sun, UV);//vec2(dist, 0.5));
-    color = suncolor;
+    color = suncolor * 10;
 //
 //
 //    // Offset uv with the center of the circle.

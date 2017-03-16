@@ -457,6 +457,7 @@ void DeferredRenderer::forwardPass(Scene* scene) {
     LOG_GL(__FILE__, __LINE__);
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
     //glEnable(GL_BLEND);
 
     std::shared_ptr<GameObject> dirLight = scene->getDirLightObject();
