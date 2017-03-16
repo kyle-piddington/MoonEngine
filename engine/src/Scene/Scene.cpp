@@ -91,6 +91,7 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
  */
 void Scene::runUpdate(float dt)
 {
+    runCollisionUpdate();
     runMessageUpdate();
 
     if (_gameState != nullptr && _gameState->currentState() == PLAYING_STATE)
@@ -102,8 +103,8 @@ void Scene::runUpdate(float dt)
     for (std::shared_ptr<GameObject> go : _gameObjects)
     {
       go->update(dt);
-  }
-  runCollisionUpdate();
+    }
+  
   if (updateFunctors.size() > 0)
   {
       for (auto & fun : updateFunctors)
