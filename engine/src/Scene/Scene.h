@@ -165,7 +165,7 @@ namespace MoonEngine
 		
 		std::shared_ptr<GameObject> getPlayer();
 
-		void addPrefab(std::string name, GameObject * object);
+		void addPrefab(std::string name, std::shared_ptr<GameObject>  object);
 
 		std::shared_ptr<GameObject> getPrefab(std::string name);
 
@@ -189,7 +189,7 @@ namespace MoonEngine
 
 		std::shared_ptr<KDTree> _renderTree;
 		std::shared_ptr<GameObject> _playerObject;
-
+		
         std::vector<std::shared_ptr<GameObject>> _pointLightObjects;
         std::shared_ptr<GameObject> _dirLightObject;
         int _dirLightFlag;

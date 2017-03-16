@@ -84,7 +84,7 @@ int main(int argc, char ** argv)
 	particleObj->addComponent(scene->createComponent<Particle>());
 	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(5, 5, 5), 0.5f));
 
-	scene->addPrefab("ShardParticle", particleObj.get());
+	scene->addPrefab("ShardParticle", particleObj);
 
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
@@ -149,11 +149,11 @@ int main(int argc, char ** argv)
     scene->addGameObject(sunBillboard);
 
     //Grass
-    stringmap grassMap {{"diffuse","grassTexture.png"}};
-    std::shared_ptr<GameObject> grass  = std::make_shared<GameObject>(playerTransform);
-    grass->addComponent(scene->createComponent<Grass>("grass.obj",false,8096));
-    grass->addComponent(scene->createComponent<Material>(glm::vec3(1.0,1.0,1.0),"grass.program",grassMap,false));
-    scene->addGameObject(grass);
+    //stringmap grassMap {{"diffuse","grassTexture.png"}};
+    //std::shared_ptr<GameObject> grass  = std::make_shared<GameObject>(playerTransform);
+    //grass->addComponent(scene->createComponent<Grass>("grass.obj",false,8096));
+    //grass->addComponent(scene->createComponent<Material>(glm::vec3(1.0,1.0,1.0),"grass.program",grassMap,false));
+    //scene->addGameObject(grass);
     
     
     std::shared_ptr<GameObject> gameState = std::make_shared<GameObject>();

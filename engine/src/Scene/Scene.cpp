@@ -518,9 +518,9 @@ void Scene::runMessageUpdate()
 
 }
 
-void Scene::addPrefab(std::string name, GameObject * object)
+void Scene::addPrefab(std::string name, std::shared_ptr<GameObject> object)
 {
-	prefab = prefabMap({ { name, std::shared_ptr<GameObject>(object) } });
+	prefab[name] = object;
 }
 
 std::shared_ptr<GameObject> Scene::getPrefab(std::string name)
