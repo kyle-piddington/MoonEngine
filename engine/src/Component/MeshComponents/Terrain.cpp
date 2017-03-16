@@ -323,9 +323,9 @@ glm::vec3 Terrain::normalAt(float x, float z)
 	char nx = normalDataBuffer[4*(pz * creationInfo.source->getSizeX() + px)];
 	char ny = normalDataBuffer[4*(pz * creationInfo.source->getSizeX() + px) + 1];
 	char nz = normalDataBuffer[4*(pz * creationInfo.source->getSizeX() + px) + 2];
-	float fx = nx/127.0f - 1.0f;
-	float fy = ny/127.0f - 1.0f;
-	float fz = nz/127.0f - 1.0f;
+	float fx = nx/128.0f - 1.0f;
+	float fy = ny/128.0f - 1.0f;
+	float fz = nz/128.0f - 1.0f;
 	return glm::vec3(fx,fy,fz);
 
 }

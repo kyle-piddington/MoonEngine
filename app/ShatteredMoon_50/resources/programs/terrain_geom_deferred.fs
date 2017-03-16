@@ -34,7 +34,7 @@ vec3 hsv2rgb(vec3 c)
 
 float getAO()
 {
-	return texture(heightmap_normal,fragTex.xy).r;
+	return texture(heightmap_normal,fragTex.xy).a;
 }
 
 //https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83

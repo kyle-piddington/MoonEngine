@@ -48,7 +48,7 @@ float calcShadowFactor(int ShadowIndex, vec4 LSPosition)
 
 float getAO()
 {
-	return texture(heightmap_normal,fragTex.xy).r;
+	return texture(heightmap_normal,fragTex.xy).a;
 }
 
 //https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
@@ -95,7 +95,7 @@ void main()
 	tex *= texture(canyonTint, vec2(0,(fragWorldPos.y + 0.5*noise(fragWorldPos.xy))/200));
 	
 	posOut = vec4(fragPos,1);
-	colorOut = vec4( result * tex.xyz,0.1);
+	colorOut = vec4( result * tex.xyz,0.0);
 	normalOut.rgb = fragNor;
 	normalOut.a = 1;
 	float ShadowFactor = 0.0;
