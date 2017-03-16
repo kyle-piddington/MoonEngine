@@ -18,8 +18,11 @@ GUI::GUI(float width, float height):
     _animatingMoon(false)
 {
 }
-
 void GUI::addElement(string name, float scaleX, float scaleY, float posX, float posY) {
+    addElement(name, scaleX, scaleY, posX, posY, "gui/");
+}
+
+void GUI::addElement(string name, float scaleX, float scaleY, float posX, float posY, string folder) {
     shared_ptr<GameObject> _guiElement = GetWorld()->createGameObject();
     _guiElement->addTag(T_GUI);
 
@@ -28,7 +31,7 @@ void GUI::addElement(string name, float scaleX, float scaleY, float posX, float 
     // Apparently images are upside down.
     _guiElement->getTransform().setRotation(glm::vec3(M_PI, 0, 0));
 
-    _guiElement->addComponent(GetWorld()->createComponent<SimpleTexture>(name));
+    _guiElement->addComponent(GetWorld()->createComponent<SimpleTexture>(folder + name));
     GetWorld()->addGameObject(_guiElement);
 
     _guiElements[name] = _guiElement;
@@ -126,7 +129,7 @@ void GUI::start() {
 
     addElement("Moon0", 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
     addElement("gui_shard_flat", 100.0f, 80.0f, 0.105f * _width, 0.87f * _height);
-    addElement("star_count", 30.0f, -30.0f, 0.145f * _width, 0.885f * _height);
+    addElement("star_count", 30.0f, -30.0f, 0.145f * _width, 0.885f * _height, "");
 
     addElement("progress", 0.4f * _width, 25.0f, 0.5f * _width, 0.067f * _height);
     addElement("wolfmoon", 40.0f, 40.0f, 0.33f * _width, 0.067f * _height);
@@ -170,7 +173,7 @@ void GUI::start() {
 
     on(ENDED_STATE,[&](const Message & msg)
     {
-        addElement("wolfmoon", 200.0f, 200.0f, _width / 2, _height / 2);
+        addElement("endscreen", _width / 2, _height / 2, _width / 2, _height / 2);
     });
 }
 
