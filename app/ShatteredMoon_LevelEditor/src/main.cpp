@@ -52,6 +52,10 @@ int main(int argc, char **argv) {
 	cameraObj->addComponent(cam);
 	cameraObj->addTag(T_Player);
 	cameraObj->getTransform().translate(glm::vec3(0,150,-5));
+
+	Component * record = scene->createComponent<CameraRecorder>();
+	cameraObj->addComponent(record);
+
 	scene->addGameObject(cameraObj);
 
 
