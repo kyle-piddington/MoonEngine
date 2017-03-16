@@ -145,6 +145,10 @@ void ThirdPersonCharacterController::handleMove(float dt)
 
     }
     transform->translate(dt * playerDirection);
+    if(_lastGround + 1e-2> transform->getPosition().y && state == FALLING)
+    {
+        state = GROUND;
+    }
     transform->setPosition(
         glm::vec3(transform->getPosition().x, 
         std::max(transform->getPosition().y, _lastGround), 
