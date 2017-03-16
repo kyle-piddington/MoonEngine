@@ -1,6 +1,7 @@
 #include "Controller.h"
 #include "Util/Logger.h"
 #include <GLFW/glfw3.h>
+#include <cmath>
 
 using namespace MoonEngine;
 enum BTNStatus
@@ -99,7 +100,11 @@ float Controller::GetAxis(unsigned axisNumber)
     {
         return 0;
     }
-    return _axisStatus[axisNumber];
+    float axisAmount = _axisStatus[axisNumber];
+    if (std::abs(axisAmount) < 0.2) {
+        return 0.0;
+    }
+    return axisAmount;
 }
 
 bool Controller::IsButtonDown(unsigned buttonNumber)
