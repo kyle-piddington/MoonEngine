@@ -18,11 +18,13 @@ GUI::GUI(float width, float height):
     _animatingMoon(false)
 {
 }
-void GUI::addElement(string name, float scaleX, float scaleY, float posX, float posY) {
+void GUI::addElement(string name, float scaleX, float scaleY, float posX, float posY)
+{
     addElement(name, scaleX, scaleY, posX, posY, "gui/");
 }
 
-void GUI::addElement(string name, float scaleX, float scaleY, float posX, float posY, string folder) {
+void GUI::addElement(string name, float scaleX, float scaleY, float posX, float posY, string folder)
+{
     shared_ptr<GameObject> _guiElement = GetWorld()->createGameObject();
     _guiElement->addTag(T_GUI);
 
@@ -37,7 +39,8 @@ void GUI::addElement(string name, float scaleX, float scaleY, float posX, float 
     _guiElements[name] = _guiElement;
 }
 
-void GUI::createStringTexture(std::string text) {
+void GUI::createStringTexture(std::string text)
+{
     int width = 120;
     int height = 120;
     unsigned char * pixels;
@@ -115,7 +118,8 @@ void GUI::animateMoonGui()
     }
 }
 
-void GUI::start() {
+void GUI::start()
+{
     string path = Library::getResourcePath() + "font_s72.glyphmap";
     LOG(INFO, "Loading font " + path);
 
