@@ -5,13 +5,18 @@
 
 using namespace MoonEngine;
 
-BeamComponent::BeamComponent() 
+BeamComponent::BeamComponent(GameObject * pickupObject)
 {
-
+	moonShardObject = pickupObject;
 }
 
 void BeamComponent::start()
 {
+	//Horrible message hacks, listen for 'collected' from moonShardObject
+	on("collected",[&](const Message & msg){
+		LOG(GAME, "Deleting beam object");
+		Delete(gameObject);
+	},moonShardObject);
 	playerObject = GetWorld()->getPlayer().get();
 	xzPos = glm::vec2(gameObject->getTransform().getPosition().x, gameObject->getTransform().getPosition().z); 
 }

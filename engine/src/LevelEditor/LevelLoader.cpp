@@ -123,8 +123,7 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
                 std::shared_ptr<GameObject> beamObject = std::make_shared<GameObject>(transform);
                 beamObject->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
                 beamObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "cyl_billboard.program", beamTextures,true));
-                beamObject->addComponent(scene->createComponent<BeamComponent>());
-
+                beamObject->addComponent(scene->createComponent<BeamComponent>(object.get()));
                 beamObject->getTransform().setScale(glm::vec3(1,1000,1));
                 scene->addGameObject(beamObject);
             }

@@ -107,7 +107,7 @@ void processCDLODVertex(
 
 vec3 getNormal(vec2 globalUV)
 {
-	return texture(heightmap_normal,globalUV).xyz;
+	return texture(heightmap_normal,globalUV).xyz * 2 - 1;
 }
 
 void main()
@@ -122,7 +122,7 @@ void main()
 	fragWorldPos = worldPos.xyz;
 	fragPos = camVert.xyz;
 	fragWorldNor = getNormal (globalUV); 
-	fragNor = N * fragWorldNor;
+	fragNor = normalize(N * (fragWorldNor)).xyz;
 	fragTex.xy = globalUV.xy;
 	fragTex.z = morphK;
 	gl_Position = P * camVert;

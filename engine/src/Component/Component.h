@@ -51,7 +51,7 @@ namespace MoonEngine
          * @param message Name of the event
          * @param fn      Lambda for the eveent.
          */
-        void on(std::string message, const messageFn & fn);
+        void on(std::string message, const messageFn & fn, GameObject * targObject = nullptr);
        
         /**
          * Send a message to the gameObject
