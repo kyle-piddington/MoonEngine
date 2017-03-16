@@ -233,7 +233,7 @@ bool processNode(aiNode * node, aiMatrix4x4 transform, const aiScene * scene, st
 	bool OK = true;
 	if(node != nullptr)
 	{
-		for(uint i = 0; i < node->mNumMeshes; i++)
+		for(unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
 			aiMesh * mesh = scene->mMeshes[node->mMeshes[i]];
 			OK &= processMesh(mesh, trans, scene, data, indices, outInfo);

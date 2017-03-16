@@ -50,7 +50,7 @@ glm::vec3 SkeletalAnimation::BoneAnimation::getTranslationAtTick(float tick) con
     {
         PositionKeyFrame frame1 = posFrames[0];
         PositionKeyFrame frame2 = posFrames[0];
-        for (std::vector<const PositionKeyFrame>::iterator i = posFrames.begin() + 1; i != posFrames.end(); ++i)
+        for (auto i = posFrames.begin() + 1; i != posFrames.end(); ++i)
         {
             frame1 = frame2;
             frame2 = *i;
@@ -75,7 +75,7 @@ glm::quat SkeletalAnimation::BoneAnimation::getRotationAtTick(float tick) const
     {
         RotationKeyFrame frame1 = rotFrames[0];
         RotationKeyFrame frame2 = rotFrames[0];
-        for (std::vector<const RotationKeyFrame>::iterator i = rotFrames.begin() + 1; i != rotFrames.end(); ++i)
+        for (auto i = rotFrames.begin() + 1; i != rotFrames.end(); ++i)
         {
             frame1 = frame2;
             frame2 = *i;
@@ -100,7 +100,7 @@ glm::vec3 SkeletalAnimation::BoneAnimation::getScaleAtTick(float tick) const
     {
         ScaleKeyFrame frame1 = scaleFrames[0];
         ScaleKeyFrame frame2 = scaleFrames[0];
-        for (std::vector<const ScaleKeyFrame>::iterator i = scaleFrames.begin() + 1; i != scaleFrames.end(); ++i)
+        for (auto i = scaleFrames.begin() + 1; i != scaleFrames.end(); ++i)
         {
             frame1 = frame2;
             frame2 = *i;

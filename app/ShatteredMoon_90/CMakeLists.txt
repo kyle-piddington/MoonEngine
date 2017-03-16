@@ -9,6 +9,10 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 file(GLOB_RECURSE HEADERS "src/*.h")
 file(GLOB_RECURSE GLSL "resources/*.vs" "resources/*.fs" "resources/*.gs")
 
+
+find_package(assimp REQUIRED)
+include_directories(${ASSIMP_INCLUDE_DIR})
+
 # Set the executable.
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${GLSL})
 
@@ -33,6 +37,28 @@ ENDMACRO()
 
 if (WIN32)
         GetFModDLLs(DEBUG_DLLS RELEASE_DLLS)
+      	set (DLL_TO_DBG ${CMAKE_CURRENT_BINARY_DIR}/Debug)
+        set (DLL_TO_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/Release)
+        foreach(dll ${DEBUG_DLLS})
+                file(COPY ${dll} DESTINATION ${DLL_TO_DBG})
+        endforeach()
+        foreach(dll ${RELEASE_DLLS})
+                file(COPY ${dll} DESTINATION ${DLL_TO_RELEASE})
+        endforeach()
+endif(WIN32)
+
+#Windows specific: Copy FMod DLLs to debug and release
+MACRO(GetAssimpDLLs DEBUG_NAME RELEASE_NAME)
+	string(REPLACE "lib/assimp-vc140-mt.lib" "bin/assimp-vc140.mt.dll" ASSIMP_DLL
+			"${ASSIMP_LIBRARY}")
+                set (${DEBUG_NAME} ${${DEBUG_NAME}} ${FMOD_DLL})
+                set (${RELEASE_NAME} ${${RELEASE_NAME}} ${FMOD_DLL})
+         
+
+ENDMACRO()
+
+if (WIN32)
+	GetAssimpDLLs(DEBUG_DLLS RELEASE_DLLS)
       	set (DLL_TO_DBG ${CMAKE_CURRENT_BINARY_DIR}/Debug)
         set (DLL_TO_RELEASE ${CMAKE_CURRENT_BINARY_DIR}/Release)
         foreach(dll ${DEBUG_DLLS})

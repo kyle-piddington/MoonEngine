@@ -11,7 +11,8 @@ ENDIF(ASSIMP_INCLUDE_DIR)
 
 FIND_PATH(ASSIMP_INCLUDE_DIR "assimp"
   PATHS
-  $ENV{ASSIMP_HOME}/inc
+  $ENV{ASSIMP_HOME}/inc 
+  $ENV{ASSIMP_HOME}/include
   $ENV{EXTERNLIBS}/ASSIMP/inc
   ~/Library/Frameworks
   /Library/Frameworks
@@ -23,9 +24,13 @@ FIND_PATH(ASSIMP_INCLUDE_DIR "assimp"
   /opt
   DOC "Assimp - Headers"
 )
-
+if(MSVC)
+SET(ASSIMP_NAMES assimp-vc140-mt)
+SET(ASSIMP_DBG_NAMES assimp-vc140-mt)
+else(MSVC)
 SET(ASSIMP_NAMES assimp)
 SET(ASSIMP_DBG_NAMES assimp)
+endif(MSVC)
 
 FIND_LIBRARY(ASSIMP_LIBRARY NAMES ${ASSIMP_NAMES}
   PATHS
