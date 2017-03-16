@@ -22,9 +22,6 @@ void GameState::start()
         cutscene->loadSteps("cutscene.json");
         cutscene->start();
         cameraObj->addComponent(cutscene);
-        Component * record = GetWorld()->createComponent<CameraRecorder>();
-        record->start();
-        cameraObj->addComponent(record);
     });
 
     on(PLAYING_STATE, [&](const Message & msg)
@@ -45,7 +42,7 @@ void GameState::start()
         CameraCutscene * cutscene = cameraObj->getComponent<CameraCutscene>();
         cutscene->setStepPlayer(true, false);
         cutscene->setNextState(ENDED_STATE);
-        cutscene->loadSteps("cutscene.json");
+        cutscene->loadSteps("endscene.json");
         cutscene->start();
     });
 

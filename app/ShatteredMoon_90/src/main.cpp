@@ -20,7 +20,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    float windowWidth = 320, windowHeight = 240;
+    float windowWidth = 640, windowHeight = 480;
     GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "ShatteredMoon", nullptr, nullptr);
     if (window == nullptr)
     {
