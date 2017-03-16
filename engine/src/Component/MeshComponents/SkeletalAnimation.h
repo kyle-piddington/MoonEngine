@@ -1,6 +1,6 @@
 #pragma once
 
-#include <assimp/scene.h>
+
 #include "Geometry/Transform.h"
 #include <vector>
 #include "Loaders/AssimpModelInfo.h"

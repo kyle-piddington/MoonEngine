@@ -14,9 +14,8 @@ file(GLOB_RECURSE GLSL "resources/*.glsl")
 include_directories(HEADERS)
 
 find_package(assimp REQUIRED)
-if(assimp_FOUND)
-    include_directories(${ASSIMP_INCLUDE_DIRS})
-endif()
+
+include_directories(${ASSIMP_INCLUDE_DIR})
 
 # Set the executable.
 
