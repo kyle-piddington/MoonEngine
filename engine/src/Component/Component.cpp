@@ -4,6 +4,7 @@
 using namespace MoonEngine;
 
 Component::Component():
+	enabled(true),
     deleted(false)
 {
 }
@@ -70,4 +71,14 @@ bool Component::isDeleted()
 void Component::setDeleted()
 {
     deleted = true;
+}
+
+bool Component::isEnabled()
+{
+	return enabled;
+}
+
+void Component::setDisabled()
+{
+	enabled = false;
 }

@@ -9,6 +9,7 @@ namespace MoonEngine
 #define PLAYING_STATE "playing_state"
 #define DEAD_STATE "dead_state"
 #define ENDING_STATE "ending_state"
+#define ENDED_STATE "ended_state"
 
     class GameState : public Component
     {

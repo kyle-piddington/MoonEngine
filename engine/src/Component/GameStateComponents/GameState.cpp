@@ -35,6 +35,20 @@ void GameState::start()
         cameraObj->addComponent(control);
         control->start();
     });
+
+    on(ENDING_STATE, [&](const Message & msg)
+    {
+        LOG(INFO, "Adding cutscene");
+        GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
+        cameraObj->getComponent<ThirdPersonOrbitalController>()->setDisabled();
+
+        CameraCutscene * cutscene = cameraObj->getComponent<CameraCutscene>();
+        cutscene->setStepPlayer(true, false);
+        cutscene->setNextState(ENDED_STATE);
+        cutscene->loadSteps("cutscene.json");
+        cutscene->start();
+    });
+
 }
 
 void GameState::update(float dt)
@@ -43,6 +57,7 @@ void GameState::update(float dt)
 
 void GameState::setState(std::string state)
 {
+    LOG(INFO, "NEW STATE: " + state);
     _currentState = state;
     sendGlobalMessage(state);
 }

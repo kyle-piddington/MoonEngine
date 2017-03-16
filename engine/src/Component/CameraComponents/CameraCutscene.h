@@ -24,6 +24,7 @@ namespace MoonEngine
         void setSteps(std::vector<CameraStep> steps);
         void loadSteps(std::string file);
         void setStepPlayer(bool start, bool end);
+        void setNextState(string state);
 
     private:
         bool _running;
@@ -43,6 +44,9 @@ namespace MoonEngine
 
         bool _startPlayer;
         bool _endPlayer;
+
+        string _nextState;
+
     };
 
 }

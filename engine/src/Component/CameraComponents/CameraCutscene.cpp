@@ -10,7 +10,8 @@ CameraCutscene::CameraCutscene():
     _currentStep(0),
     _maxStepAmount(1.0),
     _startPlayer(false),
-    _endPlayer(false)
+    _endPlayer(false),
+    _nextState(PLAYING_STATE)
 {
 }
 
@@ -54,6 +55,11 @@ void CameraCutscene::setStepPlayer(bool start, bool end)
     _endPlayer = end;
 }
 
+void CameraCutscene::setNextState(string state)
+{
+    _nextState = state;
+}
+
 void CameraCutscene::setSteps(std::vector<CameraStep> steps)
 {
     _cameraSteps = steps;
@@ -68,6 +74,8 @@ void CameraCutscene::setSteps(std::vector<CameraStep> steps)
         _cameraSteps.push_back({_playerPos + glm::vec3(5,5,5), _playerPos});
     }
 
+    _currentStep = 0;
+    _maxStepAmount = 1.0;
     fetchCurrentSteps();
 }
 
@@ -94,7 +102,7 @@ void CameraCutscene::update(float dt)
     }
     if (_currentStep >= _cameraSteps.size() - 1) {
         _running = false;
-        GetWorld()->getGameState()->setState(PLAYING_STATE);
+        GetWorld()->getGameState()->setState(_nextState);
         return;
     }
 

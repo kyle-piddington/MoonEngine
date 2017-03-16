@@ -92,7 +92,18 @@ void GUI::start() {
         if (_current_moon <= 3)
         {
             addElement("Moon" + std::to_string(_current_moon), 75.0f, 75.0f, 0.1f * _width, 0.7f * _height);
+
+            /* GAME OVER MAN, GAME OVER */
+            if (_current_moon == 3) {
+                LOG(INFO, "ENDING GAME");
+                GetWorld()->getGameState()->setState(ENDING_STATE);
+            }
         }
+    });
+
+    on(ENDED_STATE,[&](const Message & msg)
+    {
+        addElement("wolfmoon", 100.0f, 100.0f, _width / 2, _height / 2);
     });
 }
 

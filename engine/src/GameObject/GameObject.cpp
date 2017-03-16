@@ -97,9 +97,12 @@ void GameObject::update(float dt)
     //Clear the waiting messages
     waitingMessages.clear();
     //Update all components
-    for (Component * c : components)
+    for (Component * component : components)
     {
-        c->update(dt);
+        if (component->isEnabled())
+        {
+            component->update(dt);
+        }
     }
 }
 

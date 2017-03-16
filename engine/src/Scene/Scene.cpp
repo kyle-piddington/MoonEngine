@@ -498,7 +498,9 @@ void Scene::addGlobalHandler(std::string message, const messageFn & fn)
 void Scene::runMessageUpdate()
 {
     // Send all the global messages
-    for (Message & msg : _globalMessageQueue)
+    std::vector<Message> bufferedMessage = _globalMessageQueue;
+    _globalMessageQueue.clear();
+    for (Message & msg : bufferedMessage)
     {
         if (_globalMessageHandlers.find(msg.message) != _globalMessageHandlers.end())
         {
@@ -510,7 +512,6 @@ void Scene::runMessageUpdate()
             }
         }
     }
-    _globalMessageQueue.clear();
 
 }
 
