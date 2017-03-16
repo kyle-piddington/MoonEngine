@@ -68,6 +68,7 @@ int main(int argc, char ** argv)
     // playerObj->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.2, 0.2), "geom.program", textures));
     playerObj->addComponent(scene->createComponent<BoxCollider>());
     playerObj->addComponent(scene->createComponent<PointLight>(COLOR_CYAN, 3.0f));
+    playerObj->addComponent(scene->createComponent<PlayerBrightness>());
 
     //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
     playerObj->getTransform().setScale(glm::vec3(1.0, 1.0, 1.0));

@@ -20,6 +20,7 @@
 #include "CharacterComponents/ShardMovement.h"
 #include "CharacterComponents/SunMovement.h"
 #include "CharacterComponents/BeamComponent.h"
+#include "CharacterComponents/PlayerBrightness.h"
 
 #include "CharacterComponents/ThirdPersonCharacterController.h"
 #include "MeshComponents/Terrain.h"
