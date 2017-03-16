@@ -98,7 +98,10 @@ void GUI::start() {
 
 void GUI::update(float dt)
 {
-
+    float t = MathUtil::clamp(GetWorld()->getGlobalTime(),0.0f,1.0f);
+    glm::vec3 progressPos = _guiElements["wolfmoon"]->getTransform().getPosition();
+    _guiElements["wolfmoon"]->getTransform().setPosition(
+        glm::vec3(0.1*_width + (_width*0.8 * t), progressPos.y,progressPos.z));
 }
 
 std::shared_ptr<Component> GUI::clone() const

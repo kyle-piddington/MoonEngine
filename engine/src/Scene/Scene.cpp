@@ -10,7 +10,7 @@ using namespace MoonEngine;
 Scene::Scene()
 {
     _globalLightDir = glm::vec3(1, 1, 1);
-    _globalTime = 0.33;
+    _globalTime = 0.0;
     _cameraFlag = 0;
     _dirLightFlag = 0;
     _allGameObjects.clear();
@@ -92,7 +92,7 @@ void Scene::addGameObject(std::shared_ptr<GameObject> obj)
 void Scene::runUpdate(float dt)
 {
     runMessageUpdate();
-	//_globalTime += dt * TIME_MODIFIER;
+	_globalTime += dt * TIME_MODIFIER;
 	//_dirLightObject->getComponent<DirLight>()->setDirection(glm::vec3(sin(_globalTime), TIME_MODIFIER * 10 * cos(_globalTime), -1.0));
     instantiateNewObjects();
 

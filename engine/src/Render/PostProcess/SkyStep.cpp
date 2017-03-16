@@ -58,7 +58,8 @@ void SkyStep::render(Scene * scene)
     // Pass gradient texture
     _sphere->getComponent<SimpleTexture>()->getTexture()->bind(0);
     glUniform1i(_renderProgram->getUniformLocation("skycolor"), 0);
-
+    //Dumb hacks for now.
+    glUniform1f(_renderProgram->getUniformLocation("iGlobalTime"),std::min(0.95f, scene->getGlobalTime()));
     glDepthMask(GL_FALSE);
     glDisable(GL_STENCIL_TEST);
     glEnable(GL_DEPTH_TEST);

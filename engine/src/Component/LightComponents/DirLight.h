@@ -20,6 +20,7 @@ namespace MoonEngine {
     private:
         glm::vec3 _direction;
         float _intensity;
+        float oldAmbient;
 
     };
 }

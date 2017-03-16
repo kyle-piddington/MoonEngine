@@ -101,6 +101,7 @@ int main(int argc, char ** argv)
 
     std::shared_ptr<GameObject> dirLight = make_shared<GameObject>();
     dirLight->addComponent(scene->createComponent<DirLight>(glm::vec3(-1, -1, -1), COLOR_WHITE, 0.1f, 0.5f));
+    
     scene->addGameObject(dirLight);
 
     //Terrain
