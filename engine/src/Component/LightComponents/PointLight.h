@@ -19,6 +19,7 @@ namespace MoonEngine
 
         void update(float dt);
 
+        void setAttenuation(float linear, float exp);
         void setRange(float distance);
 
         const glm::vec3& getPosition() { return _position; }
