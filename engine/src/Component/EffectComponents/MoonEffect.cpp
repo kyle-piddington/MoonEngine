@@ -33,7 +33,7 @@ void MoonEffect::update(float dt)
     float x, z;
     glm::vec3 to;
     gameObject->getTransform().rotate(direction *dt);
-    float moveSpeed = std::max(0.0f, std::min(1.0f,1.0f - (float)pow(accumTime,2)));
+    float moveSpeed = -(log(accumTime) - 1) / 3.0f;
 
 	switch (state)
 	{
