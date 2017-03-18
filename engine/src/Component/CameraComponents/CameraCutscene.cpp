@@ -107,7 +107,7 @@ void CameraCutscene::update(float dt)
     }
 
     if (Keyboard::key(GLFW_KEY_SPACE)) {
-        _maxStepAmount *= 10;
+        _maxStepAmount *= 100;
     }
 
     // Interpolate

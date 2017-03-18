@@ -23,6 +23,7 @@ namespace MoonEngine
 
 	private:
         float accumTime;
+        float gatherTime;
         glm::vec3 direction;
         glm::vec3 distance;
 

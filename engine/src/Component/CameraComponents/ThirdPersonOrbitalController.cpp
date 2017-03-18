@@ -31,10 +31,11 @@ ThirdPersonOrbitalController::ThirdPersonOrbitalController(float Cam_Move_Speed,
     _targ(0.0f),
     _phi(M_PI / 3),
     _theta(0.0f),
-    _distance(2.5f),
+    _distance(3.5f),
     _state(NORMAL),
     _camHeight(0.15),
-    _baseCamHeight(0.25)
+    _baseCamHeight(0.25),
+    _targYOffset(0.5f)
 {
 }
 
@@ -125,8 +126,9 @@ void ThirdPersonOrbitalController::update(float dt)
     }
 
     glm::vec3 finalTrac = boundHeight(_trac);
+    glm::vec3 finalTarg =  _targ + glm::vec3(0,_targYOffset,0);
     _tracInterp += (finalTrac - _tracInterp) * dt * 5.0f;
-    _targInterp += (_targ - _targInterp) * dt * 5.0f;
+    _targInterp += (finalTarg - _targInterp) * dt * 5.0f;
     Transform & transform = gameObject->getTransform();
     transform.setPosition(_tracInterp);
 
