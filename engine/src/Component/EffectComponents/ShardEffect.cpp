@@ -1,18 +1,15 @@
-#include "Particle.h"
-#include "GameObject/GameObject.h"
-#include "GlobalFuncs/GlobalFuncs.h"
-#include <iostream>
+#include "ShardEffect.h"
 
 using namespace MoonEngine;
 
-Particle::Particle() :
+ShardEffect::ShardEffect() :
 	accumTime(0),
 	state(INIT)
 {
 
 }
 
-void Particle::start()
+void ShardEffect::start()
 {
 	float a = (float)rand() / RAND_MAX * 6.28f - 3.14;
 	float b = (float)rand() / RAND_MAX * 6.28f - 3.14;
@@ -22,7 +19,7 @@ void Particle::start()
 	gameObject->getTransform().setScale(0.15f);
 }
 
-void Particle::update(float dt)
+void ShardEffect::update(float dt)
 {
 	accumTime += dt;
 	if (state == INIT)
@@ -56,7 +53,7 @@ void Particle::update(float dt)
 	
 }
 
-std::shared_ptr<Component> Particle::clone() const
+std::shared_ptr<Component> ShardEffect::clone() const
 {
-	return std::make_shared<Particle>(*this);
+	return std::make_shared<ShardEffect>(*this);
 }

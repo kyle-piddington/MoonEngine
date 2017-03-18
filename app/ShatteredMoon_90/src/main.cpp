@@ -53,16 +53,13 @@ int main(int argc, char ** argv)
     //Game Objects
     Transform playerTransform = Transform();
     playerTransform.setPosition(
-            glm::vec3(-32.623940, 20.913505554199219,-101.991371));
+            glm::vec3(-94.1944808959961, 104.02333068847656, 11.824024200439454));
 
     std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
 
-    playerTransform.setPosition(
-            glm::vec3(-52.623940, 12.913505554199219,-101.991371));
-
     std::shared_ptr<GameObject> playerObj = Library::MeshLib->getGameObjectForModelNamed("Wolf_fbx.fbx","character.program",scene);
 
-    //playerObj.setPosition(playerTransform.getPosition());
+    playerObj->getTransform().setPosition(playerTransform.getPosition());
 
     playerObj->addComponent(scene->createComponent<ThirdPersonCharacterController>(4.1));
     // playerObj->addComponent(scene->createComponent<StaticMesh>("wolf.obj", false));
@@ -82,7 +79,7 @@ int main(int argc, char ** argv)
 	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(particleTransform);
 	particleObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
 	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
-	particleObj->addComponent(scene->createComponent<Particle>());
+	particleObj->addComponent(scene->createComponent<MoonEffect>());
 	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(5, 5, 5), 0.5f));
 
 	scene->addPrefab("ShardParticle", particleObj.get());
