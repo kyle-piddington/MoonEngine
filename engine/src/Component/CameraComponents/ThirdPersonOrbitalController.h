@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component/Component.h"
+#include "Component/MeshComponents/Terrain.h"
 
 /**
 * Creates a third person orbital camera that follows the player.
@@ -16,10 +17,13 @@ namespace MoonEngine
 
         void update(float dt);
 
+        glm::vec3 boundHeight(glm::vec3 camPos);
+
         std::shared_ptr<Component> clone() const;
 
     private:
         GameObject * player;
+        Terrain * _terrain;
         float _CamMoveSpeed;
         float _CamSensitivity;
 
