@@ -31,5 +31,7 @@ namespace MoonEngine
 
 		GLTexture * _inputTexture;
 		GLProgram * _renderProgram;
+
+		float _exposure;
 	};
 }

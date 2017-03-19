@@ -13,7 +13,7 @@ void DirLight::update(float dt)
 {
 	const float horizonTime = 0.48f;
     float time = GetWorld()->getGlobalTime();
-    _direction = glm::vec3(-1, -1 + 2*time, -1);
+    _direction = glm::vec3(-1, -1 + 1.5 * time, -1);
     _color = glm::mix(glm::vec3(1,1,1), glm::vec3(0.8,0.6,0.6), time - horizonTime);
     if(time >horizonTime)
     {
