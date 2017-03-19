@@ -5,5 +5,10 @@ out vec4 color;
 
 void main()
 {
-	color = texture(_guiTexture, fragTexCoords);
+	vec4 guiColor = texture(_guiTexture, fragTexCoords);
+	// Hacky fix for text not being fully transparent
+	if (guiColor.a < 0.3 && guiColor.r > 0.1) {
+	    discard;
+	}
+	color = guiColor;
 }

@@ -38,15 +38,11 @@ namespace MoonEngine
 	private:
 		GLFramebuffer _fbo;
 
-		GLTexture * _compositeTexture;
+		GLTexture * _colorTexture;
 		GLProgram * _renderProgram;
 
         int _width;
         int _height;
-
-		shared_ptr<GameObject> _sphere;
-
-		Camera* _mainCamera;
 
     };
 }

@@ -16,7 +16,9 @@ void FogStep::setup(GLFWwindow * window, Scene * scene)
 {
 	_renderProgram = Library::ProgramLib->getProgramForName("postprocess/post_fog.program");
 
-	_fbo.addTexture(COMPOSITE_TEXTURE, GL_COLOR_ATTACHMENT0);
+    _colorTexture = Library::TextureLib->getTexture("skycolor");
+
+    _fbo.addTexture(COMPOSITE_TEXTURE, GL_COLOR_ATTACHMENT0);
     _fbo.addTexture(DEPTH_STENCIL_TEXTURE, GL_DEPTH_ATTACHMENT);
     _fbo.addTexture(DEPTH_STENCIL_TEXTURE, GL_STENCIL_ATTACHMENT);
 }
@@ -25,22 +27,26 @@ void FogStep::render(Scene * scene)
 {
 	_fbo.bind(GL_FRAMEBUFFER);
 	_renderProgram->enable();
-    _fbo.getTexture(COMPOSITE_TEXTURE)->bind(0);
-    glUniform1i(_renderProgram->getUniformLocation("compositeTexture"), 0);
-
-    _fbo.getTexture(DEPTH_STENCIL_TEXTURE)->bind(1);
-    glUniform1i(_renderProgram->getUniformLocation("depthTexture"), 1);
 
     glDepthMask(GL_FALSE);
     glDisable(GL_STENCIL_TEST);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_ONE, GL_ONE);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    _colorTexture->bind(0);
+    glUniform1i(_renderProgram->getUniformLocation("colorTexture"), 0);
+
+    glUniform1f(_renderProgram->getUniformLocation("iGlobalTime"),std::min(0.95f, scene->getGlobalTime()));
+
+    glClear(GL_COLOR_BUFFER_BIT);
 
     drawToQuad();
+    glDisable(GL_BLEND);
 
     glDepthMask(GL_FALSE);
     glDisable(GL_DEPTH_TEST);
 
-    _fbo.DBG_DrawToImgui("Sky");
+    _fbo.DBG_DrawToImgui("Fog");
 }
