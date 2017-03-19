@@ -180,6 +180,7 @@ int main(int argc, char ** argv)
         "deferred_pointL.program", "deferred_dirL.program");
     renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
     renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
+    renderer->addPostProcessStep(std::make_shared<FogStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<SkyStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<GUIStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<HDRStep>("postprocess/bloom/post_HDR_tonemap.program"));
