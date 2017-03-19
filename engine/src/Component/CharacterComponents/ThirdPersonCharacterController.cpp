@@ -89,9 +89,10 @@ void ThirdPersonCharacterController::findMinGround()
 void ThirdPersonCharacterController::handleMove(float dt)
 {
     glm::vec3 camForward = mainCamera->getTransform().forward();
-    glm::vec3 camForwardXZ = glm::vec3(camForward.x, 0, camForward.z);
+    glm::vec3 camForwardXZ = glm::normalize(glm::vec3(camForward.x, 0, camForward.z));
     glm::vec3 camRight = mainCamera->getTransform().right();
-    glm::vec3 camRightXZ = -glm::vec3(camRight.x, 0, camRight.z);
+    glm::vec3 camRightXZ = -glm::normalize(glm::vec3(camRight.x, 0, camRight.z));
+
 
     glm::vec2 direction = glm::vec2(Input::GetAxis(AXIS_HORIZONTAL_0), Input::GetAxis(AXIS_VERTICAL_0));
 
@@ -144,13 +145,26 @@ void ThirdPersonCharacterController::handleMove(float dt)
         }
 
     }
-    transform->translate(dt * playerDirection);
+    glm::vec3 slideDirection = checkIfShouldSlide();
+    if(state != SLIDING)
+    {
+        transform->translate(dt * playerDirection);    
+    }
+    else
+    {
+
+        glm::vec3 grav = glm::vec3(0,dt * jumpSpeed,0);
+        float pen = max(dt * 8.1, abs(dt * jumpSpeed));
+        glm::vec3 reflect = slideDirection * pen;
+        reflect.y = 0;
+        transform->translate(grav + reflect);
+    }
+    
     if(_lastGround + 1e-2> transform->getPosition().y && state == FALLING)
     {
         state = GROUND;
     }
     if(state == GROUND && fabs(_lastGround - transform->getPosition().y) < 1e-1)
-
     {
         transform->setPosition(
         glm::vec3(transform->getPosition().x, 
@@ -162,7 +176,6 @@ void ThirdPersonCharacterController::handleMove(float dt)
         glm::vec3(transform->getPosition().x, 
         std::max(transform->getPosition().y, _lastGround), 
         transform->getPosition().z));
-
 }
 
 void ThirdPersonCharacterController::handleJump(float dt)
@@ -205,7 +218,7 @@ void ThirdPersonCharacterController::handleJump(float dt)
     {
         jumpSpeed = _curJumpForce;
     }
-    else if (state == FALLING)
+    else if (state == FALLING || state == SLIDING)
     {
         jumpSpeed += dt * gravity;
     }
@@ -272,6 +285,33 @@ void ThirdPersonCharacterController::checkIfShouldFall()
         state = FALLING;
     }
 }
+
+glm::vec3 ThirdPersonCharacterController::checkIfShouldSlide()
+{
+    if(worldTerrain != nullptr && (state == GROUND || state == SLIDING))
+    {
+        glm::vec3 pos = gameObject->getTransform().getPosition();
+        glm::vec3 normal = worldTerrain->normalAt(pos.x, pos.z);
+        LOG(GAME, "Terrain Normal: " + std::to_string(normal.x) + "," + std::to_string(normal.y)  + "," + std::to_string(normal.z));
+        const float degToRad70=1.22173;
+        if(glm::dot(normal, (glm::vec3(0,1,0))) < cos(degToRad70) && state == GROUND)
+        {
+            state = SLIDING;
+
+        }
+        else if(glm::dot(normal, (glm::vec3(0,1,0))) > cos(degToRad70 + 0.1) && state == SLIDING)
+        {
+            state = GROUND;
+        }
+        return normal;
+
+    }
+    else
+    {
+        return glm::vec3(0,1,0);
+    }
+}
+
 
 std::shared_ptr<Component> ThirdPersonCharacterController::clone() const
 {

@@ -32,7 +32,7 @@ void HDRStep::render(Scene * scene)
 	ImGui::End();
 
     /* Start below one, as night falls increase */
-    float increasingExposure = max(-0.2f, scene->getGlobalTime() - 0.5f);
+    float increasingExposure = max(-0.2f, scene->getGlobalTime() - 0.3f);
 
     if (_renderProgram->hasUniform("exposure")) {
         glUniform1f(_renderProgram->getUniformLocation("exposure"), _exposure + increasingExposure);

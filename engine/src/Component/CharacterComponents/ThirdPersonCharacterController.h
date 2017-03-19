@@ -15,7 +15,8 @@ namespace MoonEngine
     {
         JUMPING,
         GROUND,
-        FALLING
+        FALLING,
+        SLIDING
     };
 
     class ThirdPersonCharacterController: public Component
@@ -38,6 +39,9 @@ namespace MoonEngine
 
         void checkIfShouldFall();
         void findMinGround();
+        
+        glm::vec3 checkIfShouldSlide();
+
 
         void updateAnimation();
         Transform * transform;
