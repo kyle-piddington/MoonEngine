@@ -45,6 +45,12 @@ std::shared_ptr<Component> PointLight::clone() const
     return std::make_shared<PointLight>(*this);
 }
 
+void PointLight::setAttenuation(float linear, float exp)
+{
+    _attenuation.linear = linear;
+    _attenuation.exp = exp;
+}
+
 void PointLight::setRange(float range)
 {
    _attenuation.exp = 82.445* pow(range, -2.019);

@@ -48,6 +48,12 @@ void ThirdPersonOrbitalController::start()
     Transform & transform = gameObject->getTransform();
     transform.setPosition(_trac);
     transform.lookAt(_targ);
+
+    auto terrainGO = GetWorld()->findGameObjectWithComponent<Terrain>();
+    if(terrainGO != nullptr)
+    {
+        _terrain = terrainGO->getComponent<Terrain>();
+    }
     
  
     //Look for player by default
@@ -67,12 +73,12 @@ void ThirdPersonOrbitalController::update(float dt)
     float camHeightScalar = 0.85 * _distance;
     if(_phi > M_PI/2)
     {
-        _camHeight = _baseCamHeight + camHeightScalar * (_phi - M_PI/2);   
-        _targ = player->getTransform().getPosition() + glm::vec3(0,_camHeight,0);     
+        float targHeight = _baseCamHeight + camHeightScalar * (_phi - M_PI/2);   
+        _targ = player->getTransform().getPosition() + glm::vec3(0,targHeight,0);     
     }
     else
     {
-        _camHeight = _baseCamHeight;
+        _targ = player->getTransform().getPosition();
     }
     if (std::abs(rotate.y) > 1e-2 || std::abs(rotate.x) > 1e-2)
     {
@@ -118,7 +124,8 @@ void ThirdPersonOrbitalController::update(float dt)
                 gameObject->getTransform().getPosition() - camPosition) * _distance;
     }
 
-    _tracInterp += (_trac - _tracInterp) * dt * 5.0f;
+    glm::vec3 finalTrac = boundHeight(_trac);
+    _tracInterp += (finalTrac - _tracInterp) * dt * 5.0f;
     _targInterp += (_targ - _targInterp) * dt * 5.0f;
     Transform & transform = gameObject->getTransform();
     transform.setPosition(_tracInterp);
@@ -129,6 +136,26 @@ void ThirdPersonOrbitalController::update(float dt)
 
 }
 
+
+glm::vec3 ThirdPersonOrbitalController::boundHeight(glm::vec3 _trac)
+{
+    float finalY = _trac.y;
+    if(_terrain != nullptr)
+    {
+        const float camThreshhold = 0.3f;
+        float _minHeight = _terrain->heightAt(_trac.x, _trac.z) + _camHeight;
+       
+        float distToGround = _trac.y - _minHeight;
+        if(distToGround < camThreshhold)
+        {
+            float u = distToGround/camThreshhold;
+            u = u*u;
+            finalY = std::max(_minHeight,  _trac.y);
+        }
+    }
+    return glm::vec3(_trac.x, finalY, _trac.z);
+    
+}
 
 std::shared_ptr<Component> ThirdPersonOrbitalController::clone() const
 {

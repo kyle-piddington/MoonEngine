@@ -21,7 +21,10 @@ namespace MoonEngine
 	private:
         void increaseBrightness(glm::vec3 colorIncrease, float distanceIncrease);
 
-        float distance;
+		float distance;
+        float _linear;
+		float _exp;
+
         glm::vec3 color;
 
         PointLight * _pointLight;
