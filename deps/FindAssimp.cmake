@@ -13,6 +13,7 @@ FIND_PATH(ASSIMP_INCLUDE_DIR "assimp"
   PATHS
   $ENV{ASSIMP_HOME}/inc 
   $ENV{ASSIMP_HOME}/include
+  $ENV{ASSIMP_HOME}/include/assimp
   $ENV{EXTERNLIBS}/ASSIMP/inc
   ~/Library/Frameworks
   /Library/Frameworks
