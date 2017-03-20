@@ -2,10 +2,18 @@
 
 in vec2 fragTexCoords;
 uniform sampler2D colorTexture;
+uniform sampler2D depthTexture;
 uniform float iGlobalTime;
 
 layout (location = 0) out vec4 colorOut;
 
+const float near = 0.1;
+const float far = 100;
+float LinearizeDepth(float depth) 
+{
+    float z = depth * 2.0 - 1.0; // Back to NDC 
+    return (2.0 * near * far) / (far + near - z * (far - near));	
+}
 void main()
 {
 // Fog parameters, could make them uniforms and pass them into the fragment shader
@@ -25,15 +33,14 @@ void main()
 
     float density = 0.5;
     const float LOG2 = 1.442695;
-    float z = gl_FragCoord.z / gl_FragCoord.w;
+    float z = -(texture(depthTexture, fragTexCoords).b);
     float fog_factor = exp2(-density *
                        density *
                        z *
                        z *
                        LOG2 );
     fog_factor = clamp(fog_factor, 0.0, 1.0);
-
-    vec4 clear_color = vec4(0.0, 1.0, 0.0, 0.0);
-
+	fog_factor =  1 - fog_factor;
+    vec4 clear_color = vec4(0.0, 0.0, 0.0, 0.0);
     colorOut = mix(clear_color, color, fog_factor);
 }

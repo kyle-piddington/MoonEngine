@@ -39,6 +39,7 @@ namespace MoonEngine
 		GLFramebuffer _fbo;
 
 		GLTexture * _colorTexture;
+		GLTexture * _depthTexture;
 		GLProgram * _renderProgram;
 
         int _width;

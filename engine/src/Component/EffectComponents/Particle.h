@@ -2,11 +2,11 @@
 
 namespace MoonEngine
 {
-    enum ParticleState
-    {
-        INIT,
-        PAUSE,
-        HOVER,
-        GATHER
-    };
+	enum ParticleState
+	{
+		INIT,
+		PAUSE,
+		HOVER,
+		GATHER
+	};
 }
