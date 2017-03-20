@@ -87,6 +87,14 @@ int main(int argc, char ** argv)
 
 	scene->addPrefab("ShardParticle", particleObj);
 
+	std::shared_ptr<GameObject> wispObj = std::make_shared<GameObject>(particleTransform);
+	wispObj->addComponent(scene->createComponent<PointLight>(COLOR_CYAN, 3.0f));
+	wispObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
+	wispObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
+	wispObj->addComponent(scene->createComponent<Wisp>());
+
+	scene->addPrefab("Wisp", wispObj);
+
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
     cameraObj->addComponent(cam);

@@ -12,6 +12,8 @@ namespace MoonEngine
 		Wisp();
 		void start();
 
+		void restart();
+
 		void update(float dt);
 
 		std::shared_ptr<Component> clone() const;
@@ -19,6 +21,7 @@ namespace MoonEngine
 		float accumTime;
 		glm::vec3 direction;
 		float scale;
+		BoundingBox pBox;
 		std::shared_ptr<GameObject> player;
 	};
 }

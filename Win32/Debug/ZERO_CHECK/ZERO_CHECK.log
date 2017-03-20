@@ -9,12 +9,7 @@
   CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/ShatteredMoon_25/CMakeFiles/generate.stamp is up-to-date.
   CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/ShatteredMoon_50/CMakeFiles/generate.stamp is up-to-date.
   CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/ShatteredMoon_75/CMakeFiles/generate.stamp is up-to-date.
-  CMake is re-running because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/ShatteredMoon_90/CMakeFiles/generate.stamp is out-of-date.
-    the file 'C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/app/ShatteredMoon_90/CMakeLists.txt'
-    is newer than 'C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/ShatteredMoon_90/CMakeFiles/generate.stamp.depend'
-    result='-1'
-  -- Could NOT find Vulkan (missing:  VULKAN_LIBRARY VULKAN_INCLUDE_DIR) 
-  -- Using Win32 for window creation
-  -- Configuring done
-  -- Generating done
-  -- Build files have been written to: C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build
+  CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/ShatteredMoon_90/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/ShatteredMoon_LevelEditor/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/app/TestScene/CMakeFiles/generate.stamp is up-to-date.
+  CMake does not need to re-run because C:/Users/Zachary/Documents/Visual Studio 2017/Projects/476/MoonEngine/_build/test/CMakeFiles/generate.stamp is up-to-date.

@@ -483,6 +483,7 @@ void Scene::start()
     // }
 	_renderTree = std::make_shared<KDTree>(_renderableGameObjects);
 	_playerObject = getPlayer();
+	instantiate(getPrefab("Wisp").get(), _playerObject->getTransform());
 }
 
 void Scene::addGlobalMessage(const Message & message)
