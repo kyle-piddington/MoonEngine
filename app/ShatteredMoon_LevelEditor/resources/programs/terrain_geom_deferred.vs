@@ -107,7 +107,7 @@ void processCDLODVertex(
 
 vec3 getNormal(vec2 globalUV)
 {
-	return texture(heightmap_normal,globalUV).xyz;
+	return texture(heightmap_normal,globalUV).xyz * 2 - 1;
 }
 
 void main()

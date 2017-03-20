@@ -63,7 +63,7 @@ std::shared_ptr<GLTexture> GLNormalMapCreator::GenerateNormalMap(IHeightmapSourc
 		for(int j = 0; j < newTextureConf.getHeight(); j++)
 		{
 			glm::vec2 center = glm::vec2((float)i/newTextureConf.getWidth() * rasterSizeX, (float)j/newTextureConf.getHeight() * rasterSizeY);
-			float xOff = 1.0;
+			float xOff = 2.0;
 			//Calculate gradient:
 			float right = heightmap->getHeightAtFloat(center.x + xOff, center.y);
 			float left = heightmap->getHeightAtFloat(center.x - xOff, center.y);
@@ -71,18 +71,18 @@ std::shared_ptr<GLTexture> GLNormalMapCreator::GenerateNormalMap(IHeightmapSourc
 			float down = heightmap->getHeightAtFloat(center.x, center.y - xOff);
 			float dfdx =  right - left;
 			float dfdy = up - down;
-			glm::vec3 normal = glm::vec3(-yScale*dfdx,2*xzScale,yScale*dfdy);
+			glm::vec3 normal = glm::vec3(-yScale*dfdx,2*xzScale,-yScale*dfdy);
 			float ao = sampleAO(heightmap, center, mDims);
 			
 
 			//Calculate AO using the vector and a random sampling to decide above/below.
 			
-			normal = glm::normalize(normal);
-			normal = normal * 0.5f + 0.5f;
-			dataBuffer[4*(j*newTextureConf.getWidth() + (i)) + 0] = (int)(255 * normal.x);
-			dataBuffer[4*(j*newTextureConf.getWidth() + (i)) + 1] = (int)(255 * normal.y);
-			dataBuffer[4*(j*newTextureConf.getWidth() + (i)) + 2] = (int)(255 * normal.z);
-			dataBuffer[4*(j*newTextureConf.getWidth() + (i)) + 3] = (int)(255 * ao);
+			glm::vec3 nor  = glm::normalize(normal);
+			nor = nor * 0.5f + 0.5f;
+			dataBuffer[4*(j*newTextureConf.getWidth() + i) + 0] = (unsigned char)(255 * nor.x);
+			dataBuffer[4*(j*newTextureConf.getWidth() + i) + 1] = (unsigned char)(255 * nor.y);
+			dataBuffer[4*(j*newTextureConf.getWidth() + i) + 2] = (unsigned char)(255 * nor.z);
+			dataBuffer[4*(j*newTextureConf.getWidth() + i) + 3] = (unsigned char)(255 * ao);
 			
 				
 		}

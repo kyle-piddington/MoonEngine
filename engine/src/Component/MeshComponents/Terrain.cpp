@@ -320,12 +320,12 @@ glm::vec3 Terrain::normalAt(float x, float z)
 	px = (int)std::max(std::min(px, (int)(rasterSizeX - 1)), 0);
 	pz = (int)std::max(std::min(pz, (int)(rasterSizeZ - 1)), 0);
 	int txWidth = creationInfo.source->getSizeX();
-	char nx = normalDataBuffer[4*(pz * creationInfo.source->getSizeX() + px)];
-	char ny = normalDataBuffer[4*(pz * creationInfo.source->getSizeX() + px) + 1];
-	char nz = normalDataBuffer[4*(pz * creationInfo.source->getSizeX() + px) + 2];
-	float fx = nx/128.0f - 1.0f;
-	float fy = ny/128.0f - 1.0f;
-	float fz = nz/128.0f - 1.0f;
+	unsigned char nx = normalDataBuffer[4*(pz * txWidth + px)];
+	unsigned char ny = normalDataBuffer[4*(pz * txWidth + px) + 1];
+	unsigned char nz = normalDataBuffer[4*(pz * txWidth + px) + 2];
+	float fx = nx/127.0f - 1.0f;
+	float fy = ny/127.0f - 1.0f;
+	float fz = nz/127.0f - 1.0f;
 	return glm::vec3(fx,fy,fz);
 
 }

@@ -26,6 +26,7 @@ namespace MoonEngine
         Terrain * _terrain;
         float _CamMoveSpeed;
         float _CamSensitivity;
+        float _targYOffset;
 
         glm::vec3 _trac;
         glm::vec3 _targ;
