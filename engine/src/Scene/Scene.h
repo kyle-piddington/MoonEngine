@@ -220,5 +220,6 @@ namespace MoonEngine
 
         float _globalTime;
         glm::vec3 _globalLightDir;
+		bool _wisp;
     };
 }
