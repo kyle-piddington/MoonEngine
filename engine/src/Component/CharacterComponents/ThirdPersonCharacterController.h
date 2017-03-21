@@ -58,6 +58,8 @@ namespace MoonEngine
         Terrain * worldTerrain;
         Animator * animator;
         BoxCollider * bbox;
+		float wispTime;
+		int numWisps;
 
         #define ANIM_CREEP 0
         #define ANIM_IDLE 1
