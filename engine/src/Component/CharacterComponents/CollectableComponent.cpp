@@ -38,7 +38,7 @@ void CollectableComponent::onCollisionEnter(Collision col)
 		{
 			GetWorld()->instantiate(GetWorld()->getPrefab(_name + "Particle").get(), gameObject->getTransform());
 		}
-		sendGlobalMessage("picked_up_moon");//"picked_up_" + _name);
+		sendGlobalMessage("picked_up_" + _name);
         _collected = true;
 		Delete(gameObject);
 

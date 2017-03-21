@@ -124,6 +124,27 @@ void GUI::animateMoonGui()
     }
 }
 
+void GUI::handleRespawnScreen()
+{
+    if (_wait > 0)
+    {
+        _wait--;
+        if (_wait <= 1) {
+            if (_guiElements["outoftime"] != NULL)
+            {
+                _guiElements["outoftime"]->setDeleted();
+                _guiElements["outoftime"] = NULL;
+            }
+            if (_guiElements["died"] != NULL)
+            {
+                _guiElements["died"]->setDeleted();
+                _guiElements["died"] = NULL;
+            }
+            sendGlobalMessage("respawn");
+        }
+    }
+}
+
 void GUI::start()
 {
     string path = Library::getResourcePath() + "font_s72.glyphmap";
@@ -205,7 +226,13 @@ void GUI::start()
     on("out_of_time",[&](const Message & msg)
     {
         addElement("outoftime", _width / 2, _height / 2, _width / 2, _height / 2);
-        _wait = 30;
+        _wait = 60;
+    });
+
+    on(DEAD_STATE,[&](const Message & msg)
+    {
+        addElement("died", _width / 2, _height / 2, _width / 2, _height / 2);
+        _wait = 150;
     });
 }
 
@@ -219,14 +246,7 @@ void GUI::update(float dt)
     animateShardGui();
     animateMoonGui();
 
-    if (_wait > 0)
-    {
-        _wait--;
-        if (_wait <= 1) {
-            _guiElements["outoftime"]->setDeleted();
-            sendGlobalMessage("respawn");
-        }
-    }
+    handleRespawnScreen();
 }
 
 std::shared_ptr<Component> GUI::clone() const

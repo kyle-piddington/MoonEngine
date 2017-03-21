@@ -180,7 +180,7 @@ int main(int argc, char ** argv)
 
         // 	lastUpdateTime = (int)accumTime;
         // }
-        LOG(GAME, "TIME: " + std::to_string(scene->getGlobalTime()));
+        //LOG(GAME, "TIME: " + std::to_string(scene->getGlobalTime()));
     });
 
     DeferredRenderer * renderer = new DeferredRenderer(width, height, 

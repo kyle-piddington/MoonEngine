@@ -28,6 +28,8 @@ namespace MoonEngine {
         void animateShardGui();
         void animateMoonGui();
 
+        void handleRespawnScreen();
+
         float _shardTicker;
         bool _animatingShard;
         float _shardSizeChange;
