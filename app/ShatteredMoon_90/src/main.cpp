@@ -89,7 +89,7 @@ int main(int argc, char ** argv)
 
 	std::shared_ptr<GameObject> wispObj = std::make_shared<GameObject>(particleTransform);
 	wispObj->addComponent(scene->createComponent<PointLight>(COLOR_CYAN, 3.0f));
-	wispObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
+	wispObj->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
 	wispObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
 	wispObj->addComponent(scene->createComponent<Wisp>());
 

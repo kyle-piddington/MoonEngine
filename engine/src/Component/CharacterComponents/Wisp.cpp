@@ -6,8 +6,8 @@
 using namespace MoonEngine;
 
 Wisp::Wisp() :
-	accumTime(0),
-	scale(1)
+	accumTime(1.0f),
+	scale(1.0f)
 {
 
 }
@@ -15,7 +15,6 @@ Wisp::Wisp() :
 void Wisp::start()
 {
 	player = GetWorld()->getPlayer();
-	restart();
 
 }
 
@@ -26,17 +25,19 @@ void Wisp::restart()
 	float xPos, yPos, zPos;
 	if (x % 2)
 	{
-		xPos = pBox.max().x;
+		//xPos = pBox.max().x;
+		xPos = player->getTransform().getPosition().x + 0.1;
 	}
 	else
 	{
-		xPos = pBox.min().x;
+		//xPos = pBox.min().x;
+		xPos = player->getTransform().getPosition().x - 0.1;
 	}
-	yPos = pBox.min().x;
+	yPos = pBox.min().y;
 
 	float r = ((float)rand() / RAND_MAX) + 0.00001f;
 	zPos = pBox.min().z + r * (pBox.max().z - pBox.min().z);
-	gameObject->getComponent<Transform>()->setPosition(glm::vec3(xPos, yPos, zPos));
+	gameObject->getTransform().setPosition(glm::vec3(xPos, yPos, zPos));
 	gameObject->getTransform().setRotation(player->getTransform().getRotation());
 	gameObject->getTransform().setScale(scale);
 	accumTime = 0.0f;
@@ -46,15 +47,15 @@ void Wisp::update(float dt)
 {
 	
 	accumTime += dt;
-	scale *= 0.5 * dt;
+	scale -= 0.5 * dt;
 	gameObject->getTransform().setScale(std::min(0.1f, scale));
 	if (accumTime <= 0.2 || accumTime > 0.4 && accumTime <= 0.6 || accumTime > 0.8)
 	{
-		gameObject->getComponent<Transform>()->translate(glm::vec3(0, dt, dt));
+		gameObject->getTransform().translate(glm::vec3(0, dt, dt));
 	}
 	else
 	{
-		gameObject->getComponent<Transform>()->translate(glm::vec3(0, dt, -dt));
+		gameObject->getTransform().translate(glm::vec3(0, dt, -dt));
 	}
 	if (accumTime > 1)
 	{
