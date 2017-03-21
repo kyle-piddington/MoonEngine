@@ -15,7 +15,8 @@ GUI::GUI(float width, float height):
     _shardSizeChange(1.5),
     _moonSizeChange(3.0),
     _animatingShard(false),
-    _animatingMoon(false)
+    _animatingMoon(false),
+    _wait(0)
 {
 }
 void GUI::addElement(string name, float scaleX, float scaleY, float posX, float posY)
@@ -185,6 +186,12 @@ void GUI::start()
     {
         addElement("endscreen", _width / 2, _height / 2, _width / 2, _height / 2);
     });
+
+    on("out_of_time",[&](const Message & msg)
+    {
+        addElement("outoftime", _width / 2, _height / 2, _width / 2, _height / 2);
+        _wait = 30;
+    });
 }
 
 void GUI::update(float dt)
@@ -196,6 +203,15 @@ void GUI::update(float dt)
 
     animateShardGui();
     animateMoonGui();
+
+    if (_wait > 0)
+    {
+        _wait--;
+        if (_wait <= 1) {
+            _guiElements["outoftime"]->setDeleted();
+            sendGlobalMessage("respawn");
+        }
+    }
 }
 
 std::shared_ptr<Component> GUI::clone() const

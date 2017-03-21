@@ -40,11 +40,11 @@ void GameState::start()
         GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
         cameraObj->getComponent<ThirdPersonOrbitalController>()->setDisabled();
 
-        CameraCutscene * cutscene = cameraObj->getComponent<CameraCutscene>();
-        cutscene->setStepPlayer(true, false);
-        cutscene->setNextState(ENDED_STATE);
-        cutscene->loadSteps("endscene.json");
-        cutscene->start();
+//        CameraCutscene * cutscene = cameraObj->getComponent<CameraCutscene>();
+//        cutscene->setStepPlayer(true, false);
+//        cutscene->setNextState(ENDED_STATE);
+//        cutscene->loadSteps("endscene.json");
+//        cutscene->start();
     });
 
 }

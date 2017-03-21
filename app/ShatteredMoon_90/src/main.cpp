@@ -67,6 +67,8 @@ int main(int argc, char ** argv)
     playerObj->addComponent(scene->createComponent<BoxCollider>());
     playerObj->addComponent(scene->createComponent<PointLight>(COLOR_CYAN, 3.0f));
     playerObj->addComponent(scene->createComponent<PlayerBrightness>());
+    playerObj->addComponent(scene->createComponent<PlayerTimer>());
+    playerObj->addComponent(scene->createComponent<PlayerRespawn>());
 
     //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
     playerObj->getTransform().setScale(glm::vec3(1.0, 1.0, 1.0));
@@ -171,7 +173,7 @@ int main(int argc, char ** argv)
 
         // 	lastUpdateTime = (int)accumTime;
         // }
-
+        LOG(GAME, "TIME: " + std::to_string(scene->getGlobalTime()));
     });
 
     DeferredRenderer * renderer = new DeferredRenderer(width, height, 

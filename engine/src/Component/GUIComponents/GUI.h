@@ -38,5 +38,7 @@ namespace MoonEngine {
 
         int _stars_collected;
 
+        int _wait;
+
     };
 }

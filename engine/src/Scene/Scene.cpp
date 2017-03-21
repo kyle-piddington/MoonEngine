@@ -9,7 +9,6 @@ using namespace MoonEngine;
 
 Scene::Scene()
 {
-    _globalLightDir = glm::vec3(1, 1, 1);
     _globalTime = 0.0;
     _cameraFlag = 0;
     _dirLightFlag = 0;
@@ -121,8 +120,9 @@ float Scene::getGlobalTime()
     return _globalTime;
 }
 
-glm::vec3 Scene::getGlobalLightDir() {
-	return _globalLightDir;
+void Scene::setGlobalTime(float time)
+{
+    _globalTime = time;
 }
 
 const std::vector<std::shared_ptr<GameObject>> Scene::getGameObjects() const

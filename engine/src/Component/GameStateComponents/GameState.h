@@ -7,7 +7,6 @@ namespace MoonEngine
 #define MENU_STATE "menu_state"
 #define INTRO_STATE "intro_state"
 #define PLAYING_STATE "playing_state"
-#define DEAD_STATE "dead_state"
 #define ENDING_STATE "ending_state"
 #define ENDED_STATE "ended_state"
 

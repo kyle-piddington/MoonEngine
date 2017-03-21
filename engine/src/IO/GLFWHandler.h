@@ -67,6 +67,7 @@ namespace MoonEngine
 
         static void Start();
 
+        static void setInputEnabled(bool enabled);
 
     };
 }

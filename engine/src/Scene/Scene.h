@@ -160,9 +160,8 @@ namespace MoonEngine
 
         float getGlobalTime();
 
+        void setGlobalTime(float time);
 
-        glm::vec3 getGlobalLightDir();
-		
 		std::shared_ptr<GameObject> getPlayer();
 
 		void addPrefab(std::string name, GameObject * object);
@@ -219,6 +218,5 @@ namespace MoonEngine
         std::unordered_map<std::string, std::vector<messageFn> > _globalMessageHandlers;
 
         float _globalTime;
-        glm::vec3 _globalLightDir;
     };
 }
