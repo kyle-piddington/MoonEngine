@@ -49,7 +49,7 @@ void ThirdPersonCharacterController::start()
         animator->setAnimation(animations[_currentAnim]);
     }
     findMinGround();
-
+	GetWorld()->instantiate(GetWorld()->getPrefab("Wisp").get(), gameObject->getTransform());
 }
 
 void ThirdPersonCharacterController::update(float dt)
