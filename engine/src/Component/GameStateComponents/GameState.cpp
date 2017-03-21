@@ -16,6 +16,8 @@ void GameState::start()
     on(INTRO_STATE, [&](const Message & msg)
     {
         LOG(INFO, "Adding cutscene");
+        AudioService::GetAudio()->playSound("bgMusic.mp3");
+
         GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
 //        CameraCutscene * cutscene = GetWorld()->createComponent<CameraCutscene>();
 //        cutscene->setStepPlayer(false, true);

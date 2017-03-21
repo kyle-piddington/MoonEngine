@@ -1,3 +1,4 @@
+#include <Sound/AudioService.h>
 #include "ShardEffect.h"
 
 using namespace MoonEngine;
@@ -17,6 +18,8 @@ void ShardEffect::start()
 	direction = glm::vec3(a, b, c);
 	player = GetWorld()->getPlayer();
 	gameObject->getTransform().setScale(0.15f);
+
+	AudioService::GetAudio()->playSound("collectshard.wav");
 }
 
 void ShardEffect::update(float dt)
