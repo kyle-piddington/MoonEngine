@@ -111,22 +111,34 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
 
         object = scene->createGameObject(transform);
         object->addComponent(scene->createComponent<StaticMesh>(levelMaterial->mesh, false));
-        if (rawMaterial == "shard" || rawMaterial == "moon")
+
+        // hacky stuff to load in shards and moon
+        if (rawMaterial == "shard")
         {
             object->addComponent(scene->createComponent<CollectableComponent>(rawMaterial));
             object->addComponent(scene->createComponent<ShardMovement>());
-            object->addComponent(scene->createComponent<PointLight>(glm::vec3(3,3,3), 7));
+            object->addComponent(scene->createComponent<PointLight>(glm::vec3(3, 3, 3), 7));
+            object->addTag(T_Dynamic);
+        }
+        if (rawMaterial == "moon")
+        {
+            object = Library::MeshLib->getGameObjectForModelNamed(
+                    "moon" + std::to_string(_curMoon++) + ".dae","geom.program",scene);
+            object->getTransform().setPosition(transform.getPosition());
+            object->getTransform().setScale(glm::vec3(0.7, 0.7, 0.7));
+            object->addComponent(scene->createComponent<CollectableComponent>(rawMaterial));
+            object->addComponent(scene->createComponent<ShardMovement>());
+            object->addComponent(scene->createComponent<PointLight>(glm::vec3(0, 15, 15), 7));
             object->addTag(T_Dynamic);
 
-            if (rawMaterial == "moon") {
-                stringmap beamTextures({{"diffuse","solid_white.png"}});
-                std::shared_ptr<GameObject> beamObject = std::make_shared<GameObject>(transform);
-                beamObject->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
-                beamObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "cyl_billboard.program", beamTextures,true));
-                beamObject->addComponent(scene->createComponent<BeamComponent>(object.get()));
-                beamObject->getTransform().setScale(glm::vec3(1,1000,1));
-                scene->addGameObject(beamObject);
-            }
+            // Add beams
+            stringmap beamTextures({{"diffuse","solid_white.png"}});
+            std::shared_ptr<GameObject> beamObject = std::make_shared<GameObject>(transform);
+            beamObject->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
+            beamObject->addComponent(scene->createComponent<Material>(glm::vec3(0.2, 0.8, 0.2), "cyl_billboard.program", beamTextures,true));
+            beamObject->addComponent(scene->createComponent<BeamComponent>(object.get()));
+            beamObject->getTransform().setScale(glm::vec3(1,1000,1));
+            scene->addGameObject(beamObject);
         }
          
 
@@ -154,6 +166,7 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
 
 void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
 {
+    _curMoon = 0;
     std::string recPath = Library::LevelLib->getRecPath();
     std::string levelInfo = TextLoader::LoadFullFile(recPath + levelName);
 
