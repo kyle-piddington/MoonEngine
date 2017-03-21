@@ -19,13 +19,13 @@ void GLFWHandler::key_callback(GLFWwindow * window, int key, int scancode, int a
     if (!_inputEnabled) {
         if(GetWorld()->getGameState() != nullptr)
         {
-            if (GetWorld()->getGameState()->currentState() == PLAYING_STATE) {
-                return;
-            }
             GetWorld()->getGameState()->setState(INTRO_STATE);
         }
         _inputEnabled = true;
 
+        return;
+    }
+    if (GetWorld()->getGameState()->currentState() != PLAYING_STATE) {
         return;
     }
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -129,9 +129,4 @@ void GLFWHandler::Start()
         Controller::Connect(GLFW_JOYSTICK_1);
         Input::provide(std::make_shared<ControllerInputService>());
     }
-}
-
-void GLFWHandler::setInputEnabled(bool enabled)
-{
-    _inputEnabled = enabled;
 }

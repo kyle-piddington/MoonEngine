@@ -12,7 +12,7 @@
 
 namespace MoonEngine
 {
-	typedef std::unordered_map<std::string, std::shared_ptr<GameObject>> prefabMap;
+    typedef std::unordered_map<std::string, std::shared_ptr<GameObject>> prefabMap;
 	class Scene
     {
     public:
@@ -164,7 +164,7 @@ namespace MoonEngine
 
 		std::shared_ptr<GameObject> getPlayer();
 
-		void addPrefab(std::string name, GameObject * object);
+        void addPrefab(std::string name, std::shared_ptr<GameObject>  object);
 
 		std::shared_ptr<GameObject> getPrefab(std::string name);
 

@@ -16,7 +16,12 @@ GUI::GUI(float width, float height):
     _moonSizeChange(3.0),
     _animatingShard(false),
     _animatingMoon(false),
-    _wait(0)
+    _wait(0),
+    _checkpoints({
+        0.33,
+        0.66,
+        0.99
+    })
 {
 }
 void GUI::addElement(string name, float scaleX, float scaleY, float posX, float posY)
@@ -137,6 +142,12 @@ void GUI::start()
     addElement("star_count", 30.0f, -30.0f, 0.145f * _width, 0.885f * _height, "");
 
     addElement("progress", 0.4f * _width, 25.0f, 0.5f * _width, 0.067f * _height);
+
+    for (int i = 0; i < 3; i++)
+    {
+        addElement("time/moontime" + std::to_string(i), 40.0f, 40.0f,
+                   0.1f * _width + (_width * 0.8f * _checkpoints[i]), 0.067f * _height);
+    }
     addElement("wolfmoon", 40.0f, 40.0f, 0.33f * _width, 0.067f * _height);
 
     addElement("menu", _width / 2, _height / 2, _width / 2, _height / 2);
@@ -165,7 +176,11 @@ void GUI::start()
 
     on("picked_up_moon",[&](const Message & msg)
     {
+        addElement("time/fullmoontime" + std::to_string(_current_moon), 40.0f, 40.0f,
+                   0.1f * _width + (_width * 0.8f * _checkpoints[_current_moon]), 0.067f * _height);
+
         _current_moon++;
+
         if (!_animatingMoon)
         {
             _animatingMoon = true;

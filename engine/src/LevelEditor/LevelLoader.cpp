@@ -113,9 +113,9 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
         object->addComponent(scene->createComponent<StaticMesh>(levelMaterial->mesh, false));
         if (rawMaterial == "shard" || rawMaterial == "moon")
         {
-            object->addComponent(scene->createComponent<CollectableComponent>("picked_up_" + rawMaterial));
+            object->addComponent(scene->createComponent<CollectableComponent>(rawMaterial));
             object->addComponent(scene->createComponent<ShardMovement>());
-            object->addComponent(scene->createComponent<PointLight>(glm::vec3(1,1,1), 7));
+            object->addComponent(scene->createComponent<PointLight>(glm::vec3(3,3,3), 7));
             object->addTag(T_Dynamic);
 
             if (rawMaterial == "moon") {

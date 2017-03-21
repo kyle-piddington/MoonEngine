@@ -40,5 +40,7 @@ namespace MoonEngine {
 
         int _wait;
 
+        std::vector<float> _checkpoints;
+
     };
 }

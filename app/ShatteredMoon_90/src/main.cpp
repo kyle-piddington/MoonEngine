@@ -76,15 +76,22 @@ int main(int argc, char ** argv)
 
     scene->addGameObject(playerObj);
     
-	Transform particleTransform = Transform();
 	stringmap particleMap({ { "diffuse", "solid_white" } });
-	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(particleTransform);
+	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(Transform());
 	particleObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
 	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
-	particleObj->addComponent(scene->createComponent<MoonEffect>());
+	particleObj->addComponent(scene->createComponent<ShardEffect>());
 	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(5, 5, 5), 0.5f));
 
-	scene->addPrefab("ShardParticle", particleObj.get());
+	scene->addPrefab("shardParticle", particleObj);
+
+    std::shared_ptr<GameObject> moonParticleObj = std::make_shared<GameObject>(Transform());
+    moonParticleObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
+    moonParticleObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
+    moonParticleObj->addComponent(scene->createComponent<MoonEffect>());
+    moonParticleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(0, 5, 5), 0.9f));
+
+    scene->addPrefab("moonParticle", moonParticleObj);
 
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);

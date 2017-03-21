@@ -1,7 +1,6 @@
 #include "PlayerRespawn.h"
 #include "GameObject/GameObject.h"
 #include "GlobalFuncs/GlobalFuncs.h"
-#include "IO/GLFWHandler.h"
 
 using namespace MoonEngine;
 
@@ -13,7 +12,7 @@ PlayerRespawn::PlayerRespawn():
 void PlayerRespawn::respawn()
 {
     gameObject->getTransform().setPosition(lastPos);
-    GLFWHandler::setInputEnabled(true);
+    GetWorld()->getGameState()->setState(PLAYING_STATE);
 }
 
 void PlayerRespawn::start()

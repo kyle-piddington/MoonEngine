@@ -1,7 +1,6 @@
 #include "PlayerTimer.h"
 #include "GameObject/GameObject.h"
 #include "GlobalFuncs/GlobalFuncs.h"
-#include "IO/GLFWHandler.h"
 #include "IO/Keyboard.h"
 
 using namespace MoonEngine;
@@ -39,7 +38,7 @@ void PlayerTimer::update(float dt)
     {
         _timing = false;
         Keyboard::reset();
-        GLFWHandler::setInputEnabled(false);
+        GetWorld()->getGameState()->setState(RESPAWNING_STATE);
         sendGlobalMessage("out_of_time");
     }
 
