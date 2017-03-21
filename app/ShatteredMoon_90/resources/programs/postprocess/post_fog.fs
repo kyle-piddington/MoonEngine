@@ -31,7 +31,7 @@ void main()
     vec2 texturePos = vec2(iGlobalTime, 0.5);
     vec4 color = texture(colorTexture, texturePos);
 
-    float density = 0.5;
+    float density = 0.1;
     const float LOG2 = 1.442695;
     float z = -(texture(depthTexture, fragTexCoords).b);
     float fog_factor = exp2(-density *
