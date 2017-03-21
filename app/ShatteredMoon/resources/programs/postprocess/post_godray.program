@@ -1,0 +1,5 @@
+{
+	"name" : "post_godray",
+	"vertex" : "resources/programs/postprocess/post_passthrough.vs",
+	"fragment" : "resources/programs/postprocess/post_godray.fs"
+}

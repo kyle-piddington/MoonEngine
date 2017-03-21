@@ -1,0 +1,5 @@
+{
+	"name" : "post_HDR_tonemap",
+	"vertex" : "resources/programs/postprocess/bloom/post_HDR_tonemap.vs",
+	"fragment" : "resources/programs/postprocess/bloom/post_HDR_tonemap.fs"
+}

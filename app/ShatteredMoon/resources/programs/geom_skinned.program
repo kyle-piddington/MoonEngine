@@ -1,0 +1,5 @@
+{
+	"name" : "geom_skinned",
+	"vertex" : "resources/programs/deferred_geom_skinned.vs",
+	"fragment" : "resources/programs/deferred_geom.fs"
+}
