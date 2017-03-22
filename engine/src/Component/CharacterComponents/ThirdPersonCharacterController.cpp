@@ -154,7 +154,7 @@ void ThirdPersonCharacterController::handleMove(float dt)
     {
 
         glm::vec3 grav = glm::vec3(0,dt * jumpSpeed,0);
-        float pen = max(dt * 8.1, abs(dt * jumpSpeed));
+        float pen = std::max(dt * 8.1f, abs(dt * jumpSpeed));
         glm::vec3 reflect = slideDirection * pen;
         reflect.y = 0;
         transform->translate(grav + reflect);

@@ -6,6 +6,7 @@
 #include "Component/MeshComponents/Animator.h"
 
 #include "Geometry/Transform.h"
+
 /**
  * Controls a character in a first-person matter
  */
