@@ -4,8 +4,8 @@
 
 using namespace MoonEngine;
 
-CollectableComponent::CollectableComponent(std::string eventName):
-    _eventName(eventName),
+CollectableComponent::CollectableComponent(std::string name):
+    _name(name),
     _collected(false)
 {
 
@@ -33,11 +33,12 @@ void CollectableComponent::onCollisionEnter(Collision col)
     {
     	sendMessage("collected");
 
-		for (int i = 0; i < 100; i++)
+		int count = _name == "shard" ? 7 : 100;
+		for (int i = 0; i < count; i++)
 		{
-			GetWorld()->instantiate(GetWorld()->getPrefab("ShardParticle").get(), gameObject->getTransform());
+			GetWorld()->instantiate(GetWorld()->getPrefab(_name + "Particle").get(), gameObject->getTransform());
 		}
-		sendGlobalMessage(_eventName);
+		sendGlobalMessage("picked_up_" + _name);
         _collected = true;
 		Delete(gameObject);
 

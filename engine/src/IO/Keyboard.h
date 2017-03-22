@@ -52,5 +52,6 @@ namespace MoonEngine
          */
         static void update();
 
+        static void reset();
     };
 }

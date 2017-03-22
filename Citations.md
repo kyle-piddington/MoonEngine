@@ -9,7 +9,7 @@
 |Sky|http://blog.simonrodriguez.fr/articles/28-06-2015_un_ciel_dans_le_shader.html|
 |Deferred Rendering|http://ogldev.atspace.co.uk/www/tutorial35/tutorial35.html https://learnopengl.com/#!Advanced-Lighting/Deferred-Shading|
 |Bloom|https://learnopengl.com/#!Advanced-Lighting/Bloom https://software.intel.com/en-us/articles/compute-shader-hdr-and-bloom http://chrismdp.com/2015/06/how-to-quickly-add-bloom-to-your-engine/|
-|HDR|https://learnopengl.com/#!Advanced-Lighting/HDR|
+|HDR|https://learnopengl.com/#!Advanced-Lighting/HDR https://www.shadertoy.com/view/lslGzl|
 |Billboards|http://www.opengl-tutorial.org/intermediate-tutorials/billboards-particles/billboards/|
 
 #### Utilities

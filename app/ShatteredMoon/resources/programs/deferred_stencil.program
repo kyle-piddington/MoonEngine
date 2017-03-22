@@ -1,0 +1,5 @@
+{
+	"name" : "deferred_stencil",
+	"vertex" : "resources/programs/deferred/deferred_stencil.vs",
+	"fragment" : "resources/programs/deferred/deferred_stencil.fs"
+}

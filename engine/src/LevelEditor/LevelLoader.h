@@ -18,5 +18,7 @@ namespace MoonEngine
         void LoadLevelMaterials(const rapidjson::Document & document, Scene * scene);
         void LoadLevelObjects(const rapidjson::Document & document, Scene * scene);
 
+        int _curMoon;
+
     };
 }

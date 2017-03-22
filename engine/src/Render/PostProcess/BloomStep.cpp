@@ -41,6 +41,10 @@ void BloomStep::extractGlow()
     _glowFramebuffer.bind(GL_FRAMEBUFFER);
     _glowProgram->enable();
     _compositeTexture->bind(0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
     glUniform1i(_glowProgram->getUniformLocation("compositeTexture"), 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     drawToQuad();

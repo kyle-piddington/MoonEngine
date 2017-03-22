@@ -1,0 +1,5 @@
+{
+	"name" : "post_fog",
+	"vertex" : "resources/programs/postprocess/post_fog.vs",
+	"fragment" : "resources/programs/postprocess/post_fog.fs"
+}

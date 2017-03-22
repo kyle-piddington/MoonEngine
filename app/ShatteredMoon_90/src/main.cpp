@@ -67,6 +67,8 @@ int main(int argc, char ** argv)
     playerObj->addComponent(scene->createComponent<BoxCollider>());
     playerObj->addComponent(scene->createComponent<PointLight>(COLOR_CYAN, 3.0f));
     playerObj->addComponent(scene->createComponent<PlayerBrightness>());
+    playerObj->addComponent(scene->createComponent<PlayerTimer>());
+    playerObj->addComponent(scene->createComponent<PlayerRespawn>());
 
     //playerObj->getTransform().setPosition(glm::vec3(0, 0.5, 0));
     playerObj->getTransform().setScale(glm::vec3(1.0, 1.0, 1.0));
@@ -74,15 +76,22 @@ int main(int argc, char ** argv)
 
     scene->addGameObject(playerObj);
     
-	Transform particleTransform = Transform();
 	stringmap particleMap({ { "diffuse", "solid_white" } });
-	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(particleTransform);
+	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(Transform());
 	particleObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
 	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
-	particleObj->addComponent(scene->createComponent<MoonEffect>());
+	particleObj->addComponent(scene->createComponent<ShardEffect>());
 	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(5, 5, 5), 0.5f));
 
-	scene->addPrefab("ShardParticle", particleObj.get());
+	scene->addPrefab("shardParticle", particleObj);
+
+    std::shared_ptr<GameObject> moonParticleObj = std::make_shared<GameObject>(Transform());
+    moonParticleObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
+    moonParticleObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
+    moonParticleObj->addComponent(scene->createComponent<MoonEffect>());
+    moonParticleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(0, 5, 5), 0.9f));
+
+    scene->addPrefab("moonParticle", moonParticleObj);
 
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
@@ -171,7 +180,7 @@ int main(int argc, char ** argv)
 
         // 	lastUpdateTime = (int)accumTime;
         // }
-
+        //LOG(GAME, "TIME: " + std::to_string(scene->getGlobalTime()));
     });
 
     DeferredRenderer * renderer = new DeferredRenderer(width, height, 
@@ -181,6 +190,7 @@ int main(int argc, char ** argv)
     renderer->addPostProcessStep(std::make_shared<BasicProgramStep>("postprocess/post_passthrough.program",COMPOSITE_TEXTURE));
     renderer->addPostProcessStep(std::make_shared<BloomStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<SkyStep>(width, height));
+    //renderer->addPostProcessStep(std::make_shared<FogStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<GUIStep>(width, height));
     renderer->addPostProcessStep(std::make_shared<HDRStep>("postprocess/bloom/post_HDR_tonemap.program"));
 

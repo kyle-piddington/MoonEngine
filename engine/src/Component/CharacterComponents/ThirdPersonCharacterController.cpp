@@ -292,7 +292,7 @@ glm::vec3 ThirdPersonCharacterController::checkIfShouldSlide()
     {
         glm::vec3 pos = gameObject->getTransform().getPosition();
         glm::vec3 normal = worldTerrain->normalAt(pos.x, pos.z);
-        LOG(GAME, "Terrain Normal: " + std::to_string(normal.x) + "," + std::to_string(normal.y)  + "," + std::to_string(normal.z));
+        LOG(INFO, "Terrain Normal: " + std::to_string(normal.x) + "," + std::to_string(normal.y)  + "," + std::to_string(normal.z));
         const float degToRad70=1.22173;
         if(glm::dot(normal, (glm::vec3(0,1,0))) < cos(degToRad70) && state == GROUND)
         {

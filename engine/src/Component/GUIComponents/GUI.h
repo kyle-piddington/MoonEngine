@@ -28,6 +28,8 @@ namespace MoonEngine {
         void animateShardGui();
         void animateMoonGui();
 
+        void handleRespawnScreen();
+
         float _shardTicker;
         bool _animatingShard;
         float _shardSizeChange;
@@ -37,6 +39,10 @@ namespace MoonEngine {
         float _moonSizeChange;
 
         int _stars_collected;
+
+        int _wait;
+
+        std::vector<float> _checkpoints;
 
     };
 }

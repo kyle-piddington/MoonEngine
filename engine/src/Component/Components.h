@@ -20,6 +20,8 @@
 #include "CharacterComponents/SunMovement.h"
 #include "CharacterComponents/BeamComponent.h"
 #include "CharacterComponents/PlayerBrightness.h"
+#include "CharacterComponents/PlayerRespawn.h"
+#include "CharacterComponents/PlayerTimer.h"
 #include "CharacterComponents/ThirdPersonCharacterController.h"
 
 #include "Component/EffectComponents/ShardEffect.h"
