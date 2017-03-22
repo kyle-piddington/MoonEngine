@@ -9,7 +9,7 @@ namespace MoonEngine
 		virtual void init() = 0;
 		virtual void shutdown() = 0;
 		virtual void loadSound(std::string soundName, bool asStream, bool loop = false) = 0;
-		virtual void playSound(std::string soundName) = 0;
+		virtual void playSound(std::string soundName, float volume = 1.0f) = 0;
 		virtual void stopAllSounds() = 0;
 
 

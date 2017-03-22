@@ -54,12 +54,14 @@ void loadAudio(std::string audio, std::unordered_map<std::string,FMOD::Sound *> 
 
 }
 
-void playSound(std::string audio, std::unordered_map<std::string,FMOD::Sound *>  & audioMap, FMOD::System * system)
+void playSound(std::string audio, std::unordered_map<std::string,FMOD::Sound *>  & audioMap, FMOD::System * system, float volume)
 {
 	//Debug checking
 	assert(audioMap.find(audio) != audioMap.end());
 	//Play sound.
-	system->playSound(audioMap[audio],0,false,0);
+  	FMOD::Channel *channel;
+	system->playSound(audioMap[audio],0,false,&channel);
+	channel->setVolume(volume);
 }
 
 
@@ -89,7 +91,7 @@ void runThread(std::atomic<bool> * running, std::deque<FMODAudio::__audioCommand
 					loadAudio(cmd.commandStrParam, &audio, true,true,system);
 					break;
 				case FMODAudio::PLAY:
-					playSound(cmd.commandStrParam,audio,system);
+					playSound(cmd.commandStrParam,audio,system, cmd.floatParam);
 					break;
 				
 				default:
@@ -179,12 +181,12 @@ void FMODAudio::loadSound(std::string soundName,  bool asStream, bool loop)
 	pushCommand(cmd);
 }
 
-void FMODAudio::playSound(std::string soundName)
+void FMODAudio::playSound(std::string soundName, float volume)
 {
 	__audioCommand cmd;
 	cmd.commandStrParam = soundName;
 	cmd.type = PLAY;
-	
+	cmd.floatParam = volume;
 	pushCommand(cmd);
 }
 
