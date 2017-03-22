@@ -36,7 +36,7 @@ void Wisp::restart()
 	yPos = pBox.min().y;
 
 	float r = ((float)rand() / RAND_MAX) + 0.00001f;
-	zPos = pBox.min().z + r * (pBox.max().z - pBox.min().z);
+	zPos = pBox.min().z + 2 * (r * (pBox.max().z - pBox.min().z)) - (pBox.max().z - pBox.min().z);
 	gameObject->getTransform().setPosition(glm::vec3(xPos, yPos, zPos));
 	gameObject->getTransform().setRotation(player->getTransform().getRotation());
 	gameObject->getTransform().setScale(0.0f);
@@ -47,8 +47,8 @@ void Wisp::update(float dt)
 {
 	
 	accumTime += dt;
-	scale = 1.0f / (8.0f * dt);//(2.0f - dt)/ 4.0f;
-	gameObject->getTransform().setScale(std::min(0.1f, scale));
+	scale = 0.02f;//1.0f / (8.0f * dt);//(2.0f - dt)/ 4.0f;
+	gameObject->getTransform().setScale(scale);
 	if (accumTime <= 0.2 || accumTime > 0.4 && accumTime <= 0.6 || accumTime > 0.8)
 	{
 		gameObject->getTransform().translate(glm::vec3(0, dt, dt));
