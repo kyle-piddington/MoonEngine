@@ -130,11 +130,13 @@ int main(int argc, char **argv) {
     grass->addComponent(scene->createComponent<Grass>("grass.obj",false,8096));
     grass->addComponent(scene->createComponent<Material>(glm::vec3(1.0,1.0,1.0),"grass.program",grassMap,false));
     scene->addGameObject(grass);
-    
 
-	
 
-	DeferredRenderer * renderer = new DeferredRenderer(width, height, 
+    std::shared_ptr<GameObject> gameState = std::make_shared<GameObject>();
+    gameState->addComponent(scene->createComponent<GameState>(PLAYING_STATE));
+    scene->addGameObject(gameState);
+
+    DeferredRenderer * renderer = new DeferredRenderer(width, height,
         "SSAO.program", "SSAOBlur.program",
         "shadow_maps.program", "deferred_stencil.program", 
         "deferred_pointL.program", "deferred_dirL.program");

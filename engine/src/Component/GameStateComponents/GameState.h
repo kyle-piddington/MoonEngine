@@ -15,7 +15,7 @@ namespace MoonEngine
     class GameState : public Component
     {
     public:
-        GameState();
+        GameState(std::string state = MENU_STATE);
 
         void start();
 

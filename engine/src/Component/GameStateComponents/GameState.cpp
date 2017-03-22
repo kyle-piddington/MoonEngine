@@ -5,8 +5,8 @@
 
 using namespace MoonEngine;
 
-GameState::GameState():
-_currentState(MENU_STATE)
+GameState::GameState(std::string state):
+_currentState(state)
 {
 
 }
@@ -32,9 +32,12 @@ void GameState::start()
     {
         LOG(INFO, "Adding orbital camera");
         GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
-        Component * control = GetWorld()->createComponent<ThirdPersonOrbitalController>();
-        cameraObj->addComponent(control);
-        control->start();
+        if (cameraObj->getComponent<FirstPersonController>() == nullptr)
+        {
+            Component * control = GetWorld()->createComponent<ThirdPersonOrbitalController>();
+            cameraObj->addComponent(control);
+            control->start();
+        }
     });
 
     on(ENDING_STATE, [&](const Message & msg)
