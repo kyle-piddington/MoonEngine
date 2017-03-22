@@ -5,6 +5,7 @@ add_subdirectory(ShatteredMoon_25)
 add_subdirectory(ShatteredMoon_50)
 add_subdirectory(ShatteredMoon_75)
 add_subdirectory(ShatteredMoon_90)
+add_subdirectory(ShatteredMoon)
 add_subdirectory(ShatteredMoon_LevelEditor)
 add_subdirectory(TestScene)
 

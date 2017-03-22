@@ -25,8 +25,6 @@ void HDRStep::render(Scene * scene)
 	_inputTexture->bind(0);
 	glUniform1i(_renderProgram->getUniformLocation("hdrTexture"), 0);
 
-	;
-
 	ImGui::Begin("Bright");
 	ImGui::DragFloat("Exposure", &_exposure, -1.0f, 3.0f);
 	ImGui::End();

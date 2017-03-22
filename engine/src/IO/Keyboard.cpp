@@ -48,6 +48,16 @@ void Keyboard::setKeyStatus(int key, int action)
     }
 }
 
+void Keyboard::reset()
+{
+    for (int i = 0; i < NUM_KEYS; i++)
+    {
+        keyStatus[i] = RELEASE;
+        bfrKeyStatus[i] = RELEASE;
+        keyToggles[i] = false;
+    }
+}
+
 void Keyboard::update()
 {
     for (int i = 0; i < NUM_KEYS; i++)

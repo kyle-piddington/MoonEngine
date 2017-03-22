@@ -77,10 +77,10 @@ int main(int argc, char ** argv)
 	std::shared_ptr<GameObject> particleObj = std::make_shared<GameObject>(particleTransform);
 	particleObj->addComponent(scene->createComponent<StaticMesh>("shard.obj", false));
 	particleObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
-	particleObj->addComponent(scene->createComponent<Particle>());
+	particleObj->addComponent(scene->createComponent<MoonEffect>());
 	particleObj->addComponent(scene->createComponent<PointLight>(glm::vec3(5, 5, 5), 0.5f));
 
-	scene->addPrefab("ShardParticle", particleObj.get());
+	scene->addPrefab("ShardParticle", particleObj);
 
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);

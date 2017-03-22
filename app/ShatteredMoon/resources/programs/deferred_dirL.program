@@ -1,0 +1,5 @@
+{
+	"name" : "deferred_dirLight",
+	"vertex" : "resources/programs/deferred/deferred_dirL.vs",
+	"fragment" : "resources/programs/deferred/deferred_dirL.fs"
+}

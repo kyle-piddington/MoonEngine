@@ -12,7 +12,7 @@
 
 namespace MoonEngine
 {
-	typedef std::unordered_map<std::string, std::shared_ptr<GameObject>> prefabMap;
+    typedef std::unordered_map<std::string, std::shared_ptr<GameObject>> prefabMap;
 	class Scene
     {
     public:
@@ -160,12 +160,11 @@ namespace MoonEngine
 
         float getGlobalTime();
 
+        void setGlobalTime(float time);
 
-        glm::vec3 getGlobalLightDir();
-		
 		std::shared_ptr<GameObject> getPlayer();
 
-		void addPrefab(std::string name, GameObject * object);
+        void addPrefab(std::string name, std::shared_ptr<GameObject>  object);
 
 		std::shared_ptr<GameObject> getPrefab(std::string name);
 
@@ -219,6 +218,5 @@ namespace MoonEngine
         std::unordered_map<std::string, std::vector<messageFn> > _globalMessageHandlers;
 
         float _globalTime;
-        glm::vec3 _globalLightDir;
     };
 }

@@ -64,7 +64,7 @@ void ProgramRenderer::render(Scene * scene)
             
             if (activeProgram->hasUniform("iGlobalLightDir"))
             {
-                glm::vec3 lightDir = scene->getGlobalLightDir();
+                glm::vec3 lightDir = glm::vec3(1, 1, 1);
                 glUniform3f(activeProgram->getUniformLocation("iGlobalLightDir"), lightDir.x, lightDir.y, lightDir.z);
             }
         }

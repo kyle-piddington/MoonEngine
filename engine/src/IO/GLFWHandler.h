@@ -67,6 +67,5 @@ namespace MoonEngine
 
         static void Start();
 
-
     };
 }
