@@ -57,7 +57,6 @@ void loadAudio(std::string audio, std::unordered_map<std::string,FMOD::Sound *> 
 void playSound(std::string audio, std::unordered_map<std::string,FMOD::Sound *>  & audioMap, FMOD::System * system)
 {
 	//Debug checking
-	std::cout << "Playing Audio" << std::endl;
 	assert(audioMap.find(audio) != audioMap.end());
 	//Play sound.
 	system->playSound(audioMap[audio],0,false,0);
