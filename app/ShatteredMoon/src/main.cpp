@@ -94,6 +94,18 @@ int main(int argc, char ** argv)
 
     scene->addPrefab("moonParticle", moonParticleObj);
 
+	Transform particleTransform = Transform();
+	std::shared_ptr<GameObject> wispObj = std::make_shared<GameObject>(particleTransform);
+	wispObj->addComponent(scene->createComponent<PointLight>(COLOR_CYAN, 3.0f));
+	wispObj->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
+	wispObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
+	wispObj->addComponent(scene->createComponent<Wisp>());
+	wispObj->addComponent(scene->createComponent<PlayerBrightness>());
+
+	scene->addPrefab("Wisp", wispObj);
+
+
+
     //Camera setup
     Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
     cameraObj->addComponent(cam);
@@ -159,7 +171,7 @@ int main(int argc, char ** argv)
     //Grass
     stringmap grassMap {{"diffuse","grassTexture.png"}};
     std::shared_ptr<GameObject> grass  = std::make_shared<GameObject>(playerTransform);
-    grass->addComponent(scene->createComponent<Grass>("grass.obj",false,8096));
+    grass->addComponent(scene->createComponent<Grass>("grass.obj",false,2*8096));
     grass->addComponent(scene->createComponent<Material>(glm::vec3(1.0,1.0,1.0),"grass.program",grassMap,false));
     scene->addGameObject(grass);
     

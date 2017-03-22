@@ -98,7 +98,7 @@ void Scene::runUpdate(float dt)
         _globalTime += dt * TIME_MODIFIER;
     }
     instantiateNewObjects();
-
+	
     for (std::shared_ptr<GameObject> go : _gameObjects)
     {
       go->update(dt);
@@ -483,6 +483,7 @@ void Scene::start()
     // }
 	_renderTree = std::make_shared<KDTree>(_renderableGameObjects);
 	_playerObject = getPlayer();
+	_wisp = false;
 }
 
 void Scene::addGlobalMessage(const Message & message)

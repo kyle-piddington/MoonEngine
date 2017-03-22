@@ -106,8 +106,7 @@ void GUI::animateMoonGui()
         }
         if (_moonTicker > 30.0) {
             addElement("Moon" + std::to_string(_current_moon), scale.x, scale.y, 0.1f * _width, 0.7f * _height);
-            _guiElements[currentTexture]->setDeleted();
-
+			Delete(_guiElements[currentTexture].get());
             _moonSizeChange = -3.0f;
         }
 
@@ -204,7 +203,7 @@ void GUI::start()
 
         if (!_animatingMoon)
         {
-            _animatingMoon = true;
+        //    _animatingMoon = true;
         }
 
         if (_current_moon <= 3)
