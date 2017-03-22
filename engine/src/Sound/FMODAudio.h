@@ -29,12 +29,13 @@ namespace MoonEngine
 		{
 			__audioCommandType type;
 			std::string commandStrParam;
+			float floatParam;
 		};
 
 		void init();
 		void shutdown();
 		void loadSound(std::string soundName, bool asStream, bool looping);
-		void playSound(std::string soundName);
+		void playSound(std::string soundName, float volume);
 		void stopAllSounds();
 	private:
 		std::atomic<bool> _isRunning;

@@ -19,7 +19,7 @@ void ShardEffect::start()
 	player = GetWorld()->getPlayer();
 	gameObject->getTransform().setScale(0.15f);
 
-	AudioService::GetAudio()->playSound("collectshard.mp3");
+	AudioService::GetAudio()->playSound("collectshard.mp3",0.1);
 }
 
 void ShardEffect::update(float dt)

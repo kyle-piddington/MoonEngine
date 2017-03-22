@@ -18,9 +18,9 @@ GUI::GUI(float width, float height):
     _animatingMoon(false),
     _wait(0),
     _checkpoints({
-        0.33,
-        0.66,
-        0.99
+        0.33f,
+        0.66f,
+        0.99f
     })
 {
 }

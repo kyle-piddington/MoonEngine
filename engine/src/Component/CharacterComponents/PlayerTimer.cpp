@@ -7,10 +7,10 @@ using namespace MoonEngine;
 
 PlayerTimer::PlayerTimer():
     _times({
-        0.0,
-        0.33,
-        0.66,
-        1.0
+        0.0f,
+        0.33f,
+        0.66f,
+        1.0f
 	}),
     _currentTime(1),
     _timing(true)
