@@ -47,9 +47,9 @@ int main(int argc, char ** argv)
     Scene * scene = new Scene();
 
     AudioService::GetAudio()->loadSound("bgMusic.mp3", true, true);
-    AudioService::GetAudio()->loadSound("windgrass1.wav", true, true);
-    AudioService::GetAudio()->loadSound("collectmoon.wav", true, false);
-    AudioService::GetAudio()->loadSound("collectshard.wav", false, false);
+    AudioService::GetAudio()->loadSound("windgrass1.mp3", true, true);
+    AudioService::GetAudio()->loadSound("collectmoon.mp3", true, false);
+    AudioService::GetAudio()->loadSound("collectshard.mp3", false, false);
 
     //Game Objects
     Transform playerTransform = Transform();

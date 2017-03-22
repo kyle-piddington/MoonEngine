@@ -166,7 +166,7 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
 
 void LevelLoader::LoadLevel(std::string levelName, Scene * scene)
 {
-    _curMoon = 0;
+    _curMoon = 1;
     std::string recPath = Library::LevelLib->getRecPath();
     std::string levelInfo = TextLoader::LoadFullFile(recPath + levelName);
 

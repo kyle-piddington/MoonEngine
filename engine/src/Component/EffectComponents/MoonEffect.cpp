@@ -21,7 +21,7 @@ void MoonEffect::start()
     scale = glm::vec3(0.08);
 	gameObject->getTransform().setScale(scale);
 
-	AudioService::GetAudio()->playSound("collectmoon.wav");
+	AudioService::GetAudio()->playSound("collectmoon.mp3");
 }
 
 void MoonEffect::update(float dt)

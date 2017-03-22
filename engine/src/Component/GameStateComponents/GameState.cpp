@@ -17,7 +17,7 @@ void GameState::start()
     {
         LOG(INFO, "Adding cutscene");
         AudioService::GetAudio()->playSound("bgMusic.mp3");
-        AudioService::GetAudio()->playSound("windgrass1.wav");
+        AudioService::GetAudio()->playSound("windgrass1.mp3");
 
         GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
 //        CameraCutscene * cutscene = GetWorld()->createComponent<CameraCutscene>();
