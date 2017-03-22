@@ -78,7 +78,7 @@ std::shared_ptr<Component> Grass::clone() const
 void Grass::generateGrassForTile(CDLODQuadtree::SelectedNode & node, std::vector<glm::mat4> * newTransforms)
 {
     BoundingBox box = _terrainComponent->getBoxForCDLODNode(node);
-    float grassScale = 0.5*(node.LODLevel);
+	float grassScale = 0.35*(node.LODLevel);
 
     
     for(int i = -4; i < 4; i++)
@@ -96,7 +96,7 @@ void Grass::generateGrassForTile(CDLODQuadtree::SelectedNode & node, std::vector
             float ht = _terrainComponent->heightAt(xPt,zPt);
             glm::vec3 nor = glm::normalize(_terrainComponent->normalAt(xPt,zPt));
             //LOG(GAME, std::to_string(nor.x)+","+std::to_string(nor.y)+","+ std::to_string(nor.z));
-            if(glm::dot(nor,glm::vec3(0,1,0)) < 0.98f)
+            if(glm::dot(nor,glm::vec3(0,1,0)) < 0.95f)
             {
                 continue;
             }

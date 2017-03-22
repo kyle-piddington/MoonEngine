@@ -2,6 +2,7 @@
 #include "PlayerBrightness.h"
 #include "GameObject/GameObject.h"
 #include "GlobalFuncs/GlobalFuncs.h"
+#include "Component/LightComponents/PointLight.h"
 #include "glm/gtc/type_ptr.hpp"
 
 using namespace MoonEngine;
@@ -54,4 +55,14 @@ void PlayerBrightness::update(float dt)
 std::shared_ptr<Component> PlayerBrightness::clone() const
 {
 	return std::make_shared<PlayerBrightness>(*this);
+}
+
+glm::vec3 PlayerBrightness::getColor()
+{
+	return color;
+}
+
+float PlayerBrightness::getDistance()
+{
+	return distance;
 }

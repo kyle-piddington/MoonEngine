@@ -7,7 +7,7 @@ layout (location = 3) in mat4 I;
 uniform mat4 M;
 uniform mat4 V;
 uniform mat4 P;
-uniform mat3 N;
+
 uniform float windTime;
 uniform float windSpeed;
 uniform float windStrength;
@@ -40,7 +40,9 @@ void main()
 			,playerPushPos.xz);
 
 	vec4 fragPos4  = V *  I * anim * playerShearAnim * position;
+	mat3 N = mat3(transpose(inverse(V * I * anim * playerShearAnim)));
 	fragPos = fragPos4.xyz;
+	
 	fragNor = N * vec3(0,1,0);
 	gl_Position = P * fragPos4;
 

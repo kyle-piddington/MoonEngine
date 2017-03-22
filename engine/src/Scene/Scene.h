@@ -188,7 +188,7 @@ namespace MoonEngine
 
 		std::shared_ptr<KDTree> _renderTree;
 		std::shared_ptr<GameObject> _playerObject;
-
+		
         std::vector<std::shared_ptr<GameObject>> _pointLightObjects;
         std::shared_ptr<GameObject> _dirLightObject;
         int _dirLightFlag;
@@ -218,5 +218,8 @@ namespace MoonEngine
         std::unordered_map<std::string, std::vector<messageFn> > _globalMessageHandlers;
 
         float _globalTime;
+	    glm::vec3 _globalLightDir;
+		bool _wisp;
+
     };
 }

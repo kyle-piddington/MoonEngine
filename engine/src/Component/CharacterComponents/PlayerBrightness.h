@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Component/Components.h"
 #include "Component/Component.h"
 #include "Geometry/Transform.h"
 
@@ -15,7 +14,8 @@ namespace MoonEngine
 		void start();
 
 		void update(float dt);
-		
+		glm::vec3 getColor();
+		float getDistance();
 		std::shared_ptr<Component> clone() const;
 
 	private:

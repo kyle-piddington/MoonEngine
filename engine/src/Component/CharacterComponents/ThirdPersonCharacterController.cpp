@@ -27,6 +27,8 @@ ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed
     _curJumpForce = 0;
     playerSpeed = 0;
     _currentAnim = ANIM_SEAT;
+	numWisps = 0;
+	wispTime = 0.0f;
 }
 
 void ThirdPersonCharacterController::start()
@@ -49,7 +51,7 @@ void ThirdPersonCharacterController::start()
         animator->setAnimation(animations[_currentAnim]);
     }
     findMinGround();
-
+	GetWorld()->instantiate(GetWorld()->getPrefab("Wisp").get(), gameObject->getTransform());
 }
 
 void ThirdPersonCharacterController::update(float dt)
@@ -63,7 +65,18 @@ void ThirdPersonCharacterController::update(float dt)
     checkIfShouldFall();
     handleMove(dt);
     handleJump(dt);
-
+	
+	if (numWisps < 20)
+	{
+		wispTime += dt;
+		if (wispTime >= 0.2f)
+		{
+			wispTime = 0.0f;
+			GetWorld()->instantiate(GetWorld()->getPrefab("Wisp").get(), gameObject->getTransform());
+			numWisps++;
+		}
+	}
+	
 }
 
 void ThirdPersonCharacterController::findMinGround()
