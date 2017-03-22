@@ -161,13 +161,17 @@ void ThirdPersonCharacterController::handleMove(float dt)
     glm::vec3 slideDirection = checkIfShouldSlide();
     if(state != SLIDING)
     {
-        transform->translate(dt * playerDirection);    
+		if (slopeOK(dt * playerDirection))
+		{
+			transform->translate(dt * playerDirection);
+		}
+
     }
     else
     {
 
         glm::vec3 grav = glm::vec3(0,dt * jumpSpeed,0);
-        float pen = std::max(dt * 8.1f, abs(dt * jumpSpeed));
+        float pen = std::min(dt * 8.1f, abs(dt * jumpSpeed));
         glm::vec3 reflect = slideDirection * pen;
         reflect.y = 0;
         transform->translate(grav + reflect);
@@ -288,7 +292,7 @@ void ThirdPersonCharacterController::onCollisionEnter(Collision col)
 void ThirdPersonCharacterController::checkIfShouldFall()
 {
     //Early break if on ground.
-    if (transform->getPosition().y <= _lastGround + 1e-1)
+    if (transform->getPosition().y <= _lastGround + 2e-1)
     {
         return;
     }
@@ -325,6 +329,29 @@ glm::vec3 ThirdPersonCharacterController::checkIfShouldSlide()
     }
 }
 
+
+bool ThirdPersonCharacterController::slopeOK(glm::vec3 offset)
+{
+	if (worldTerrain != nullptr && (state == GROUND || state == SLIDING))
+	{
+		glm::vec3 pos = gameObject->getTransform().getPosition() + offset;
+		glm::vec3 normal = worldTerrain->normalAt(pos.x, pos.z);
+		LOG(INFO, "Terrain Normal: " + std::to_string(normal.x) + "," + std::to_string(normal.y) + "," + std::to_string(normal.z));
+		const float degToRad70 = 1.22173;
+		if (glm::dot(normal, (glm::vec3(0, 1, 0))) < cos(degToRad70) && state == GROUND)
+		{
+			return false;
+
+		}
+		else 
+		{
+			return true;
+		}
+	else
+	{
+		return false;
+	}
+}
 
 std::shared_ptr<Component> ThirdPersonCharacterController::clone() const
 {
