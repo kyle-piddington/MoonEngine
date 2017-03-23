@@ -40,7 +40,10 @@ void AssimpMesh::draw() const
         {
             _material->bindTexturesForMesh(i);
         }
-        _material->bindSkeletonBinds(submeshInfo[i].boneOffsets);
+		if (_modelInfo->hasBones())
+		{
+			_material->bindSkeletonBinds(submeshInfo[i].boneOffsets, _material->getProgram());
+		}
         LOG_GL(__FILE__, __LINE__);
         glDrawElementsBaseVertex(GL_TRIANGLES,
           submeshInfo[i].meshInfo.numTris,
@@ -53,16 +56,28 @@ void AssimpMesh::draw() const
 
 void AssimpMesh::drawShadow() const
 {
-    const std::vector<AssimpMeshInfo> & submeshInfo = _modelInfo->getMeshInfo();
-    //bindSkeletonBinds(_modelInfo.boneOffsets);
-    for(int i = 0; i < submeshInfo.size(); i++)
-    {
-        glDrawElementsBaseVertex(GL_TRIANGLES,
-          submeshInfo[i].meshInfo.numTris,
-          GL_UNSIGNED_SHORT,
-          submeshInfo[i].meshInfo.indexDataOffset,
-          submeshInfo[i].meshInfo.baseVertex);
-    }
+	if (_material->hasShadowProgram())
+	{
+		const std::vector<AssimpMeshInfo> & submeshInfo = _modelInfo->getMeshInfo();
+		for (int i = 0; i < submeshInfo.size(); i++)
+		{
+			if (_modelInfo->hasBones())
+			{
+				_material->bindSkeletonBinds(submeshInfo[i].boneOffsets, _material->getShadowProgram());
+			}
+			LOG_GL(__FILE__, __LINE__);
+			glDrawElementsBaseVertex(GL_TRIANGLES,
+				submeshInfo[i].meshInfo.numTris,
+				GL_UNSIGNED_SHORT,
+				submeshInfo[i].meshInfo.indexDataOffset,
+				submeshInfo[i].meshInfo.baseVertex);
+			LOG_GL(__FILE__, __LINE__);
+		}
+	}
+	else
+	{
+		draw();
+	}
 }
 
 std::shared_ptr<Component> AssimpMesh::clone() const

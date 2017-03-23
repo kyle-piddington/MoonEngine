@@ -19,19 +19,25 @@ namespace MoonEngine
 	class AssimpMaterial : public Material
 	{
 	public:
-		AssimpMaterial(std::string program, AssimpModelInfo * modelInfo);
+		AssimpMaterial(std::string program, AssimpModelInfo * modelInfo, std::string skinnedShadowProg = "shadow_maps_skinned.program");
 		void start();
+
+		bool hasShadowProgram();
+		GLProgram * getShadowProgram() const ;
+		void bindForShadow();
 		void bind();
-		void bindSkeletonBinds(const std::vector<glm::mat4> & bindMatrix);
-		void bindSkeletonBones(const std::vector<glm::mat4> & boneMatrix);
+		void bindSkeletonBinds(const std::vector<glm::mat4> & bindMatrix, GLProgram * program);
+		void bindSkeletonBones(const std::vector<glm::mat4> & boneMatrix, GLProgram * program);
 		
 		void bindTexturesForMesh(int mesh);
 
 		std::shared_ptr<Component> clone() const;
 	private:
+		GLProgram * _skinnedShadowProgram;
 		Skeleton * _skeleton;
 		std::unordered_map<string, Material::texture_unit> loadTextures( unordered_map<string, string> textures);
 		std::vector<std::unordered_map<std::string, texture_unit>> meshTextures;
+	
 
 	};
 }

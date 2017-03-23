@@ -149,7 +149,7 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
     LOG_GL(__FILE__, __LINE__);
     glViewport(0,0,_shadowMaps.getWidth(),_shadowMaps.getHeight());
     glCullFace(GL_FRONT);
-
+	
     // The view is set as the light source
     glm::mat4 V = _shadowMaps.getLightView();
 
@@ -171,19 +171,31 @@ void DeferredRenderer::shadowMapPass(Scene * scene)
             if(obj->getTag()!=T_Terrain)
             {
                 auto tMat = obj->getComponent<Material>();
-                if(tMat->isForward())
-                {
-                    continue;
-                }
+				if (tMat->isForward())
+				{
+					continue;
+				}
+				if (tMat->hasShadowProgram())
+				{
+					activeProgram = tMat->getShadowProgram();	
+					activeProgram->enable();
+					tMat->bindForShadow();
+				}
+				else if(activeProgram != _shadowMapsProgram)
+				{
+						activeProgram = _shadowMapsProgram;
+						activeProgram->enable();
+					
+				}
+                
+
                 mesh = obj->getComponent<Mesh>();
                 mesh->bind();
                 glm::mat4 M = obj->getTransform().getMatrix();
 
                 //Place Uniforms that do not change per GameObject
                 glUniformMatrix4fv(activeProgram->getUniformLocation("P"), 1, GL_FALSE, glm::value_ptr(P));
-                glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));
-
-                
+                glUniformMatrix4fv(activeProgram->getUniformLocation("V"), 1, GL_FALSE, glm::value_ptr(V));                
                 glUniformMatrix4fv(activeProgram->getUniformLocation("M"), 1, GL_FALSE, glm::value_ptr(M));
                 mesh->drawShadow();
             }

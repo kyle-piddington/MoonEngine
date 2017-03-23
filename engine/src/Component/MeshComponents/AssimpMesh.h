@@ -28,12 +28,13 @@ namespace MoonEngine
   		//Submits an OpenGL call (Don't handle binding/unbinding);
     virtual void draw() const;
 
-    virtual void drawShadow() const;
+	virtual void drawShadow() const;
 
     
   private:
     AssimpModelInfo * _modelInfo;
     AssimpMaterial *  _material;
+	
     BoundingBox _transformedBox;
   };	
 }

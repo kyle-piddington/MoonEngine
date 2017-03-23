@@ -48,9 +48,23 @@ namespace MoonEngine
          */
         GLProgram * getProgram() const;
 
+
+
+
         virtual std::shared_ptr<Component> clone() const;
 
         virtual void bind();
+
+
+		virtual bool hasShadowProgram() {
+			return false;
+		}
+		virtual GLProgram * getShadowProgram() const
+		{
+			return nullptr;
+		}
+
+		virtual void bindForShadow() {};
 
 		inline bool isForward() {
 			return _forward;

@@ -24,10 +24,10 @@ out float worldZ;
 
 void main()
 {
-	mat4 BoneTransform = gBones[BoneIDs[0]] * gBinds[BoneIDs[0]] * Weights[0];
-    BoneTransform +=     gBones[BoneIDs[1]] * gBinds[BoneIDs[1]] * Weights[1];
-    BoneTransform +=     gBones[BoneIDs[2]] * gBinds[BoneIDs[2]] * Weights[2];
-    BoneTransform +=     gBones[BoneIDs[3]] * gBinds[BoneIDs[3]] * Weights[3];
+	mat4 boneTransform = gBones[BoneIDs[0]] * gBinds[BoneIDs[0]] * Weights[0];
+    boneTransform +=     gBones[BoneIDs[1]] * gBinds[BoneIDs[1]] * Weights[1];
+    boneTransform +=     gBones[BoneIDs[2]] * gBinds[BoneIDs[2]] * Weights[2];
+    boneTransform +=     gBones[BoneIDs[3]] * gBinds[BoneIDs[3]] * Weights[3];
     
     vec3 worldPosition = M * boneTransform * position;
 
