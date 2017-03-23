@@ -52,6 +52,7 @@
 
 //Sound
 #include "Sound/AudioService.h"
+#include "Sound/NullAudio.h"
 
 //Terrain
 #include "Geometry/Terrain/CDLODQuadtree.h"

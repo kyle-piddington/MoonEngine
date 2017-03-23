@@ -8,6 +8,7 @@
 #include "LevelEditor/LevelLoader.h"
 
 
+
 using namespace MoonEngine;
 
 
@@ -45,7 +46,8 @@ int main(int argc, char ** argv)
     Logger::SetLogLevel(GAME);
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
-
+	//For zach, null audio. Uncomment for sound.
+	AudioService::Provide(new NullAudio());
     AudioService::GetAudio()->loadSound("bgMusic.mp3", true, true);
     AudioService::GetAudio()->loadSound("windgrass1.mp3", true, true);
     AudioService::GetAudio()->loadSound("collectmoon.mp3", true, false);
