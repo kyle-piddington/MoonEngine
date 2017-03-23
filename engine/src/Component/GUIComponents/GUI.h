@@ -38,6 +38,8 @@ namespace MoonEngine {
         bool _animatingMoon;
         float _moonSizeChange;
 
+        int _num_slideshow;
+        int _cur_slideshow;
         int _stars_collected;
 
         int _wait;

@@ -16,4 +16,5 @@ void main()
     vec2 texturePos = vec2(currentTime, horizon);
 
     color = texture(skycolor, texturePos).rgb;
+    color *= 1.6 - currentTime / 2.0;
 }

@@ -16,6 +16,8 @@ GUI::GUI(float width, float height):
     _moonSizeChange(3.0),
     _animatingShard(false),
     _animatingMoon(false),
+    _num_slideshow(2),
+    _cur_slideshow(0),
     _wait(0),
     _checkpoints({
         0.33f,
@@ -170,12 +172,20 @@ void GUI::start()
     }
     addElement("wolfmoon", 40.0f, 40.0f, 0.33f * _width, 0.067f * _height);
 
+    for (int i = _num_slideshow - 1; i >= 0; i--)
+    {
+        addElement("slideshow" + std::to_string(i), _width / 2, _height / 2, _width / 2, _height / 2);
+    }
+
     addElement("menu", _width / 2, _height / 2, _width / 2, _height / 2);
+
 
     on(INTRO_STATE,[&](const Message & msg)
     {
         LOG(INFO, "Removing menu");
         _guiElements["menu"]->setDeleted();
+
+        _wait = 30 * _num_slideshow;
     });
 
     on("picked_up_shard",[&](const Message & msg)
@@ -245,7 +255,19 @@ void GUI::update(float dt)
     animateShardGui();
     animateMoonGui();
 
-    handleRespawnScreen();
+    if (_num_slideshow > 0 && _wait > 0)
+    {
+        _wait--;
+        if (_wait <= 30 * (_num_slideshow - 1))
+        {
+            _guiElements["slideshow" + std::to_string(_cur_slideshow)]->setDeleted();
+            _num_slideshow--;
+            _cur_slideshow++;
+        }
+    }
+    else {
+        handleRespawnScreen();
+    }
 }
 
 std::shared_ptr<Component> GUI::clone() const
