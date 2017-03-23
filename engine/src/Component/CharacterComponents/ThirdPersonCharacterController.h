@@ -59,9 +59,9 @@ namespace MoonEngine
         float gravity;
         float _lastGround;
 
-        int _ticksFalling;
+        float _ticksFalling;
         bool _dead;
-        #define MAX_TICKS_FALLING 30
+        #define MAX_TICKS_FALLING 2.0
 
         PlayerState state;
         float radius;

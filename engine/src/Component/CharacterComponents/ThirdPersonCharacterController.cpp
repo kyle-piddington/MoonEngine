@@ -73,7 +73,7 @@ void ThirdPersonCharacterController::update(float dt)
 
     if (state == FALLING && !_dead)
     {
-        _ticksFalling++;
+        _ticksFalling+=dt;
         LOG(GAME, "fall" + std::to_string(_ticksFalling));
         if (_ticksFalling > MAX_TICKS_FALLING)
         {
