@@ -128,7 +128,7 @@ void LevelLoader::LoadLevelObjects(const rapidjson::Document & document, Scene *
             object->getTransform().setScale(glm::vec3(0.7, 0.7, 0.7));
             object->addComponent(scene->createComponent<CollectableComponent>(rawMaterial));
             object->addComponent(scene->createComponent<ShardMovement>());
-            object->addComponent(scene->createComponent<PointLight>(glm::vec3(0, 15, 15), 7));
+            object->addComponent(scene->createComponent<PointLight>(glm::vec3(0, 5, 5), 7));
             object->addTag(T_Dynamic);
 
             // Add beams
