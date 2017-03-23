@@ -13,7 +13,7 @@ PlayerTimer::PlayerTimer():
         1.0f
 	}),
     _currentTime(1),
-    _timing(true)
+    _timing(false)
 {
 }
 

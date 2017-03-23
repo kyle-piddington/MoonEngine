@@ -15,7 +15,8 @@
 using namespace MoonEngine;
 
 LevelBuildingVisual::LevelBuildingVisual(Scene * scene) :
-_moveWithCamera(true)
+_moveWithCamera(true),
+_mainCamera(nullptr)
 {
     _scene = scene;
     _scene->addCustomUpdate([&](float dt) {

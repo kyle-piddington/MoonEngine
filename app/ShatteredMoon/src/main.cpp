@@ -56,7 +56,7 @@ int main(int argc, char ** argv)
     //Game Objects
     Transform playerTransform = Transform();
     playerTransform.setPosition(
-            glm::vec3(-94.1944808959961, 104.02333068847656, 11.824024200439454));
+            glm::vec3(-33.49043273925781, 160.6202392578125, -13.690919303894043));
 
     std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
 
@@ -109,7 +109,7 @@ int main(int argc, char ** argv)
 
 
     //Camera setup
-    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1200);
+    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 2400);
     cameraObj->addComponent(cam);
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
     //cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));

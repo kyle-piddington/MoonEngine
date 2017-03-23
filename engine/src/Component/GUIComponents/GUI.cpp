@@ -213,7 +213,7 @@ void GUI::start()
 
         if (!_animatingMoon)
         {
-        //    _animatingMoon = true;
+            _animatingMoon = true;
         }
 
         if (_current_moon <= 3)

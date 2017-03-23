@@ -1,0 +1,5 @@
+{
+	"name" : "shadow_maps_skinned",
+	"vertex" : "resources/programs/shadow_maps_skinned.vs",
+	"fragment" : "resources/programs/shadow_maps.fs"
+}

@@ -67,6 +67,8 @@ namespace MoonEngine
 		float wispTime;
 		int numWisps;
 
+
+
         #define ANIM_CREEP 0
         #define ANIM_IDLE 1
         #define ANIM_WALK 2

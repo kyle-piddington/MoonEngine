@@ -53,7 +53,7 @@ int main(int argc, char ** argv)
     //Game Objects
     Transform playerTransform = Transform();
     playerTransform.setPosition(
-            glm::vec3(-94.1944808959961, 104.02333068847656, 11.824024200439454));
+            glm::vec3(-33.490431f, 160.62023f, -15.79043f));
 
     std::shared_ptr<GameObject> cameraObj = std::make_shared<GameObject>(playerTransform);
 
