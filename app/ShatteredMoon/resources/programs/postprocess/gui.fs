@@ -10,5 +10,5 @@ void main()
 	if (guiColor.a < 0.3 && guiColor.r > 0.1) {
 	    discard;
 	}
-	color = guiColor;
+	color = vec4(guiColor.rgb * 1.6, guiColor.a);
 }
