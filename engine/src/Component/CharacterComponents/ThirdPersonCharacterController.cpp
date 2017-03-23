@@ -332,21 +332,23 @@ glm::vec3 ThirdPersonCharacterController::checkIfShouldSlide()
 
 bool ThirdPersonCharacterController::slopeOK(glm::vec3 offset)
 {
-	if (worldTerrain != nullptr && (state == GROUND || state == SLIDING))
+	if (worldTerrain != nullptr)
 	{
 		glm::vec3 pos = gameObject->getTransform().getPosition() + offset;
 		glm::vec3 normal = worldTerrain->normalAt(pos.x, pos.z);
+		float terrainheight = (worldTerrain->heightAt(pos.x, pos.z));
 		LOG(INFO, "Terrain Normal: " + std::to_string(normal.x) + "," + std::to_string(normal.y) + "," + std::to_string(normal.z));
 		const float degToRad70 = 1.22173;
-		if (glm::dot(normal, (glm::vec3(0, 1, 0))) < cos(degToRad70) && state == GROUND)
+		if (glm::dot(normal, (glm::vec3(0, 1, 0))) < cos(degToRad70) && terrainheight > _lastGround)
 		{
 			return false;
 
 		}
-		else 
+		else
 		{
 			return true;
 		}
+	}
 	else
 	{
 		return false;

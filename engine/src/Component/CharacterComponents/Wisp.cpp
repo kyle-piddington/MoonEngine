@@ -29,10 +29,10 @@ void Wisp::restart()
 {
 	if (playerBrightness != nullptr)
 	{
-		//originalRange = playerB
-		//originalColor = glm::normalize(playerBrightness->getColor());
-		//pointLightComponent->setRange(originalRange);
-		//pointLightComponent->setColor(originalColor);
+		originalRange = playerBrightness->getDistance()/3.0f;
+		originalColor = glm::normalize(playerBrightness->getColor());
+		pointLightComponent->setRange(originalRange);
+		pointLightComponent->setColor(originalColor);
 	}
 	pBox = player->getBounds();
 	int x = (int)rand();// / RAND_MAX * 6.28f - 3.14f;
@@ -71,8 +71,8 @@ void Wisp::update(float dt)
 	{
 		gameObject->getTransform().translate(glm::vec3(0, dt, -dt));
 	}
-	//pointLightComponent->setRange(originalRange * (1 - accumTime));
-	//pointLightComponent->setColor(originalColor * (1 - accumTime));
+	pointLightComponent->setRange(originalRange * (1 - accumTime));
+	pointLightComponent->setColor(originalColor * (1 - accumTime));
 	if (accumTime > 1)
 	{
 		restart();

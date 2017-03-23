@@ -42,7 +42,7 @@ namespace MoonEngine
         void findMinGround();
         
         glm::vec3 checkIfShouldSlide();
-		bool slopeOK(glm::vec3 offset)
+		bool slopeOK(glm::vec3 offset);
 
 
         void updateAnimation();

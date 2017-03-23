@@ -100,7 +100,7 @@ int main(int argc, char ** argv)
 	wispObj->addComponent(scene->createComponent<StaticMesh>("sphere.obj", false));
 	wispObj->addComponent(scene->createComponent<Material>(glm::vec3(1, 1, 1), "geom.program", particleMap));
 	wispObj->addComponent(scene->createComponent<Wisp>());
-	wispObj->addComponent(scene->createComponent<PlayerBrightness>());
+	//wispObj->addComponent(scene->createComponent<PlayerBrightness>());
 
 	scene->addPrefab("Wisp", wispObj);
 
