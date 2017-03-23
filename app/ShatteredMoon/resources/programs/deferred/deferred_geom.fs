@@ -40,7 +40,7 @@ void main()
     colorOut.rgb = texture(diffuse, fragTex).rgb;
     colorOut.a = 1; //Currently hardcoded specular
     normalOut.xyz = normalize(fragNor);
-
+    normalOut.a = 1.0;
     float ShadowFactor = 0.0;
     for (int i = 0 ; i < NUM_SHADOWS ; i++) {
         if (worldZ <= -shadowZSpace[i]) {
