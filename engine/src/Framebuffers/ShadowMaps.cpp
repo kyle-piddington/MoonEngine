@@ -59,7 +59,7 @@ void MoonEngine::ShadowMaps::calculateShadowLevels(Scene * scene)
     _shadowZDepth[0] = cam->getNear();
     _shadowZDepth[1] = 10.0f;
     _shadowZDepth[2] = 25.0f;
-    _shadowZDepth[3] = cam->getFar();
+    _shadowZDepth[3] = 100.0f;
     _orthos.clear();
     for (int i = 0; i < NUM_SHADOWS; i++) {
         float xn = _shadowZDepth[i] * tanHalfHFOV;
