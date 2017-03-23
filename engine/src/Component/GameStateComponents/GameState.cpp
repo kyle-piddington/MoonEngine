@@ -15,17 +15,17 @@ void GameState::start()
 {
     on(INTRO_STATE, [&](const Message & msg)
     {
-        LOG(INFO, "Adding cutscene");
+        LOG(ERROR, "Adding cutscene");
         AudioService::GetAudio()->playSound("bgMusic.mp3");
         AudioService::GetAudio()->playSound("windgrass1.mp3");
 
         GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
-//        CameraCutscene * cutscene = GetWorld()->createComponent<CameraCutscene>();
-//        cutscene->setStepPlayer(false, true);
-//        cutscene->loadSteps("cutscene.json");
-//        cutscene->start();
-//        cameraObj->addComponent(cutscene);
-        GetWorld()->getGameState()->setState(PLAYING_STATE);
+        CameraCutscene * cutscene = GetWorld()->createComponent<CameraCutscene>();
+        cutscene->setStepPlayer(false, true);
+        cutscene->loadSteps("cutscene.json");
+        cutscene->start();
+        cameraObj->addComponent(cutscene);
+        //GetWorld()->getGameState()->setState(PLAYING_STATE);
     });
 
     on(PLAYING_STATE, [&](const Message & msg)
@@ -45,12 +45,13 @@ void GameState::start()
         LOG(INFO, "Adding cutscene");
         GameObject * cameraObj = GetWorld()->findGameObjectWithComponent<Camera>();
         cameraObj->getComponent<ThirdPersonOrbitalController>()->setDisabled();
-
-//        CameraCutscene * cutscene = cameraObj->getComponent<CameraCutscene>();
-//        cutscene->setStepPlayer(true, false);
-//        cutscene->setNextState(ENDED_STATE);
-//        cutscene->loadSteps("endscene.json");
-//        cutscene->start();
+		Instantiate(GetWorld()->getPrefab("moonBillboard").get());
+		GetWorld()->setGlobalTime(0.95f);
+       CameraCutscene * cutscene = cameraObj->getComponent<CameraCutscene>();
+        cutscene->setStepPlayer(true, false);
+        cutscene->setNextState(ENDED_STATE);
+        cutscene->loadSteps("endscene.json");
+        cutscene->start();
     });
 
 }
@@ -61,7 +62,7 @@ void GameState::update(float dt)
 
 void GameState::setState(std::string state)
 {
-    LOG(INFO, "NEW STATE: " + state);
+    LOG(ERROR, "NEW STATE: " + state);
     _currentState = state;
     sendGlobalMessage(state);
 }

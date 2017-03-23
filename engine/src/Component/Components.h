@@ -18,6 +18,7 @@
 #include "CollisionComponents/BoxCollider.h"
 #include "CharacterComponents/CollectableComponent.h"
 #include "CharacterComponents/SunMovement.h"
+#include "CharacterComponents/MoonSpriteComponent.h"
 #include "CharacterComponents/BeamComponent.h"
 #include "CharacterComponents/PlayerBrightness.h"
 

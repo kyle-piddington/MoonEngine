@@ -12,7 +12,11 @@ PlayerRespawn::PlayerRespawn():
 void PlayerRespawn::respawn()
 {
     gameObject->getTransform().setPosition(lastPos);
-    GetWorld()->getGameState()->setState(PLAYING_STATE);
+	if (GetWorld()->getGameState()->currentState() != INTRO_STATE)
+	{
+		GetWorld()->getGameState()->setState(PLAYING_STATE);
+	}
+
 }
 
 void PlayerRespawn::start()

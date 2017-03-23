@@ -16,7 +16,7 @@ GUI::GUI(float width, float height):
     _moonSizeChange(3.0),
     _animatingShard(false),
     _animatingMoon(false),
-    _num_slideshow(2),
+    _num_slideshow(0),
     _cur_slideshow(0),
     _wait(0),
     _checkpoints({
@@ -174,7 +174,7 @@ void GUI::start()
 
     for (int i = _num_slideshow - 1; i >= 0; i--)
     {
-        addElement("slideshow" + std::to_string(i), _width / 2, _height / 2, _width / 2, _height / 2);
+        //addElement("slideshow" + std::to_string(i), _width / 2, _height / 2, _width / 2, _height / 2);
     }
 
     addElement("menu", _width / 2, _height / 2, _width / 2, _height / 2);

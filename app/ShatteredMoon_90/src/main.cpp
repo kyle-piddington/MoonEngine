@@ -42,7 +42,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    Logger::SetLogLevel(GAME);
+    Logger::SetLogLevel(ERROR);
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 
@@ -163,6 +163,14 @@ int main(int argc, char ** argv)
     sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "billboard.program", sun, true));
     sunBillboard->addComponent(scene->createComponent<SunMovement>());
     scene->addGameObject(sunBillboard);
+
+
+	std::shared_ptr<GameObject> moonBillboard = std::make_shared<GameObject>(tran);
+	sunBillboard->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
+	sunBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "moonBillBoard.program", sun, true));
+	sunBillboard->addComponent(scene->createComponent<MoonSpriteComponent>());
+	scene->addGameObject(moonBillboard);
+
 
     //Grass
     //stringmap grassMap {{"diffuse","grassTexture.png"}};

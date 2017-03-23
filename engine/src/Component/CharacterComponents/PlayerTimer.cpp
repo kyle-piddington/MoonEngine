@@ -13,7 +13,7 @@ PlayerTimer::PlayerTimer():
         1.0f
 	}),
     _currentTime(1),
-    _timing(false)
+    _timing(true)
 {
 }
 
@@ -38,7 +38,7 @@ void PlayerTimer::update(float dt)
     {
         _timing = false;
         Keyboard::reset();
-        GetWorld()->getGameState()->setState(RESPAWNING_STATE);
+        //GetWorld()->getGameState()->setState(RESPAWNING_STATE);
         sendGlobalMessage("out_of_time");
     }
 

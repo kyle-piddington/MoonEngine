@@ -21,7 +21,7 @@ int main(int argc, char ** argv)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    float windowWidth = 854.0f, windowHeight = 480.0f;
+    float windowWidth = 1920, windowHeight = 1080.0f;
 
     GLFWwindow * window = glfwCreateWindow(windowWidth, windowHeight, "ShatteredMoon", nullptr, nullptr);
     if (window == nullptr)
@@ -43,7 +43,7 @@ int main(int argc, char ** argv)
         return -1;
     }
 
-    Logger::SetLogLevel(GAME);
+    Logger::SetLogLevel(INFO);
     std::shared_ptr<EngineApp> app = std::make_shared<EngineApp>(window);
     Scene * scene = new Scene();
 	//For zach, null audio. Uncomment for sound.
@@ -109,7 +109,7 @@ int main(int argc, char ** argv)
 
 
     //Camera setup
-    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 2400);
+    Camera * cam = scene->createComponent<Camera>(3.1415 / 3, windowWidth / windowHeight, 0.1, 1600);
     cameraObj->addComponent(cam);
     cameraObj->getTransform().translate(glm::vec3(0, 5, 5));
     //cameraObj->getTransform().rotate(glm::vec3(-M_PI/6,0,0));
@@ -170,6 +170,12 @@ int main(int argc, char ** argv)
     sunBillboard->addComponent(scene->createComponent<SunMovement>());
     scene->addGameObject(sunBillboard);
 
+	stringmap moon = { { "diffuse", "moon-sprite.png" } };
+	std::shared_ptr<GameObject> moonBillboard = std::make_shared<GameObject>(tran);
+	moonBillboard->addComponent(scene->createComponent<StaticMesh>("beam-quad.obj", true));
+	moonBillboard->addComponent(scene->createComponent<Material>(glm::vec3(1.0, 1.0, 1.0), "moonBillBoard.program", moon, true));
+	moonBillboard->addComponent(scene->createComponent<MoonSpriteComponent>());
+	scene->addPrefab("moonBillboard", moonBillboard);
     //Grass
     stringmap grassMap {{"diffuse","grassTexture.png"}};
     std::shared_ptr<GameObject> grass  = std::make_shared<GameObject>(playerTransform);
@@ -179,7 +185,7 @@ int main(int argc, char ** argv)
     
     
     std::shared_ptr<GameObject> gameState = std::make_shared<GameObject>();
-    gameState->addComponent(scene->createComponent<GameState>());
+    gameState->addComponent(scene->createComponent<GameState>(INTRO_STATE));
     scene->addGameObject(gameState);
 
 

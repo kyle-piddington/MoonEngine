@@ -29,8 +29,8 @@ void Wisp::restart()
 {
 	if (playerBrightness != nullptr)
 	{
-		originalRange = playerBrightness->getDistance()/3.0f;
-		originalColor = glm::normalize(playerBrightness->getColor());
+		originalRange = playerBrightness->getDistance()/50.0f;
+		originalColor = playerBrightness->getColor()/50.0f;
 		pointLightComponent->setRange(originalRange);
 		pointLightComponent->setColor(originalColor);
 	}
@@ -71,8 +71,7 @@ void Wisp::update(float dt)
 	{
 		gameObject->getTransform().translate(glm::vec3(0, dt, -dt));
 	}
-	pointLightComponent->setRange(originalRange * (1 - accumTime));
-	pointLightComponent->setColor(originalColor * (1 - accumTime));
+
 	if (accumTime > 1)
 	{
 		restart();

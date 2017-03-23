@@ -24,7 +24,7 @@ void FirstPersonController::update(float dt)
     float speed = _CamMoveSpeed;
     if (Keyboard::isKeyDown(GLFW_KEY_LEFT_SHIFT))
     {
-        speed *= 15;
+        speed *= 5;
     }
 
     if (!isImguiEnabled())
