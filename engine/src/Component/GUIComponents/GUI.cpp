@@ -213,7 +213,7 @@ void GUI::start()
 
         if (!_animatingMoon)
         {
-        //    _animatingMoon = true;
+            _animatingMoon = true;
         }
 
         if (_current_moon <= 3)
@@ -241,7 +241,7 @@ void GUI::start()
     on(DEAD_STATE,[&](const Message & msg)
     {
         addElement("died", _width / 2, _height / 2, _width / 2, _height / 2);
-        _wait = 150;
+        _wait = 90;
     });
 }
 

@@ -29,6 +29,8 @@ ThirdPersonCharacterController::ThirdPersonCharacterController(float playerSpeed
     _currentAnim = ANIM_SEAT;
 	numWisps = 0;
 	wispTime = 0.0f;
+    _ticksFalling = 0;
+    _dead = false;
 }
 
 void ThirdPersonCharacterController::start()
@@ -56,6 +58,7 @@ void ThirdPersonCharacterController::start()
 
 void ThirdPersonCharacterController::update(float dt)
 {
+    if (GetWorld()->getGameState()->currentState() != PLAYING_STATE) return;
     if (radius == 0)
     {
         radius = std::max(std::max(bbox->getHalfWidths().x, bbox->getHalfWidths().y), bbox->getHalfWidths().z);
@@ -65,6 +68,26 @@ void ThirdPersonCharacterController::update(float dt)
     checkIfShouldFall();
     handleMove(dt);
     handleJump(dt);
+
+    LOG(GAME, std::to_string(state));
+
+    if (state == FALLING && !_dead)
+    {
+        _ticksFalling++;
+        LOG(GAME, "fall" + std::to_string(_ticksFalling));
+        if (_ticksFalling > MAX_TICKS_FALLING)
+        {
+            _dead = true;
+        }
+    }
+    if (state == GROUND && _dead)
+    {
+        GetWorld()->getGameState()->setState(DEAD_STATE);
+        Keyboard::reset();
+        _ticksFalling = 0;
+        _dead = false;
+    }
+
 	
 	if (numWisps < 20)
 	{
@@ -220,14 +243,13 @@ void ThirdPersonCharacterController::handleJump(float dt)
     }
     else if (Input::GetButton(BUTTON_0) && state == JUMPING && _jumpTime > 0)
     {
-
-
         _jumpTime -= dt;
     }
     else if (state == JUMPING)
     {
         LOG(GAME, "ENDING JUMP");
         state = FALLING;
+        _ticksFalling = 0;
     }
 
     //Check if platform under via raycast
@@ -268,6 +290,7 @@ void ThirdPersonCharacterController::handleJump(float dt)
         transform->setPosition(glm::vec3(transform->getPosition().x,
             _lastGround, transform->getPosition().z));
         state = GROUND;
+        _ticksFalling = 0;
     }
 
 }
@@ -279,6 +302,7 @@ void ThirdPersonCharacterController::onCollisionEnter(Collision col)
     {
         LOG(GAME, "Hit ground");
         state = GROUND;
+        _ticksFalling = 0;
     }
     else if ((state == JUMPING || state == FALLING) &&
         glm::dot(col.normal, glm::vec3(0, -1, 0)) > cosf(M_PI / 3) && jumpSpeed > 0)

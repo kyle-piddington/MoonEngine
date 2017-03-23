@@ -58,6 +58,11 @@ namespace MoonEngine
         float _jumpTime;
         float gravity;
         float _lastGround;
+
+        int _ticksFalling;
+        bool _dead;
+        #define MAX_TICKS_FALLING 30
+
         PlayerState state;
         float radius;
         GameObject * mainCamera;
@@ -66,6 +71,7 @@ namespace MoonEngine
         BoxCollider * bbox;
 		float wispTime;
 		int numWisps;
+
 
         #define ANIM_CREEP 0
         #define ANIM_IDLE 1
